@@ -127,21 +127,59 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SAFE-01..SAFE-06 | TBD | Pending |
-| AUTH-01..AUTH-06 | TBD | Pending |
-| TEST-01..TEST-06 | TBD | Pending |
-| SCEN-01..SCEN-05 | TBD | Pending |
-| CHAT-01..CHAT-06 | TBD | Pending |
-| SOS-01..SOS-06 | TBD | Pending |
-| TEACH-01..TEACH-03 | TBD | Pending |
-| PARENT-01..PARENT-03 | TBD | Pending |
-| ADMIN-01..ADMIN-06 | TBD | Pending |
+| SAFE-01 | Phase 1 | Pending |
+| SAFE-02 | Phase 1 | Pending |
+| SAFE-03 | Phase 1 | Pending |
+| SAFE-04 | Phase 1 | Pending |
+| SAFE-05 | Phase 1 | Pending |
+| SAFE-06 | Phase 1 | Pending |
+| AUTH-01 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Pending |
+| AUTH-04 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Pending |
+| AUTH-06 | Phase 2 | Pending |
+| ADMIN-01 | Phase 2 | Pending |
+| TEST-01 | Phase 3 | Pending |
+| TEST-02 | Phase 3 | Pending |
+| TEST-03 | Phase 3 | Pending |
+| TEST-04 | Phase 3 | Pending |
+| TEST-05 | Phase 3 | Pending |
+| TEST-06 | Phase 3 | Pending |
+| SCEN-01 | Phase 3 | Pending |
+| SCEN-02 | Phase 3 | Pending |
+| SCEN-03 | Phase 3 | Pending |
+| SCEN-04 | Phase 3 | Pending |
+| SCEN-05 | Phase 3 | Pending |
+| ADMIN-02 | Phase 3 | Pending |
+| ADMIN-03 | Phase 3 | Pending |
+| SOS-01 | Phase 4 | Pending |
+| SOS-02 | Phase 4 | Pending |
+| SOS-03 | Phase 4 | Pending |
+| SOS-04 | Phase 4 | Pending |
+| SOS-05 | Phase 4 | Pending |
+| SOS-06 | Phase 4 | Pending |
+| TEACH-01 | Phase 4 | Pending |
+| TEACH-02 | Phase 4 | Pending |
+| TEACH-03 | Phase 4 | Pending |
+| PARENT-01 | Phase 4 | Pending |
+| PARENT-02 | Phase 4 | Pending |
+| PARENT-03 | Phase 4 | Pending |
+| CHAT-01 | Phase 5 | Pending |
+| CHAT-02 | Phase 5 | Pending |
+| CHAT-03 | Phase 5 | Pending |
+| CHAT-04 | Phase 5 | Pending |
+| CHAT-05 | Phase 5 | Pending |
+| CHAT-06 | Phase 5 | Pending |
+| ADMIN-04 | Phase 5 | Pending |
+| ADMIN-05 | Phase 6 | Pending |
+| ADMIN-06 | Phase 6 | Pending |
 
 **Coverage:**
 - v1 requirements: 47 total
-- Mapped to phases: 0
-- Unmapped: 47 (roadmap pending)
+- Mapped to phases: 47
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-20*
-*Last updated: 2026-05-20 after initial definition*
+*Last updated: 2026-05-20 after roadmap creation*
