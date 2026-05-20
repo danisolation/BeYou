@@ -377,27 +377,27 @@ No external runtime dependency is required for Phase 1 policy-contract artifacts
 
 Skipped because `.planning/config.json` explicitly sets `workflow.nyquist_validation` to `false`.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Real student pilot legal consent**
    - What we know: MVP demo can include demo acknowledgement and must state real pilot needs legal/school review.
    - What is unclear: exact legal consent/assent process for real Vietnamese school deployment.
-   - Recommendation: mark as blocker before real pilot, not blocker for demo.
+   - RESOLVED for Phase 1 planning: mark legal/school review as a required blocker before any real student pilot, but do not build a full production legal consent workflow in the MVP demo.
 
 2. **Retention policy**
    - What we know: project research flags retention/deletion for self-check, SOS, chat metadata, and possible transcripts as unresolved.
    - What is unclear: retention duration by data class.
-   - Recommendation: Phase 1 should add `retention: TBD_before_real_pilot` for sensitive classes.
+   - RESOLVED for Phase 1 planning: use `retention: TBD_before_real_pilot` for sensitive classes so demo implementation can proceed while blocking real pilot launch until concrete retention durations are approved.
 
 3. **Raw chatbot transcript storage**
    - What we know: raw transcripts are private to the student by default and not shown to adults/admins by default.
    - What is unclear: whether transcripts are stored at all in production.
-   - Recommendation: Phase 1 contract should separate `chat_transcript_raw` from `chat_safety_signal`.
+   - RESOLVED for Phase 1 planning: separate `chat_transcript_raw` from `chat_safety_signal`; raw transcripts remain student-private by default and production storage/deletion must be decided before real pilot.
 
 4. **SOS adult response expectations**
    - What we know: v1 SOS is in-app and should not auto-call outside emergency services.
    - What is unclear: school SLA and fallback if no linked adult responds.
-   - Recommendation: Phase 1 should include copy that tells students to find a nearby trusted adult if immediate danger exists.
+   - RESOLVED for Phase 1 planning: include explicit copy telling students to find a nearby trusted adult or appropriate support resource if immediate danger exists, and state that BeYou v1 does not automatically call outside emergency services.
 
 ## Assumptions Log
 
