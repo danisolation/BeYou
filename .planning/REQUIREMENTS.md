@@ -18,10 +18,10 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 
 ### Authentication & Users
 
-- [ ] **AUTH-01**: User can log in with email and password.
+- [x] **AUTH-01**: User can log in with email and password.
 - [ ] **AUTH-02**: System provides seeded demo accounts for student, teacher, parent, and admin roles.
-- [ ] **AUTH-03**: User lands in the correct role-based portal after login.
-- [ ] **AUTH-04**: Student profile stores required school context including name, class, school, and linked support adults.
+- [x] **AUTH-03**: User lands in the correct role-based portal after login.
+- [x] **AUTH-04**: Student profile stores required school context including name, class, school, and linked support adults.
 - [ ] **AUTH-05**: Admin can create and manage active links between students, teachers, and parents.
 - [ ] **AUTH-06**: Admin can manage user role, account status, and basic profile information.
 
@@ -133,10 +133,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SAFE-04 | Phase 1 | Complete |
 | SAFE-05 | Phase 1 | Complete |
 | SAFE-06 | Phase 1 | Complete |
-| AUTH-01 | Phase 2 | Pending |
+| AUTH-01 | Phase 2 | Complete |
 | AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
+| AUTH-03 | Phase 2 | Complete |
+| AUTH-04 | Phase 2 | Complete |
 | AUTH-05 | Phase 2 | Pending |
 | AUTH-06 | Phase 2 | Pending |
 | ADMIN-01 | Phase 2 | Pending |
