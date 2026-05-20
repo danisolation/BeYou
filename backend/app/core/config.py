@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = Field(
-        default="postgresql+psycopg://beyou:beyou_dev_password@localhost:5432/beyou",
+        default="postgresql+psycopg://beyou:beyou_dev_password@localhost:15432/beyou",
         validation_alias="DATABASE_URL",
     )
     environment: str = Field(default="development", validation_alias="ENVIRONMENT")
