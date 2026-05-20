@@ -30,6 +30,7 @@ export default function AdminUsersPage() {
   const [selectedRoles, setSelectedRoles] = useState<Record<string, AdminUser["role"]>>({});
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   async function refreshUsers() {
     const loadedUsers = await listUsers();
@@ -64,22 +65,32 @@ export default function AdminUsersPage() {
   }, [confirmation]);
 
   async function handleConfirm() {
-    if (confirmation?.type === "disable") {
-      await updateUser(confirmation.user.id, { status: "disabled" });
+    try {
+      setError("");
+      if (confirmation?.type === "disable") {
+        await updateUser(confirmation.user.id, { status: "disabled" });
+      }
+      if (confirmation?.type === "delete-demo") {
+        await deleteUser(confirmation.user.id);
+      }
+      if (confirmation?.type === "role") {
+        await updateUser(confirmation.user.id, { role: confirmation.role });
+      }
+      setConfirmation(null);
+      await refreshUsers();
+    } catch {
+      setError("Chưa lưu được thay đổi tài khoản. Hãy thử lại.");
     }
-    if (confirmation?.type === "delete-demo") {
-      await deleteUser(confirmation.user.id);
-    }
-    if (confirmation?.type === "role") {
-      await updateUser(confirmation.user.id, { role: confirmation.role });
-    }
-    setConfirmation(null);
-    await refreshUsers();
   }
 
   async function handleCreate(payload: Parameters<typeof createUser>[0]) {
-    await createUser(payload);
-    await refreshUsers();
+    try {
+      setError("");
+      await createUser(payload);
+      await refreshUsers();
+    } catch {
+      setError("Chưa tạo được tài khoản. Hãy kiểm tra lại thông tin và thử lại.");
+    }
   }
 
   return (
@@ -89,6 +100,7 @@ export default function AdminUsersPage() {
         <p className="mt-3 text-body">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
       </div>
       <UserForm onSubmit={handleCreate} />
+      {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm">
         <h2 className="text-heading">Danh sách tài khoản</h2>

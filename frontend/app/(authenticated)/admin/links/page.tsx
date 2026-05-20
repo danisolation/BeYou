@@ -18,6 +18,7 @@ export default function AdminLinksPage() {
   const [links, setLinks] = useState<AdminLink[]>([]);
   const [revokeTarget, setRevokeTarget] = useState<AdminLink | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   async function refreshData() {
     const [loadedUsers, loadedLinks] = await Promise.all([listUsers(), listLinks()]);
@@ -30,17 +31,27 @@ export default function AdminLinksPage() {
   }, []);
 
   async function handleCreate(payload: Parameters<typeof createLink>[0]) {
-    await createLink(payload);
-    await refreshData();
+    try {
+      setError("");
+      await createLink(payload);
+      await refreshData();
+    } catch {
+      setError("Chưa lưu được liên kết. Hãy kiểm tra lại thông tin và thử lại.");
+    }
   }
 
   async function handleRevoke() {
     if (revokeTarget === null) {
       return;
     }
-    await revokeLink(revokeTarget.id);
-    setRevokeTarget(null);
-    await refreshData();
+    try {
+      setError("");
+      await revokeLink(revokeTarget.id);
+      setRevokeTarget(null);
+      await refreshData();
+    } catch {
+      setError("Chưa thu hồi được liên kết. Hãy thử lại.");
+    }
   }
 
   return (
@@ -52,6 +63,7 @@ export default function AdminLinksPage() {
         </p>
       </div>
       <LinkForm users={users} onSubmit={handleCreate} />
+      {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm">
         <h2 className="text-heading">Danh sách liên kết</h2>
