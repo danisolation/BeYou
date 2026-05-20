@@ -12,8 +12,8 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 - [x] **SAFE-01**: System classifies data by sensitivity before implementing storage or sharing rules.
 - [ ] **SAFE-02**: Student can read a clear privacy and visibility notice explaining who can see self-check results, SOS alerts, and chatbot safety signals.
 - [x] **SAFE-03**: Backend enforces role, relationship, and purpose-based authorization for every sensitive student resource.
-- [ ] **SAFE-04**: System records audit events when users access sensitive student data, update SOS alerts, change roles/links, or modify safety-related content.
-- [ ] **SAFE-05**: System separates demo data from real data so seeded accounts and demo records cannot be mistaken for production student records.
+- [x] **SAFE-04**: System records audit events when users access sensitive student data, update SOS alerts, change roles/links, or modify safety-related content.
+- [x] **SAFE-05**: System separates demo data from real data so seeded accounts and demo records cannot be mistaken for production student records.
 - [ ] **SAFE-06**: Student-facing self-check, chatbot, and result copy avoids clinical diagnosis language and clearly states the app does not replace professional support.
 
 ### Authentication & Users
@@ -130,8 +130,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SAFE-01 | Phase 1 | Complete |
 | SAFE-02 | Phase 1 | Pending |
 | SAFE-03 | Phase 1 | Complete |
-| SAFE-04 | Phase 1 | Pending |
-| SAFE-05 | Phase 1 | Pending |
+| SAFE-04 | Phase 1 | Complete |
+| SAFE-05 | Phase 1 | Complete |
 | SAFE-06 | Phase 1 | Pending |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
