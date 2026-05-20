@@ -24,7 +24,7 @@
 **Depends on:** Nothing  
 **Requirements:** SAFE-01, SAFE-02, SAFE-03, SAFE-04, SAFE-05, SAFE-06  
 **UI hint**: yes  
-**Status:** Pending
+**Status:** Complete (2026-05-20)
 
 **Success criteria:**
 1. Student can read a clear notice explaining who can see self-check results, SOS alerts, and chatbot safety signals.
@@ -33,7 +33,7 @@
 4. Demo accounts and demo records are visibly separated from real student data.
 5. Student-facing safety copy avoids diagnosis/therapy claims and explains BeYou is supportive, not professional care.
 
-**Plans:** TBD
+**Plans:** 3/3 complete
 
 ### Phase 2: Identity, Roles, Links & Demo Access
 
@@ -123,12 +123,12 @@
 
 | Requirement | Phase | Status |
 |---|---|---|
-| SAFE-01 | Phase 1 | Pending |
-| SAFE-02 | Phase 1 | Pending |
-| SAFE-03 | Phase 1 | Pending |
-| SAFE-04 | Phase 1 | Pending |
-| SAFE-05 | Phase 1 | Pending |
-| SAFE-06 | Phase 1 | Pending |
+| SAFE-01 | Phase 1 | Complete |
+| SAFE-02 | Phase 1 | Complete |
+| SAFE-03 | Phase 1 | Complete |
+| SAFE-04 | Phase 1 | Complete |
+| SAFE-05 | Phase 1 | Complete |
+| SAFE-06 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Pending |
 | AUTH-02 | Phase 2 | Pending |
 | AUTH-03 | Phase 2 | Pending |

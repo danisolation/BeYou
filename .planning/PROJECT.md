@@ -14,7 +14,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Validated
 
-(None yet - ship to validate)
+- [x] Phase 1 established privacy-by-default policy contracts for sensitive student psychology data: data classification, role/relationship/purpose authorization, metadata-only audit events, demo/real-data separation, and non-clinical safety copy.
 
 ### Active
 
@@ -27,7 +27,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [ ] Teachers can view managed students, warning levels, SOS alerts, and class-level summaries.
 - [ ] Parents can view linked student alerts and permitted recent assessment results.
 - [ ] Admins can manage users, tests, scenarios, chatbot content, and aggregate reports.
-- [ ] Sensitive student psychology data is protected with strict authorization, encrypted passwords, and private-by-default visibility.
+- [ ] Sensitive student psychology data is implemented with strict authorization, encrypted passwords, and private-by-default visibility.
 
 ### Out of Scope
 
@@ -76,7 +76,7 @@ The backend must be Python. Chatbot integration should use freemodel.dev as the 
 | Use Python for the backend | Explicit user requirement | - Pending |
 | Use freemodel.dev as v1 chatbot provider | User requested it; backend abstraction reduces lock-in | - Pending |
 | Use in-app SOS notifications for v1 | Demonstrates escalation and handling without external notification integration complexity | - Pending |
-| Treat real student data as possible from day one | User selected production-grade handling for real data | - Pending |
+| Treat real student data as possible from day one | User selected production-grade handling for real data | - Validated in Phase 1 policy foundation |
 | Use email/password and seeded demo accounts | Supports realistic demo without OAuth/SSO complexity | - Pending |
 
 ## Evolution
@@ -97,4 +97,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-20 after initialization*
+*Last updated: 2026-05-20 after Phase 1 completion*
