@@ -25,6 +25,15 @@ class Settings(BaseSettings):
             raise ValueError("SESSION_COOKIE_NAME cannot be empty")
         return value
 
+    @field_validator("frontend_origin")
+    @classmethod
+    def validate_frontend_origin(cls, value: str) -> str:
+        if value.endswith("/"):
+            raise ValueError("FRONTEND_ORIGIN must be an exact origin without a trailing slash")
+        if "*" in value:
+            raise ValueError("FRONTEND_ORIGIN cannot contain wildcards when credentials are enabled")
+        return value
+
     def validate_cookie_prefix_rules(self) -> None:
         if self.session_cookie_name.startswith("__Host-") and not self.session_cookie_secure:
             raise ValueError(

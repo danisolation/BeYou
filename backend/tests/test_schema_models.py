@@ -54,6 +54,12 @@ def test_all_demo_sensitive_tables_include_is_demo() -> None:
         assert "is_demo" in model.__table__.columns
 
 
+def test_session_uses_hashed_cookie_token() -> None:
+    columns = set(Session.__table__.columns.keys())
+
+    assert "token_hash" in columns
+
+
 def test_audit_event_is_metadata_only_schema() -> None:
     columns = set(AuditEvent.__table__.columns.keys())
 
