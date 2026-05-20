@@ -41,7 +41,7 @@
 **Depends on:** Phase 1  
 **Requirements:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, ADMIN-01  
 **UI hint**: yes  
-**Status:** Executing
+**Status:** Complete (2026-05-20)
 
 **Success criteria:**
 1. Student, teacher, parent, and admin demo users can log in with email/password.
@@ -50,7 +50,7 @@
 4. Admin can create, edit, disable, delete, and update users/roles.
 5. Admin can manage active student-teacher-parent links.
 
-**Plans:** 6/7 complete
+**Plans:** 7/7 complete
 
 ### Phase 3: Student Self-Checks, Scenarios & Content Management
 
