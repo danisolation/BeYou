@@ -50,7 +50,7 @@
 4. Admin can create, edit, disable, delete, and update users/roles.
 5. Admin can manage active student-teacher-parent links.
 
-**Plans:** 2/7 complete
+**Plans:** 3/7 complete
 
 ### Phase 3: Student Self-Checks, Scenarios & Content Management
 
@@ -130,12 +130,12 @@
 | SAFE-05 | Phase 1 | Complete |
 | SAFE-06 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Complete |
 | AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 2 | Complete |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
-| ADMIN-01 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Complete |
+| AUTH-06 | Phase 2 | Complete |
+| ADMIN-01 | Phase 2 | Complete |
 | TEST-01 | Phase 3 | Pending |
 | TEST-02 | Phase 3 | Pending |
 | TEST-03 | Phase 3 | Pending |

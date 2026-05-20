@@ -19,11 +19,11 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 ### Authentication & Users
 
 - [x] **AUTH-01**: User can log in with email and password.
-- [ ] **AUTH-02**: System provides seeded demo accounts for student, teacher, parent, and admin roles.
+- [x] **AUTH-02**: System provides seeded demo accounts for student, teacher, parent, and admin roles.
 - [x] **AUTH-03**: User lands in the correct role-based portal after login.
 - [x] **AUTH-04**: Student profile stores required school context including name, class, school, and linked support adults.
-- [ ] **AUTH-05**: Admin can create and manage active links between students, teachers, and parents.
-- [ ] **AUTH-06**: Admin can manage user role, account status, and basic profile information.
+- [x] **AUTH-05**: Admin can create and manage active links between students, teachers, and parents.
+- [x] **AUTH-06**: Admin can manage user role, account status, and basic profile information.
 
 ### Self-Checks
 
@@ -74,7 +74,7 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 
 ### Admin & Reports
 
-- [ ] **ADMIN-01**: Admin can create, edit, disable, and delete user accounts.
+- [x] **ADMIN-01**: Admin can create, edit, disable, and delete user accounts.
 - [ ] **ADMIN-02**: Admin can create and edit self-check tests, questions, answer choices, scoring values, and risk thresholds.
 - [ ] **ADMIN-03**: Admin can create and edit scenarios, response choices, feedback, lessons, and skill tags.
 - [ ] **ADMIN-04**: Admin can manage chatbot safety/content configuration without exposing secrets or bypassing backend guardrails.
@@ -134,12 +134,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SAFE-05 | Phase 1 | Complete |
 | SAFE-06 | Phase 1 | Complete |
 | AUTH-01 | Phase 2 | Complete |
-| AUTH-02 | Phase 2 | Pending |
+| AUTH-02 | Phase 2 | Complete |
 | AUTH-03 | Phase 2 | Complete |
 | AUTH-04 | Phase 2 | Complete |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
-| ADMIN-01 | Phase 2 | Pending |
+| AUTH-05 | Phase 2 | Complete |
+| AUTH-06 | Phase 2 | Complete |
+| ADMIN-01 | Phase 2 | Complete |
 | TEST-01 | Phase 3 | Pending |
 | TEST-02 | Phase 3 | Pending |
 | TEST-03 | Phase 3 | Pending |
