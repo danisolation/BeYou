@@ -14,6 +14,7 @@ FORBIDDEN_METADATA_KEYS = {
     "session_cookie",
     "api_key",
     "raw_chat_content",
+    "raw_self_check_answers",
     "chat_transcript_raw",
     "self_check_raw_answers",
     "full_self_check_answers",
