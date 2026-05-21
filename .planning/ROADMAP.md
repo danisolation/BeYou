@@ -1,12 +1,155 @@
 # Roadmap: BeYou - Tu Tin La Minh
 
-## Milestones
+**Created:** 2026-05-21  
+**Granularity:** Coarse  
+**Milestone:** v1.1 Production Hardening & Support Polish  
+**Coverage:** 30/30 v1.1 requirements mapped
 
-- [shipped] **v1.0 MVP Demo** - shipped 2026-05-21; phases 1-6, 26 plans, 47/47 requirements satisfied, audit passed. Archives: [`v1.0-ROADMAP.md`](milestones/v1.0-ROADMAP.md), [`v1.0-REQUIREMENTS.md`](milestones/v1.0-REQUIREMENTS.md), [`v1.0-MILESTONE-AUDIT.md`](milestones/v1.0-MILESTONE-AUDIT.md).
+## Phase Overview
 
-## Current Planning State
+| # | Phase | Goal | Requirements | Depends on | UI hint |
+|---|-------|------|--------------|------------|---------|
+| 7 | Production Readiness & Safe Operations Foundation | Operators can tell whether BeYou is safe to run beyond the demo before real student data is trusted. | READY-01..READY-06 | v1.0 archive | yes |
+| 8 | Backend-Owned SOS Email Notification Readiness | SOS can optionally create backend-owned email delivery attempts while in-app SOS remains the source of truth. | EMAIL-01..EMAIL-07 | Phase 7 | yes |
+| 9 | Role & Privacy UX Polish | Students and adults see clearer role-appropriate navigation, privacy redirects, and support boundaries. | UX-01..UX-05 | Phase 7 | yes |
+| 10 | Nested Admin Content Editing | Admins can safely manage complete self-check and scenario structures without breaking student history. | CONTENT-01..CONTENT-06 | Phase 9 | yes |
+| 11 | Metadata-Only Operational Visibility | Admins can inspect readiness, delivery, and support/admin activity metadata without exposing sensitive student content. | OPS-01..OPS-06 | Phases 7, 8, 10 | yes |
 
-v1.0 is complete and archived. Start the next milestone with `/gsd-new-milestone` to define fresh requirements and roadmap phases.
+## Phase Details
+
+### Phase 7: Production Readiness & Safe Operations Foundation
+
+**Goal:** Operators can tell whether BeYou is safe to run beyond the demo before real student data is trusted.  
+**Depends on:** v1.0 archive  
+**Requirements:** READY-01, READY-02, READY-03, READY-04, READY-05, READY-06  
+**UI hint:** yes  
+**Status:** Pending
+
+**Success criteria:**
+1. Admin/operator can distinguish liveness from full production readiness.
+2. Unsafe production config, placeholder secrets, demo seed, and missing required secrets are flagged.
+3. Database connectivity and Alembic migration drift are checked and surfaced safely.
+4. Cookie and credentialed CORS safety checks catch insecure production settings.
+5. Public readiness output stays non-sensitive while admin readiness includes masked remediation hints.
+
+**Plans:** 0/0 pending
+
+### Phase 8: Backend-Owned SOS Email Notification Readiness
+
+**Goal:** SOS can optionally create backend-owned email delivery attempts while in-app SOS remains the source of truth.  
+**Depends on:** Phase 7  
+**Requirements:** EMAIL-01, EMAIL-02, EMAIL-03, EMAIL-04, EMAIL-05, EMAIL-06, EMAIL-07  
+**UI hint:** yes  
+**Status:** Pending
+
+**Success criteria:**
+1. Backend supports disabled, local outbox, and SMTP modes through server-only config.
+2. Confirmed SOS still persists and creates in-app notifications when email is disabled or fails.
+3. Email attempts are created only for authorized linked adults after canonical SOS persistence.
+4. Local/dev mode captures attempts safely without sending real emails.
+5. Delivery metadata and audit exclude raw student content and credentials.
+
+**Plans:** 0/0 pending
+
+### Phase 9: Role & Privacy UX Polish
+
+**Goal:** Students and adults see clearer role-appropriate navigation, privacy redirects, and support boundaries.  
+**Depends on:** Phase 7  
+**Requirements:** UX-01, UX-02, UX-03, UX-04, UX-05  
+**UI hint:** yes  
+**Status:** Pending
+
+**Success criteria:**
+1. Direct `/student` navigation redirects unacknowledged students to `/privacy` with a return path.
+2. Authenticated navigation only shows links appropriate for the current role.
+3. Wrong-role, unlinked, and privacy-blocked states provide supportive next steps without leaking sensitive existence.
+4. Teacher and parent pages clearly describe summary-only visibility.
+5. SOS detail UI separates teacher status controls from parent read-only visibility.
+
+**Plans:** 0/0 pending
+
+### Phase 10: Nested Admin Content Editing
+
+**Goal:** Admins can safely manage complete self-check and scenario structures without breaking student history.  
+**Depends on:** Phase 9  
+**Requirements:** CONTENT-01, CONTENT-02, CONTENT-03, CONTENT-04, CONTENT-05, CONTENT-06  
+**UI hint:** yes  
+**Status:** Pending
+
+**Success criteria:**
+1. Admin can edit nested self-check metadata, questions, choices, scores, thresholds, and lifecycle state.
+2. Publishing invalid self-check structures is blocked with actionable validation errors.
+3. Admin can edit nested scenario situation, choices, feedback, recommended response, lesson, skill tags, and lifecycle state.
+4. Publishing invalid scenario structures is blocked with actionable validation errors.
+5. Preview and snapshot/version-safe behavior protect student-facing content and historical attempts.
+
+**Plans:** 0/0 pending
+
+### Phase 11: Metadata-Only Operational Visibility
+
+**Goal:** Admins can inspect readiness, delivery, and support/admin activity metadata without exposing sensitive student content.  
+**Depends on:** Phases 7, 8, 10  
+**Requirements:** OPS-01, OPS-02, OPS-03, OPS-04, OPS-05, OPS-06  
+**UI hint:** yes  
+**Status:** Pending
+
+**Success criteria:**
+1. Admin operations dashboard shows readiness, SOS email delivery status, and recent metadata-only support/admin activity.
+2. Audit filters work by date, actor role, action type, target type, and status.
+3. Delivery attempt views show safe error categories without raw student content or recipient credentials.
+4. Non-admin users cannot access operations endpoints or UI.
+5. Operations responses and UI exclude raw sensitive fields, secrets, risk leaderboards, and per-student risk drilldowns.
+
+**Plans:** 0/0 pending
+
+## Traceability
+
+| Requirement | Phase | Status |
+|---|---|---|
+| READY-01 | Phase 7 | Pending |
+| READY-02 | Phase 7 | Pending |
+| READY-03 | Phase 7 | Pending |
+| READY-04 | Phase 7 | Pending |
+| READY-05 | Phase 7 | Pending |
+| READY-06 | Phase 7 | Pending |
+| EMAIL-01 | Phase 8 | Pending |
+| EMAIL-02 | Phase 8 | Pending |
+| EMAIL-03 | Phase 8 | Pending |
+| EMAIL-04 | Phase 8 | Pending |
+| EMAIL-05 | Phase 8 | Pending |
+| EMAIL-06 | Phase 8 | Pending |
+| EMAIL-07 | Phase 8 | Pending |
+| UX-01 | Phase 9 | Pending |
+| UX-02 | Phase 9 | Pending |
+| UX-03 | Phase 9 | Pending |
+| UX-04 | Phase 9 | Pending |
+| UX-05 | Phase 9 | Pending |
+| CONTENT-01 | Phase 10 | Pending |
+| CONTENT-02 | Phase 10 | Pending |
+| CONTENT-03 | Phase 10 | Pending |
+| CONTENT-04 | Phase 10 | Pending |
+| CONTENT-05 | Phase 10 | Pending |
+| CONTENT-06 | Phase 10 | Pending |
+| OPS-01 | Phase 11 | Pending |
+| OPS-02 | Phase 11 | Pending |
+| OPS-03 | Phase 11 | Pending |
+| OPS-04 | Phase 11 | Pending |
+| OPS-05 | Phase 11 | Pending |
+| OPS-06 | Phase 11 | Pending |
+
+**Coverage:**
+- v1.1 requirements: 30 total
+- Mapped to phases: 30
+- Unmapped: 0
+
+## Assumptions
+
+- Phase numbering continues from v1.0, so v1.1 starts at Phase 7.
+- In-app SOS status remains canonical; email is optional best-effort notification readiness.
+- Production readiness comes before email and operations UI so unsafe configuration is visible early.
+- Operations visibility is last so it can aggregate readiness, delivery, content, and support/admin events.
+- Role/privacy UX polish precedes nested admin content editing because shared layout and support boundaries affect later admin UI polish.
 
 ---
-*Roadmap collapsed after v1.0 completion: 2026-05-21*
+*Roadmap created: 2026-05-21*
+
