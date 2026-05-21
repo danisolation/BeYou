@@ -6,6 +6,14 @@ import { useRouter } from "next/navigation";
 
 import { login, loginErrorCopy } from "@/lib/auth";
 
+const DEMO_PASSWORD = "BeYouDemo!2026";
+const demoAccounts = [
+  { label: "Học sinh", email: "student.demo@beyou.local" },
+  { label: "Giáo viên", email: "teacher.demo@beyou.local" },
+  { label: "Phụ huynh", email: "parent.demo@beyou.local" },
+  { label: "Quản trị", email: "admin.demo@beyou.local" },
+];
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -53,6 +61,27 @@ export default function LoginPage() {
         <p className="mt-3 text-body">
           Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.
         </p>
+
+        <div className="mt-6 rounded-2xl border border-[#CFE8E1] bg-white p-4">
+          <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
+          <p className="mt-1 text-label">Chọn một vai trò để BeYou tự điền email và mật khẩu demo.</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {demoAccounts.map((account) => (
+              <button
+                key={account.email}
+                type="button"
+                onClick={() => {
+                  setEmail(account.email);
+                  setPassword(DEMO_PASSWORD);
+                  setError("");
+                }}
+                className="min-h-11 rounded-2xl border border-[#CFE8E1] px-3 text-left text-label font-semibold text-[#27665B] hover:bg-secondary"
+              >
+                {account.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           <label className="block text-label font-semibold" htmlFor="email">

@@ -79,6 +79,16 @@ describe("Phase 2 frontend auth foundation", () => {
     expect(submit).toBeEnabled();
   });
 
+  it("fills demo credentials from role shortcuts", async () => {
+    render(<LoginPage />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Học sinh" }));
+
+    expect(screen.getByLabelText("Email")).toHaveValue("student.demo@beyou.local");
+    expect(screen.getByLabelText("Mật khẩu")).toHaveValue("BeYouDemo!2026");
+    expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
+  });
+
   it("keeps privacy acknowledgement button disabled until checkbox is checked", async () => {
     render(<PrivacyPage />);
 
