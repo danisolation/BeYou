@@ -14,6 +14,7 @@ from app.db.models import (
     AuditEvent,
     InAppNotification,
     LinkStatus,
+    PrivacyAcknowledgement,
     ScenarioAttempt,
     SelfCheckAttempt,
     SelfCheckAttemptAnswer,
@@ -54,6 +55,7 @@ def _clean_database() -> None:
             SelfCheckTest,
             AuditEvent,
             StudentAdultLink,
+            PrivacyAcknowledgement,
             UserSession,
             User,
         ):
@@ -195,7 +197,12 @@ def test_student_creates_sos_alert_notifications_status_event_and_audit(
     client: TestClient,
 ) -> None:
     student = _user(db, email="student-sos-create@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-sos-create@example.test", role=UserRole.TEACHER.value)
+    teacher = _user(
+        db,
+        email="teacher-sos-create@example.test",
+        role=UserRole.TEACHER.value,
+        is_demo=False,
+    )
     parent = _user(db, email="parent-sos-create@example.test", role=UserRole.PARENT.value)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
@@ -217,6 +224,7 @@ def test_student_creates_sos_alert_notifications_status_event_and_audit(
     assert {notification.recipient_id for notification in notifications} == {teacher.id, parent.id}
     assert all(notification.resource_type == "sos_alert" for notification in notifications)
     assert all(notification.read_at is None for notification in notifications)
+    assert all(notification.is_demo is True for notification in notifications)
 
     status_event = db.scalar(select(SosStatusEvent).where(SosStatusEvent.alert_id == alert_id))
     assert status_event is not None
@@ -350,6 +358,7 @@ def test_support_overview_groups_warning_summaries_without_raw_answers(
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
     _attempt(db, student=student, label="overview")
     _create_alert_via_api(client, student.email)
+    _create_alert_via_api(client, student.email)
 
     _login(client, teacher.email)
     teacher_overview = client.get("/api/teacher/support-overview")
@@ -359,7 +368,7 @@ def test_support_overview_groups_warning_summaries_without_raw_answers(
     assert teacher_payload[0]["warning_group"] == "nguy_co_cao"
     assert teacher_payload[0]["warning_group_label"] == "Nguy cơ cao"
     assert teacher_payload[0]["latest_self_check_summary"]["support_suggestion"] == "Hỏi em cần hỗ trợ gì ngay lúc này."
-    assert teacher_payload[0]["open_sos_count"] == 1
+    assert teacher_payload[0]["open_sos_count"] == 2
     assert "RAW_PHASE4_PRIVATE_ANSWER" not in teacher_text
     assert "choice_text_snapshot" not in teacher_text
     assert "answers" not in teacher_text

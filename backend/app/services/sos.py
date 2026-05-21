@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
@@ -251,7 +251,7 @@ def create_sos_alert(db: OrmSession, student: User, payload: SosAlertCreate) -> 
                 title="Tín hiệu SOS mới",
                 body="Có tín hiệu hỗ trợ mới từ học sinh được liên kết trong BeYou.",
                 href=_notification_href(recipient, alert.id),
-                is_demo=student.is_demo and recipient.is_demo,
+                is_demo=student.is_demo or recipient.is_demo,
             )
         )
     record_audit_event(
@@ -483,14 +483,12 @@ def _latest_sos(db: OrmSession, student_id: uuid.UUID) -> SosAlert | None:
 def _open_sos_count(db: OrmSession, student_id: uuid.UUID) -> int:
     return int(
         db.scalar(
-            select(SosAlert)
-            .where(
+            select(func.count(SosAlert.id)).where(
                 SosAlert.student_id == student_id,
                 SosAlert.current_status.in_(ACTIVE_SOS_STATUSES),
             )
-            .limit(1)
         )
-        is not None
+        or 0
     )
 
 
