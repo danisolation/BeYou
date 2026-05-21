@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -34,6 +34,24 @@ class RelationshipType(str, enum.Enum):
 class LinkStatus(str, enum.Enum):
     ACTIVE = "active"
     REVOKED = "revoked"
+
+
+class ContentStatus(str, enum.Enum):
+    DRAFT = "draft"
+    PUBLISHED = "published"
+    ARCHIVED = "archived"
+
+
+class RiskStateLabel(str, enum.Enum):
+    STABLE = "On dinh"
+    ATTENTION = "Can chu y"
+    SUPPORT = "Nen tim ho tro"
+    EARLY_SUPPORT = "Can ho tro som"
+
+
+class ScenarioSignal(str, enum.Enum):
+    CONSTRUCTIVE = "constructive"
+    RISKY = "risky"
 
 
 class User(Base):
@@ -131,3 +149,192 @@ class AuditEvent(Base):
     metadata_summary: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+
+class SelfCheckTest(Base):
+    __tablename__ = "self_check_tests"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[str] = mapped_column(String(32), default=ContentStatus.DRAFT.value, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    questions: Mapped[list["SelfCheckQuestion"]] = relationship(
+        back_populates="test", cascade="all, delete-orphan"
+    )
+    thresholds: Mapped[list["SelfCheckThreshold"]] = relationship(
+        back_populates="test", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_self_check_tests_status_is_active", "status", "is_active"),
+        Index("ix_self_check_tests_is_demo", "is_demo"),
+    )
+
+
+class SelfCheckQuestion(Base):
+    __tablename__ = "self_check_questions"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    test: Mapped[SelfCheckTest] = relationship(back_populates="questions")
+    choices: Mapped[list["SelfCheckChoice"]] = relationship(
+        back_populates="question", cascade="all, delete-orphan"
+    )
+
+
+class SelfCheckChoice(Base):
+    __tablename__ = "self_check_choices"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    question_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("self_check_questions.id"), nullable=False, index=True
+    )
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    score_value: Mapped[int] = mapped_column(Integer, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    question: Mapped[SelfCheckQuestion] = relationship(back_populates="choices")
+
+
+class SelfCheckThreshold(Base):
+    __tablename__ = "self_check_thresholds"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    state_label: Mapped[str] = mapped_column(String(64), nullable=False)
+    min_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    max_score: Mapped[int] = mapped_column(Integer, nullable=False)
+    comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    advice: Mapped[str | None] = mapped_column(Text, nullable=True)
+    positive_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    suggested_next_action: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    test: Mapped[SelfCheckTest] = relationship(back_populates="thresholds")
+
+
+class SelfCheckAttempt(Base):
+    __tablename__ = "self_check_attempts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    state_label: Mapped[str] = mapped_column(String(64), nullable=False)
+    supportive_headline: Mapped[str | None] = mapped_column(Text, nullable=True)
+    short_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    advice_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    support_suggestion: Mapped[str | None] = mapped_column(Text, nullable=True)
+    positive_content: Mapped[str | None] = mapped_column(Text, nullable=True)
+    suggested_next_action: Mapped[str | None] = mapped_column(Text, nullable=True)
+    test_title_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
+    test_snapshot: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    answers: Mapped[list["SelfCheckAttemptAnswer"]] = relationship(
+        back_populates="attempt", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_self_check_attempts_student_completed", "student_id", "completed_at"),
+        Index("ix_self_check_attempts_is_demo", "is_demo"),
+    )
+
+
+class SelfCheckAttemptAnswer(Base):
+    __tablename__ = "self_check_attempt_answers"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    attempt_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("self_check_attempts.id"), nullable=False, index=True
+    )
+    question_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("self_check_questions.id"), nullable=True
+    )
+    choice_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("self_check_choices.id"), nullable=True)
+    question_text_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    choice_text_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    score_value_snapshot: Mapped[int] = mapped_column(Integer, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    attempt: Mapped[SelfCheckAttempt] = relationship(back_populates="answers")
+
+
+class Scenario(Base):
+    __tablename__ = "scenarios"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    situation: Mapped[str] = mapped_column(Text, nullable=False)
+    skill_tag: Mapped[str] = mapped_column(String(96), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), default=ContentStatus.DRAFT.value, nullable=False)
+    recommended_response: Mapped[str] = mapped_column(Text, nullable=False)
+    lesson: Mapped[str] = mapped_column(Text, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    choices: Mapped[list["ScenarioChoice"]] = relationship(
+        back_populates="scenario", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_scenarios_status", "status"),
+        Index("ix_scenarios_is_demo", "is_demo"),
+    )
+
+
+class ScenarioChoice(Base):
+    __tablename__ = "scenario_choices"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    scenario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scenarios.id"), nullable=False, index=True)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    signal: Mapped[str] = mapped_column(String(32), nullable=False)
+    feedback: Mapped[str] = mapped_column(Text, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    scenario: Mapped[Scenario] = relationship(back_populates="choices")
+
+
+class ScenarioAttempt(Base):
+    __tablename__ = "scenario_attempts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    scenario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scenarios.id"), nullable=False, index=True)
+    selected_choice_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("scenario_choices.id"), nullable=True
+    )
+    scenario_title_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
+    situation_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    selected_choice_snapshot: Mapped[str | None] = mapped_column(Text, nullable=True)
+    signal_snapshot: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    feedback_snapshot: Mapped[str | None] = mapped_column(Text, nullable=True)
+    recommended_response_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    lesson_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
+    skill_tag_snapshot: Mapped[str] = mapped_column(String(96), nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    __table_args__ = (
+        Index("ix_scenario_attempts_student_completed", "student_id", "completed_at"),
+        Index("ix_scenario_attempts_is_demo", "is_demo"),
+    )
