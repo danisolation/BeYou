@@ -76,7 +76,7 @@ Plans:
 - [x] 03-04-PLAN.md - Adult summary-only self-check APIs with audit
 - [x] 03-05-PLAN.md - Admin content APIs, lifecycle validation, audit, and demo seed
 - [x] 03-06-PLAN.md - Student self-check and scenario frontend flows
-- [ ] 03-07-PLAN.md - Adult/admin frontend and final E2E/security verification
+- [x] 03-07-PLAN.md - Adult/admin frontend and final E2E/security verification
 
 ### Phase 4: SOS Workflow & Adult Support Portals
 
