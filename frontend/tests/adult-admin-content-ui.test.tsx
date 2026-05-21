@@ -1,14 +1,26 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import AdminContentPage from "@/app/(authenticated)/admin/content/page";
+import AdminDashboardPage from "@/app/(authenticated)/admin/page";
 import ParentSummaryPage from "@/app/(authenticated)/parent/students/[studentId]/self-check-summaries/page";
 import ParentDashboardPage from "@/app/(authenticated)/parent/page";
 import TeacherSummaryPage from "@/app/(authenticated)/teacher/students/[studentId]/self-check-summaries/page";
 import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
+import {
+  archiveAdminScenario,
+  createAdminSelfCheck,
+  deleteDraftAdminSelfCheck,
+  listAdminScenarios,
+  listAdminSelfChecks,
+  publishAdminSelfCheck,
+  updateAdminScenario,
+} from "@/lib/admin-content-api";
 import { getParentSelfCheckSummaries, getTeacherSelfCheckSummaries } from "@/lib/adult-summary-api";
 
 function mockFetch(responses: Record<string, unknown>) {
-  const fetchMock = vi.fn((url: string) => {
+  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
     const path = new URL(url).pathname;
     const body = responses[path];
     return Promise.resolve(
@@ -139,5 +151,195 @@ describe("adult summary-only UI", () => {
     expect(screen.getByText("học sinh cần được quan tâm")).toBeInTheDocument();
 
     await waitFor(() => expect(screen.queryByText("Đang tải thông tin...")).not.toBeInTheDocument());
+  });
+});
+
+const selfCheckContent = {
+  id: "self-check-1",
+  title: "Sức khỏe cảm xúc",
+  description: "Một bài ngắn để học sinh nhìn lại cảm xúc.",
+  status: "draft",
+  is_active: true,
+  is_demo: true,
+  created_at: "2026-05-21T00:00:00Z",
+  updated_at: "2026-05-21T00:00:00Z",
+  questions: [
+    {
+      id: "question-1",
+      text: "Hôm nay em thấy thế nào?",
+      sort_order: 1,
+      is_demo: true,
+      choices: [
+        { id: "choice-1", text: "Khá ổn", score_value: 0, sort_order: 1, is_demo: true },
+        { id: "choice-2", text: "Cần thêm hỗ trợ", score_value: 2, sort_order: 2, is_demo: true },
+      ],
+    },
+  ],
+  thresholds: [
+    {
+      id: "threshold-1",
+      state_label: "On dinh",
+      min_score: 0,
+      max_score: 1,
+      comment: "Em đang ổn định.",
+      advice: "Tiếp tục giữ thói quen an toàn.",
+      positive_content: "Em đã nhận ra điều hỗ trợ mình.",
+      suggested_next_action: "Nói chuyện với người tin tưởng khi cần.",
+      is_demo: true,
+    },
+  ],
+};
+
+const scenarioContent = {
+  id: "scenario-1",
+  title: "Rủ rê sau giờ học",
+  situation: "Bạn rủ em làm điều em chưa sẵn sàng.",
+  skill_tag: "Từ chối an toàn",
+  status: "published",
+  recommended_response: "Em có thể nói rõ ranh giới và rời đi.",
+  lesson: "Tạm dừng giúp em chọn phản hồi an toàn hơn.",
+  is_demo: true,
+  created_at: "2026-05-21T00:00:00Z",
+  updated_at: "2026-05-21T00:00:00Z",
+  choices: [
+    {
+      id: "scenario-choice-1",
+      text: "Em nói không và tìm bạn khác.",
+      signal: "constructive",
+      feedback: "Lựa chọn này có điểm tích cực vì em giữ ranh giới.",
+      sort_order: 1,
+      is_demo: true,
+    },
+    {
+      id: "scenario-choice-2",
+      text: "Em làm theo dù không thoải mái.",
+      signal: "risky",
+      feedback: "Lựa chọn này có thể khiến tình huống khó hơn.",
+      sort_order: 2,
+      is_demo: true,
+    },
+  ],
+};
+
+describe("admin content management UI", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("adds admin content dashboard card with exact copy", async () => {
+    mockFetch({
+      "/api/admin/users": [{ id: "admin-1" }],
+      "/api/admin/links": [],
+    });
+
+    render(<AdminDashboardPage />);
+
+    expect(await screen.findByRole("link", { name: /Nội dung tự kiểm tra và tình huống/ })).toHaveAttribute(
+      "href",
+      "/admin/content",
+    );
+    expect(screen.getByText("Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.")).toBeInTheDocument();
+    expect(screen.getByText("Quản lý nội dung")).toBeInTheDocument();
+  });
+
+  it("uses admin content API helpers for lifecycle endpoints", async () => {
+    const fetchMock = mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/self-checks/self-check-1/publish": selfCheckContent,
+      "/api/admin/content/self-checks/self-check-1": selfCheckContent,
+      "/api/admin/content/scenarios/scenario-1": scenarioContent,
+      "/api/admin/content/scenarios/scenario-1/archive": scenarioContent,
+    });
+
+    await listAdminSelfChecks();
+    await listAdminScenarios();
+    await createAdminSelfCheck(selfCheckContent);
+    await publishAdminSelfCheck("self-check-1");
+    await updateAdminScenario("scenario-1", scenarioContent);
+    await archiveAdminScenario("scenario-1");
+    await deleteDraftAdminSelfCheck("self-check-1");
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/self-checks",
+      expect.objectContaining({ credentials: "include" }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/self-checks",
+      expect.objectContaining({ method: "POST", body: JSON.stringify(selfCheckContent) }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/self-checks/self-check-1/publish",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/scenarios/scenario-1/archive",
+      expect.objectContaining({ method: "POST" }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/self-checks/self-check-1",
+      expect.objectContaining({ method: "DELETE" }),
+    );
+  });
+
+  it("renders nested self-check and scenario editors with lifecycle controls", async () => {
+    mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+    });
+
+    render(<AdminContentPage />);
+
+    expect(await screen.findByText("Quản lý bài tự kiểm tra")).toBeInTheDocument();
+    expect(screen.getByText("Quản lý tình huống")).toBeInTheDocument();
+    expect(screen.getByLabelText("Tên bài tự kiểm tra")).toBeInTheDocument();
+    expect(screen.getByLabelText("Mô tả ngắn")).toBeInTheDocument();
+    expect(screen.getAllByLabelText("Trạng thái nội dung")[0]).toBeInTheDocument();
+    expect(screen.getByLabelText("Câu hỏi tự kiểm tra")).toBeInTheDocument();
+    expect(screen.getByLabelText("Lựa chọn trả lời")).toBeInTheDocument();
+    expect(screen.getByLabelText("Giá trị điểm")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nhãn trạng thái")).toBeInTheDocument();
+    expect(screen.getByLabelText("Điểm tối thiểu")).toBeInTheDocument();
+    expect(screen.getByLabelText("Điểm tối đa")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nhận xét")).toBeInTheDocument();
+    expect(screen.getByLabelText("Tóm tắt gợi ý")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nội dung tích cực")).toBeInTheDocument();
+    expect(screen.getByLabelText("Hành động tiếp theo gợi ý")).toBeInTheDocument();
+    expect(screen.getByLabelText("Tiêu đề tình huống")).toBeInTheDocument();
+    expect(screen.getByLabelText("Mô tả tình huống")).toBeInTheDocument();
+    expect(screen.getByLabelText("Lựa chọn phản hồi")).toBeInTheDocument();
+    expect(screen.getByLabelText("Tín hiệu constructive/risky")).toBeInTheDocument();
+    expect(screen.getByLabelText("Phản hồi cho lựa chọn")).toBeInTheDocument();
+    expect(screen.getByLabelText("Cách phản hồi nên thử")).toBeInTheDocument();
+    expect(screen.getByLabelText("Điều em có thể rút ra")).toBeInTheDocument();
+    expect(screen.getByLabelText("Kỹ năng liên quan")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Lưu bản nháp" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Xuất bản" })[0]).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Lưu trữ" })[0]).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Xóa bản nháp chưa dùng" })).toBeInTheDocument();
+  });
+
+  it("shows exact destructive confirmation copy before archive and delete draft", async () => {
+    mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+    });
+
+    render(<AdminContentPage />);
+
+    await screen.findByText("Quản lý bài tự kiểm tra");
+    await userEvent.click(screen.getAllByRole("button", { name: "Lưu trữ" })[0]);
+    expect(
+      screen.getByText("Lưu trữ nội dung này? Học sinh sẽ không còn thấy nội dung này, nhưng lịch sử đã hoàn thành vẫn được giữ."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Giữ nội dung" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Lưu trữ nội dung" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Giữ nội dung" }));
+    await userEvent.click(screen.getByRole("button", { name: "Xóa bản nháp chưa dùng" }));
+    expect(
+      screen.getByText("Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Xóa bản nháp" })).toBeInTheDocument();
   });
 });
