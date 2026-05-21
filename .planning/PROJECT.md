@@ -17,6 +17,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 **Scope shipped:** 6 phases, 26 plans, 47/47 v1 requirements satisfied  
 **Audit:** `.planning/milestones/v1.0-MILESTONE-AUDIT.md` passed with 6/6 integration flows and no blockers
 
+## Current Milestone: v1.1 Production Hardening & Support Polish
+
+**Goal:** Make BeYou safer and easier to run beyond the MVP demo by hardening operations, adding server-owned SOS email notification readiness, polishing role/privacy UX, and improving admin support tools without weakening privacy-by-default.
+
+**Target features:**
+- Production-readiness checks for configuration, database/migration health, cookie/origin safety, and secret hygiene.
+- Server-side SOS email notification provider with safe local/dev outbox behavior, delivery audit, and no frontend-exposed credentials.
+- Student/adult UX polish for privacy redirect and role-specific navigation.
+- Richer admin content editing for nested self-check/scenario structures.
+- Metadata-only operational audit visibility for admins, with no raw sensitive student content.
+
 ### Built Product
 
 - Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, and demo-data separation.
@@ -53,7 +64,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Active
 
-No active v1 requirements remain. The next milestone should define fresh requirements through `/gsd-new-milestone`.
+- [ ] Production-readiness checks make unsafe configuration, database/migration drift, and missing secrets visible before launch.
+- [ ] SOS notifications can optionally be delivered through backend-owned email infrastructure while preserving in-app workflow as the source of truth.
+- [ ] Student privacy acknowledgement and role navigation UX are clear and role-appropriate.
+- [ ] Admin content management supports complete nested self-check and scenario editing, not just MVP-simple edits.
+- [ ] Admin operational visibility remains metadata-only and support-oriented, not surveillance-oriented.
 
 ### Out of Scope
 
@@ -119,7 +134,24 @@ Roles:
 
 ## Next Milestone Goals
 
-Define v1.1 with `/gsd-new-milestone`. Candidate directions include production deployment hardening, real notification channels, better adult/student UX polish, operational privacy review, and cleanup of non-blocking v1 tech debt.
+v1.1 focuses on production hardening, SOS email notification readiness, student/adult/admin UX polish, admin content depth, and metadata-only operational visibility.
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd-transition`):
+1. Requirements invalidated? -> Move to Out of Scope with reason
+2. Requirements validated? -> Move to Validated with phase reference
+3. New requirements emerged? -> Add to Active
+4. Decisions to log? -> Add to Key Decisions
+5. "What This Is" still accurate? -> Update if drifted
+
+**After each milestone** (via `/gsd-complete-milestone`):
+1. Full review of all sections
+2. Core Value check - still the right priority?
+3. Audit Out of Scope - reasons still valid?
+4. Update Context with current state
 
 ---
-*Last updated: 2026-05-21 after v1.0 milestone completion*
+*Last updated: 2026-05-21 after starting v1.1 milestone*
