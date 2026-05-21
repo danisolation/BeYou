@@ -58,7 +58,7 @@
 **Depends on:** Phase 2  
 **Requirements:** TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06, SCEN-01, SCEN-02, SCEN-03, SCEN-04, SCEN-05, ADMIN-02, ADMIN-03  
 **UI hint**: yes  
-**Status:** In Progress
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Student can view active self-checks, answer questions, submit, and receive backend-calculated score, risk level, and advice.
@@ -67,7 +67,7 @@
 4. Student can browse scenarios, choose a response, and receive feedback, recommended response, lesson, and skill tag.
 5. Admin can create and edit tests, questions, choices, scoring thresholds, scenarios, choices, feedback, lessons, and skill tags.
 
-**Plans:** 5/7 complete
+**Plans:** 7/7 complete
 
 Plans:
 - [x] 03-01-PLAN.md - Backend domain models, migration, authorization, and router contracts
@@ -145,19 +145,19 @@ Plans:
 | AUTH-05 | Phase 2 | Complete |
 | AUTH-06 | Phase 2 | Complete |
 | ADMIN-01 | Phase 2 | Complete |
-| TEST-01 | Phase 3 | Pending |
-| TEST-02 | Phase 3 | Pending |
-| TEST-03 | Phase 3 | Pending |
-| TEST-04 | Phase 3 | Pending |
-| TEST-05 | Phase 3 | Pending |
-| TEST-06 | Phase 3 | Pending |
-| SCEN-01 | Phase 3 | Pending |
-| SCEN-02 | Phase 3 | Pending |
-| SCEN-03 | Phase 3 | Pending |
-| SCEN-04 | Phase 3 | Pending |
-| SCEN-05 | Phase 3 | Pending |
-| ADMIN-02 | Phase 3 | Pending |
-| ADMIN-03 | Phase 3 | Pending |
+| TEST-01 | Phase 3 | Complete |
+| TEST-02 | Phase 3 | Complete |
+| TEST-03 | Phase 3 | Complete |
+| TEST-04 | Phase 3 | Complete |
+| TEST-05 | Phase 3 | Complete |
+| TEST-06 | Phase 3 | Complete |
+| SCEN-01 | Phase 3 | Complete |
+| SCEN-02 | Phase 3 | Complete |
+| SCEN-03 | Phase 3 | Complete |
+| SCEN-04 | Phase 3 | Complete |
+| SCEN-05 | Phase 3 | Complete |
+| ADMIN-02 | Phase 3 | Complete |
+| ADMIN-03 | Phase 3 | Complete |
 | SOS-01 | Phase 4 | Pending |
 | SOS-02 | Phase 4 | Pending |
 | SOS-03 | Phase 4 | Pending |

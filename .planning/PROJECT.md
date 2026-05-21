@@ -15,18 +15,19 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ### Validated
 
 - [x] Phase 1 established privacy-by-default policy contracts for sensitive student psychology data: data classification, role/relationship/purpose authorization, metadata-only audit events, demo/real-data separation, and non-clinical safety copy.
+- [x] Phase 3 implemented student self-checks, scenario practice, summary-only adult visibility, audited content management, seeded demo wellbeing content, and approved UAT for supportive UI tone.
 
 ### Active
 
 - [ ] Students can sign up or log in, access a personal dashboard, and use seeded demo accounts for the MVP.
 - [ ] Role-based access separates student, teacher, parent, and admin capabilities.
-- [ ] Students can complete short mental-health and peer-pressure tests, receive scored risk levels, and view test history.
-- [ ] Students can practice realistic school-pressure scenarios and receive feedback on each choice.
+- [x] Students can complete short mental-health and peer-pressure tests, receive scored risk levels, and view test history.
+- [x] Students can practice realistic school-pressure scenarios and receive feedback on each choice.
 - [ ] Students can chat with a supportive chatbot powered by freemodel.dev through the Python backend, with guardrails for high-risk messages.
 - [ ] Students can send an SOS alert that appears in-app to linked teachers and parents, then track handling status.
 - [ ] Teachers can view managed students, warning levels, SOS alerts, and class-level summaries.
 - [ ] Parents can view linked student alerts and permitted recent assessment results.
-- [ ] Admins can manage users, tests, scenarios, chatbot content, and aggregate reports.
+- [ ] Admins can manage chatbot content and aggregate reports.
 - [ ] Sensitive student psychology data is implemented with strict authorization, encrypted passwords, and private-by-default visibility.
 
 ### Out of Scope
@@ -78,6 +79,8 @@ The backend must be Python. Chatbot integration should use freemodel.dev as the 
 | Use in-app SOS notifications for v1 | Demonstrates escalation and handling without external notification integration complexity | - Pending |
 | Treat real student data as possible from day one | User selected production-grade handling for real data | - Validated in Phase 1 policy foundation |
 | Use email/password and seeded demo accounts | Supports realistic demo without OAuth/SSO complexity | - Pending |
+| Keep raw self-check answers student-only | Preserves student trust while still enabling summary support from linked adults | - Validated in Phase 3 |
+| Use explicit local dev origins for credentialed CORS | Supports localhost and 127.0.0.1 dev URLs without wildcard origins when cookies are enabled | - Validated in Phase 3 UAT |
 
 ## Evolution
 
@@ -97,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-20 after Phase 1 completion*
+*Last updated: 2026-05-21 after Phase 3 completion*
