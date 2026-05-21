@@ -11,6 +11,7 @@ import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
 import {
   archiveAdminScenario,
   createAdminSelfCheck,
+  deleteDraftAdminScenario,
   deleteDraftAdminSelfCheck,
   type AdminScenarioContent,
   type AdminSelfCheckContent,
@@ -261,6 +262,7 @@ describe("admin content management UI", () => {
     await updateAdminScenario("scenario-1", scenarioContent);
     await archiveAdminScenario("scenario-1");
     await deleteDraftAdminSelfCheck("self-check-1");
+    await deleteDraftAdminScenario("scenario-1");
 
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/admin/content/self-checks",
@@ -280,6 +282,10 @@ describe("admin content management UI", () => {
     );
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/admin/content/self-checks/self-check-1",
+      expect.objectContaining({ method: "DELETE" }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/content/scenarios/scenario-1",
       expect.objectContaining({ method: "DELETE" }),
     );
   });
@@ -319,6 +325,7 @@ describe("admin content management UI", () => {
     expect(screen.getAllByRole("button", { name: "Xuất bản" })[0]).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Lưu trữ" })[0]).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp chưa dùng" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Xóa bản nháp tình huống chưa dùng" })).toBeInTheDocument();
   });
 
   it("preserves existing self-check questions, choices, and thresholds when saving a single edited field", async () => {
@@ -412,5 +419,30 @@ describe("admin content management UI", () => {
       screen.getByText("Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành."),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp" })).toBeInTheDocument();
+  });
+
+  it("confirms and deletes a scenario draft from the scenario lifecycle controls", async () => {
+    const fetchMock = mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/scenarios/scenario-1": scenarioContent,
+    });
+
+    render(<AdminContentPage />);
+
+    await screen.findByText("Quản lý tình huống");
+    await userEvent.click(screen.getByRole("button", { name: "Xóa bản nháp tình huống chưa dùng" }));
+    expect(
+      screen.getByText("Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành."),
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("button", { name: "Xóa bản nháp" }));
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:8000/api/admin/content/scenarios/scenario-1",
+        expect.objectContaining({ method: "DELETE" }),
+      ),
+    );
   });
 });

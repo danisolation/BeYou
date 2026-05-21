@@ -15,6 +15,7 @@ import {
   archiveAdminSelfCheck,
   createAdminScenario,
   createAdminSelfCheck,
+  deleteDraftAdminScenario,
   deleteDraftAdminSelfCheck,
   listAdminScenarios,
   listAdminSelfChecks,
@@ -88,6 +89,7 @@ type ConfirmationState =
   | { type: "archive-self-check"; id: string }
   | { type: "delete-self-check"; id: string }
   | { type: "archive-scenario"; id: string }
+  | { type: "delete-scenario"; id: string }
   | null;
 
 function cloneSelfCheck(content: AdminSelfCheckContent): AdminSelfCheckContent {
@@ -293,11 +295,14 @@ export default function AdminContentPage() {
     if (confirmation?.type === "archive-scenario") {
       await runAction(() => archiveAdminScenario(confirmation.id));
     }
+    if (confirmation?.type === "delete-scenario") {
+      await runAction(() => deleteDraftAdminScenario(confirmation.id));
+    }
     setConfirmation(null);
   }
 
   const dialogProps =
-    confirmation?.type === "delete-self-check"
+    confirmation?.type === "delete-self-check" || confirmation?.type === "delete-scenario"
       ? {
           message: "Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành.",
           cancelLabel: KEEP_CONTENT_COPY,
@@ -518,7 +523,11 @@ export default function AdminContentPage() {
             >
               Lưu trữ
             </button>
-            <button type="button" className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4">
+            <button
+              type="button"
+              onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
+              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4"
+            >
               Xóa bản nháp tình huống chưa dùng
             </button>
           </div>
