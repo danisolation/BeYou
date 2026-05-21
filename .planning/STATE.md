@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-05-PLAN.md
-last_updated: "2026-05-21T04:30:07.296Z"
+stopped_at: Completed 03-04-PLAN.md
+last_updated: "2026-05-21T04:34:53.378Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 17
-  completed_plans: 14
-  percent: 82
+  completed_plans: 15
+  percent: 88
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-21 after completing Phase 03 Plan 03-02
+**Last updated:** 2026-05-21 after completing Phase 03 Plan 03-04
 **Status:** Executing Phase 03
 
 ## Project Reference
@@ -66,6 +66,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-20)
 | Use stable Phase 3 router entry points | Later Phase 03 API plans should implement behavior without repeatedly editing `main.py` | Validated in Phase 03 Plan 03-01 |
 | Keep self-check scoring backend-owned | Student submissions sum selected choice score values and map to exactly one inclusive per-test threshold | Validated in Phase 03 Plan 03-02 |
 | Keep pre-submit self-check content student-safe | Student list/detail APIs omit thresholds and choice score values before submission; raw answers remain own-detail only | Validated in Phase 03 Plan 03-02 |
+| Keep adult self-check summaries summary-only | Linked teachers/parents can see latest plus recent support summaries, but not raw answers or score breakdowns | Validated in Phase 03 Plan 03-04 |
+| Audit adult self-check summary reads | Every successful adult summary read records metadata-only `sensitive_resource_read` with `summary_only` decision | Validated in Phase 03 Plan 03-04 |
 
 ## Performance Metrics
 
@@ -73,10 +75,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-20)
 |---|---|---:|---:|---:|
 | 03-student-self-checks-scenarios-content-management | 01 | 4min | 3 | 11 |
 | 03-student-self-checks-scenarios-content-management | 02 | 4min | 2 | 4 |
+| 03-student-self-checks-scenarios-content-management | 04 | 3min | 2 | 4 |
 
 ## Last Session
 
-**Stopped At:** Completed 03-05-PLAN.md
+**Stopped At:** Completed 03-04-PLAN.md
 
 ## Next Action
 
@@ -86,4 +89,4 @@ Run:
 /gsd-execute-phase 3
 ```
 
-Phase 03 Plan 03-02 is complete. Continue with Plan 03-03 for student scenario browse, feedback, and history APIs.
+Phase 03 Plans 03-01 through 03-05 are complete. Continue with Plan 03-06 for student self-check and scenario frontend flows.
