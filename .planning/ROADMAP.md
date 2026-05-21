@@ -180,13 +180,13 @@ Plans:
 | PARENT-01 | Phase 4 | Complete |
 | PARENT-02 | Phase 4 | Complete |
 | PARENT-03 | Phase 4 | Complete |
-| CHAT-01 | Phase 5 | Pending |
-| CHAT-02 | Phase 5 | Pending |
-| CHAT-03 | Phase 5 | Pending |
-| CHAT-04 | Phase 5 | Pending |
-| CHAT-05 | Phase 5 | Pending |
-| CHAT-06 | Phase 5 | Pending |
-| ADMIN-04 | Phase 5 | Pending |
+| CHAT-01 | Phase 5 | Complete |
+| CHAT-02 | Phase 5 | Complete |
+| CHAT-03 | Phase 5 | Complete |
+| CHAT-04 | Phase 5 | Complete |
+| CHAT-05 | Phase 5 | Complete |
+| CHAT-06 | Phase 5 | Complete |
+| ADMIN-04 | Phase 5 | Complete |
 | ADMIN-05 | Phase 6 | Pending |
 | ADMIN-06 | Phase 6 | Pending |
 
