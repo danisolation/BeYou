@@ -63,16 +63,18 @@ describe("Phase 2 frontend auth foundation", () => {
     expect(screen.getByText("Demo")).toBeInTheDocument();
   });
 
-  it("keeps login submit disabled until email and password are present", async () => {
+  it("keeps login submit available so browser autofill can submit credentials", async () => {
     render(<LoginPage />);
 
     const submit = screen.getByRole("button", { name: "Đăng nhập" });
     expect(screen.getByText("Chào mừng đến với BeYou")).toBeInTheDocument();
     expect(screen.getByText("Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.")).toBeInTheDocument();
-    expect(submit).toBeDisabled();
+    expect(submit).toBeEnabled();
+    expect(screen.getByLabelText("Email")).toBeRequired();
+    expect(screen.getByLabelText("Mật khẩu")).toBeRequired();
 
     await userEvent.type(screen.getByLabelText("Email"), "student.demo@beyou.local");
-    expect(submit).toBeDisabled();
+    expect(submit).toBeEnabled();
     await userEvent.type(screen.getByLabelText("Mật khẩu"), "BeYouDemo!2026");
     expect(submit).toBeEnabled();
   });

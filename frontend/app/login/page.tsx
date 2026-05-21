@@ -13,17 +13,26 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const canSubmit = email.trim().length > 0 && password.length > 0 && !isSubmitting;
+  const canSubmit = !isSubmitting;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const submittedEmail = String(formData.get("email") ?? "").trim();
+    const submittedPassword = String(formData.get("password") ?? "");
+    if (!submittedEmail || !submittedPassword) {
+      event.currentTarget.reportValidity();
+      return;
+    }
     if (!canSubmit) {
       return;
     }
     setIsSubmitting(true);
     setError("");
+    setEmail(submittedEmail);
+    setPassword(submittedPassword);
     try {
-      const user = await login(email, password);
+      const user = await login(submittedEmail, submittedPassword);
       if (user.role === "student" && user.privacy_acknowledgement_required) {
         router.push(`/privacy?next=${encodeURIComponent(user.dashboard_route)}`);
         return;
@@ -54,6 +63,7 @@ export default function LoginPage() {
             name="email"
             type="email"
             autoComplete="email"
+            required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4 outline-accent"
@@ -68,6 +78,7 @@ export default function LoginPage() {
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
+              required
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="min-h-11 flex-1 rounded-2xl px-4 outline-accent"
