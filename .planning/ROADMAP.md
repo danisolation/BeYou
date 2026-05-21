@@ -58,7 +58,7 @@
 **Depends on:** Phase 2  
 **Requirements:** TEST-01, TEST-02, TEST-03, TEST-04, TEST-05, TEST-06, SCEN-01, SCEN-02, SCEN-03, SCEN-04, SCEN-05, ADMIN-02, ADMIN-03  
 **UI hint**: yes  
-**Status:** Pending
+**Status:** In Progress
 
 **Success criteria:**
 1. Student can view active self-checks, answer questions, submit, and receive backend-calculated score, risk level, and advice.
@@ -67,11 +67,11 @@
 4. Student can browse scenarios, choose a response, and receive feedback, recommended response, lesson, and skill tag.
 5. Admin can create and edit tests, questions, choices, scoring thresholds, scenarios, choices, feedback, lessons, and skill tags.
 
-**Plans:** 7 plans
+**Plans:** 2/7 complete
 
 Plans:
 - [x] 03-01-PLAN.md - Backend domain models, migration, authorization, and router contracts
-- [ ] 03-02-PLAN.md - Student self-check scoring, result, history, and detail APIs
+- [x] 03-02-PLAN.md - Student self-check scoring, result, history, and detail APIs
 - [ ] 03-03-PLAN.md - Student scenario browse, feedback, and history APIs
 - [ ] 03-04-PLAN.md - Adult summary-only self-check APIs with audit
 - [ ] 03-05-PLAN.md - Admin content APIs, lifecycle validation, audit, and demo seed
