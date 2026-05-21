@@ -80,6 +80,7 @@ def require_permission(
             "demo_record",
             "self_check_content",
             "scenario_content",
+            "chatbot_safety_config",
         }
     ):
         return
@@ -106,6 +107,13 @@ def require_permission(
             resource_type == "scenario_attempt_private"
             and action in {"read", "write"}
             and purpose == "student_reflection"
+            and student_id == actor.id
+        ):
+            return
+        if (
+            resource_type in {"chat_thread", "chat_transcript"}
+            and action in {"read", "write"}
+            and purpose == "student_private_support"
             and student_id == actor.id
         ):
             return

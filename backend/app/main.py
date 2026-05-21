@@ -7,6 +7,7 @@ from app.api import (
     admin_users,
     adult_summaries,
     auth,
+    chat,
     me,
     parent,
     privacy,
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(parent.router, prefix="/api/parent", tags=["parent"])
     app.include_router(adult_summaries.router, prefix="/api", tags=["adult-summaries"])
     app.include_router(sos.router, prefix="/api", tags=["sos"])
+    app.include_router(chat.router, prefix="/api", tags=["chat"])
     app.include_router(admin_users.router, prefix="/api/admin/users", tags=["admin"])
     app.include_router(admin_links.router, prefix="/api/admin/links", tags=["admin"])
     app.include_router(admin_content.router, prefix="/api/admin/content", tags=["admin"])

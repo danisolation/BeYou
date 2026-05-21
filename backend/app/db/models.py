@@ -73,6 +73,16 @@ class SosAlertStatus(str, enum.Enum):
     COMPLETED = "completed"
 
 
+class ChatMessageRole(str, enum.Enum):
+    STUDENT = "student"
+    ASSISTANT = "assistant"
+
+
+class ChatSafetyStage(str, enum.Enum):
+    INPUT = "input"
+    OUTPUT = "output"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -431,4 +441,98 @@ class InAppNotification(Base):
         Index("ix_in_app_notifications_recipient_created", "recipient_id", "created_at"),
         Index("ix_in_app_notifications_resource", "resource_type", "resource_id"),
         Index("ix_in_app_notifications_is_demo", "is_demo"),
+    )
+
+
+class ChatThread(Base):
+    __tablename__ = "chat_threads"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), default="Cuộc trò chuyện với BeYou", nullable=False)
+    safety_state: Mapped[str] = mapped_column(String(32), default="supportive", nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+    last_message_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    messages: Mapped[list["ChatMessage"]] = relationship(
+        back_populates="thread", cascade="all, delete-orphan"
+    )
+    safety_signals: Mapped[list["ChatSafetySignal"]] = relationship(
+        back_populates="thread", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_chat_threads_student_last_message", "student_id", "last_message_at"),
+        Index("ix_chat_threads_is_demo", "is_demo"),
+    )
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    thread_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("chat_threads.id"), nullable=False, index=True)
+    role: Mapped[str] = mapped_column(String(32), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    safety_flagged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    thread: Mapped[ChatThread] = relationship(back_populates="messages")
+
+    __table_args__ = (
+        Index("ix_chat_messages_thread_created", "thread_id", "created_at"),
+        Index("ix_chat_messages_is_demo", "is_demo"),
+    )
+
+
+class ChatSafetySignal(Base):
+    __tablename__ = "chat_safety_signals"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    thread_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("chat_threads.id"), nullable=False, index=True)
+    message_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("chat_messages.id"), nullable=True, index=True
+    )
+    stage: Mapped[str] = mapped_column(String(32), nullable=False)
+    categories: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    summary: Mapped[str] = mapped_column(String(128), nullable=False)
+    escalation_suggestion: Mapped[str] = mapped_column(String(128), nullable=False)
+    sos_suggested: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    thread: Mapped[ChatThread] = relationship(back_populates="safety_signals")
+
+    __table_args__ = (
+        Index("ix_chat_safety_signals_thread_created", "thread_id", "created_at"),
+        Index("ix_chat_safety_signals_stage", "stage"),
+        Index("ix_chat_safety_signals_is_demo", "is_demo"),
+    )
+
+
+class ChatbotSafetyConfig(Base):
+    __tablename__ = "chatbot_safety_configs"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(64), default="default", nullable=False, unique=True)
+    high_risk_keywords: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    escalation_message: Mapped[str] = mapped_column(Text, nullable=False)
+    trusted_adult_message: Mapped[str] = mapped_column(Text, nullable=False)
+    first_response_disclaimer: Mapped[str] = mapped_column(Text, nullable=False)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    __table_args__ = (
+        Index("ix_chatbot_safety_configs_name", "name"),
+        Index("ix_chatbot_safety_configs_is_demo", "is_demo"),
     )

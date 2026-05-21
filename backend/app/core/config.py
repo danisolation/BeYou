@@ -18,6 +18,14 @@ class Settings(BaseSettings):
     frontend_origin: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN")
     frontend_origins: str = Field(default="", validation_alias="FRONTEND_ORIGINS")
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
+    chat_provider: str = Field(default="fallback", validation_alias="CHAT_PROVIDER")
+    freemodel_api_key: str = Field(default="", validation_alias="FREEMODEL_API_KEY")
+    freemodel_base_url: str = Field(
+        default="https://freemodel.dev/api/v1",
+        validation_alias="FREEMODEL_BASE_URL",
+    )
+    freemodel_model: str = Field(default="freemodel-default", validation_alias="FREEMODEL_MODEL")
+    freemodel_timeout_seconds: float = Field(default=20.0, validation_alias="FREEMODEL_TIMEOUT_SECONDS")
 
     @field_validator("session_cookie_name")
     @classmethod
@@ -38,6 +46,14 @@ class Settings(BaseSettings):
         for origin in origins:
             cls._validate_origin(origin, "FRONTEND_ORIGINS")
         return ",".join(origins)
+
+    @field_validator("chat_provider")
+    @classmethod
+    def validate_chat_provider(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"fallback", "freemodel"}:
+            raise ValueError("CHAT_PROVIDER must be fallback or freemodel")
+        return normalized
 
     @staticmethod
     def _validate_origin(value: str, field_name: str) -> str:
