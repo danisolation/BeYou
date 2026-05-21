@@ -13,6 +13,13 @@ export const REVOKE_LINK_COPY =
   "Thu hồi liên kết này? Người lớn sẽ không còn thấy thông tin hỗ trợ của học sinh này.";
 export const KEEP_LINK_COPY = "Giữ liên kết";
 export const CONFIRM_REVOKE_LINK_COPY = "Thu hồi liên kết";
+export const ARCHIVE_CONTENT_COPY =
+  "Lưu trữ nội dung này? Học sinh sẽ không còn thấy nội dung này, nhưng lịch sử đã hoàn thành vẫn được giữ.";
+export const DELETE_DRAFT_CONTENT_COPY =
+  "Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành.";
+export const KEEP_CONTENT_COPY = "Giữ nội dung";
+export const CONFIRM_ARCHIVE_CONTENT_COPY = "Lưu trữ nội dung";
+export const CONFIRM_DELETE_DRAFT_CONTENT_COPY = "Xóa bản nháp";
 
 type DestructiveConfirmDialogProps = {
   open: boolean;

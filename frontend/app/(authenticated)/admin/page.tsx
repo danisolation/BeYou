@@ -31,6 +31,12 @@ export default function AdminDashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <AdminEntryCard
+          href="/admin/content"
+          title="Nội dung tự kiểm tra và tình huống"
+          description="Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn."
+          countLabel="Quản lý nội dung"
+        />
+        <AdminEntryCard
           href="/admin/users"
           title="Quản lý tài khoản"
           description="Tạo, cập nhật, tạm khóa hoặc xóa tài khoản theo đúng phạm vi demo."
@@ -59,7 +65,7 @@ function AdminEntryCard({
   countLabel: string;
 }) {
   return (
-    <Link href={href} className="block rounded-3xl bg-white p-5 shadow-sm">
+    <Link href={href} className="block rounded-3xl bg-white p-6 shadow-sm">
       <p className="text-label font-semibold text-accent">{countLabel}</p>
       <h2 className="mt-2 text-heading">{title}</h2>
       <p className="mt-3 text-body">{description}</p>
