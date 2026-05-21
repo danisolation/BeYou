@@ -180,6 +180,7 @@ def test_high_risk_input_bypasses_provider_and_records_metadata_only_safety_even
     assert payload["safety"]["high_risk"] is True
     assert payload["safety"]["input_flagged"] is True
     assert "self_harm" in payload["safety"]["categories"]
+    assert "không thay thế chuyên gia tư vấn hay bác sĩ" in payload["assistant_message"]["content"]
     assert "Mình muốn ưu tiên sự an toàn của em ngay lúc này" in payload["assistant_message"]["content"]
     assert "SOS" in payload["assistant_message"]["content"]
     assert "người lớn tin cậy" in payload["assistant_message"]["content"]

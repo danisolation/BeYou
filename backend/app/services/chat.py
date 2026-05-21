@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import uuid
 from dataclasses import dataclass
 
@@ -90,6 +91,7 @@ FIRST_RESPONSE_DISCLAIMER = (
 )
 EMERGENCY_BOUNDARY = "BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài."
 CONFIG_NAME = "default"
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -480,7 +482,11 @@ def send_chat_message(
     output_detection = SafetyDetection(high_risk=False, categories=[])
     if input_detection.high_risk:
         student_message.safety_flagged = True
-        assistant_content = _escalation_text(config)
+        assistant_content = _with_first_response_intro(
+            _escalation_text(config),
+            first_response=first_response,
+            config=config,
+        )
         _record_high_risk_signal(
             db,
             student=student,
@@ -498,7 +504,12 @@ def send_chat_message(
                 messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
                 first_response=first_response,
             )
-        except Exception:
+        except Exception as exc:
+            logger.warning(
+                "Chat provider failed; using deterministic fallback: %s",
+                type(exc).__name__,
+                exc_info=True,
+            )
             fallback = DeterministicSupportProvider()
             provider_content = fallback.generate(
                 messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
@@ -513,7 +524,11 @@ def send_chat_message(
         )
         output_detection = _detect_high_risk(assistant_content, config)
         if output_detection.high_risk:
-            assistant_content = _escalation_text(config)
+            assistant_content = _with_first_response_intro(
+                _escalation_text(config),
+                first_response=first_response,
+                config=config,
+            )
     assistant_message = ChatMessage(
         thread_id=thread.id,
         role=ChatMessageRole.ASSISTANT.value,
