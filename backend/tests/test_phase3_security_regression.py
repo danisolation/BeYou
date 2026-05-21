@@ -8,6 +8,9 @@ from sqlalchemy.orm import Session as OrmSession
 from app.core.config import get_settings
 from app.db.models import (
     AuditEvent,
+    SosAlert,
+    SosStatusEvent,
+    InAppNotification,
     PrivacyAcknowledgement,
     Scenario,
     ScenarioAttempt,
@@ -33,6 +36,9 @@ ORIGIN_HEADERS = {"Origin": "http://localhost:3000"}
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            InAppNotification,
+            SosStatusEvent,
+            SosAlert,
             ScenarioAttempt,
             ScenarioChoice,
             Scenario,

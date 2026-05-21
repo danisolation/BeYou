@@ -54,6 +54,25 @@ class ScenarioSignal(str, enum.Enum):
     RISKY = "risky"
 
 
+class SosSeverity(str, enum.Enum):
+    SUPPORT = "support"
+    URGENT = "urgent"
+
+
+class SosSource(str, enum.Enum):
+    STUDENT_DASHBOARD = "student_dashboard"
+    SELF_CHECK_RESULT = "self_check_result"
+    CHATBOT = "chatbot"
+    DEMO_SEED = "demo_seed"
+
+
+class SosAlertStatus(str, enum.Enum):
+    SENT = "sent"
+    RECEIVED = "received"
+    SUPPORTING = "supporting"
+    COMPLETED = "completed"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -337,4 +356,79 @@ class ScenarioAttempt(Base):
     __table_args__ = (
         Index("ix_scenario_attempts_student_completed", "student_id", "completed_at"),
         Index("ix_scenario_attempts_is_demo", "is_demo"),
+    )
+
+
+class SosAlert(Base):
+    __tablename__ = "sos_alerts"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_full_name_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
+    student_school_snapshot: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    student_class_name_snapshot: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    severity: Mapped[str] = mapped_column(String(32), nullable=False)
+    source: Mapped[str] = mapped_column(String(64), nullable=False)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    current_status: Mapped[str] = mapped_column(
+        String(32), default=SosAlertStatus.SENT.value, nullable=False
+    )
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    status_events: Mapped[list["SosStatusEvent"]] = relationship(
+        back_populates="alert", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        Index("ix_sos_alerts_student_created", "student_id", "created_at"),
+        Index("ix_sos_alerts_current_status", "current_status"),
+        Index("ix_sos_alerts_is_demo", "is_demo"),
+    )
+
+
+class SosStatusEvent(Base):
+    __tablename__ = "sos_status_events"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    alert_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sos_alerts.id"), nullable=False, index=True)
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    actor_role: Mapped[str] = mapped_column(String(32), nullable=False)
+    previous_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    new_status: Mapped[str] = mapped_column(String(32), nullable=False)
+    note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    alert: Mapped[SosAlert] = relationship(back_populates="status_events")
+
+    __table_args__ = (
+        Index("ix_sos_status_events_alert_created", "alert_id", "created_at"),
+        Index("ix_sos_status_events_is_demo", "is_demo"),
+    )
+
+
+class InAppNotification(Base):
+    __tablename__ = "in_app_notifications"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    recipient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    actor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    resource_type: Mapped[str] = mapped_column(String(96), nullable=False)
+    resource_id: Mapped[str] = mapped_column(String(128), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    href: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    __table_args__ = (
+        Index("ix_in_app_notifications_recipient_created", "recipient_id", "created_at"),
+        Index("ix_in_app_notifications_resource", "resource_type", "resource_id"),
+        Index("ix_in_app_notifications_is_demo", "is_demo"),
     )

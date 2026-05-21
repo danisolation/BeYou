@@ -2,6 +2,9 @@ from app.db.base import Base
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    SosAlert,
+    SosStatusEvent,
+    InAppNotification,
     LinkStatus,
     PrivacyAcknowledgement,
     RelationshipType,
@@ -50,7 +53,7 @@ def test_user_columns_include_phase_two_identity_fields() -> None:
 
 
 def test_all_demo_sensitive_tables_include_is_demo() -> None:
-    for model in (User, Session, PrivacyAcknowledgement, StudentAdultLink, AuditEvent):
+    for model in (InAppNotification, SosStatusEvent, SosAlert, User, Session, PrivacyAcknowledgement, StudentAdultLink, AuditEvent):
         assert "is_demo" in model.__table__.columns
 
 

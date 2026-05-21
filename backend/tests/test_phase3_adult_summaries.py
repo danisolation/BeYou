@@ -12,6 +12,9 @@ from app.core.security import hash_password
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    SosAlert,
+    SosStatusEvent,
+    InAppNotification,
     LinkStatus,
     ScenarioAttempt,
     SelfCheckAttempt,
@@ -37,6 +40,9 @@ PASSWORD = "secret123"
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            InAppNotification,
+            SosStatusEvent,
+            SosAlert,
             ScenarioAttempt,
             SelfCheckAttemptAnswer,
             SelfCheckAttempt,

@@ -10,6 +10,7 @@ from app.api import (
     me,
     parent,
     privacy,
+    sos,
     student,
     student_scenarios,
     student_self_checks,
@@ -45,6 +46,7 @@ def create_app() -> FastAPI:
     app.include_router(teacher.router, prefix="/api/teacher", tags=["teacher"])
     app.include_router(parent.router, prefix="/api/parent", tags=["parent"])
     app.include_router(adult_summaries.router, prefix="/api", tags=["adult-summaries"])
+    app.include_router(sos.router, prefix="/api", tags=["sos"])
     app.include_router(admin_users.router, prefix="/api/admin/users", tags=["admin"])
     app.include_router(admin_links.router, prefix="/api/admin/links", tags=["admin"])
     app.include_router(admin_content.router, prefix="/api/admin/content", tags=["admin"])

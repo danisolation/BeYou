@@ -119,4 +119,28 @@ def require_permission(
     ):
         return
 
+    if actor.role == UserRole.STUDENT.value and resource_type == "sos_alert":
+        if action in {"read", "write"} and purpose == "safety_escalation" and student_id == actor.id:
+            return
+
+    if (
+        actor.role in {UserRole.TEACHER.value, UserRole.PARENT.value}
+        and purpose == "safety_escalation"
+        and resource_type == "sos_alert"
+        and action == "read"
+        and student_id is not None
+        and has_active_student_link(db, actor, student_id)
+    ):
+        return
+
+    if (
+        actor.role == UserRole.TEACHER.value
+        and purpose == "safety_escalation"
+        and resource_type == "sos_alert"
+        and action == "update"
+        and student_id is not None
+        and has_active_student_link(db, actor, student_id, relationship_type=UserRole.TEACHER.value)
+    ):
+        return
+
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")

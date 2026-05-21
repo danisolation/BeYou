@@ -22,6 +22,8 @@ from app.db.models import (
     SelfCheckQuestion,
     SelfCheckTest,
     SelfCheckThreshold,
+    SosAlert,
+    SosSource,
     StudentAdultLink,
     User,
     UserRole,
@@ -30,6 +32,8 @@ from app.db.models import (
 from app.db.session import SessionLocal
 from app.services.links import create_link
 from app.services.self_checks import submit_self_check_attempt
+from app.services.sos import create_sos_alert
+from app.schemas.sos import SosAlertCreate
 
 DEMO_PASSWORD = "BeYouDemo!2026"
 DEMO_STUDENT_EMAIL = "student.demo@beyou.local"
@@ -374,6 +378,27 @@ def _seed_self_check_attempts(db: OrmSession, *, student: User, tests: list[Self
         db.commit()
 
 
+def _seed_sos_workflow(db: OrmSession, *, student: User) -> None:
+    existing = db.scalar(
+        select(SosAlert).where(
+            SosAlert.student_id == student.id,
+            SosAlert.source == SosSource.DEMO_SEED.value,
+            SosAlert.is_demo.is_(True),
+        )
+    )
+    if existing is not None:
+        return
+    create_sos_alert(
+        db,
+        student,
+        SosAlertCreate(
+            severity="support",
+            source=SosSource.DEMO_SEED.value,
+            note="Dữ liệu demo: em muốn người lớn biết em cần được hỏi thăm.",
+        ),
+    )
+
+
 def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     if not settings.allow_demo_seed:
         return False
@@ -410,6 +435,7 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     for seed in SCENARIO_SEEDS:
         _upsert_scenario_content(db, seed)
     _seed_self_check_attempts(db, student=student, tests=tests)
+    _seed_sos_workflow(db, student=student)
     return True
 
 

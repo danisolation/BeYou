@@ -20,6 +20,9 @@ from app.core.sessions import require_same_site_mutation, set_session_cookie
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    SosAlert,
+    SosStatusEvent,
+    InAppNotification,
     LinkStatus,
     PrivacyAcknowledgement,
     Scenario,
@@ -43,6 +46,9 @@ from app.services.audit import record_audit_event
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            InAppNotification,
+            SosStatusEvent,
+            SosAlert,
             ScenarioAttempt,
             ScenarioChoice,
             Scenario,

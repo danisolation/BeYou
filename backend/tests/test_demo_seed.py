@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session as OrmSession
 from app.core.config import get_settings
 from app.db.models import (
     AuditEvent,
+    SosAlert,
+    SosStatusEvent,
+    InAppNotification,
     LinkStatus,
     PrivacyAcknowledgement,
     Scenario,
@@ -33,6 +36,9 @@ from app.seeds.demo_seed import (
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            InAppNotification,
+            SosStatusEvent,
+            SosAlert,
             ScenarioAttempt,
             ScenarioChoice,
             Scenario,
