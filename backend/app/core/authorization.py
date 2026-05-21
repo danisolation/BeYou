@@ -69,12 +69,44 @@ def require_permission(
 ) -> None:
     require_authenticated(actor)
 
-    if actor.role == UserRole.ADMIN.value and purpose == "admin_operations":
+    if (
+        actor.role == UserRole.ADMIN.value
+        and purpose == "admin_operations"
+        and resource_type
+        in {
+            "account_profile",
+            "student_adult_link",
+            "audit_event",
+            "demo_record",
+            "self_check_content",
+            "scenario_content",
+        }
+    ):
         return
 
     if actor.role == UserRole.STUDENT.value:
         if resource_type in {"student_profile", "privacy_notice", "student_adult_link"} and (
             student_id is None or student_id == actor.id
+        ):
+            return
+        if (
+            resource_type == "self_check_raw_answers"
+            and action in {"read", "write"}
+            and purpose == "student_reflection"
+            and student_id == actor.id
+        ):
+            return
+        if (
+            resource_type == "self_check_summary"
+            and action == "read"
+            and student_id == actor.id
+        ):
+            return
+        if (
+            resource_type == "scenario_attempt_private"
+            and action in {"read", "write"}
+            and purpose == "student_reflection"
+            and student_id == actor.id
         ):
             return
 
