@@ -34,6 +34,9 @@ export default function ParentDashboardPage() {
     <RoleStudentList
       title="Cổng phụ huynh"
       subtitle="Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị."
+      summaryTitle="Tóm tắt hỗ trợ của con"
+      summaryBasePath="/parent/students"
+      summaryCta="Xem tóm tắt hỗ trợ"
       students={students}
       emptyBody="Khi quản trị viên tạo liên kết, thông tin hỗ trợ được phép xem sẽ hiển thị tại đây."
     />
