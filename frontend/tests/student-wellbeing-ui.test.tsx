@@ -422,8 +422,8 @@ describe("student scenario UI flow", () => {
     expect(screen.getByText("Lựa chọn có điểm tích cực")).toBeInTheDocument();
     expect(screen.getByText("Cách phản hồi nên thử")).toBeInTheDocument();
     expect(screen.getByText("Điều em có thể rút ra")).toBeInTheDocument();
-    expect(screen.getByText("Kỹ năng liên quan")).toBeInTheDocument();
-    expect(screen.getByText("Từ chối an toàn")).toBeInTheDocument();
+    expect(screen.getAllByText("Kỹ năng liên quan").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Từ chối an toàn").length).toBeGreaterThan(0);
   });
 
   it("shows empty scenario history with exact supportive copy", async () => {
