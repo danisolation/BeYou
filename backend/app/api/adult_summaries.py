@@ -1,7 +1,51 @@
 from __future__ import annotations
 
-from fastapi import APIRouter
+import uuid
+
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session as OrmSession
+
+from app.core.authorization import require_role
+from app.core.sessions import get_current_user
+from app.db.models import User, UserRole
+from app.db.session import get_db
+from app.schemas.adult_summaries import AdultSelfCheckSummaryResponse
+from app.services.adult_summaries import get_adult_self_check_summaries
 
 router = APIRouter()
 
-# Phase 3 Plan 03-01 reserves this integration router; summary behavior lands in later plans.
+
+@router.get(
+    "/teacher/students/{student_id}/self-check-summaries",
+    response_model=AdultSelfCheckSummaryResponse,
+)
+def get_teacher_student_self_check_summaries(
+    student_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> AdultSelfCheckSummaryResponse:
+    require_role(current_user, UserRole.TEACHER)
+    return get_adult_self_check_summaries(
+        db,
+        current_user,
+        student_id,
+        relationship_type=UserRole.TEACHER.value,
+    )
+
+
+@router.get(
+    "/parent/students/{student_id}/self-check-summaries",
+    response_model=AdultSelfCheckSummaryResponse,
+)
+def get_parent_student_self_check_summaries(
+    student_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> AdultSelfCheckSummaryResponse:
+    require_role(current_user, UserRole.PARENT)
+    return get_adult_self_check_summaries(
+        db,
+        current_user,
+        student_id,
+        relationship_type=UserRole.PARENT.value,
+    )
