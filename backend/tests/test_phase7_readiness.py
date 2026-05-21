@@ -137,3 +137,17 @@ def test_static_readiness_flags_unsafe_production_config_without_secret_values()
     assert "DATABASE_URL" not in rendered
     assert "FREEMODEL_API_KEY" not in rendered
 
+
+def test_static_readiness_flags_https_localhost_in_production() -> None:
+    settings = Settings(
+        ENVIRONMENT="production",
+        SESSION_COOKIE_SECURE=True,
+        FRONTEND_ORIGIN="https://localhost:3000",
+        FRONTEND_ORIGINS="https://127.0.0.1:3000",
+        ALLOW_DEMO_SEED=False,
+    )
+
+    checks = evaluate_static_readiness_checks(settings)
+    by_key = {check.key: check for check in checks}
+
+    assert by_key["origin_security"].status == "fail"

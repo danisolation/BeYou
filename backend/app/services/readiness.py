@@ -53,7 +53,12 @@ def _has_placeholder_value(value: str) -> bool:
 
 
 def _origin_is_local(origin: str) -> bool:
-    return origin.startswith("http://localhost") or origin.startswith("http://127.0.0.1")
+    return (
+        origin.startswith("http://localhost")
+        or origin.startswith("https://localhost")
+        or origin.startswith("http://127.0.0.1")
+        or origin.startswith("https://127.0.0.1")
+    )
 
 
 def _origin_is_https(origin: str) -> bool:
