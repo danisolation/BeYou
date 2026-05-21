@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-05-21T04:34:53.378Z"
+stopped_at: Completed 03-06-PLAN.md
+last_updated: "2026-05-21T04:42:52.348Z"
 progress:
   total_phases: 6
   completed_phases: 2
   total_plans: 17
-  completed_plans: 15
-  percent: 88
+  completed_plans: 16
+  percent: 94
 ---
 
 # State: BeYou - Tu Tin La Minh
@@ -68,6 +68,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-20)
 | Keep pre-submit self-check content student-safe | Student list/detail APIs omit thresholds and choice score values before submission; raw answers remain own-detail only | Validated in Phase 03 Plan 03-02 |
 | Keep adult self-check summaries summary-only | Linked teachers/parents can see latest plus recent support summaries, but not raw answers or score breakdowns | Validated in Phase 03 Plan 03-04 |
 | Audit adult self-check summary reads | Every successful adult summary read records metadata-only `sensitive_resource_read` with `summary_only` decision | Validated in Phase 03 Plan 03-04 |
+| Keep student wellbeing frontend cookie-authenticated | Student self-check and scenario helpers use `apiFetch` only and do not introduce browser token storage | Validated in Phase 03 Plan 03-06 |
+| Keep self-check score visually secondary | Student result UI leads with supportive message, state label, and next action while score remains text metadata | Validated in Phase 03 Plan 03-06 |
+| Keep raw answer detail student-only | Raw self-check answer snapshots render only in the student history detail route with no adult/admin links | Validated in Phase 03 Plan 03-06 |
 
 ## Performance Metrics
 
@@ -76,10 +79,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-20)
 | 03-student-self-checks-scenarios-content-management | 01 | 4min | 3 | 11 |
 | 03-student-self-checks-scenarios-content-management | 02 | 4min | 2 | 4 |
 | 03-student-self-checks-scenarios-content-management | 04 | 3min | 2 | 4 |
+| 03-student-self-checks-scenarios-content-management | 06 | 6min | 3 | 11 |
 
 ## Last Session
 
-**Stopped At:** Completed 03-04-PLAN.md
+**Stopped At:** Completed 03-06-PLAN.md
 
 ## Next Action
 
@@ -89,4 +93,4 @@ Run:
 /gsd-execute-phase 3
 ```
 
-Phase 03 Plans 03-01 through 03-05 are complete. Continue with Plan 03-06 for student self-check and scenario frontend flows.
+Phase 03 Plans 03-01 through 03-06 are complete. Continue with Plan 03-07 for adult/admin frontend and final verification.
