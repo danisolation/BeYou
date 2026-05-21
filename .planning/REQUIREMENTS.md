@@ -53,24 +53,24 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 
 ### SOS
 
-- [ ] **SOS-01**: Student can access a visible SOS button from the student experience.
-- [ ] **SOS-02**: Student must confirm before an SOS alert is sent.
-- [ ] **SOS-03**: Confirmed SOS alert stores student identity, class, school, timestamp, severity, source, and optional student note.
-- [ ] **SOS-04**: System creates in-app notifications for linked teacher and parent recipients when an SOS alert is sent.
-- [ ] **SOS-05**: Student, teacher, and parent can see SOS status progress from sent to received, supporting, and completed.
-- [ ] **SOS-06**: System records every SOS status update with actor, timestamp, previous status, new status, and optional note.
+- [x] **SOS-01**: Student can access a visible SOS button from the student experience.
+- [x] **SOS-02**: Student must confirm before an SOS alert is sent.
+- [x] **SOS-03**: Confirmed SOS alert stores student identity, class, school, timestamp, severity, source, and optional student note.
+- [x] **SOS-04**: System creates in-app notifications for linked teacher and parent recipients when an SOS alert is sent.
+- [x] **SOS-05**: Student, teacher, and parent can see SOS status progress from sent to received, supporting, and completed.
+- [x] **SOS-06**: System records every SOS status update with actor, timestamp, previous status, new status, and optional note.
 
 ### Teacher Portal
 
-- [ ] **TEACH-01**: Teacher can view students actively linked to them.
-- [ ] **TEACH-02**: Teacher can view permitted warning summaries for managed students, including "can quan tam" and "nguy co cao" groups.
-- [ ] **TEACH-03**: Teacher can view, acknowledge, update, and complete SOS alerts for managed students.
+- [x] **TEACH-01**: Teacher can view students actively linked to them.
+- [x] **TEACH-02**: Teacher can view permitted warning summaries for managed students, including "can quan tam" and "nguy co cao" groups.
+- [x] **TEACH-03**: Teacher can view, acknowledge, update, and complete SOS alerts for managed students.
 
 ### Parent Portal
 
-- [ ] **PARENT-01**: Parent can view students actively linked to their account.
-- [ ] **PARENT-02**: Parent can view linked student SOS alerts and current handling status.
-- [ ] **PARENT-03**: Parent can view permitted latest self-check summary and support suggestions for linked students.
+- [x] **PARENT-01**: Parent can view students actively linked to their account.
+- [x] **PARENT-02**: Parent can view linked student SOS alerts and current handling status.
+- [x] **PARENT-03**: Parent can view permitted latest self-check summary and support suggestions for linked students.
 
 ### Admin & Reports
 
@@ -153,18 +153,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCEN-05 | Phase 3 | Complete |
 | ADMIN-02 | Phase 3 | Complete |
 | ADMIN-03 | Phase 3 | Complete |
-| SOS-01 | Phase 4 | Pending |
-| SOS-02 | Phase 4 | Pending |
-| SOS-03 | Phase 4 | Pending |
-| SOS-04 | Phase 4 | Pending |
-| SOS-05 | Phase 4 | Pending |
-| SOS-06 | Phase 4 | Pending |
-| TEACH-01 | Phase 4 | Pending |
-| TEACH-02 | Phase 4 | Pending |
-| TEACH-03 | Phase 4 | Pending |
-| PARENT-01 | Phase 4 | Pending |
-| PARENT-02 | Phase 4 | Pending |
-| PARENT-03 | Phase 4 | Pending |
+| SOS-01 | Phase 4 | Complete |
+| SOS-02 | Phase 4 | Complete |
+| SOS-03 | Phase 4 | Complete |
+| SOS-04 | Phase 4 | Complete |
+| SOS-05 | Phase 4 | Complete |
+| SOS-06 | Phase 4 | Complete |
+| TEACH-01 | Phase 4 | Complete |
+| TEACH-02 | Phase 4 | Complete |
+| TEACH-03 | Phase 4 | Complete |
+| PARENT-01 | Phase 4 | Complete |
+| PARENT-02 | Phase 4 | Complete |
+| PARENT-03 | Phase 4 | Complete |
 | CHAT-01 | Phase 5 | Pending |
 | CHAT-02 | Phase 5 | Pending |
 | CHAT-03 | Phase 5 | Pending |
@@ -182,4 +182,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-20*
-*Last updated: 2026-05-20 after roadmap creation*
+*Last updated: 2026-05-21 after Phase 4 completion*

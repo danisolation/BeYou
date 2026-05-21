@@ -84,7 +84,7 @@ Plans:
 **Depends on:** Phase 3  
 **Requirements:** SOS-01, SOS-02, SOS-03, SOS-04, SOS-05, SOS-06, TEACH-01, TEACH-02, TEACH-03, PARENT-01, PARENT-02, PARENT-03  
 **UI hint**: yes  
-**Status:** Pending
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Student can access a visible SOS button, confirm before sending, and see status progress.
@@ -93,7 +93,12 @@ Plans:
 4. Teacher can view linked students, warning summaries, and manage SOS status through received, supporting, and completed states.
 5. Parent can view linked student SOS status and permitted latest self-check/support summaries.
 
-**Plans:** TBD
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 04-01-PLAN.md - Backend SOS workflow and in-app notifications
+- [x] 04-02-PLAN.md - Student SOS UI and adult support portals
+- [x] 04-03-PLAN.md - Review, E2E, verification, and phase closure
 
 ### Phase 5: Supportive Chatbot Gateway & Guardrails
 
@@ -158,18 +163,18 @@ Plans:
 | SCEN-05 | Phase 3 | Complete |
 | ADMIN-02 | Phase 3 | Complete |
 | ADMIN-03 | Phase 3 | Complete |
-| SOS-01 | Phase 4 | Pending |
-| SOS-02 | Phase 4 | Pending |
-| SOS-03 | Phase 4 | Pending |
-| SOS-04 | Phase 4 | Pending |
-| SOS-05 | Phase 4 | Pending |
-| SOS-06 | Phase 4 | Pending |
-| TEACH-01 | Phase 4 | Pending |
-| TEACH-02 | Phase 4 | Pending |
-| TEACH-03 | Phase 4 | Pending |
-| PARENT-01 | Phase 4 | Pending |
-| PARENT-02 | Phase 4 | Pending |
-| PARENT-03 | Phase 4 | Pending |
+| SOS-01 | Phase 4 | Complete |
+| SOS-02 | Phase 4 | Complete |
+| SOS-03 | Phase 4 | Complete |
+| SOS-04 | Phase 4 | Complete |
+| SOS-05 | Phase 4 | Complete |
+| SOS-06 | Phase 4 | Complete |
+| TEACH-01 | Phase 4 | Complete |
+| TEACH-02 | Phase 4 | Complete |
+| TEACH-03 | Phase 4 | Complete |
+| PARENT-01 | Phase 4 | Complete |
+| PARENT-02 | Phase 4 | Complete |
+| PARENT-03 | Phase 4 | Complete |
 | CHAT-01 | Phase 5 | Pending |
 | CHAT-02 | Phase 5 | Pending |
 | CHAT-03 | Phase 5 | Pending |

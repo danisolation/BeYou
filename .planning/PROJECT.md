@@ -16,6 +16,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 - [x] Phase 1 established privacy-by-default policy contracts for sensitive student psychology data: data classification, role/relationship/purpose authorization, metadata-only audit events, demo/real-data separation, and non-clinical safety copy.
 - [x] Phase 3 implemented student self-checks, scenario practice, summary-only adult visibility, audited content management, seeded demo wellbeing content, and approved UAT for supportive UI tone.
+- [x] Phase 4 implemented confirmed SOS alerts, in-app linked-adult notifications, visible status workflow, teacher handling controls, parent read-only status, summary-only adult support views, and metadata-only SOS audit.
 
 ### Active
 
@@ -24,9 +25,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Students can complete short mental-health and peer-pressure tests, receive scored risk levels, and view test history.
 - [x] Students can practice realistic school-pressure scenarios and receive feedback on each choice.
 - [ ] Students can chat with a supportive chatbot powered by freemodel.dev through the Python backend, with guardrails for high-risk messages.
-- [ ] Students can send an SOS alert that appears in-app to linked teachers and parents, then track handling status.
-- [ ] Teachers can view managed students, warning levels, SOS alerts, and class-level summaries.
-- [ ] Parents can view linked student alerts and permitted recent assessment results.
+- [x] Students can send an SOS alert that appears in-app to linked teachers and parents, then track handling status.
+- [x] Teachers can view managed students, warning levels, SOS alerts, and support summaries.
+- [x] Parents can view linked student alerts and permitted recent assessment results.
 - [ ] Admins can manage chatbot content and aggregate reports.
 - [ ] Sensitive student psychology data is implemented with strict authorization, encrypted passwords, and private-by-default visibility.
 
@@ -76,11 +77,12 @@ The backend must be Python. Chatbot integration should use freemodel.dev as the 
 | Build v1 as MVP demo with full core flows | Keeps scope achievable while showing the end-to-end student, teacher, parent, and admin journey | - Pending |
 | Use Python for the backend | Explicit user requirement | - Pending |
 | Use freemodel.dev as v1 chatbot provider | User requested it; backend abstraction reduces lock-in | - Pending |
-| Use in-app SOS notifications for v1 | Demonstrates escalation and handling without external notification integration complexity | - Pending |
+| Use in-app SOS notifications for v1 | Demonstrates escalation and handling without external notification integration complexity | - Validated in Phase 4 |
 | Treat real student data as possible from day one | User selected production-grade handling for real data | - Validated in Phase 1 policy foundation |
 | Use email/password and seeded demo accounts | Supports realistic demo without OAuth/SSO complexity | - Pending |
 | Keep raw self-check answers student-only | Preserves student trust while still enabling summary support from linked adults | - Validated in Phase 3 |
 | Use explicit local dev origins for credentialed CORS | Supports localhost and 127.0.0.1 dev URLs without wildcard origins when cookies are enabled | - Validated in Phase 3 UAT |
+| Keep SOS as a visible status workflow | Students and adults need to see `sent` → `received` → `supporting` → `completed`, not a fire-and-forget alert | - Validated in Phase 4 |
 
 ## Evolution
 
@@ -100,4 +102,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-21 after Phase 3 completion*
+*Last updated: 2026-05-21 after Phase 4 completion*
