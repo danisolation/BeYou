@@ -82,6 +82,7 @@ def require_permission(
             "scenario_content",
             "chatbot_safety_config",
             "aggregate_report",
+            "operations_readiness",
         }
     ):
         return
