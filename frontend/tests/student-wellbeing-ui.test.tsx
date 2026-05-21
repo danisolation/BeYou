@@ -1,7 +1,13 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
+import SelfCheckHistoryDetailPage from "@/app/(authenticated)/student/self-checks/history/[attemptId]/page";
+import SelfCheckHistoryPage from "@/app/(authenticated)/student/self-checks/history/page";
+import SelfCheckResultPage from "@/app/(authenticated)/student/self-checks/results/[attemptId]/page";
+import SelfCheckTakePage from "@/app/(authenticated)/student/self-checks/[testId]/page";
+import SelfCheckListPage from "@/app/(authenticated)/student/self-checks/page";
 import {
   listScenarioHistory,
   listScenarios,
@@ -10,6 +16,12 @@ import {
   submitScenarioAttempt,
   submitSelfCheckAttempt,
 } from "@/lib/wellbeing-api";
+
+const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+}));
 
 function mockFetch(responses: Record<string, unknown>) {
   const fetchMock = vi.fn((url: string, init?: RequestInit) => {
@@ -28,6 +40,7 @@ function mockFetch(responses: Record<string, unknown>) {
 
 describe("student wellbeing dashboard and API helpers", () => {
   beforeEach(() => {
+    push.mockReset();
     vi.restoreAllMocks();
   });
 
@@ -131,5 +144,182 @@ describe("student wellbeing dashboard and API helpers", () => {
     );
 
     await waitFor(() => expect(screen.queryByText("Đang tải thông tin...")).not.toBeInTheDocument());
+  });
+});
+
+describe("student self-check UI flow", () => {
+  beforeEach(() => {
+    push.mockReset();
+    vi.restoreAllMocks();
+  });
+
+  it("lists published self-checks with demo badges and warm CTAs", async () => {
+    mockFetch({
+      "/api/student/self-checks": [
+        {
+          id: "test-1",
+          title: "Sức khỏe cảm xúc",
+          description: "Một bài ngắn để em nhìn lại cảm xúc gần đây.",
+          status: "published",
+          is_active: true,
+          is_demo: true,
+        },
+      ],
+    });
+
+    render(<SelfCheckListPage />);
+
+    expect(await screen.findByText("Tự kiểm tra cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Số câu hỏi: 0")).toBeInTheDocument();
+    expect(screen.getByText("Trạng thái: Đang mở")).toBeInTheDocument();
+    expect(screen.getByText("Demo")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Bắt đầu tự kiểm tra" })).toHaveAttribute(
+      "href",
+      "/student/self-checks/test-1",
+    );
+  });
+
+  it("validates one selected answer per question and routes to the result after submit", async () => {
+    mockFetch({
+      "/api/student/self-checks/test-1": {
+        id: "test-1",
+        title: "Sức khỏe cảm xúc",
+        description: "Một bài ngắn để em nhìn lại cảm xúc gần đây.",
+        status: "published",
+        is_active: true,
+        is_demo: true,
+        questions: [
+          {
+            id: "question-1",
+            text: "Hôm nay em thấy thế nào?",
+            sort_order: 1,
+            is_demo: true,
+            choices: [
+              { id: "choice-1", text: "Khá ổn", sort_order: 1, is_demo: true },
+              { id: "choice-2", text: "Cần thêm hỗ trợ", sort_order: 2, is_demo: true },
+            ],
+          },
+        ],
+      },
+      "/api/student/self-checks/test-1/attempts": {
+        attempt_id: "attempt-1",
+        test_id: "test-1",
+        test_title: "Sức khỏe cảm xúc",
+        state_label: "On dinh",
+        supportive_headline: "Em đang có nhiều dấu hiệu ổn định.",
+        suggested_next_action: "Tiếp tục giữ thói quen giúp em thấy an toàn và thoải mái.",
+        score: 1,
+        completed_at: "2026-05-21T00:00:00Z",
+        is_demo: true,
+      },
+    });
+
+    render(<SelfCheckTakePage params={{ testId: "test-1" }} />);
+
+    expect(await screen.findByText("Câu 1 / 1")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Gửi câu trả lời" }));
+    expect(
+      screen.getByText("Hãy chọn một câu trả lời phù hợp nhất với em trước khi tiếp tục."),
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("radio", { name: "Khá ổn" }));
+    await userEvent.click(screen.getByRole("button", { name: "Gửi câu trả lời" }));
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/student/self-checks/results/attempt-1"));
+  });
+
+  it("shows result detail with supportive content before secondary score metadata", async () => {
+    mockFetch({
+      "/api/student/self-checks/history/attempt-1": {
+        attempt_id: "attempt-1",
+        test_id: "test-1",
+        test_title: "Sức khỏe cảm xúc",
+        state_label: "Can chu y",
+        supportive_headline: "Có một vài dấu hiệu em nên để ý thêm.",
+        short_comment: "Em đã nhận ra điều mình đang trải qua.",
+        advice_summary: "Thử ghi lại điều làm em thấy nhẹ hơn.",
+        support_suggestion: "Chia sẻ với một người em tin tưởng nếu cần.",
+        positive_content: "Một bước nhỏ cũng đáng được ghi nhận.",
+        suggested_next_action: "Thử một tình huống luyện kỹ năng hoặc chia sẻ với người em tin tưởng.",
+        score: 5,
+        completed_at: "2026-05-21T00:00:00Z",
+        is_demo: true,
+        answers: [],
+      },
+    });
+
+    render(<SelfCheckResultPage params={{ attemptId: "attempt-1" }} />);
+
+    expect(await screen.findByRole("heading", { name: "Có một vài dấu hiệu em nên để ý thêm." })).toBeInTheDocument();
+    expect(screen.getByText("Can chu y")).toBeInTheDocument();
+    expect(screen.getByText("Thử một tình huống luyện kỹ năng hoặc chia sẻ với người em tin tưởng.")).toBeInTheDocument();
+    expect(screen.getByText("Điểm tham khảo: 5")).toBeInTheDocument();
+    expect(
+      screen.getByText("Điểm này chỉ giúp BeYou chọn gợi ý phù hợp, không phải chẩn đoán."),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem gợi ý tiếp theo" })).toHaveAttribute("href", "/student/scenarios");
+  });
+
+  it("shows self-check history summaries and private raw answer detail", async () => {
+    mockFetch({
+      "/api/student/self-checks/history": {
+        items: [
+          {
+            attempt_id: "attempt-1",
+            test_id: "test-1",
+            test_title: "Sức khỏe cảm xúc",
+            state_label: "On dinh",
+            supportive_headline: "Em đang có nhiều dấu hiệu ổn định.",
+            suggested_next_action: "Tiếp tục giữ thói quen giúp em thấy an toàn và thoải mái.",
+            completed_at: "2026-05-21T00:00:00Z",
+            is_demo: true,
+          },
+        ],
+      },
+      "/api/student/self-checks/history/attempt-1": {
+        attempt_id: "attempt-1",
+        test_id: "test-1",
+        test_title: "Sức khỏe cảm xúc",
+        state_label: "On dinh",
+        supportive_headline: "Em đang có nhiều dấu hiệu ổn định.",
+        score: 2,
+        completed_at: "2026-05-21T00:00:00Z",
+        is_demo: true,
+        answers: [
+          {
+            question_id: "question-1",
+            choice_id: "choice-1",
+            question_text_snapshot: "Hôm nay em thấy thế nào?",
+            choice_text_snapshot: "Khá ổn",
+            score_value_snapshot: 1,
+            sort_order: 1,
+            is_demo: true,
+          },
+        ],
+      },
+    });
+
+    render(
+      <>
+        <SelfCheckHistoryPage />
+        <SelfCheckHistoryDetailPage params={{ attemptId: "attempt-1" }} />
+      </>,
+    );
+
+    expect(await screen.findByText("Xem lịch sử tự kiểm tra")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Sức khỏe cảm xúc/ })).toHaveAttribute(
+      "href",
+      "/student/self-checks/history/attempt-1",
+    );
+    expect(
+      await screen.findByText(
+        "Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Nội dung này là bản ghi tại thời điểm em hoàn thành bài tự kiểm tra."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Hôm nay em thấy thế nào?")).toBeInTheDocument();
+    expect(screen.getByText("Khá ổn")).toBeInTheDocument();
   });
 });
