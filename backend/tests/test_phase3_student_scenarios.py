@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 from fastapi import HTTPException
+from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session as OrmSession
 
@@ -26,6 +27,11 @@ from app.db.models import (
     UserRole,
 )
 from app.db.session import SessionLocal
+from app.main import app
+from app.services.privacy import NOTICE_VERSION
+
+FRONTEND_ORIGIN = "http://localhost:3000"
+ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "same-site"}
 
 
 def _clean_database() -> None:
@@ -61,6 +67,12 @@ def db() -> OrmSession:
         _clean_database()
 
 
+@pytest.fixture()
+def client() -> TestClient:
+    with TestClient(app) as test_client:
+        yield test_client
+
+
 def _student(db: OrmSession, email: str = "student-scenario@example.test") -> User:
     user = User(
         email=email,
@@ -76,6 +88,26 @@ def _student(db: OrmSession, email: str = "student-scenario@example.test") -> Us
     db.commit()
     db.refresh(user)
     return user
+
+
+def _ack_privacy(db: OrmSession, student: User) -> None:
+    db.add(
+        PrivacyAcknowledgement(
+            user_id=student.id,
+            notice_version=NOTICE_VERSION,
+            is_demo=student.is_demo,
+        )
+    )
+    db.commit()
+
+
+def _login(client: TestClient, email: str) -> None:
+    response = client.post(
+        "/api/auth/login",
+        json={"email": email, "password": "secret123"},
+        headers=ORIGIN_HEADERS,
+    )
+    assert response.status_code == 200
 
 
 def _scenario(
@@ -194,3 +226,71 @@ def test_scenario_service_rejects_unpublished_scenarios_and_foreign_choices(db: 
     assert choice_exc.value.status_code == 400
 
     assert db.scalar(select(func.count()).select_from(ScenarioAttempt)) == 0
+
+
+def test_student_scenario_routes_list_submit_history_and_keep_history_private(
+    db: OrmSession,
+    client: TestClient,
+) -> None:
+    student = _student(db, "route-scenario-student@example.test")
+    other_student = _student(db, "other-route-scenario-student@example.test")
+    _ack_privacy(db, student)
+    _ack_privacy(db, other_student)
+    scenario, choices = _scenario(db)
+    _scenario(db, title="Nháp", status_value=ContentStatus.DRAFT.value)
+    _scenario(db, title="Đã lưu trữ", status_value=ContentStatus.ARCHIVED.value)
+    other_scenario, other_choices = _scenario(db, title="Mâu thuẫn với bạn thân")
+
+    from app.services.scenarios import submit_scenario_attempt
+
+    other_attempt = submit_scenario_attempt(db, other_student, other_scenario.id, other_choices[0].id)
+
+    _login(client, student.email)
+    list_response = client.get("/api/student/scenarios")
+    history_before_response = client.get("/api/student/scenarios/history")
+    detail_response = client.get(f"/api/student/scenarios/{scenario.id}")
+    submit_response = client.post(
+        f"/api/student/scenarios/{scenario.id}/attempts",
+        json={"selected_choice_id": str(choices[1].id)},
+        headers=ORIGIN_HEADERS,
+    )
+    history_response = client.get("/api/student/scenarios/history")
+
+    assert list_response.status_code == 200
+    assert [item["title"] for item in list_response.json()] == ["Rủ rê sau giờ học", "Mâu thuẫn với bạn thân"]
+    assert history_before_response.status_code == 200
+    assert history_before_response.json()["items"] == []
+    assert detail_response.status_code == 200
+    detail = detail_response.json()
+    assert detail["recommended_response"].startswith("Em có thể nói")
+    assert detail["lesson"].startswith("Từ chối rõ ràng")
+    assert detail["skill_tag"] == "Từ chối an toàn"
+    assert [choice["signal"] for choice in detail["choices"]] == ["constructive", "risky"]
+
+    assert submit_response.status_code == 201
+    feedback = submit_response.json()
+    assert feedback["selected_choice"] == "Đi theo nhóm dù trong lòng không muốn."
+    assert feedback["signal"] == "risky"
+    assert feedback["feedback"].startswith("Lựa chọn này có thể khiến")
+    assert feedback["recommended_response"].startswith("Em có thể nói")
+    assert feedback["lesson"].startswith("Từ chối rõ ràng")
+    assert feedback["skill_tag"] == "Từ chối an toàn"
+
+    assert history_response.status_code == 200
+    history = history_response.json()["items"]
+    assert len(history) == 1
+    assert history[0]["attempt_id"] == feedback["attempt_id"]
+    assert history[0]["selected_choice"] == "Đi theo nhóm dù trong lòng không muốn."
+    assert other_attempt.id != feedback["attempt_id"]
+    assert str(other_attempt.id) not in history_response.text
+
+
+def test_student_scenario_routes_require_privacy_acknowledgement(db: OrmSession, client: TestClient) -> None:
+    student = _student(db, "privacy-gated-scenario@example.test")
+    _scenario(db)
+
+    _login(client, student.email)
+    response = client.get("/api/student/scenarios")
+
+    assert response.status_code == 409
+    assert response.json()["detail"]["code"] == "privacy_ack_required"
