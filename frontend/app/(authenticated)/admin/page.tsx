@@ -31,6 +31,12 @@ export default function AdminDashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <AdminEntryCard
+          href="/admin/chatbot"
+          title="Cấu hình chatbot an toàn"
+          description="Quản lý từ khóa nguy cơ và lời nhắc hỗ trợ mà không hiển thị khóa API hay tắt lớp bảo vệ."
+          countLabel="Cài đặt an toàn"
+        />
+        <AdminEntryCard
           href="/admin/content"
           title="Nội dung tự kiểm tra và tình huống"
           description="Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn."

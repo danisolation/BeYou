@@ -103,6 +103,7 @@ export default function StudentDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        <ChatEntryCard />
         <WellbeingEntryCard
           title="Tự kiểm tra cảm xúc"
           body="Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán."
@@ -197,6 +198,21 @@ export default function StudentDashboardPage() {
         <LinkedAdultGroup title="Phụ huynh hỗ trợ" adults={parents} />
       </div>
     </section>
+  );
+}
+
+function ChatEntryCard() {
+  return (
+    <article className="rounded-3xl bg-white p-6 shadow-sm">
+      <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href="/student/chat">
+        Trò chuyện với BeYou
+      </Link>
+      <p className="mt-3 text-body">Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.</p>
+      <p className="mt-3 text-label">BeYou không thay thế chuyên gia tư vấn hay bác sĩ.</p>
+      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/chat">
+        Mở trò chuyện
+      </Link>
+    </article>
   );
 }
 

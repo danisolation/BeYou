@@ -185,7 +185,7 @@ describe("Phase 5 student chatbot UI", () => {
     await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
 
     expect(await screen.findByText(/Chào em, mình là BeYou/)).toBeInTheDocument();
-    expect(screen.getByText(/không thay thế chuyên gia tư vấn hay bác sĩ/)).toBeInTheDocument();
+    expect(screen.getAllByText(/không thay thế chuyên gia tư vấn hay bác sĩ/).length).toBeGreaterThan(0);
     expect(screen.queryByText(/api_key|FREEMODEL|secret/i)).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/student/chat/messages",
@@ -210,7 +210,7 @@ describe("Phase 5 student chatbot UI", () => {
     await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
 
     expect(await screen.findByText("Mình muốn ưu tiên sự an toàn của em ngay lúc này")).toBeInTheDocument();
-    expect(screen.getByText(/người lớn tin cậy/)).toBeInTheDocument();
+    expect(screen.getAllByText(/người lớn tin cậy/).length).toBeGreaterThan(0);
     expect(screen.getByText("BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Đi tới SOS hỗ trợ" })).toHaveAttribute("href", "/student");
   });
