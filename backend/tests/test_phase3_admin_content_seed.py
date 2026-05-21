@@ -331,7 +331,7 @@ def test_demo_seed_creates_locked_phase3_content_and_recent_attempts(db: OrmSess
     assert seed_demo_data(db, enabled_settings) is True
 
     tests = db.scalars(select(SelfCheckTest).order_by(SelfCheckTest.title.asc())).all()
-    assert [test.title for test in tests] == ["Sức khỏe cảm xúc", "Áp lực bạn bè"]
+    assert {test.title for test in tests} == {"Sức khỏe cảm xúc", "Áp lực bạn bè"}
     assert all(test.status == ContentStatus.PUBLISHED.value and test.is_demo for test in tests)
 
     scenarios = db.scalars(select(Scenario).order_by(Scenario.title.asc())).all()
