@@ -24,6 +24,10 @@ from app.db.models import (
     SelfCheckQuestion,
     SelfCheckTest,
     SelfCheckThreshold,
+    ChatSafetySignal,
+    ChatMessage,
+    ChatThread,
+    ChatbotSafetyConfig,
     Session as UserSession,
     StudentAdultLink,
     User,
@@ -40,6 +44,10 @@ ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "same-site"}
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            ChatSafetySignal,
+            ChatMessage,
+            ChatThread,
+            ChatbotSafetyConfig,
             InAppNotification,
             SosStatusEvent,
             SosAlert,

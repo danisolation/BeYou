@@ -23,6 +23,13 @@ from app.db.models import (
     SelfCheckQuestion,
     SelfCheckTest,
     SelfCheckThreshold,
+    ChatSafetySignal,
+    ChatMessage,
+    ChatThread,
+    ChatbotSafetyConfig,
+    ScenarioChoice,
+    Scenario,
+    PrivacyAcknowledgement,
     Session as UserSession,
     StudentAdultLink,
     User,
@@ -40,10 +47,16 @@ PASSWORD = "secret123"
 def _clean_database() -> None:
     with SessionLocal() as db:
         for model in (
+            ChatSafetySignal,
+            ChatMessage,
+            ChatThread,
+            ChatbotSafetyConfig,
             InAppNotification,
             SosStatusEvent,
             SosAlert,
             ScenarioAttempt,
+            ScenarioChoice,
+            Scenario,
             SelfCheckAttemptAnswer,
             SelfCheckAttempt,
             SelfCheckThreshold,
@@ -52,6 +65,7 @@ def _clean_database() -> None:
             SelfCheckTest,
             AuditEvent,
             StudentAdultLink,
+            PrivacyAcknowledgement,
             UserSession,
             User,
         ):
