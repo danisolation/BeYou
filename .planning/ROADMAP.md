@@ -106,7 +106,7 @@ Plans:
 **Depends on:** Phase 4  
 **Requirements:** CHAT-01, CHAT-02, CHAT-03, CHAT-04, CHAT-05, CHAT-06, ADMIN-04  
 **UI hint**: yes  
-**Status:** Pending
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Student can chat with a supportive bot through the Python backend.
@@ -115,7 +115,12 @@ Plans:
 4. Backend detects high-risk messages before and after LLM response.
 5. High-risk chat returns supportive escalation guidance and suggests SOS/trusted adult instead of unrestricted advice.
 
-**Plans:** TBD
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 05-01-PLAN.md - Backend chatbot gateway, provider abstraction, guardrails, audit, and admin config API
+- [x] 05-02-PLAN.md - Student chat UI, admin safety config UI, and dashboard entry points
+- [x] 05-03-PLAN.md - Review, E2E, verification, and phase closure
 
 ### Phase 6: Aggregate Reports & Privacy Hardening
 
