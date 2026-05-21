@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import uuid
+
+import pytest
+from fastapi import HTTPException
 from sqlalchemy import inspect
 
+from app.core.authorization import require_permission
+from app.db.models import LinkStatus, RelationshipType, StudentAdultLink, User, UserRole
 from app.db.session import engine
+from app.db.session import SessionLocal
 
 
 PHASE3_TABLES = {
@@ -62,3 +69,128 @@ def test_phase3_snapshot_and_demo_columns_exist() -> None:
         "lesson_snapshot",
         "skill_tag_snapshot",
     }.issubset(columns_by_table["scenario_attempts"])
+
+
+def test_phase3_authorization_keeps_raw_answers_student_private() -> None:
+    student = User(
+        email=f"student-{uuid.uuid4()}@example.test",
+        password_hash="hash",
+        role=UserRole.STUDENT.value,
+        full_name="Hoc sinh Demo",
+    )
+    teacher = User(
+        email=f"teacher-{uuid.uuid4()}@example.test",
+        password_hash="hash",
+        role=UserRole.TEACHER.value,
+        full_name="Giao vien Demo",
+    )
+    admin = User(
+        email=f"admin-{uuid.uuid4()}@example.test",
+        password_hash="hash",
+        role=UserRole.ADMIN.value,
+        full_name="Quan tri Demo",
+    )
+
+    with SessionLocal() as db:
+        db.add_all([student, teacher, admin])
+        db.flush()
+        db.add(
+            StudentAdultLink(
+                student_id=student.id,
+                adult_id=teacher.id,
+                relationship_type=RelationshipType.TEACHER.value,
+                status=LinkStatus.ACTIVE.value,
+                created_by=admin.id,
+            )
+        )
+        db.commit()
+
+        require_permission(
+            db,
+            student,
+            resource_type="self_check_raw_answers",
+            action="read",
+            purpose="student_reflection",
+            student_id=student.id,
+        )
+
+        require_permission(
+            db,
+            teacher,
+            resource_type="self_check_summary",
+            action="read",
+            purpose="support_not_surveillance",
+            student_id=student.id,
+        )
+
+        with pytest.raises(HTTPException):
+            require_permission(
+                db,
+                teacher,
+                resource_type="self_check_raw_answers",
+                action="read",
+                purpose="support_not_surveillance",
+                student_id=student.id,
+            )
+
+        with pytest.raises(HTTPException):
+            require_permission(
+                db,
+                admin,
+                resource_type="self_check_raw_answers",
+                action="read",
+                purpose="admin_operations",
+                student_id=student.id,
+            )
+
+
+def test_phase3_admin_content_permissions_are_explicit() -> None:
+    admin = User(
+        email=f"admin-{uuid.uuid4()}@example.test",
+        password_hash="hash",
+        role=UserRole.ADMIN.value,
+        full_name="Quan tri Demo",
+    )
+    student = User(
+        email=f"student-{uuid.uuid4()}@example.test",
+        password_hash="hash",
+        role=UserRole.STUDENT.value,
+        full_name="Hoc sinh Demo",
+    )
+
+    with SessionLocal() as db:
+        db.add_all([admin, student])
+        db.commit()
+
+        for resource_type in ("self_check_content", "scenario_content"):
+            require_permission(
+                db,
+                admin,
+                resource_type=resource_type,
+                action="manage",
+                purpose="admin_operations",
+            )
+
+        with pytest.raises(HTTPException):
+            require_permission(
+                db,
+                student,
+                resource_type="self_check_content",
+                action="manage",
+                purpose="admin_operations",
+            )
+
+
+def test_phase3_schema_contracts_import_without_adult_raw_answer_dtos() -> None:
+    from app.schemas.scenarios import ScenarioFeedbackResponse
+    from app.schemas.self_checks import (
+        SelfCheckAttemptSubmitRequest,
+        SelfCheckResultResponse,
+        SelfCheckStateLabel,
+    )
+
+    assert SelfCheckStateLabel.CAN_HO_TRO_SOM.value == "Can ho tro som"
+    assert "answers" in SelfCheckAttemptSubmitRequest.model_fields
+    assert "suggested_next_action" in SelfCheckResultResponse.model_fields
+    assert "recommended_response" in ScenarioFeedbackResponse.model_fields
+    assert "full_self_check_answers" not in SelfCheckResultResponse.model_fields
