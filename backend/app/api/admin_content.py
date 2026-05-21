@@ -21,6 +21,9 @@ from app.services import admin_content
 
 router = APIRouter()
 
+SELF_CHECK_PUBLISH_VALIDATION_DETAIL = "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
+SCENARIO_PUBLISH_VALIDATION_DETAIL = "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+
 
 def _self_check_response(test) -> AdminSelfCheckTestResponse:
     test.questions.sort(key=lambda item: (item.sort_order, str(item.id)))

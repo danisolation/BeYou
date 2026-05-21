@@ -6,7 +6,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from app.db.models import ContentStatus, RiskStateLabel, ScenarioSignal
+from app.db.models import ContentStatus
 
 
 class AdminContentStatus(str, enum.Enum):
@@ -16,15 +16,15 @@ class AdminContentStatus(str, enum.Enum):
 
 
 class AdminRiskStateLabel(str, enum.Enum):
-    ON_DINH = RiskStateLabel.STABLE.value
-    CAN_CHU_Y = RiskStateLabel.ATTENTION.value
-    NEN_TIM_HO_TRO = RiskStateLabel.SUPPORT.value
-    CAN_HO_TRO_SOM = RiskStateLabel.EARLY_SUPPORT.value
+    ON_DINH = "On dinh"
+    CAN_CHU_Y = "Can chu y"
+    NEN_TIM_HO_TRO = "Nen tim ho tro"
+    CAN_HO_TRO_SOM = "Can ho tro som"
 
 
 class AdminScenarioSignal(str, enum.Enum):
-    CONSTRUCTIVE = ScenarioSignal.CONSTRUCTIVE.value
-    RISKY = ScenarioSignal.RISKY.value
+    CONSTRUCTIVE = "constructive"
+    RISKY = "risky"
 
 
 VALID_STATUSES = {status.value for status in AdminContentStatus}
@@ -156,7 +156,7 @@ class AdminSelfCheckTestResponse(BaseModel):
 
 class AdminScenarioChoiceUpsert(BaseModel):
     text: str = ""
-    signal: str = ScenarioSignal.RISKY.value
+    signal: str = "risky"
     feedback: str = ""
     sort_order: int = 0
     is_demo: bool | None = None
