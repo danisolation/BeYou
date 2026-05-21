@@ -66,10 +66,53 @@ export default function StudentDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
+        <WellbeingEntryCard
+          title="Tự kiểm tra cảm xúc"
+          body="Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán."
+          href="/student/self-checks"
+          historyHref="/student/self-checks/history"
+          historyLabel="Xem lịch sử tự kiểm tra"
+        />
+        <WellbeingEntryCard
+          title="Tình huống luyện tập"
+          body="Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."
+          href="/student/scenarios"
+          historyHref="/student/scenarios/history"
+          historyLabel="Xem lịch sử tình huống"
+        />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
         <LinkedAdultGroup title="Giáo viên hỗ trợ" adults={teachers} />
         <LinkedAdultGroup title="Phụ huynh hỗ trợ" adults={parents} />
       </div>
     </section>
+  );
+}
+
+function WellbeingEntryCard({
+  title,
+  body,
+  href,
+  historyHref,
+  historyLabel,
+}: {
+  title: string;
+  body: string;
+  href: string;
+  historyHref: string;
+  historyLabel: string;
+}) {
+  return (
+    <article className="rounded-3xl bg-white p-6 shadow-sm">
+      <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href={href}>
+        {title}
+      </Link>
+      <p className="mt-3 text-body">{body}</p>
+      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={historyHref}>
+        {historyLabel}
+      </Link>
+    </article>
   );
 }
 
@@ -78,7 +121,7 @@ function LinkedAdultGroup({ title, adults }: { title: string; adults: LinkedAdul
     return <EmptyState heading={title} body="Chưa có người lớn hỗ trợ được liên kết trong mục này." />;
   }
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-sm">
+    <section className="rounded-3xl bg-white p-6 shadow-sm">
       <h2 className="text-heading">{title}</h2>
       <div className="mt-4 space-y-3">
         {adults.map((adult) => (
