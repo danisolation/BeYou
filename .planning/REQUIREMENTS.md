@@ -78,8 +78,8 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 - [x] **ADMIN-02**: Admin can create and edit self-check tests, questions, answer choices, scoring values, and risk thresholds.
 - [x] **ADMIN-03**: Admin can create and edit scenarios, response choices, feedback, lessons, and skill tags.
 - [ ] **ADMIN-04**: Admin can manage chatbot safety/content configuration without exposing secrets or bypassing backend guardrails.
-- [ ] **ADMIN-05**: Admin can view aggregate reports for user counts, self-check usage, risk-level distribution, SOS counts, and popular scenarios.
-- [ ] **ADMIN-06**: Reports avoid raw sensitive exports and avoid exposing identifiable mental-health detail beyond authorized purpose.
+- [x] **ADMIN-05**: Admin can view aggregate reports for user counts, self-check usage, risk-level distribution, SOS counts, and popular scenarios.
+- [x] **ADMIN-06**: Reports avoid raw sensitive exports and avoid exposing identifiable mental-health detail beyond authorized purpose.
 
 ## v2 Requirements
 
@@ -172,8 +172,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHAT-05 | Phase 5 | Complete |
 | CHAT-06 | Phase 5 | Complete |
 | ADMIN-04 | Phase 5 | Complete |
-| ADMIN-05 | Phase 6 | Pending |
-| ADMIN-06 | Phase 6 | Pending |
+| ADMIN-05 | Phase 6 | Complete |
+| ADMIN-06 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 47 total
@@ -182,4 +182,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-20*
-*Last updated: 2026-05-21 after Phase 5 completion*
+*Last updated: 2026-05-21 after Phase 6 completion*

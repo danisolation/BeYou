@@ -18,6 +18,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Phase 3 implemented student self-checks, scenario practice, summary-only adult visibility, audited content management, seeded demo wellbeing content, and approved UAT for supportive UI tone.
 - [x] Phase 4 implemented confirmed SOS alerts, in-app linked-adult notifications, visible status workflow, teacher handling controls, parent read-only status, summary-only adult support views, and metadata-only SOS audit.
 - [x] Phase 5 implemented backend-only supportive chatbot gateway, provider abstraction, server-side guardrails, high-risk escalation guidance, student-owned transcript access, and admin-editable safety copy/config without exposing API keys.
+- [x] Phase 6 implemented admin privacy-limited aggregate reports with small-group suppression, demo/real filtering, metadata-only audit, and no raw sensitive exports or per-student risk drilldowns.
 
 ### Active
 
@@ -30,8 +31,8 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Teachers can view managed students, warning levels, SOS alerts, and support summaries.
 - [x] Parents can view linked student alerts and permitted recent assessment results.
 - [x] Admins can manage chatbot safety copy/config.
-- [ ] Admins can view privacy-limited aggregate reports.
-- [ ] Sensitive student psychology data is implemented with strict authorization, encrypted passwords, and private-by-default visibility.
+- [x] Admins can view privacy-limited aggregate reports.
+- [x] Sensitive student psychology data is implemented with strict authorization, encrypted passwords, and private-by-default visibility.
 
 ### Out of Scope
 
@@ -87,6 +88,7 @@ The backend must be Python. Chatbot integration should use freemodel.dev as the 
 | Keep SOS as a visible status workflow | Students and adults need to see `sent` → `received` → `supporting` → `completed`, not a fire-and-forget alert | - Validated in Phase 4 |
 | Keep chatbot API keys backend-only | Frontend must call the Python gateway; provider secrets stay server-side and never appear in UI/API schemas | - Validated in Phase 5 |
 | Keep chatbot transcripts student-owned | Adults/admins can manage safety configuration and see metadata-only safety signals, but not raw student chat content | - Validated in Phase 5 |
+| Keep aggregate reports privacy-limited | Admin reporting should improve support capacity, not expose raw sensitive content or rank students by risk | - Validated in Phase 6 |
 
 ## Evolution
 
@@ -106,4 +108,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-21 after Phase 5 completion*
+*Last updated: 2026-05-21 after Phase 6 completion*

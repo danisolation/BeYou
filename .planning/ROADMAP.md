@@ -128,7 +128,7 @@ Plans:
 **Depends on:** Phase 5  
 **Requirements:** ADMIN-05, ADMIN-06  
 **UI hint**: yes  
-**Status:** Pending
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Admin can view aggregate reports for user counts, self-check usage, risk-level distribution, SOS counts, and popular scenarios.
@@ -136,7 +136,12 @@ Plans:
 3. Reports avoid exposing identifiable mental-health detail beyond authorized purpose.
 4. Adult/admin dashboards remain support-oriented, not surveillance or risk leaderboards.
 
-**Plans:** TBD
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 06-01-PLAN.md - Backend aggregate reports API
+- [x] 06-02-PLAN.md - Admin reports frontend UI
+- [x] 06-03-PLAN.md - Review, E2E, verification, and phase closure
 
 ## Traceability
 
@@ -187,8 +192,8 @@ Plans:
 | CHAT-05 | Phase 5 | Complete |
 | CHAT-06 | Phase 5 | Complete |
 | ADMIN-04 | Phase 5 | Complete |
-| ADMIN-05 | Phase 6 | Pending |
-| ADMIN-06 | Phase 6 | Pending |
+| ADMIN-05 | Phase 6 | Complete |
+| ADMIN-06 | Phase 6 | Complete |
 
 **Coverage:**
 - v1 requirements: 47 total
