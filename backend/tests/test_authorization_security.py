@@ -167,6 +167,23 @@ def test_csrf_helper_rejects_invalid_origin() -> None:
     assert exc_info.value.status_code == 403
 
 
+def test_csrf_helper_accepts_configured_extra_frontend_origin(monkeypatch: pytest.MonkeyPatch) -> None:
+    get_settings.cache_clear()
+    monkeypatch.setenv("FRONTEND_ORIGIN", "http://localhost:3003")
+    monkeypatch.setenv("FRONTEND_ORIGINS", "http://127.0.0.1:3003")
+    request = Request(
+        {
+            "type": "http",
+            "method": "POST",
+            "path": "/api/auth/login",
+            "headers": [(b"origin", b"http://127.0.0.1:3003")],
+        }
+    )
+
+    require_same_site_mutation(request, get_settings())
+    get_settings.cache_clear()
+
+
 def test_authorization_denies_unlinked_adult_and_allows_active_teacher_link(db: OrmSession) -> None:
     student = _user(db, email="student-authz@example.test", role=UserRole.STUDENT.value)
     linked_teacher = _user(db, email="teacher-authz@example.test", role=UserRole.TEACHER.value)

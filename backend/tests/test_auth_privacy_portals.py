@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session as OrmSession
 
+from app.core.config import get_settings
 from app.core.security import LOGIN_RATE_LIMIT_MAX_ATTEMPTS, hash_password, reset_login_failures
 from app.db.models import (
     AccountStatus,
@@ -24,7 +25,7 @@ from app.db.models import (
     UserRole,
 )
 from app.db.session import SessionLocal
-from app.main import app
+from app.main import app, create_app
 from app.services.privacy import NOTICE_VERSION
 
 FRONTEND_ORIGIN = "http://localhost:3000"
@@ -293,6 +294,24 @@ def test_cors_allows_configured_origin_and_rejects_unlisted_origin(client: TestC
     assert allowed_response.headers["access-control-allow-credentials"] == "true"
     assert denied_response.status_code == 400
     assert "access-control-allow-origin" not in denied_response.headers
+
+
+def test_cors_allows_extra_configured_frontend_origins(monkeypatch: pytest.MonkeyPatch) -> None:
+    get_settings.cache_clear()
+    monkeypatch.setenv("FRONTEND_ORIGIN", "http://localhost:3003")
+    monkeypatch.setenv("FRONTEND_ORIGINS", "http://127.0.0.1:3003")
+    with TestClient(create_app()) as test_client:
+        allowed_response = test_client.options(
+            "/api/auth/me",
+            headers={
+                "Origin": "http://127.0.0.1:3003",
+                "Access-Control-Request-Method": "GET",
+            },
+        )
+
+    assert allowed_response.status_code == 200
+    assert allowed_response.headers["access-control-allow-origin"] == "http://127.0.0.1:3003"
+    get_settings.cache_clear()
 
 
 def test_mutating_cookie_auth_endpoint_rejects_bad_origin(

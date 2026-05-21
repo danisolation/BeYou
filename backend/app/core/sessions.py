@@ -122,7 +122,7 @@ def require_same_site_mutation(request: Request, settings: Settings) -> None:
 
     origin = request.headers.get("origin")
     fetch_site = request.headers.get("sec-fetch-site")
-    origin_allowed = origin == settings.frontend_origin
+    origin_allowed = origin in settings.allowed_frontend_origins
     fetch_site_allowed = fetch_site in {"same-origin", "same-site"}
     if not origin_allowed and not fetch_site_allowed:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
