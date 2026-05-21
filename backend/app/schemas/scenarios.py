@@ -96,3 +96,7 @@ class ScenarioHistoryItem(BaseModel):
         return _validate_signal(value) if value is not None else None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class ScenarioHistoryListResponse(BaseModel):
+    items: list[ScenarioHistoryItem]
