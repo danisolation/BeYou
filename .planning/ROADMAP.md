@@ -67,7 +67,16 @@
 4. Student can browse scenarios, choose a response, and receive feedback, recommended response, lesson, and skill tag.
 5. Admin can create and edit tests, questions, choices, scoring thresholds, scenarios, choices, feedback, lessons, and skill tags.
 
-**Plans:** TBD
+**Plans:** 7 plans
+
+Plans:
+- [ ] 03-01-PLAN.md - Backend domain models, migration, authorization, and router contracts
+- [ ] 03-02-PLAN.md - Student self-check scoring, result, history, and detail APIs
+- [ ] 03-03-PLAN.md - Student scenario browse, feedback, and history APIs
+- [ ] 03-04-PLAN.md - Adult summary-only self-check APIs with audit
+- [ ] 03-05-PLAN.md - Admin content APIs, lifecycle validation, audit, and demo seed
+- [ ] 03-06-PLAN.md - Student self-check and scenario frontend flows
+- [ ] 03-07-PLAN.md - Adult/admin frontend and final E2E/security verification
 
 ### Phase 4: SOS Workflow & Adult Support Portals
 
