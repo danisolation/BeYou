@@ -64,6 +64,7 @@ export default function SelfCheckHistoryPage() {
               <p className="mt-3 text-body">{item.state_label}</p>
               {item.supportive_headline ? <p className="mt-2 text-body">{item.supportive_headline}</p> : null}
               {item.suggested_next_action ? <p className="mt-2 text-label">{item.suggested_next_action}</p> : null}
+              <span className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent">Xem chi tiết</span>
             </Link>
           ))}
         </section>

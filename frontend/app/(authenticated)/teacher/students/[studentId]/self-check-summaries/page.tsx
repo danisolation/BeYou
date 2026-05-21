@@ -11,7 +11,7 @@ import {
 } from "@/lib/adult-summary-api";
 
 type PageProps = {
-  params: { studentId: string };
+  params: { studentId: string } | Promise<{ studentId: string }>;
 };
 
 function testName(summary: AdultSelfCheckSummaryItem) {
@@ -54,14 +54,15 @@ export function AdultSummaryDetail({
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    loadSummary(params.studentId)
+    Promise.resolve(params)
+      .then(({ studentId }) => loadSummary(studentId))
       .then((response) => {
         setSummary(response);
         setHasError(false);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [loadSummary, params.studentId]);
+  }, [loadSummary, params]);
 
   if (isLoading) {
     return <p>Đang tải thông tin...</p>;

@@ -13,7 +13,7 @@ import {
 } from "@/lib/wellbeing-api";
 
 type PageProps = {
-  params: { scenarioId: string };
+  params: { scenarioId: string } | Promise<{ scenarioId: string }>;
 };
 
 function signalLabel(signal: ScenarioFeedback["signal"]) {
@@ -28,16 +28,21 @@ export default function ScenarioDetailPage({ params }: PageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [scenarioId, setScenarioId] = useState("");
 
   useEffect(() => {
-    getScenario(params.scenarioId)
+    Promise.resolve(params)
+      .then(({ scenarioId: resolvedScenarioId }) => {
+        setScenarioId(resolvedScenarioId);
+        return getScenario(resolvedScenarioId);
+      })
       .then((detail) => {
         setScenario(detail);
         setHasError(false);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [params.scenarioId]);
+  }, [params]);
 
   async function submitChoice() {
     if (!selectedChoiceId) {
@@ -46,7 +51,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
     }
     setIsSubmitting(true);
     try {
-      const result = await submitScenarioAttempt(params.scenarioId, selectedChoiceId);
+      const result = await submitScenarioAttempt(scenarioId, selectedChoiceId);
       setFeedback(result);
       setMessage("");
     } catch {

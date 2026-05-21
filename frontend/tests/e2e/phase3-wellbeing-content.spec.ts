@@ -42,7 +42,7 @@ test.describe("phase3-wellbeing-content", () => {
     await page.getByRole("button", { name: "Gửi câu trả lời" }).click();
     await expect(page).toHaveURL(/\/student\/self-checks\/results\//);
     await expect(page.getByText("Điểm tham khảo")).toBeVisible();
-    await expect(page.getByText(/Em đang|Có một vài|Em không cần|Điều em đang/)).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Em đang|Có một vài|Em không cần|Điều em đang/ })).toBeVisible();
 
     await page.goto("/student/self-checks/history");
     await expect(page.getByText("Lịch sử tự kiểm tra")).toBeVisible();
@@ -58,12 +58,13 @@ test.describe("phase3-wellbeing-content", () => {
     await page.goto("/student/scenarios");
     await expect(page.getByText("Tình huống luyện tập")).toBeVisible();
     await page.getByRole("link", { name: "Xem tình huống" }).first().click();
+    await page.locator('input[name="scenario-choice"]').first().check();
     await page.getByRole("button", { name: "Chọn cách phản hồi này" }).first().click();
 
     await expect(page.getByText("Gợi ý sau lựa chọn của em")).toBeVisible();
     await expect(page.getByText("Cách phản hồi nên thử")).toBeVisible();
     await expect(page.getByText("Điều em có thể rút ra")).toBeVisible();
-    await expect(page.getByText("Kỹ năng liên quan")).toBeVisible();
+    await expect(page.getByText("Kỹ năng liên quan").first()).toBeVisible();
 
     await page.goto("/student/scenarios/history");
     await expect(page.getByText("Lịch sử tình huống")).toBeVisible();

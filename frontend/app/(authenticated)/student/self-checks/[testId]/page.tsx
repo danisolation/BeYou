@@ -13,7 +13,7 @@ import {
 } from "@/lib/wellbeing-api";
 
 type PageProps = {
-  params: { testId: string };
+  params: { testId: string } | Promise<{ testId: string }>;
 };
 
 export default function SelfCheckTakePage({ params }: PageProps) {
@@ -27,14 +27,15 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    getSelfCheck(params.testId)
+    Promise.resolve(params)
+      .then(({ testId }) => getSelfCheck(testId))
       .then((detail) => {
-        setTest(detail);
-        setHasError(false);
+          setTest(detail);
+          setHasError(false);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [params.testId]);
+  }, [params]);
 
   const questions = useMemo(() => test?.questions ?? [], [test]);
   const currentQuestion = questions[currentIndex];

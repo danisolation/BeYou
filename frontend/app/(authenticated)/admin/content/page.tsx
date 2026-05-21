@@ -74,7 +74,13 @@ const emptyScenario: AdminScenarioContent = {
   is_demo: false,
   choices: [
     { text: "", signal: "constructive", feedback: "", sort_order: 1, is_demo: false },
-    { text: "", signal: "risky", feedback: "", sort_order: 2, is_demo: false },
+    {
+      text: "Em đi theo dù không thoải mái.",
+      signal: "risky",
+      feedback: "Lựa chọn này có thể khiến tình huống khó hơn; em có thể dừng lại và tìm người hỗ trợ.",
+      sort_order: 2,
+      is_demo: false,
+    },
   ],
 };
 
@@ -230,15 +236,31 @@ export default function AdminContentPage() {
   }
 
   async function saveSelfCheckDraft() {
-    await runAction(() =>
-      selfCheckDraft.id ? updateAdminSelfCheck(selfCheckDraft.id, selfCheckDraft) : createAdminSelfCheck(selfCheckDraft),
-    );
+    try {
+      setError("");
+      const saved = selfCheckDraft.id
+        ? await updateAdminSelfCheck(selfCheckDraft.id, selfCheckDraft)
+        : await createAdminSelfCheck(selfCheckDraft);
+      const loadedSelfChecks = await listAdminSelfChecks();
+      setSelfChecks(loadedSelfChecks);
+      setSelfCheckDraft(cloneSelfCheck(saved));
+    } catch {
+      setError("Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.");
+    }
   }
 
   async function saveScenarioDraft() {
-    await runAction(() =>
-      scenarioDraft.id ? updateAdminScenario(scenarioDraft.id, scenarioDraft) : createAdminScenario(scenarioDraft),
-    );
+    try {
+      setError("");
+      const saved = scenarioDraft.id
+        ? await updateAdminScenario(scenarioDraft.id, scenarioDraft)
+        : await createAdminScenario(scenarioDraft);
+      const loadedScenarios = await listAdminScenarios();
+      setScenarios(loadedScenarios);
+      setScenarioDraft(cloneScenario(saved));
+    } catch {
+      setError("Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.");
+    }
   }
 
   async function handleConfirm() {
@@ -281,7 +303,13 @@ export default function AdminContentPage() {
         <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
           <div>
             <h2 className="text-heading">Quản lý bài tự kiểm tra</h2>
-            <p className="mt-2 text-body">Tạo bài tự kiểm tra</p>
+            <button
+              type="button"
+              onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
+              className="mt-3 min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+            >
+              Tạo bài tự kiểm tra
+            </button>
           </div>
           {selfChecks.length === 0 && !isLoading ? (
             <EmptyState heading="Chưa có bài tự kiểm tra" body="Tạo bản nháp đầu tiên để chuẩn bị nội dung hỗ trợ học sinh." />
@@ -390,7 +418,13 @@ export default function AdminContentPage() {
         <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
           <div>
             <h2 className="text-heading">Quản lý tình huống</h2>
-            <p className="mt-2 text-body">Tạo tình huống</p>
+            <button
+              type="button"
+              onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
+              className="mt-3 min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+            >
+              Tạo tình huống
+            </button>
           </div>
           {scenarios.length === 0 && !isLoading ? (
             <EmptyState heading="Chưa có tình huống" body="Tạo bản nháp tình huống để học sinh luyện cách phản hồi an toàn hơn." />

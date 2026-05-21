@@ -9,6 +9,15 @@ from app.db.models import (
     AuditEvent,
     LinkStatus,
     PrivacyAcknowledgement,
+    Scenario,
+    ScenarioAttempt,
+    ScenarioChoice,
+    SelfCheckAttempt,
+    SelfCheckAttemptAnswer,
+    SelfCheckChoice,
+    SelfCheckQuestion,
+    SelfCheckTest,
+    SelfCheckThreshold,
     Session as UserSession,
     StudentAdultLink,
     User,
@@ -24,7 +33,22 @@ ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN}
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        for model in (AuditEvent, StudentAdultLink, PrivacyAcknowledgement, UserSession, User):
+        for model in (
+            ScenarioAttempt,
+            ScenarioChoice,
+            Scenario,
+            SelfCheckAttemptAnswer,
+            SelfCheckAttempt,
+            SelfCheckThreshold,
+            SelfCheckChoice,
+            SelfCheckQuestion,
+            SelfCheckTest,
+            AuditEvent,
+            StudentAdultLink,
+            PrivacyAcknowledgement,
+            UserSession,
+            User,
+        ):
             db.execute(delete(model))
         db.commit()
 

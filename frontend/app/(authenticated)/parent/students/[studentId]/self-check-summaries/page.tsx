@@ -6,7 +6,7 @@ import {
 import { getParentSelfCheckSummaries, type AdultSelfCheckSummaryResponse } from "@/lib/adult-summary-api";
 
 type PageProps = {
-  params: { studentId: string };
+  params: { studentId: string } | Promise<{ studentId: string }>;
 };
 
 export default function ParentSummaryPage({ params }: PageProps) {

@@ -7,7 +7,7 @@ import { EmptyState } from "@/components/empty-state";
 import { getSelfCheckAttemptDetail, type SelfCheckAttemptDetail } from "@/lib/wellbeing-api";
 
 type PageProps = {
-  params: { attemptId: string };
+  params: { attemptId: string } | Promise<{ attemptId: string }>;
 };
 
 export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
@@ -16,14 +16,15 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    getSelfCheckAttemptDetail(params.attemptId)
+    Promise.resolve(params)
+      .then(({ attemptId }) => getSelfCheckAttemptDetail(attemptId))
       .then((detail) => {
         setAttempt(detail);
         setHasError(false);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, [params.attemptId]);
+  }, [params]);
 
   if (isLoading) {
     return <p>Đang tải thông tin...</p>;
