@@ -27,20 +27,20 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 
 ### Self-Checks
 
-- [ ] **TEST-01**: Student can view active self-check tests.
-- [ ] **TEST-02**: Student can answer multiple-choice self-check questions.
-- [ ] **TEST-03**: Backend calculates self-check score and risk level from submitted answers.
-- [ ] **TEST-04**: Student sees score, risk level, short comment, advice, positive content, and suggested next action after completing a self-check.
-- [ ] **TEST-05**: Student can view self-check history with date, test type, score, risk level, and advice summary.
-- [ ] **TEST-06**: Teacher and parent views show only permitted self-check summaries, not raw answers or full private detail by default.
+- [x] **TEST-01**: Student can view active self-check tests.
+- [x] **TEST-02**: Student can answer multiple-choice self-check questions.
+- [x] **TEST-03**: Backend calculates self-check score and risk level from submitted answers.
+- [x] **TEST-04**: Student sees score, risk level, short comment, advice, positive content, and suggested next action after completing a self-check.
+- [x] **TEST-05**: Student can view self-check history with date, test type, score, risk level, and advice summary.
+- [x] **TEST-06**: Teacher and parent views show only permitted self-check summaries, not raw answers or full private detail by default.
 
 ### School Scenarios
 
-- [ ] **SCEN-01**: Student can browse published school-pressure scenarios.
-- [ ] **SCEN-02**: Student can open a scenario and read the title, situation description, and response choices.
-- [ ] **SCEN-03**: Student receives feedback explaining whether the selected response is constructive or risky.
-- [ ] **SCEN-04**: Student sees the recommended response, lesson learned, and related skill such as saying no, emotion regulation, seeking help, or positive communication.
-- [ ] **SCEN-05**: System saves scenario attempt history for the student.
+- [x] **SCEN-01**: Student can browse published school-pressure scenarios.
+- [x] **SCEN-02**: Student can open a scenario and read the title, situation description, and response choices.
+- [x] **SCEN-03**: Student receives feedback explaining whether the selected response is constructive or risky.
+- [x] **SCEN-04**: Student sees the recommended response, lesson learned, and related skill such as saying no, emotion regulation, seeking help, or positive communication.
+- [x] **SCEN-05**: System saves scenario attempt history for the student.
 
 ### Chatbot
 
@@ -75,8 +75,8 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 ### Admin & Reports
 
 - [x] **ADMIN-01**: Admin can create, edit, disable, and delete user accounts.
-- [ ] **ADMIN-02**: Admin can create and edit self-check tests, questions, answer choices, scoring values, and risk thresholds.
-- [ ] **ADMIN-03**: Admin can create and edit scenarios, response choices, feedback, lessons, and skill tags.
+- [x] **ADMIN-02**: Admin can create and edit self-check tests, questions, answer choices, scoring values, and risk thresholds.
+- [x] **ADMIN-03**: Admin can create and edit scenarios, response choices, feedback, lessons, and skill tags.
 - [ ] **ADMIN-04**: Admin can manage chatbot safety/content configuration without exposing secrets or bypassing backend guardrails.
 - [ ] **ADMIN-05**: Admin can view aggregate reports for user counts, self-check usage, risk-level distribution, SOS counts, and popular scenarios.
 - [ ] **ADMIN-06**: Reports avoid raw sensitive exports and avoid exposing identifiable mental-health detail beyond authorized purpose.
@@ -140,19 +140,19 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-05 | Phase 2 | Complete |
 | AUTH-06 | Phase 2 | Complete |
 | ADMIN-01 | Phase 2 | Complete |
-| TEST-01 | Phase 3 | Pending |
-| TEST-02 | Phase 3 | Pending |
-| TEST-03 | Phase 3 | Pending |
-| TEST-04 | Phase 3 | Pending |
-| TEST-05 | Phase 3 | Pending |
-| TEST-06 | Phase 3 | Pending |
-| SCEN-01 | Phase 3 | Pending |
-| SCEN-02 | Phase 3 | Pending |
-| SCEN-03 | Phase 3 | Pending |
-| SCEN-04 | Phase 3 | Pending |
-| SCEN-05 | Phase 3 | Pending |
-| ADMIN-02 | Phase 3 | Pending |
-| ADMIN-03 | Phase 3 | Pending |
+| TEST-01 | Phase 3 | Complete |
+| TEST-02 | Phase 3 | Complete |
+| TEST-03 | Phase 3 | Complete |
+| TEST-04 | Phase 3 | Complete |
+| TEST-05 | Phase 3 | Complete |
+| TEST-06 | Phase 3 | Complete |
+| SCEN-01 | Phase 3 | Complete |
+| SCEN-02 | Phase 3 | Complete |
+| SCEN-03 | Phase 3 | Complete |
+| SCEN-04 | Phase 3 | Complete |
+| SCEN-05 | Phase 3 | Complete |
+| ADMIN-02 | Phase 3 | Complete |
+| ADMIN-03 | Phase 3 | Complete |
 | SOS-01 | Phase 4 | Pending |
 | SOS-02 | Phase 4 | Pending |
 | SOS-03 | Phase 4 | Pending |

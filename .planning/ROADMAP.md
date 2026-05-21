@@ -70,7 +70,7 @@
 **Plans:** 7 plans
 
 Plans:
-- [ ] 03-01-PLAN.md - Backend domain models, migration, authorization, and router contracts
+- [x] 03-01-PLAN.md - Backend domain models, migration, authorization, and router contracts
 - [ ] 03-02-PLAN.md - Student self-check scoring, result, history, and detail APIs
 - [ ] 03-03-PLAN.md - Student scenario browse, feedback, and history APIs
 - [ ] 03-04-PLAN.md - Adult summary-only self-check APIs with audit
