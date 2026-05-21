@@ -53,6 +53,10 @@ class SelfCheckTestListItem(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class SelfCheckTestDetailResponse(SelfCheckTestListItem):
+    questions: list[SelfCheckQuestionResponse]
+
+
 class SelfCheckAnswerSubmit(BaseModel):
     question_id: uuid.UUID
     choice_id: uuid.UUID
@@ -101,6 +105,10 @@ class SelfCheckHistoryItem(BaseModel):
         return _validate_state_label(value)
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class SelfCheckHistoryListResponse(BaseModel):
+    items: list[SelfCheckHistoryItem]
 
 
 class SelfCheckAttemptAnswerResponse(BaseModel):
