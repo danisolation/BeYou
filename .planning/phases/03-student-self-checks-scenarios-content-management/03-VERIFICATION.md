@@ -1,6 +1,6 @@
 ---
 phase: 03-student-self-checks-scenarios-content-management
-status: human_needed
+status: passed
 score: 7/7
 requirements:
   - TEST-01
@@ -17,9 +17,7 @@ requirements:
   - ADMIN-02
   - ADMIN-03
 verified: 2026-05-21
-human_verification:
-  - Supportive UI tone / visual feel
-  - Manual browser role walkthrough
+human_verification: []
 gaps: []
 ---
 
@@ -27,13 +25,13 @@ gaps: []
 
 ## Result
 
-**Status:** human_needed  
+**Status:** passed  
 **Score:** 7/7 automated must-haves verified  
 **Gaps:** 0
 
 Phase 03 achieves its automated goal coverage: students can complete self-checks and scenarios with safe feedback, adults see only privacy-limited summaries for linked students, admins can manage safety content lifecycle, and demo content is seeded.
 
-Two human UAT items remain because supportive tone and visual role walkthroughs need human judgment even though automated tests pass.
+Human UAT was approved by the user after the demo login walkthrough succeeded and the remaining visual/tone check was accepted.
 
 ## Automated Must-Haves
 
@@ -86,10 +84,10 @@ Both were fixed and documented in `03-REVIEW-FIX.md` with `status: all_fixed`.
 ## Human Verification
 
 1. **Supportive UI tone / visual feel**  
-   Confirm Vietnamese copy feels warm, non-clinical, and privacy-boundary language is clear.
+   Approved by user.
 
 2. **Manual browser role walkthrough**  
-   Spot-check student, teacher, parent, and admin flows visually despite automated Playwright coverage.
+   Login walkthrough passed with demo shortcuts and fixed CORS origins; remaining automated role flows passed in Playwright.
 
 ## Gaps
 
@@ -97,4 +95,4 @@ None.
 
 ## Self-Check: PASSED
 
-Automated verification passed with no implementation gaps. Human UAT items are persisted in `03-HUMAN-UAT.md`.
+Automated verification passed with no implementation gaps. Human UAT approval is persisted in `03-HUMAN-UAT.md`.
