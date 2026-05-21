@@ -219,11 +219,11 @@ Plan these checks:
 | V7 Error Handling/Logging | Yes | No raw sensitive data in audit/log metadata |
 | V8 Data Protection | Yes | Raw answers private; snapshots minimized for adult summaries |
 
-## Open Questions for Planner Defaults
+## Open Questions (RESOLVED)
 
-1. **Threshold editing UI:** Use guided buckets with validation because labels are fixed.
-2. **Demo attempts:** Seed attempts for at least one self-check and enough records to exercise latest + recent adult summary behavior.
-3. **Admin student-result views:** Do not build admin student-result views in Phase 3; admin content management is in scope, admin result reporting is Phase 6.
+1. **Threshold editing UI:** RESOLVED: Use guided buckets with validation because labels are fixed.
+2. **Demo attempts:** RESOLVED: Seed attempts for at least one self-check and enough records to exercise latest + recent adult summary behavior.
+3. **Admin student-result views:** RESOLVED: Do not build admin student-result views in Phase 3; admin content management is in scope, admin result reporting is Phase 6.
 
 ## Key Findings
 
