@@ -8,6 +8,9 @@ import SelfCheckHistoryPage from "@/app/(authenticated)/student/self-checks/hist
 import SelfCheckResultPage from "@/app/(authenticated)/student/self-checks/results/[attemptId]/page";
 import SelfCheckTakePage from "@/app/(authenticated)/student/self-checks/[testId]/page";
 import SelfCheckListPage from "@/app/(authenticated)/student/self-checks/page";
+import ScenarioDetailPage from "@/app/(authenticated)/student/scenarios/[scenarioId]/page";
+import ScenarioHistoryPage from "@/app/(authenticated)/student/scenarios/history/page";
+import ScenarioListPage from "@/app/(authenticated)/student/scenarios/page";
 import {
   listScenarioHistory,
   listScenarios,
@@ -323,5 +326,116 @@ describe("student self-check UI flow", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Hôm nay em thấy thế nào?")).toBeInTheDocument();
     expect(screen.getByText("Khá ổn")).toBeInTheDocument();
+  });
+});
+
+describe("student scenario UI flow", () => {
+  beforeEach(() => {
+    push.mockReset();
+    vi.restoreAllMocks();
+  });
+
+  it("lists scenarios with skill tags, demo badges, and history link", async () => {
+    mockFetch({
+      "/api/student/scenarios": [
+        {
+          id: "scenario-1",
+          title: "Khi bạn rủ rê bỏ tiết",
+          situation: "Một nhóm bạn muốn em bỏ tiết để đi chơi.",
+          skill_tag: "Từ chối an toàn",
+          status: "published",
+          is_demo: true,
+        },
+      ],
+    });
+
+    render(<ScenarioListPage />);
+
+    expect(await screen.findByText("Tình huống luyện tập")).toBeInTheDocument();
+    expect(
+      screen.getByText("Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Từ chối an toàn")).toBeInTheDocument();
+    expect(screen.getByText("Demo")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem tình huống" })).toHaveAttribute(
+      "href",
+      "/student/scenarios/scenario-1",
+    );
+    expect(screen.getByRole("link", { name: "Xem lịch sử tình huống" })).toHaveAttribute(
+      "href",
+      "/student/scenarios/history",
+    );
+  });
+
+  it("saves one scenario response and shows constructive feedback snapshots", async () => {
+    mockFetch({
+      "/api/student/scenarios/scenario-1": {
+        id: "scenario-1",
+        title: "Khi bạn rủ rê bỏ tiết",
+        situation: "Một nhóm bạn muốn em bỏ tiết để đi chơi.",
+        skill_tag: "Từ chối an toàn",
+        status: "published",
+        is_demo: true,
+        recommended_response: "Em có thể nói em muốn vào lớp và hẹn gặp sau giờ học.",
+        lesson: "Nói rõ ranh giới giúp em giữ an toàn mà vẫn tôn trọng bạn.",
+        choices: [
+          {
+            id: "choice-1",
+            text: "Em nói nhẹ nhàng rằng em muốn vào lớp.",
+            signal: "constructive",
+            feedback: "Lựa chọn này có điểm tích cực vì em nói rõ điều mình cần.",
+            sort_order: 1,
+            is_demo: true,
+          },
+          {
+            id: "choice-2",
+            text: "Em im lặng đi theo nhóm.",
+            signal: "risky",
+            feedback: "Lựa chọn này có thể khiến tình huống khó hơn vì em chưa nói điều mình cần.",
+            sort_order: 2,
+            is_demo: true,
+          },
+        ],
+      },
+      "/api/student/scenarios/scenario-1/attempts": {
+        attempt_id: "attempt-1",
+        scenario_id: "scenario-1",
+        selected_choice_id: "choice-1",
+        selected_choice: "Em nói nhẹ nhàng rằng em muốn vào lớp.",
+        signal: "constructive",
+        feedback: "Lựa chọn này có điểm tích cực vì em nói rõ điều mình cần.",
+        recommended_response: "Em có thể nói em muốn vào lớp và hẹn gặp sau giờ học.",
+        lesson: "Nói rõ ranh giới giúp em giữ an toàn mà vẫn tôn trọng bạn.",
+        skill_tag: "Từ chối an toàn",
+        completed_at: "2026-05-21T00:00:00Z",
+        is_demo: true,
+      },
+    });
+
+    render(<ScenarioDetailPage params={{ scenarioId: "scenario-1" }} />);
+
+    expect(await screen.findByText("Khi bạn rủ rê bỏ tiết")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("radio", { name: "Em nói nhẹ nhàng rằng em muốn vào lớp." }));
+    await userEvent.click(screen.getByRole("button", { name: "Chọn cách phản hồi này" }));
+
+    expect(await screen.findByText("Gợi ý sau lựa chọn của em")).toBeInTheDocument();
+    expect(screen.getByText("Lựa chọn có điểm tích cực")).toBeInTheDocument();
+    expect(screen.getByText("Cách phản hồi nên thử")).toBeInTheDocument();
+    expect(screen.getByText("Điều em có thể rút ra")).toBeInTheDocument();
+    expect(screen.getByText("Kỹ năng liên quan")).toBeInTheDocument();
+    expect(screen.getByText("Từ chối an toàn")).toBeInTheDocument();
+  });
+
+  it("shows empty scenario history with exact supportive copy", async () => {
+    mockFetch({
+      "/api/student/scenarios/history": { items: [] },
+    });
+
+    render(<ScenarioHistoryPage />);
+
+    expect(await screen.findByText("Em chưa thử tình huống nào")).toBeInTheDocument();
+    expect(
+      screen.getByText("Sau khi chọn cách phản hồi trong một tình huống, lịch sử luyện tập sẽ hiển thị ở đây."),
+    ).toBeInTheDocument();
   });
 });
