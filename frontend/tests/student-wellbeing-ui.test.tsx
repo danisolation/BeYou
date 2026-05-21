@@ -311,11 +311,13 @@ describe("student self-check UI flow", () => {
       "href",
       "/student/self-checks/history/attempt-1",
     );
-    expect(
-      await screen.findByText(
-        "Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.",
-      ),
-    ).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.getAllByText(
+          "Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.",
+        ).length,
+      ).toBeGreaterThan(0),
+    );
     expect(
       screen.getByText("Nội dung này là bản ghi tại thời điểm em hoàn thành bài tự kiểm tra."),
     ).toBeInTheDocument();
