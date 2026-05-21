@@ -232,6 +232,7 @@ def test_admin_content_service_validates_lifecycle_audits_and_draft_delete(db: O
         "admin_safety_content_changed",
         "admin_safety_content_changed",
         "admin_safety_content_changed",
+        "admin_safety_content_changed",
     ]
     assert {event.resource_type for event in events} == {"self_check_content"}
     assert {event.metadata_summary["content_type"] for event in events} == {"self_check_content"}
