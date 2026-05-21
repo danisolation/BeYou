@@ -179,38 +179,58 @@ export default function AdminContentPage() {
   function updateSelfCheckQuestion(value: string) {
     setSelfCheckDraft((current) => ({
       ...current,
-      questions: [{ ...(current.questions[0] ?? emptySelfCheck.questions[0]), text: value }],
+      questions:
+        current.questions.length > 0
+          ? current.questions.map((question, index) => (index === 0 ? { ...question, text: value } : question))
+          : [{ ...emptySelfCheck.questions[0], text: value }],
     }));
   }
 
   function updateSelfCheckChoice(field: "text" | "score_value", value: string) {
     setSelfCheckDraft((current) => {
-      const question = current.questions[0] ?? emptySelfCheck.questions[0];
-      const choice = question.choices[0] ?? emptySelfCheck.questions[0].choices[0];
+      const updateChoice = (choice = emptySelfCheck.questions[0].choices[0]) => ({
+        ...choice,
+        [field]: field === "score_value" ? Number(value) : value,
+      });
+      const updateQuestion = (question = emptySelfCheck.questions[0]) => ({
+        ...question,
+        choices:
+          question.choices.length > 0
+            ? question.choices.map((choice, index) => (index === 0 ? updateChoice(choice) : choice))
+            : [updateChoice()],
+      });
+
       return {
         ...current,
-        questions: [
-          {
-            ...question,
-            choices: [{ ...choice, [field]: field === "score_value" ? Number(value) : value }, ...question.choices.slice(1)],
-          },
-        ],
+        questions:
+          current.questions.length > 0
+            ? current.questions.map((question, index) => (index === 0 ? updateQuestion(question) : question))
+            : [updateQuestion()],
       };
     });
   }
 
   function updateThreshold(field: keyof AdminSelfCheckContent["thresholds"][number], value: string) {
     setSelfCheckDraft((current) => {
-      const threshold = current.thresholds[0] ?? emptySelfCheck.thresholds[0];
       const numericFields = ["min_score", "max_score"];
       return {
         ...current,
-        thresholds: [
-          {
-            ...threshold,
-            [field]: numericFields.includes(String(field)) ? Number(value) : value,
-          },
-        ],
+        thresholds:
+          current.thresholds.length > 0
+            ? current.thresholds.map((threshold, index) =>
+                index === 0
+                  ? {
+                      ...threshold,
+                      [field]: numericFields.includes(String(field)) ? Number(value) : value,
+                    }
+                  : threshold,
+              )
+            : [
+                {
+                  ...emptySelfCheck.thresholds[0],
+                  [field]: numericFields.includes(String(field)) ? Number(value) : value,
+                },
+              ],
       };
     });
   }

@@ -12,6 +12,8 @@ import {
   archiveAdminScenario,
   createAdminSelfCheck,
   deleteDraftAdminSelfCheck,
+  type AdminScenarioContent,
+  type AdminSelfCheckContent,
   listAdminScenarios,
   listAdminSelfChecks,
   publishAdminSelfCheck,
@@ -154,7 +156,7 @@ describe("adult summary-only UI", () => {
   });
 });
 
-const selfCheckContent = {
+const selfCheckContent: AdminSelfCheckContent = {
   id: "self-check-1",
   title: "Sức khỏe cảm xúc",
   description: "Một bài ngắn để học sinh nhìn lại cảm xúc.",
@@ -190,7 +192,7 @@ const selfCheckContent = {
   ],
 };
 
-const scenarioContent = {
+const scenarioContent: AdminScenarioContent = {
   id: "scenario-1",
   title: "Rủ rê sau giờ học",
   situation: "Bạn rủ em làm điều em chưa sẵn sàng.",
@@ -317,6 +319,75 @@ describe("admin content management UI", () => {
     expect(screen.getAllByRole("button", { name: "Xuất bản" })[0]).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Lưu trữ" })[0]).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp chưa dùng" })).toBeInTheDocument();
+  });
+
+  it("preserves existing self-check questions, choices, and thresholds when saving a single edited field", async () => {
+    const multiQuestionSelfCheck = {
+      ...selfCheckContent,
+      questions: [
+        ...selfCheckContent.questions,
+        {
+          id: "question-2",
+          text: "Em có người lớn tin cậy để trò chuyện không?",
+          sort_order: 2,
+          is_demo: true,
+          choices: [{ id: "choice-3", text: "Có", score_value: 0, sort_order: 1, is_demo: true }],
+        },
+      ],
+      thresholds: [
+        ...selfCheckContent.thresholds,
+        {
+          id: "threshold-2",
+          state_label: "Can chu y",
+          min_score: 2,
+          max_score: 3,
+          comment: "Em nên chú ý thêm.",
+          advice: "Chọn một người lớn tin cậy để chia sẻ.",
+          positive_content: "Em đang lắng nghe cảm xúc của mình.",
+          suggested_next_action: "Thử ghi lại điều em cần hỗ trợ.",
+          is_demo: true,
+        },
+      ],
+    };
+    const fetchMock = mockFetch({
+      "/api/admin/content/self-checks": [multiQuestionSelfCheck],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/self-checks/self-check-1": multiQuestionSelfCheck,
+    });
+
+    render(<AdminContentPage />);
+
+    const questionField = await screen.findByLabelText("Câu hỏi tự kiểm tra");
+    await userEvent.clear(questionField);
+    await userEvent.type(questionField, "Câu hỏi đã cập nhật");
+    await userEvent.clear(screen.getByLabelText("Lựa chọn trả lời"));
+    await userEvent.type(screen.getByLabelText("Lựa chọn trả lời"), "Câu trả lời đã cập nhật");
+    await userEvent.clear(screen.getByLabelText("Điểm tối thiểu"));
+    await userEvent.type(screen.getByLabelText("Điểm tối thiểu"), "1");
+    await userEvent.click(screen.getByRole("button", { name: "Lưu bản nháp" }));
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:8000/api/admin/content/self-checks/self-check-1",
+        expect.objectContaining({ method: "PATCH" }),
+      ),
+    );
+    const updateCall = fetchMock.mock.calls.find(
+      ([url, init]) =>
+        url === "http://localhost:8000/api/admin/content/self-checks/self-check-1" &&
+        init?.method === "PATCH",
+    );
+    const payload = JSON.parse(String(updateCall?.[1]?.body));
+
+    expect(payload.questions).toHaveLength(2);
+    expect(payload.questions[0].text).toBe("Câu hỏi đã cập nhật");
+    expect(payload.questions[0].choices).toHaveLength(2);
+    expect(payload.questions[0].choices[0].text).toBe("Câu trả lời đã cập nhật");
+    expect(payload.questions[0].choices[1]).toMatchObject({ id: "choice-2", text: "Cần thêm hỗ trợ" });
+    expect(payload.questions[1]).toMatchObject({ id: "question-2", text: "Em có người lớn tin cậy để trò chuyện không?" });
+    expect(payload.thresholds).toHaveLength(2);
+    expect(payload.thresholds[0].min_score).toBe(1);
+    expect(payload.thresholds[1]).toMatchObject({ id: "threshold-2", state_label: "Can chu y" });
   });
 
   it("shows exact destructive confirmation copy before archive and delete draft", async () => {
