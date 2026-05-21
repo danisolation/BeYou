@@ -44,12 +44,12 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 
 ### Chatbot
 
-- [ ] **CHAT-01**: Student can chat with a supportive chatbot through the Python backend.
-- [ ] **CHAT-02**: Backend integrates freemodel.dev through a provider abstraction so the LLM provider can be swapped later.
-- [ ] **CHAT-03**: Frontend never receives or exposes the freemodel.dev API key.
-- [ ] **CHAT-04**: Chatbot presents itself as supportive first response only, not as a therapist, doctor, or diagnostic tool.
-- [ ] **CHAT-05**: Backend detects high-risk chat messages using safety rules before and after the LLM response.
-- [ ] **CHAT-06**: When high-risk content is detected, chatbot returns supportive escalation guidance and suggests SOS or a trusted adult instead of continuing unrestricted advice.
+- [x] **CHAT-01**: Student can chat with a supportive chatbot through the Python backend.
+- [x] **CHAT-02**: Backend integrates freemodel.dev through a provider abstraction so the LLM provider can be swapped later.
+- [x] **CHAT-03**: Frontend never receives or exposes the freemodel.dev API key.
+- [x] **CHAT-04**: Chatbot presents itself as supportive first response only, not as a therapist, doctor, or diagnostic tool.
+- [x] **CHAT-05**: Backend detects high-risk chat messages using safety rules before and after the LLM response.
+- [x] **CHAT-06**: When high-risk content is detected, chatbot returns supportive escalation guidance and suggests SOS or a trusted adult instead of continuing unrestricted advice.
 
 ### SOS
 
@@ -77,7 +77,7 @@ Requirements for the MVP demo with complete core flows and production-minded pri
 - [x] **ADMIN-01**: Admin can create, edit, disable, and delete user accounts.
 - [x] **ADMIN-02**: Admin can create and edit self-check tests, questions, answer choices, scoring values, and risk thresholds.
 - [x] **ADMIN-03**: Admin can create and edit scenarios, response choices, feedback, lessons, and skill tags.
-- [ ] **ADMIN-04**: Admin can manage chatbot safety/content configuration without exposing secrets or bypassing backend guardrails.
+- [x] **ADMIN-04**: Admin can manage chatbot safety/content configuration without exposing secrets or bypassing backend guardrails.
 - [x] **ADMIN-05**: Admin can view aggregate reports for user counts, self-check usage, risk-level distribution, SOS counts, and popular scenarios.
 - [x] **ADMIN-06**: Reports avoid raw sensitive exports and avoid exposing identifiable mental-health detail beyond authorized purpose.
 
