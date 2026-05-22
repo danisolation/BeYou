@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: none
-milestone_name: Planning next milestone
-status: ready_for_new_milestone
-stopped_at: v1.1 complete, archived, and ready for next milestone definition
-last_updated: "2026-05-22T10:55:00+07:00"
+milestone: v1.2
+milestone_name: Trusted Adult Plan & Mood Check-ins
+status: defining_requirements
+stopped_at: Milestone v1.2 started; requirements and roadmap pending
+last_updated: "2026-05-22T11:05:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 0
@@ -17,15 +17,15 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing v1.1  
-**Status:** ready for next milestone definition
+**Last updated:** 2026-05-22 after starting v1.2  
+**Status:** defining requirements
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 - Trusted Adult Plan & Mood Check-ins
 
 ## Planning Artifacts
 
@@ -34,8 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Roadmap index | `.planning/ROADMAP.md` | Current |
-| Current requirements | `.planning/REQUIREMENTS.md` | Not created; next milestone starts fresh |
+| Current requirements | `.planning/REQUIREMENTS.md` | Pending creation |
+| Current roadmap | `.planning/ROADMAP.md` | Pending roadmap |
 | v1.1 roadmap archive | `.planning/milestones/v1.1-ROADMAP.md` | Archived |
 | v1.1 requirements archive | `.planning/milestones/v1.1-REQUIREMENTS.md` | Archived |
 | v1.1 audit archive | `.planning/milestones/v1.1-MILESTONE-AUDIT.md` | Passed |
@@ -53,40 +53,45 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-No active phase is selected. The next roadmap should continue from Phase 12 after `/gsd-new-milestone` defines the next milestone requirements.
+Phase: Not started (defining requirements)  
+Plan: -  
+Status: Defining requirements  
+Last activity: 2026-05-22 - Milestone v1.2 started
 
-## Last Milestone Verification
+## Milestone Goal
 
-- v1.1 audit: passed
-- Requirements: 30/30 satisfied
-- Phases: 5/5 complete
-- Integration flows: 4/4 passed
-- Latest regression snapshot: backend pytest `88 passed`, frontend Vitest `57 passed`, frontend build passed
+Help students build a proactive support plan and share lightweight mood trends with trusted adults before concerns escalate into SOS situations.
+
+## Target Features
+
+- Student-owned trusted adult plan from existing linked adults.
+- Lightweight daily/weekly mood check-ins with student-owned history and optional private notes.
+- Privacy-preserving adult support summaries and suggested supportive actions.
+- Admin-safe prompt/guidance configuration and metadata-only audit.
 
 ## Key Decisions
 
 | Decision | Outcome |
 |---|---|
-| Continue phase numbering from v1.0 | v1.1 used Phases 7-11; next milestone should start at Phase 12 |
-| Keep in-app SOS as source of truth | Email is optional backend-owned delivery readiness only |
-| Use metadata-only operations visibility | Admin support/ops views do not expose raw sensitive student content |
-| Prefer additive backend/frontend slices | v1.1 hardened validated v1.0 flows without rewrites |
-| Use local outbox for dev email | Prevents accidental real-world SOS emails in local/demo contexts |
+| Continue phase numbering from v1.1 | v1.2 should start at Phase 12 |
+| Choose proactive support over external channels | Trusted adult plan and mood check-ins deepen support without adding Zalo/SMS/push risk |
+| Keep in-app SOS as source of truth | New support flows complement SOS and do not replace it |
+| Preserve metadata-only operations | Adult/admin visibility must avoid raw private notes, raw answers, exports, leaderboards, and drilldowns |
 
 ## Known Tech Debt
 
-- None blocking v1.1 completion.
+- None blocking v1.2 planning.
 - Deferred future work remains: notification retry queues, Zalo/SMS/push channels, reason-for-access prompts, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: v1.1 archived; next action is fresh milestone planning  
+Stopped at: v1.2 milestone started; requirements and roadmap pending  
 Resume file: none
 
 ## Next Action
 
-Run:
+Continue:
 
 ```text
 /gsd-new-milestone

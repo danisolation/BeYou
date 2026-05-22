@@ -40,6 +40,16 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.1 phase artifacts: `.planning/milestones/v1.1-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
+## Current Milestone: v1.2 Trusted Adult Plan & Mood Check-ins
+
+**Goal:** Help students build a proactive support plan and share lightweight mood trends with trusted adults before concerns escalate into SOS situations.
+
+**Target features:**
+- Student-owned trusted adult plan that lets students choose linked adults, support preferences, boundaries, and what kind of help they want in difficult moments.
+- Lightweight daily/weekly mood check-ins with supportive Vietnamese copy, low-friction inputs, optional private notes, and student-owned history/trends.
+- Privacy-preserving adult support summaries that show trends and suggested supportive actions without exposing raw notes, raw answers, or punitive risk rankings.
+- Admin-safe configuration and metadata audit for check-in prompts/support guidance without adding surveillance dashboards or raw exports.
+
 ## Requirements
 
 ### Validated in v1.0
@@ -61,9 +71,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Active
 
-No active milestone requirements are defined. The next milestone should create a fresh `.planning/REQUIREMENTS.md` via `/gsd-new-milestone`.
-
-Potential future directions already captured in archives include notification channels, trusted-adult plans, mood check-ins, counselor handoff, reason-for-access prompts, multi-school tenancy, and production identity providers.
+- [ ] Students can create and update a trusted adult support plan from existing linked adults.
+- [ ] Students can complete lightweight mood check-ins and review their own check-in history/trends.
+- [ ] Teachers and parents can see privacy-preserving check-in/support summaries for linked students without raw private notes.
+- [ ] Admins can configure support-plan/check-in guidance and inspect metadata-only activity safely.
+- [ ] New support-plan/check-in flows preserve BeYou's privacy-by-default, non-clinical, support-not-surveillance boundaries.
 
 ### Out of Scope
 
@@ -135,7 +147,7 @@ Roles:
 
 ## Next Milestone Goals
 
-No next milestone has been selected. Run `/gsd-new-milestone` to define fresh requirements and a roadmap. Good candidates are the deferred future requirements above.
+v1.2 focuses on trusted adult planning and lightweight mood check-ins. The milestone should deepen proactive support while preserving in-app SOS as canonical, keeping raw student notes student-owned, and avoiding surveillance-oriented adult/admin views.
 
 ## Evolution
 
@@ -155,4 +167,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after completing v1.1 milestone*
+*Last updated: 2026-05-22 after starting v1.2 milestone*
