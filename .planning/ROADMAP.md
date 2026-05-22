@@ -3,7 +3,7 @@
 **Created:** 2026-05-22  
 **Granularity:** Coarse  
 **Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
-**Coverage:** 24/24 v1.2 requirements mapped; 5/24 complete
+**Coverage:** 24/24 v1.2 requirements mapped; 10/24 complete
 
 ## Phase Overview
 
@@ -17,7 +17,7 @@
 ## Phase Checklist
 
 - [x] Phase 12: Trusted Adult Support Plan
-- [ ] Phase 13: Mood Check-ins & Student History
+- [x] Phase 13: Mood Check-ins & Student History
 - [ ] Phase 14: Adult Support Summaries
 - [ ] Phase 15: Admin Configuration & Metadata Operations Closure
 
@@ -50,7 +50,7 @@ Plans:
 **Depends on:** Phase 12  
 **Requirements:** MOOD-01, MOOD-02, MOOD-03, MOOD-04, MOOD-05  
 **UI hint:** yes  
-**Status:** Not started
+**Status:** Complete
 
 **Success criteria:**
 1. Student can submit non-clinical mood, energy, stress, and context inputs.
@@ -58,12 +58,12 @@ Plans:
 3. Student can review timestamped check-in history, trend labels, and supportive next steps.
 4. High-concern check-ins suggest trusted-adult contact and SOS without automatically sending SOS.
 
-**Plans:** 0/3 complete
+**Plans:** 3/3 complete
 
 Plans:
-- [ ] 13-01-PLAN.md - Mood check-in backend domain, APIs, trend summaries, and audit
-- [ ] 13-02-PLAN.md - Student check-in, history, and supportive guidance UI
-- [ ] 13-03-PLAN.md - Mood privacy, repeat-entry, no-auto-SOS regression, review, and closure
+- [x] 13-01-PLAN.md - Mood check-in backend domain, APIs, trend summaries, and audit
+- [x] 13-02-PLAN.md - Student check-in, history, and supportive guidance UI
+- [x] 13-03-PLAN.md - Mood privacy, repeat-entry, no-auto-SOS regression, review, and closure
 
 ### Phase 14: Adult Support Summaries
 
@@ -116,11 +116,11 @@ Plans:
 | PLAN-03 | Phase 12 | Complete |
 | PLAN-04 | Phase 12 | Complete |
 | PLAN-05 | Phase 12 | Complete |
-| MOOD-01 | Phase 13 | Pending |
-| MOOD-02 | Phase 13 | Pending |
-| MOOD-03 | Phase 13 | Pending |
-| MOOD-04 | Phase 13 | Pending |
-| MOOD-05 | Phase 13 | Pending |
+| MOOD-01 | Phase 13 | Complete |
+| MOOD-02 | Phase 13 | Complete |
+| MOOD-03 | Phase 13 | Complete |
+| MOOD-04 | Phase 13 | Complete |
+| MOOD-05 | Phase 13 | Complete |
 | ADULT-01 | Phase 14 | Pending |
 | ADULT-02 | Phase 14 | Pending |
 | ADULT-03 | Phase 14 | Pending |
@@ -139,7 +139,7 @@ Plans:
 **Coverage:**
 - v1.2 requirements: 24 total
 - Mapped to phases: 24
-- Complete: 5
+- Complete: 10
 - Unmapped: 0
 
 ## Assumptions
@@ -151,4 +151,4 @@ Plans:
 - Admin configuration belongs late in the milestone so prompts/guidance can reflect the student and adult flows already built.
 
 ---
-*Last updated: 2026-05-22 after Phase 12 completion*
+*Last updated: 2026-05-22 after Phase 13 completion*

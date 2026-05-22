@@ -17,11 +17,11 @@ Requirements for Trusted Adult Plan & Mood Check-ins. Each maps to exactly one r
 
 ### Mood Check-ins
 
-- [ ] **MOOD-01**: Student can complete a lightweight mood check-in with non-clinical mood, energy, stress, and context inputs.
-- [ ] **MOOD-02**: Student can add an optional private note to a mood check-in that remains student-only by default.
-- [ ] **MOOD-03**: Student can review their own mood check-in history with timestamps, trend labels, and supportive non-clinical guidance.
-- [ ] **MOOD-04**: System handles repeat same-day check-ins predictably by showing timestamps and preserving each submitted entry.
-- [ ] **MOOD-05**: High-concern check-ins suggest trusted-adult contact and SOS options without automatically sending SOS or alerting adults.
+- [x] **MOOD-01**: Student can complete a lightweight mood check-in with non-clinical mood, energy, stress, and context inputs.
+- [x] **MOOD-02**: Student can add an optional private note to a mood check-in that remains student-only by default.
+- [x] **MOOD-03**: Student can review their own mood check-in history with timestamps, trend labels, and supportive non-clinical guidance.
+- [x] **MOOD-04**: System handles repeat same-day check-ins predictably by showing timestamps and preserving each submitted entry.
+- [x] **MOOD-05**: High-concern check-ins suggest trusted-adult contact and SOS options without automatically sending SOS or alerting adults.
 
 ### Adult Support Summaries
 
@@ -93,11 +93,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PLAN-03 | Phase 12 | Complete |
 | PLAN-04 | Phase 12 | Complete |
 | PLAN-05 | Phase 12 | Complete |
-| MOOD-01 | Phase 13 | Pending |
-| MOOD-02 | Phase 13 | Pending |
-| MOOD-03 | Phase 13 | Pending |
-| MOOD-04 | Phase 13 | Pending |
-| MOOD-05 | Phase 13 | Pending |
+| MOOD-01 | Phase 13 | Complete |
+| MOOD-02 | Phase 13 | Complete |
+| MOOD-03 | Phase 13 | Complete |
+| MOOD-04 | Phase 13 | Complete |
+| MOOD-05 | Phase 13 | Complete |
 | ADULT-01 | Phase 14 | Pending |
 | ADULT-02 | Phase 14 | Pending |
 | ADULT-03 | Phase 14 | Pending |
@@ -120,4 +120,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 12 completion*
+*Last updated: 2026-05-22 after Phase 13 completion*
