@@ -18,13 +18,13 @@ Requirements for Production Hardening & Support Polish. Each maps to exactly one
 
 ### SOS Email Notification Readiness
 
-- [ ] **EMAIL-01**: Backend can run SOS email delivery in disabled, local outbox, or SMTP mode using server-only configuration.
-- [ ] **EMAIL-02**: Confirmed SOS alert still persists and creates in-app linked-adult notifications when email is disabled or fails.
-- [ ] **EMAIL-03**: When email is enabled, backend creates minimal SOS email attempts for authorized linked adults only after the canonical SOS alert is persisted.
-- [ ] **EMAIL-04**: Local/dev mode records SOS email attempts in a safe outbox without sending real messages.
-- [ ] **EMAIL-05**: System records SOS email delivery metadata including alert, recipient role/id, channel, provider, status, timestamps, and error category without raw student content.
-- [ ] **EMAIL-06**: Email provider failure records failed delivery metadata and audit without rolling back the SOS workflow or changing SOS status.
-- [ ] **EMAIL-07**: Email messages, delivery logs, and frontend responses never expose raw SOS notes, self-check answers, chatbot transcripts, or provider credentials.
+- [x] **EMAIL-01**: Backend can run SOS email delivery in disabled, local outbox, or SMTP mode using server-only configuration.
+- [x] **EMAIL-02**: Confirmed SOS alert still persists and creates in-app linked-adult notifications when email is disabled or fails.
+- [x] **EMAIL-03**: When email is enabled, backend creates minimal SOS email attempts for authorized linked adults only after the canonical SOS alert is persisted.
+- [x] **EMAIL-04**: Local/dev mode records SOS email attempts in a safe outbox without sending real messages.
+- [x] **EMAIL-05**: System records SOS email delivery metadata including alert, recipient role/id, channel, provider, status, timestamps, and error category without raw student content.
+- [x] **EMAIL-06**: Email provider failure records failed delivery metadata and audit without rolling back the SOS workflow or changing SOS status.
+- [x] **EMAIL-07**: Email messages, delivery logs, and frontend responses never expose raw SOS notes, self-check answers, chatbot transcripts, or provider credentials.
 
 ### Role and Privacy UX
 
@@ -104,13 +104,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | READY-04 | Phase 7 | Complete |
 | READY-05 | Phase 7 | Complete |
 | READY-06 | Phase 7 | Complete |
-| EMAIL-01 | Phase 8 | Pending |
-| EMAIL-02 | Phase 8 | Pending |
-| EMAIL-03 | Phase 8 | Pending |
-| EMAIL-04 | Phase 8 | Pending |
-| EMAIL-05 | Phase 8 | Pending |
-| EMAIL-06 | Phase 8 | Pending |
-| EMAIL-07 | Phase 8 | Pending |
+| EMAIL-01 | Phase 8 | Complete |
+| EMAIL-02 | Phase 8 | Complete |
+| EMAIL-03 | Phase 8 | Complete |
+| EMAIL-04 | Phase 8 | Complete |
+| EMAIL-05 | Phase 8 | Complete |
+| EMAIL-06 | Phase 8 | Complete |
+| EMAIL-07 | Phase 8 | Complete |
 | UX-01 | Phase 9 | Pending |
 | UX-02 | Phase 9 | Pending |
 | UX-03 | Phase 9 | Pending |
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-21*
-*Last updated: 2026-05-21 after Phase 7 completion*
+*Last updated: 2026-05-21 after Phase 8 completion*
 

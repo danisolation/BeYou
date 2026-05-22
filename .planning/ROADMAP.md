@@ -3,7 +3,7 @@
 **Created:** 2026-05-21  
 **Granularity:** Coarse  
 **Milestone:** v1.1 Production Hardening & Support Polish  
-**Coverage:** 30/30 v1.1 requirements mapped; 6/30 complete
+**Coverage:** 30/30 v1.1 requirements mapped; 13/30 complete
 
 ## Phase Overview
 
@@ -18,7 +18,7 @@
 ## Phase Checklist
 
 - [x] Phase 7: Production Readiness & Safe Operations Foundation
-- [ ] Phase 8: Backend-Owned SOS Email Notification Readiness
+- [x] Phase 8: Backend-Owned SOS Email Notification Readiness
 - [ ] Phase 9: Role & Privacy UX Polish
 - [ ] Phase 10: Nested Admin Content Editing
 - [ ] Phase 11: Metadata-Only Operational Visibility
@@ -53,7 +53,7 @@ Plans:
 **Depends on:** Phase 7  
 **Requirements:** EMAIL-01, EMAIL-02, EMAIL-03, EMAIL-04, EMAIL-05, EMAIL-06, EMAIL-07  
 **UI hint:** yes  
-**Status:** Pending
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Backend supports disabled, local outbox, and SMTP modes through server-only config.
@@ -62,7 +62,12 @@ Plans:
 4. Local/dev mode captures attempts safely without sending real emails.
 5. Delivery metadata and audit exclude raw student content and credentials.
 
-**Plans:** 0/0 pending
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 08-01-PLAN.md - Delivery model and backend email service
+- [x] 08-02-PLAN.md - SOS integration and failure isolation
+- [x] 08-03-PLAN.md - Regression, review, verification, and closure
 
 ### Phase 9: Role & Privacy UX Polish
 
@@ -125,13 +130,13 @@ Plans:
 | READY-04 | Phase 7 | Complete |
 | READY-05 | Phase 7 | Complete |
 | READY-06 | Phase 7 | Complete |
-| EMAIL-01 | Phase 8 | Pending |
-| EMAIL-02 | Phase 8 | Pending |
-| EMAIL-03 | Phase 8 | Pending |
-| EMAIL-04 | Phase 8 | Pending |
-| EMAIL-05 | Phase 8 | Pending |
-| EMAIL-06 | Phase 8 | Pending |
-| EMAIL-07 | Phase 8 | Pending |
+| EMAIL-01 | Phase 8 | Complete |
+| EMAIL-02 | Phase 8 | Complete |
+| EMAIL-03 | Phase 8 | Complete |
+| EMAIL-04 | Phase 8 | Complete |
+| EMAIL-05 | Phase 8 | Complete |
+| EMAIL-06 | Phase 8 | Complete |
+| EMAIL-07 | Phase 8 | Complete |
 | UX-01 | Phase 9 | Pending |
 | UX-02 | Phase 9 | Pending |
 | UX-03 | Phase 9 | Pending |
@@ -153,7 +158,7 @@ Plans:
 **Coverage:**
 - v1.1 requirements: 30 total
 - Mapped to phases: 30
-- Complete: 6
+- Complete: 13
 - Unmapped: 0
 
 ## Assumptions
