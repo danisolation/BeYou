@@ -3,7 +3,7 @@
 **Created:** 2026-05-22  
 **Granularity:** Coarse  
 **Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
-**Coverage:** 24/24 v1.2 requirements mapped; 10/24 complete
+**Coverage:** 24/24 v1.2 requirements mapped; 15/24 complete
 
 ## Phase Overview
 
@@ -18,7 +18,7 @@
 
 - [x] Phase 12: Trusted Adult Support Plan
 - [x] Phase 13: Mood Check-ins & Student History
-- [ ] Phase 14: Adult Support Summaries
+- [x] Phase 14: Adult Support Summaries
 - [ ] Phase 15: Admin Configuration & Metadata Operations Closure
 
 ## Phase Details
@@ -71,7 +71,7 @@ Plans:
 **Depends on:** Phases 12, 13  
 **Requirements:** ADULT-01, ADULT-02, ADULT-03, ADULT-04, ADULT-05  
 **UI hint:** yes  
-**Status:** Not started
+**Status:** Complete
 
 **Success criteria:**
 1. Teacher and parent access is limited to linked/managed students.
@@ -79,12 +79,12 @@ Plans:
 3. Adult APIs and UI exclude raw private notes and raw check-in details.
 4. Unauthorized adult access is denied without sensitive existence leakage.
 
-**Plans:** 0/3 complete
+**Plans:** 3/3 complete
 
 Plans:
-- [ ] 14-01-PLAN.md - Adult support summary backend APIs and authorization
-- [ ] 14-02-PLAN.md - Teacher and parent support summary UI
-- [ ] 14-03-PLAN.md - Adult privacy regression, role-copy review, verification, and closure
+- [x] 14-01-PLAN.md - Adult support summary backend APIs and authorization
+- [x] 14-02-PLAN.md - Teacher and parent support summary UI
+- [x] 14-03-PLAN.md - Adult privacy regression, role-copy review, verification, and closure
 
 ### Phase 15: Admin Configuration & Metadata Operations Closure
 
@@ -121,11 +121,11 @@ Plans:
 | MOOD-03 | Phase 13 | Complete |
 | MOOD-04 | Phase 13 | Complete |
 | MOOD-05 | Phase 13 | Complete |
-| ADULT-01 | Phase 14 | Pending |
-| ADULT-02 | Phase 14 | Pending |
-| ADULT-03 | Phase 14 | Pending |
-| ADULT-04 | Phase 14 | Pending |
-| ADULT-05 | Phase 14 | Pending |
+| ADULT-01 | Phase 14 | Complete |
+| ADULT-02 | Phase 14 | Complete |
+| ADULT-03 | Phase 14 | Complete |
+| ADULT-04 | Phase 14 | Complete |
+| ADULT-05 | Phase 14 | Complete |
 | ADMIN-01 | Phase 15 | Pending |
 | ADMIN-02 | Phase 15 | Pending |
 | ADMIN-03 | Phase 15 | Pending |
@@ -139,7 +139,7 @@ Plans:
 **Coverage:**
 - v1.2 requirements: 24 total
 - Mapped to phases: 24
-- Complete: 10
+- Complete: 15
 - Unmapped: 0
 
 ## Assumptions
@@ -151,4 +151,4 @@ Plans:
 - Admin configuration belongs late in the milestone so prompts/guidance can reflect the student and adult flows already built.
 
 ---
-*Last updated: 2026-05-22 after Phase 13 completion*
+*Last updated: 2026-05-22 after Phase 14 completion*

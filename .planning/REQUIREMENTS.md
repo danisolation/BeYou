@@ -25,11 +25,11 @@ Requirements for Trusted Adult Plan & Mood Check-ins. Each maps to exactly one r
 
 ### Adult Support Summaries
 
-- [ ] **ADULT-01**: Teacher can view privacy-preserving support plan and mood trend summaries only for students they are linked to or manage.
-- [ ] **ADULT-02**: Parent can view privacy-preserving support plan and mood trend summaries only for linked students.
-- [ ] **ADULT-03**: Adult summaries include shareable support preferences, recent trend direction, recency, and suggested supportive actions without raw private notes.
-- [ ] **ADULT-04**: Wrong-role, unlinked, or unauthorized adult access is denied without leaking whether a student or sensitive resource exists.
-- [ ] **ADULT-05**: Adult support UI copy stays supportive and summary-only, avoiding diagnosis, discipline, raw exports, risk leaderboards, or per-student surveillance language.
+- [x] **ADULT-01**: Teacher can view privacy-preserving support plan and mood trend summaries only for students they are linked to or manage.
+- [x] **ADULT-02**: Parent can view privacy-preserving support plan and mood trend summaries only for linked students.
+- [x] **ADULT-03**: Adult summaries include shareable support preferences, recent trend direction, recency, and suggested supportive actions without raw private notes.
+- [x] **ADULT-04**: Wrong-role, unlinked, or unauthorized adult access is denied without leaking whether a student or sensitive resource exists.
+- [x] **ADULT-05**: Adult support UI copy stays supportive and summary-only, avoiding diagnosis, discipline, raw exports, risk leaderboards, or per-student surveillance language.
 
 ### Admin Configuration and Operations
 
@@ -98,11 +98,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MOOD-03 | Phase 13 | Complete |
 | MOOD-04 | Phase 13 | Complete |
 | MOOD-05 | Phase 13 | Complete |
-| ADULT-01 | Phase 14 | Pending |
-| ADULT-02 | Phase 14 | Pending |
-| ADULT-03 | Phase 14 | Pending |
-| ADULT-04 | Phase 14 | Pending |
-| ADULT-05 | Phase 14 | Pending |
+| ADULT-01 | Phase 14 | Complete |
+| ADULT-02 | Phase 14 | Complete |
+| ADULT-03 | Phase 14 | Complete |
+| ADULT-04 | Phase 14 | Complete |
+| ADULT-05 | Phase 14 | Complete |
 | ADMIN-01 | Phase 15 | Pending |
 | ADMIN-02 | Phase 15 | Pending |
 | ADMIN-03 | Phase 15 | Pending |
@@ -120,4 +120,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 13 completion*
+*Last updated: 2026-05-22 after Phase 14 completion*
