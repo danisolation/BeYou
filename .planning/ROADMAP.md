@@ -3,7 +3,7 @@
 **Created:** 2026-05-22  
 **Granularity:** Coarse  
 **Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
-**Coverage:** 24/24 v1.2 requirements mapped; 15/24 complete
+**Coverage:** 24/24 v1.2 requirements mapped; 24/24 complete
 
 ## Phase Overview
 
@@ -19,7 +19,7 @@
 - [x] Phase 12: Trusted Adult Support Plan
 - [x] Phase 13: Mood Check-ins & Student History
 - [x] Phase 14: Adult Support Summaries
-- [ ] Phase 15: Admin Configuration & Metadata Operations Closure
+- [x] Phase 15: Admin Configuration & Metadata Operations Closure
 
 ## Phase Details
 
@@ -92,7 +92,7 @@ Plans:
 **Depends on:** Phases 12, 13, 14  
 **Requirements:** ADMIN-01, ADMIN-02, ADMIN-03, ADMIN-04, ADMIN-05, SAFE-01, SAFE-02, SAFE-03, SAFE-04  
 **UI hint:** yes  
-**Status:** Not started
+**Status:** Complete
 
 **Success criteria:**
 1. Admin can manage and preview mood prompts, option labels, support guidance, sort order, and lifecycle status.
@@ -100,12 +100,12 @@ Plans:
 3. Operations visibility remains metadata-only for support plans, check-ins, adult summaries, and admin config.
 4. Tests verify privacy-ack routing, role/relationship authorization, raw-note exclusion, metadata-only audit, and no automatic SOS.
 
-**Plans:** 0/3 complete
+**Plans:** 3/3 complete
 
 Plans:
-- [ ] 15-01-PLAN.md - Admin mood prompt and guidance configuration
-- [ ] 15-02-PLAN.md - Metadata operations and audit integration
-- [ ] 15-03-PLAN.md - Cross-surface privacy regression, review, verification, and milestone closure prep
+- [x] 15-01-PLAN.md - Admin mood prompt and guidance configuration
+- [x] 15-02-PLAN.md - Metadata operations and audit integration
+- [x] 15-03-PLAN.md - Cross-surface privacy regression, review, verification, and milestone closure prep
 
 ## Traceability
 
@@ -126,20 +126,20 @@ Plans:
 | ADULT-03 | Phase 14 | Complete |
 | ADULT-04 | Phase 14 | Complete |
 | ADULT-05 | Phase 14 | Complete |
-| ADMIN-01 | Phase 15 | Pending |
-| ADMIN-02 | Phase 15 | Pending |
-| ADMIN-03 | Phase 15 | Pending |
-| ADMIN-04 | Phase 15 | Pending |
-| ADMIN-05 | Phase 15 | Pending |
-| SAFE-01 | Phase 15 | Pending |
-| SAFE-02 | Phase 15 | Pending |
-| SAFE-03 | Phase 15 | Pending |
-| SAFE-04 | Phase 15 | Pending |
+| ADMIN-01 | Phase 15 | Complete |
+| ADMIN-02 | Phase 15 | Complete |
+| ADMIN-03 | Phase 15 | Complete |
+| ADMIN-04 | Phase 15 | Complete |
+| ADMIN-05 | Phase 15 | Complete |
+| SAFE-01 | Phase 15 | Complete |
+| SAFE-02 | Phase 15 | Complete |
+| SAFE-03 | Phase 15 | Complete |
+| SAFE-04 | Phase 15 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 24 total
 - Mapped to phases: 24
-- Complete: 15
+- Complete: 24
 - Unmapped: 0
 
 ## Assumptions
@@ -151,4 +151,4 @@ Plans:
 - Admin configuration belongs late in the milestone so prompts/guidance can reflect the student and adult flows already built.
 
 ---
-*Last updated: 2026-05-22 after Phase 14 completion*
+*Last updated: 2026-05-22 after Phase 15 completion*

@@ -33,18 +33,18 @@ Requirements for Trusted Adult Plan & Mood Check-ins. Each maps to exactly one r
 
 ### Admin Configuration and Operations
 
-- [ ] **ADMIN-01**: Admin can manage mood check-in prompts, option labels, support guidance, sort order, and lifecycle status.
-- [ ] **ADMIN-02**: Admin validation blocks publishing prompts or guidance with missing options, unsafe lifecycle state, or copy that violates non-clinical support boundaries.
-- [ ] **ADMIN-03**: Admin can preview student-facing check-in prompts and adult-facing support guidance before publishing.
-- [ ] **ADMIN-04**: Admin and operations visibility for support plans and mood check-ins remains metadata-only and excludes raw notes, raw answers, exports, leaderboards, and drilldowns.
-- [ ] **ADMIN-05**: Readiness/operations audit metadata includes support-plan, check-in, adult-summary, and admin-config actions using safe counts/statuses only.
+- [x] **ADMIN-01**: Admin can manage mood check-in prompts, option labels, support guidance, sort order, and lifecycle status.
+- [x] **ADMIN-02**: Admin validation blocks publishing prompts or guidance with missing options, unsafe lifecycle state, or copy that violates non-clinical support boundaries.
+- [x] **ADMIN-03**: Admin can preview student-facing check-in prompts and adult-facing support guidance before publishing.
+- [x] **ADMIN-04**: Admin and operations visibility for support plans and mood check-ins remains metadata-only and excludes raw notes, raw answers, exports, leaderboards, and drilldowns.
+- [x] **ADMIN-05**: Readiness/operations audit metadata includes support-plan, check-in, adult-summary, and admin-config actions using safe counts/statuses only.
 
 ### Privacy and Safety Integration
 
-- [ ] **SAFE-01**: New student support-plan and mood-check-in routes remain behind authenticated role and privacy-acknowledgement gating before sensitive children render.
-- [ ] **SAFE-02**: Student-facing copy clearly explains what stays private, what may be shared with selected adults, and how SOS remains a separate explicit action.
-- [ ] **SAFE-03**: Backend response schemas for adults, admins, and operations exclude optional private notes and raw check-in details by construction.
-- [ ] **SAFE-04**: Tests cover role/relationship authorization, privacy-blocked routing, raw-note exclusion, metadata-only audit, and no automatic SOS side effects.
+- [x] **SAFE-01**: New student support-plan and mood-check-in routes remain behind authenticated role and privacy-acknowledgement gating before sensitive children render.
+- [x] **SAFE-02**: Student-facing copy clearly explains what stays private, what may be shared with selected adults, and how SOS remains a separate explicit action.
+- [x] **SAFE-03**: Backend response schemas for adults, admins, and operations exclude optional private notes and raw check-in details by construction.
+- [x] **SAFE-04**: Tests cover role/relationship authorization, privacy-blocked routing, raw-note exclusion, metadata-only audit, and no automatic SOS side effects.
 
 ## Future Requirements
 
@@ -103,15 +103,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADULT-03 | Phase 14 | Complete |
 | ADULT-04 | Phase 14 | Complete |
 | ADULT-05 | Phase 14 | Complete |
-| ADMIN-01 | Phase 15 | Pending |
-| ADMIN-02 | Phase 15 | Pending |
-| ADMIN-03 | Phase 15 | Pending |
-| ADMIN-04 | Phase 15 | Pending |
-| ADMIN-05 | Phase 15 | Pending |
-| SAFE-01 | Phase 15 | Pending |
-| SAFE-02 | Phase 15 | Pending |
-| SAFE-03 | Phase 15 | Pending |
-| SAFE-04 | Phase 15 | Pending |
+| ADMIN-01 | Phase 15 | Complete |
+| ADMIN-02 | Phase 15 | Complete |
+| ADMIN-03 | Phase 15 | Complete |
+| ADMIN-04 | Phase 15 | Complete |
+| ADMIN-05 | Phase 15 | Complete |
+| SAFE-01 | Phase 15 | Complete |
+| SAFE-02 | Phase 15 | Complete |
+| SAFE-03 | Phase 15 | Complete |
+| SAFE-04 | Phase 15 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 24 total
@@ -120,4 +120,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 14 completion*
+*Last updated: 2026-05-22 after Phase 15 completion*
