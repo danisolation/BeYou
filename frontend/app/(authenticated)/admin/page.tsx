@@ -31,6 +31,12 @@ export default function AdminDashboardPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <AdminEntryCard
+          href="/admin/operations"
+          title="Vận hành metadata-only"
+          description="Kiểm tra readiness, email SOS và audit metadata mà không mở dữ liệu riêng tư của học sinh."
+          countLabel="Operations"
+        />
+        <AdminEntryCard
           href="/admin/reports"
           title="Báo cáo tổng hợp riêng tư"
           description="Xem xu hướng tổng hợp đã ẩn nhóm nhỏ, không xuất dữ liệu thô hoặc danh sách nguy cơ."

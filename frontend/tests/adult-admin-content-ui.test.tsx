@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -349,20 +349,23 @@ describe("admin content management UI", () => {
 
     await screen.findByText("Quản lý bài tự kiểm tra");
     await userEvent.click(screen.getByRole("button", { name: "Thêm câu hỏi" }));
-    await userEvent.type(screen.getByLabelText("Câu hỏi tự kiểm tra 2"), "Em có người lớn tin cậy không?");
-    await userEvent.type(screen.getByLabelText("Lựa chọn trả lời 2.1"), "Có, em có thể nói chuyện.");
-    await userEvent.type(screen.getByLabelText("Lựa chọn trả lời 2.2"), "Chưa chắc.");
-    await userEvent.clear(screen.getByLabelText("Giá trị điểm 2.2"));
-    await userEvent.type(screen.getByLabelText("Giá trị điểm 2.2"), "2");
+    fireEvent.change(screen.getByLabelText("Câu hỏi tự kiểm tra 2"), {
+      target: { value: "Em có người lớn tin cậy không?" },
+    });
+    fireEvent.change(screen.getByLabelText("Lựa chọn trả lời 2.1"), {
+      target: { value: "Có, em có thể nói chuyện." },
+    });
+    fireEvent.change(screen.getByLabelText("Lựa chọn trả lời 2.2"), { target: { value: "Chưa chắc." } });
+    fireEvent.change(screen.getByLabelText("Giá trị điểm 2.2"), { target: { value: "2" } });
     await userEvent.click(screen.getByRole("button", { name: "Thêm ngưỡng điểm" }));
-    await userEvent.clear(screen.getByLabelText("Điểm tối thiểu 2"));
-    await userEvent.type(screen.getByLabelText("Điểm tối thiểu 2"), "2");
-    await userEvent.clear(screen.getByLabelText("Điểm tối đa 2"));
-    await userEvent.type(screen.getByLabelText("Điểm tối đa 2"), "3");
+    fireEvent.change(screen.getByLabelText("Điểm tối thiểu 2"), { target: { value: "2" } });
+    fireEvent.change(screen.getByLabelText("Điểm tối đa 2"), { target: { value: "3" } });
     await userEvent.selectOptions(screen.getByLabelText("Nhãn trạng thái 2"), "Can chu y");
-    await userEvent.type(screen.getByLabelText("Nhận xét 2"), "Em nên được hỏi thăm thêm.");
-    await userEvent.type(screen.getByLabelText("Tóm tắt gợi ý 2"), "Chọn một bước an toàn.");
-    await userEvent.type(screen.getByLabelText("Hành động tiếp theo gợi ý 2"), "Nói với người lớn tin cậy.");
+    fireEvent.change(screen.getByLabelText("Nhận xét 2"), { target: { value: "Em nên được hỏi thăm thêm." } });
+    fireEvent.change(screen.getByLabelText("Tóm tắt gợi ý 2"), { target: { value: "Chọn một bước an toàn." } });
+    fireEvent.change(screen.getByLabelText("Hành động tiếp theo gợi ý 2"), {
+      target: { value: "Nói với người lớn tin cậy." },
+    });
 
     expect(screen.getByText("Em có người lớn tin cậy không?")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Lưu bản nháp" }));
@@ -403,13 +406,15 @@ describe("admin content management UI", () => {
     render(<AdminContentPage />);
 
     await screen.findByText("Quản lý tình huống");
-    await userEvent.clear(screen.getByLabelText("Lựa chọn phản hồi 2"));
-    await userEvent.type(screen.getByLabelText("Lựa chọn phản hồi 2"), "Em dừng lại và gọi người lớn.");
-    await userEvent.clear(screen.getByLabelText("Phản hồi cho lựa chọn 2"));
-    await userEvent.type(screen.getByLabelText("Phản hồi cho lựa chọn 2"), "Dừng lại giúp em an toàn hơn.");
+    fireEvent.change(screen.getByLabelText("Lựa chọn phản hồi 2"), {
+      target: { value: "Em dừng lại và gọi người lớn." },
+    });
+    fireEvent.change(screen.getByLabelText("Phản hồi cho lựa chọn 2"), {
+      target: { value: "Dừng lại giúp em an toàn hơn." },
+    });
     await userEvent.selectOptions(screen.getByLabelText("Tín hiệu constructive/risky 2"), "constructive");
 
-    expect(screen.getByText(/Em dừng lại và gọi người lớn/)).toBeInTheDocument();
+    expect(await screen.findByText(/Em dừng lại và gọi người lớn/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Lưu bản nháp tình huống" }));
 
     await waitFor(() =>

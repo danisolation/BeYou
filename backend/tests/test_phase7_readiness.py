@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session as OrmSession
 
 from app.core.config import Settings
 from app.core.security import hash_password
-from app.db.models import AccountStatus, Session as UserSession, User, UserRole
+from app.db.models import AccountStatus, AuditEvent, Session as UserSession, User, UserRole
 from app.db.session import SessionLocal
 from app.main import app
 from app.services.readiness import evaluate_static_readiness_checks
@@ -24,6 +24,7 @@ def _cleanup_readiness_users() -> None:
             db.scalars(select(User.id).where(User.email.like("%@readiness.test"))).all()
         )
         if user_ids:
+            db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(user_ids)))
             db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
             db.execute(delete(User).where(User.id.in_(user_ids)))
         db.commit()
