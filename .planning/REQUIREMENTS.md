@@ -9,11 +9,11 @@ Requirements for Trusted Adult Plan & Mood Check-ins. Each maps to exactly one r
 
 ### Trusted Adult Support Plan
 
-- [ ] **PLAN-01**: Student can create a trusted adult support plan using only adults already linked to the student.
-- [ ] **PLAN-02**: Student can select which linked adults are part of the support plan and see clear copy explaining what each selected adult can view.
-- [ ] **PLAN-03**: Student can record shareable support preferences such as what helps, what does not help, preferred contact style, and safe timing.
-- [ ] **PLAN-04**: Student can update, pause, or deactivate the support plan without deleting historical metadata needed for audit and safety context.
-- [ ] **PLAN-05**: Support plan changes emit metadata-only audit events and never include private student notes or unshared details.
+- [x] **PLAN-01**: Student can create a trusted adult support plan using only adults already linked to the student.
+- [x] **PLAN-02**: Student can select which linked adults are part of the support plan and see clear copy explaining what each selected adult can view.
+- [x] **PLAN-03**: Student can record shareable support preferences such as what helps, what does not help, preferred contact style, and safe timing.
+- [x] **PLAN-04**: Student can update, pause, or deactivate the support plan without deleting historical metadata needed for audit and safety context.
+- [x] **PLAN-05**: Support plan changes emit metadata-only audit events and never include private student notes or unshared details.
 
 ### Mood Check-ins
 
@@ -88,11 +88,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAN-01 | Phase 12 | Pending |
-| PLAN-02 | Phase 12 | Pending |
-| PLAN-03 | Phase 12 | Pending |
-| PLAN-04 | Phase 12 | Pending |
-| PLAN-05 | Phase 12 | Pending |
+| PLAN-01 | Phase 12 | Complete |
+| PLAN-02 | Phase 12 | Complete |
+| PLAN-03 | Phase 12 | Complete |
+| PLAN-04 | Phase 12 | Complete |
+| PLAN-05 | Phase 12 | Complete |
 | MOOD-01 | Phase 13 | Pending |
 | MOOD-02 | Phase 13 | Pending |
 | MOOD-03 | Phase 13 | Pending |
@@ -120,4 +120,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after v1.2 roadmap creation*
+*Last updated: 2026-05-22 after Phase 12 completion*

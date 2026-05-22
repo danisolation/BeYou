@@ -3,7 +3,7 @@
 **Created:** 2026-05-22  
 **Granularity:** Coarse  
 **Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
-**Coverage:** 24/24 v1.2 requirements mapped; 0/24 complete
+**Coverage:** 24/24 v1.2 requirements mapped; 5/24 complete
 
 ## Phase Overview
 
@@ -16,7 +16,7 @@
 
 ## Phase Checklist
 
-- [ ] Phase 12: Trusted Adult Support Plan
+- [x] Phase 12: Trusted Adult Support Plan
 - [ ] Phase 13: Mood Check-ins & Student History
 - [ ] Phase 14: Adult Support Summaries
 - [ ] Phase 15: Admin Configuration & Metadata Operations Closure
@@ -29,7 +29,7 @@
 **Depends on:** v1.1 archive  
 **Requirements:** PLAN-01, PLAN-02, PLAN-03, PLAN-04, PLAN-05  
 **UI hint:** yes  
-**Status:** Not started
+**Status:** Complete
 
 **Success criteria:**
 1. Student can create/update a support plan using only existing linked adults.
@@ -37,12 +37,12 @@
 3. Student can store shareable support preferences and pause/deactivate the plan without deleting historical audit context.
 4. Support plan changes emit metadata-only audit events with no private notes or unshared detail.
 
-**Plans:** 0/3 complete
+**Plans:** 3/3 complete
 
 Plans:
-- [ ] 12-01-PLAN.md - Support plan backend domain, APIs, authorization, and audit
-- [ ] 12-02-PLAN.md - Student support plan UI and privacy copy
-- [ ] 12-03-PLAN.md - Support plan regression, review, verification, and closure
+- [x] 12-01-PLAN.md - Support plan backend domain, APIs, authorization, and audit
+- [x] 12-02-PLAN.md - Student support plan UI and privacy copy
+- [x] 12-03-PLAN.md - Support plan regression, review, verification, and closure
 
 ### Phase 13: Mood Check-ins & Student History
 
@@ -111,11 +111,11 @@ Plans:
 
 | Requirement | Phase | Status |
 |---|---|---|
-| PLAN-01 | Phase 12 | Pending |
-| PLAN-02 | Phase 12 | Pending |
-| PLAN-03 | Phase 12 | Pending |
-| PLAN-04 | Phase 12 | Pending |
-| PLAN-05 | Phase 12 | Pending |
+| PLAN-01 | Phase 12 | Complete |
+| PLAN-02 | Phase 12 | Complete |
+| PLAN-03 | Phase 12 | Complete |
+| PLAN-04 | Phase 12 | Complete |
+| PLAN-05 | Phase 12 | Complete |
 | MOOD-01 | Phase 13 | Pending |
 | MOOD-02 | Phase 13 | Pending |
 | MOOD-03 | Phase 13 | Pending |
@@ -139,7 +139,7 @@ Plans:
 **Coverage:**
 - v1.2 requirements: 24 total
 - Mapped to phases: 24
-- Complete: 0
+- Complete: 5
 - Unmapped: 0
 
 ## Assumptions
@@ -151,4 +151,4 @@ Plans:
 - Admin configuration belongs late in the milestone so prompts/guidance can reflect the student and adult flows already built.
 
 ---
-*Roadmap created: 2026-05-22*
+*Last updated: 2026-05-22 after Phase 12 completion*
