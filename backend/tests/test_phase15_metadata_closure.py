@@ -118,6 +118,20 @@ def _login(client: TestClient, email: str) -> None:
     assert response.status_code == 200
 
 
+def test_cors_allows_v1_2_put_mutations(client: TestClient) -> None:
+    response = client.options(
+        "/api/student/support-plan",
+        headers={
+            "Origin": FRONTEND_ORIGIN,
+            "Access-Control-Request-Method": "PUT",
+            "Access-Control-Request-Headers": "Content-Type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert "PUT" in response.headers["access-control-allow-methods"]
+
+
 def test_admin_publishes_previews_and_student_options_use_mood_config(
     db: OrmSession,
     client: TestClient,
