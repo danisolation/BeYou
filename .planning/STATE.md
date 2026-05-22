@@ -1,30 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Production Hardening & Support Polish
-status: ready_for_milestone_completion
-stopped_at: Milestone v1.1 audit passed; ready to complete milestone
-last_updated: "2026-05-22T10:45:00+07:00"
+milestone: none
+milestone_name: Planning next milestone
+status: ready_for_new_milestone
+stopped_at: v1.1 complete, archived, and ready for next milestone definition
+last_updated: "2026-05-22T10:55:00+07:00"
+last_activity: 2026-05-22
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 15
-  completed_plans: 15
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after passing milestone audit  
-**Status:** ready for milestone completion
+**Last updated:** 2026-05-22 after completing v1.1  
+**Status:** ready for next milestone definition
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-21)
+See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** v1.1 - Production Hardening & Support Polish
+**Current focus:** Planning next milestone
 
 ## Planning Artifacts
 
@@ -33,71 +34,60 @@ See: `.planning/PROJECT.md` (updated 2026-05-21)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Current requirements | `.planning/REQUIREMENTS.md` | Current |
-| Current roadmap | `.planning/ROADMAP.md` | Current |
-| v1.1 research | `.planning/research/` | Current |
+| Roadmap index | `.planning/ROADMAP.md` | Current |
+| Current requirements | `.planning/REQUIREMENTS.md` | Not created; next milestone starts fresh |
+| v1.1 roadmap archive | `.planning/milestones/v1.1-ROADMAP.md` | Archived |
+| v1.1 requirements archive | `.planning/milestones/v1.1-REQUIREMENTS.md` | Archived |
+| v1.1 audit archive | `.planning/milestones/v1.1-MILESTONE-AUDIT.md` | Passed |
+| v1.1 phase artifacts | `.planning/milestones/v1.1-phases/` | Archived |
 | v1.0 roadmap archive | `.planning/milestones/v1.0-ROADMAP.md` | Archived |
 | v1.0 requirements archive | `.planning/milestones/v1.0-REQUIREMENTS.md` | Archived |
 | v1.0 audit archive | `.planning/milestones/v1.0-MILESTONE-AUDIT.md` | Passed |
 
-## Completed Milestone
+## Completed Milestones
 
 | Milestone | Status | Scope |
 |---|---|---|
+| v1.1 Production Hardening & Support Polish | Complete | 5 phases, 15 plans, 30/30 requirements |
 | v1.0 MVP Demo | Complete | 6 phases, 26 plans, 47/47 requirements |
 
 ## Current Position
 
-Phase: 11 of 11 - Metadata-Only Operational Visibility  
-Plan: 3/3 complete  
-Status: Complete  
-Last activity: 2026-05-22 - Milestone audit passed
+No active phase is selected. The next roadmap should continue from Phase 12 after `/gsd-new-milestone` defines the next milestone requirements.
 
-## Progress
+## Last Milestone Verification
 
-Progress: 5/5 phases complete
-
-| Phase | Status | Plans | Progress |
-|-------|--------|-------|----------|
-| 7 - Production Readiness & Safe Operations Foundation | Complete | 3/3 | 100% |
-| 8 - Backend-Owned SOS Email Notification Readiness | Complete | 3/3 | 100% |
-| 9 - Role & Privacy UX Polish | Complete | 3/3 | 100% |
-| 10 - Nested Admin Content Editing | Complete | 3/3 | 100% |
-| 11 - Metadata-Only Operational Visibility | Complete | 3/3 | 100% |
-
-## Requirements Coverage
-
-- v1.1 requirements: 30 total
-- mapped to phases: 30
-- complete: 30
-- unmapped: 0
-- blocker gaps: 0
+- v1.1 audit: passed
+- Requirements: 30/30 satisfied
+- Phases: 5/5 complete
+- Integration flows: 4/4 passed
+- Latest regression snapshot: backend pytest `88 passed`, frontend Vitest `57 passed`, frontend build passed
 
 ## Key Decisions
 
 | Decision | Outcome |
 |---|---|
-| Continue phase numbering from v1.0 | v1.1 starts at Phase 7 |
+| Continue phase numbering from v1.0 | v1.1 used Phases 7-11; next milestone should start at Phase 12 |
 | Keep in-app SOS as source of truth | Email is optional backend-owned delivery readiness only |
-| Use metadata-only operations visibility | Admin support/ops views must not expose raw sensitive student content |
-| Prefer additive backend/frontend slices | Avoid rewrites of validated v1.0 flows |
-| Use local outbox for dev email | Prevent accidental real-world SOS emails in local/demo contexts |
+| Use metadata-only operations visibility | Admin support/ops views do not expose raw sensitive student content |
+| Prefer additive backend/frontend slices | v1.1 hardened validated v1.0 flows without rewrites |
+| Use local outbox for dev email | Prevents accidental real-world SOS emails in local/demo contexts |
 
 ## Known Tech Debt
 
-- None blocking v1.1 completion. Future notification channels, retry queues, tenant isolation, and content version diff history remain deferred requirements.
+- None blocking v1.1 completion.
+- Deferred future work remains: notification retry queues, Zalo/SMS/push channels, reason-for-access prompts, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: Milestone v1.1 audit passed; next action is milestone completion  
+Stopped at: v1.1 archived; next action is fresh milestone planning  
 Resume file: none
 
 ## Next Action
 
-Run milestone completion:
+Run:
 
 ```text
-/gsd-complete-milestone v1.1
+/gsd-new-milestone
 ```
-
