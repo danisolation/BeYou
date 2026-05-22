@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: milestone
 status: paused
-stopped_at: Phase 23 context gathered
-last_updated: "2026-05-22T10:35:48.167Z"
+stopped_at: Phase 23 UI-SPEC approved
+last_updated: "2026-05-22T10:43:36.889Z"
 last_activity: 2026-05-22 - Phase 22 completed
 progress:
   total_phases: 6
@@ -102,9 +102,9 @@ Last activity: 2026-05-22 - Phase 22 completed
 
 ## Session Continuity
 
-Last session: 2026-05-22T10:35:48.159Z
-Stopped at: Phase 23 context gathered
-Resume file: .planning/phases/23-selective-mood-note-sharing-revocation/23-CONTEXT.md
+Last session: 2026-05-22T10:43:36.881Z
+Stopped at: Phase 23 UI-SPEC approved
+Resume file: .planning/phases/23-selective-mood-note-sharing-revocation/23-UI-SPEC.md
 
 ## Next Action
 
