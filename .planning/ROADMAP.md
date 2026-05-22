@@ -3,7 +3,7 @@
 **Created:** 2026-05-21  
 **Granularity:** Coarse  
 **Milestone:** v1.1 Production Hardening & Support Polish  
-**Coverage:** 30/30 v1.1 requirements mapped; 13/30 complete
+**Coverage:** 30/30 v1.1 requirements mapped; 18/30 complete
 
 ## Phase Overview
 
@@ -19,7 +19,7 @@
 
 - [x] Phase 7: Production Readiness & Safe Operations Foundation
 - [x] Phase 8: Backend-Owned SOS Email Notification Readiness
-- [ ] Phase 9: Role & Privacy UX Polish
+- [x] Phase 9: Role & Privacy UX Polish
 - [ ] Phase 10: Nested Admin Content Editing
 - [ ] Phase 11: Metadata-Only Operational Visibility
 
@@ -75,7 +75,7 @@ Plans:
 **Depends on:** Phase 7  
 **Requirements:** UX-01, UX-02, UX-03, UX-04, UX-05  
 **UI hint:** yes  
-**Status:** Pending
+**Status:** Complete (2026-05-22)
 
 **Success criteria:**
 1. Direct `/student` navigation redirects unacknowledged students to `/privacy` with a return path.
@@ -84,7 +84,12 @@ Plans:
 4. Teacher and parent pages clearly describe summary-only visibility.
 5. SOS detail UI separates teacher status controls from parent read-only visibility.
 
-**Plans:** 0/0 pending
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 09-01-PLAN.md - Authenticated layout role and privacy redirect polish
+- [x] 09-02-PLAN.md - Adult support boundary and SOS role clarity
+- [x] 09-03-PLAN.md - Regression, review, and closure
 
 ### Phase 10: Nested Admin Content Editing
 
@@ -137,11 +142,11 @@ Plans:
 | EMAIL-05 | Phase 8 | Complete |
 | EMAIL-06 | Phase 8 | Complete |
 | EMAIL-07 | Phase 8 | Complete |
-| UX-01 | Phase 9 | Pending |
-| UX-02 | Phase 9 | Pending |
-| UX-03 | Phase 9 | Pending |
-| UX-04 | Phase 9 | Pending |
-| UX-05 | Phase 9 | Pending |
+| UX-01 | Phase 9 | Complete |
+| UX-02 | Phase 9 | Complete |
+| UX-03 | Phase 9 | Complete |
+| UX-04 | Phase 9 | Complete |
+| UX-05 | Phase 9 | Complete |
 | CONTENT-01 | Phase 10 | Pending |
 | CONTENT-02 | Phase 10 | Pending |
 | CONTENT-03 | Phase 10 | Pending |
@@ -158,7 +163,7 @@ Plans:
 **Coverage:**
 - v1.1 requirements: 30 total
 - Mapped to phases: 30
-- Complete: 13
+- Complete: 18
 - Unmapped: 0
 
 ## Assumptions

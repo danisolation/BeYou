@@ -28,11 +28,11 @@ Requirements for Production Hardening & Support Polish. Each maps to exactly one
 
 ### Role and Privacy UX
 
-- [ ] **UX-01**: Unacknowledged student session navigating directly to sensitive `/student` pages is redirected to `/privacy` with a return path.
-- [ ] **UX-02**: Authenticated layout shows only role-appropriate navigation for student, teacher, parent, and admin users.
-- [ ] **UX-03**: Wrong-role, unlinked, or privacy-blocked screens show supportive next steps without leaking whether a student or sensitive resource exists.
-- [ ] **UX-04**: Teacher and parent support pages explain summary-only privacy boundaries and do not imply access to raw answers or chatbot transcripts.
-- [ ] **UX-05**: SOS detail UX clearly distinguishes teacher status controls from parent read-only/status visibility.
+- [x] **UX-01**: Unacknowledged student session navigating directly to sensitive `/student` pages is redirected to `/privacy` with a return path.
+- [x] **UX-02**: Authenticated layout shows only role-appropriate navigation for student, teacher, parent, and admin users.
+- [x] **UX-03**: Wrong-role, unlinked, or privacy-blocked screens show supportive next steps without leaking whether a student or sensitive resource exists.
+- [x] **UX-04**: Teacher and parent support pages explain summary-only privacy boundaries and do not imply access to raw answers or chatbot transcripts.
+- [x] **UX-05**: SOS detail UX clearly distinguishes teacher status controls from parent read-only/status visibility.
 
 ### Admin Content Management
 
@@ -111,11 +111,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMAIL-05 | Phase 8 | Complete |
 | EMAIL-06 | Phase 8 | Complete |
 | EMAIL-07 | Phase 8 | Complete |
-| UX-01 | Phase 9 | Pending |
-| UX-02 | Phase 9 | Pending |
-| UX-03 | Phase 9 | Pending |
-| UX-04 | Phase 9 | Pending |
-| UX-05 | Phase 9 | Pending |
+| UX-01 | Phase 9 | Complete |
+| UX-02 | Phase 9 | Complete |
+| UX-03 | Phase 9 | Complete |
+| UX-04 | Phase 9 | Complete |
+| UX-05 | Phase 9 | Complete |
 | CONTENT-01 | Phase 10 | Pending |
 | CONTENT-02 | Phase 10 | Pending |
 | CONTENT-03 | Phase 10 | Pending |
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-21*
-*Last updated: 2026-05-21 after Phase 8 completion*
+*Last updated: 2026-05-22 after Phase 9 completion*
 
