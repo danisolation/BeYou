@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Pilot UX & Demo Readiness
-status: defining_requirements
-stopped_at: v1.3 milestone started; defining requirements and roadmap
-last_updated: "2026-05-22T15:10:00+07:00"
+status: ready_for_phase_planning
+stopped_at: v1.3 roadmap created; ready to discuss or plan Phase 16
+last_updated: "2026-05-22T15:20:00+07:00"
 last_activity: 2026-05-22
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,8 +17,8 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after starting v1.3
-**Status:** Defining requirements
+**Last updated:** 2026-05-22 after creating v1.3 roadmap
+**Status:** Ready for Phase 16 planning
 
 ## Project Reference
 
@@ -34,8 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Current roadmap | `.planning/ROADMAP.md` | Being defined for v1.3 |
-| Active requirements | `.planning/REQUIREMENTS.md` | Being defined for v1.3 |
+| Current roadmap | `.planning/ROADMAP.md` | Active v1.3 roadmap |
+| Active requirements | `.planning/REQUIREMENTS.md` | Active v1.3 requirements |
 | v1.2 roadmap archive | `.planning/milestones/v1.2-ROADMAP.md` | Archived |
 | v1.2 requirements archive | `.planning/milestones/v1.2-REQUIREMENTS.md` | Archived |
 | v1.2 audit archive | `.planning/milestones/v1.2-MILESTONE-AUDIT.md` | Passed |
@@ -59,16 +59,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-Phase: Not started (defining requirements)  
+Phase: 16 - Guided Demo Entry & Role Onboarding
 Plan: -  
-Status: Defining requirements  
-Last activity: 2026-05-22 - Milestone v1.3 started
+Status: Ready for discussion or planning
+Last activity: 2026-05-22 - Milestone v1.3 roadmap created
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 101 total
 - v1.2 requirements archived: 24/24 complete
-- active requirements file: being defined for v1.3
+- v1.3 requirements: 20 total, 20/20 mapped, 0 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -80,6 +80,8 @@ Last activity: 2026-05-22 - Milestone v1.3 started
 | Keep in-app SOS as source of truth | Mood check-ins suggest SOS but never send SOS automatically |
 | Keep optional mood notes student-only by default | Adult/admin summaries exclude raw private notes |
 | Preserve metadata-only operations | Operations views use safe counts/statuses only |
+| Continue phase numbering from v1.2 | v1.3 uses Phases 16-20 |
+| Prioritize pilot UX before new sensitive sharing features | v1.3 improves live demo readiness without expanding adult/admin access to raw private data |
 
 ## Known Tech Debt
 
@@ -97,5 +99,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-new-milestone
+/gsd-discuss-phase 16
 ```

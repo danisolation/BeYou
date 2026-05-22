@@ -82,32 +82,32 @@ Roadmap mapping is filled during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEMO-01 | TBD | Pending |
-| DEMO-02 | TBD | Pending |
-| DEMO-03 | TBD | Pending |
-| DEMO-04 | TBD | Pending |
-| RESP-01 | TBD | Pending |
-| RESP-02 | TBD | Pending |
-| RESP-03 | TBD | Pending |
-| RESP-04 | TBD | Pending |
-| RESP-05 | TBD | Pending |
-| UX-01 | TBD | Pending |
-| UX-02 | TBD | Pending |
-| UX-03 | TBD | Pending |
-| UX-04 | TBD | Pending |
-| OPS-01 | TBD | Pending |
-| OPS-02 | TBD | Pending |
-| OPS-03 | TBD | Pending |
-| QUAL-01 | TBD | Pending |
-| QUAL-02 | TBD | Pending |
-| QUAL-03 | TBD | Pending |
-| QUAL-04 | TBD | Pending |
+| DEMO-01 | Phase 16 | Pending |
+| DEMO-02 | Phase 16 | Pending |
+| DEMO-03 | Phase 16 | Pending |
+| DEMO-04 | Phase 16 | Pending |
+| RESP-01 | Phase 17 | Pending |
+| RESP-02 | Phase 17 | Pending |
+| RESP-03 | Phase 17 | Pending |
+| RESP-04 | Phase 17 | Pending |
+| RESP-05 | Phase 20 | Pending |
+| UX-01 | Phase 18 | Pending |
+| UX-02 | Phase 18 | Pending |
+| UX-03 | Phase 18 | Pending |
+| UX-04 | Phase 17 | Pending |
+| OPS-01 | Phase 19 | Pending |
+| OPS-02 | Phase 16 | Pending |
+| OPS-03 | Phase 19 | Pending |
+| QUAL-01 | Phase 20 | Pending |
+| QUAL-02 | Phase 20 | Pending |
+| QUAL-03 | Phase 20 | Pending |
+| QUAL-04 | Phase 16 | Pending |
 
 **Coverage:**
 - v1.3 requirements: 20 total
-- Mapped to phases: 0
-- Unmapped: 20
+- Mapped to phases: 20
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after initial v1.3 definition*
+*Last updated: 2026-05-22 after v1.3 roadmap creation*
