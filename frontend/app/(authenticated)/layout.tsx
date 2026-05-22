@@ -30,6 +30,10 @@ function expectedRoleFromPath(pathname: string): AuthUser["role"] | null {
   return null;
 }
 
+function studentPathRequiresPrivacy(pathname: string): boolean {
+  return pathname === "/student" || pathname.startsWith("/student/");
+}
+
 export default function AuthenticatedLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -47,6 +51,13 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
         }
         setUser(currentUser);
         setLoadFailed(false);
+        if (
+          currentUser.role === "student" &&
+          currentUser.privacy_acknowledgement_required &&
+          studentPathRequiresPrivacy(pathname)
+        ) {
+          router.push(`/privacy?next=${encodeURIComponent(pathname)}`);
+        }
       })
       .catch(() => {
         if (!isActive) {
@@ -63,7 +74,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     return () => {
       isActive = false;
     };
-  }, [router]);
+  }, [pathname, router]);
 
   async function handleLogout() {
     await apiFetch("/api/auth/logout", { method: "POST" });
@@ -79,6 +90,9 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   }
 
   const wrongRole = expectedRole !== null && user.role !== expectedRole;
+  const privacyRedirectRequired =
+    user.role === "student" && user.privacy_acknowledgement_required && studentPathRequiresPrivacy(pathname);
+  const navigationItems = roleNav.filter((item) => item.role === user.role);
 
   return (
     <div className="min-h-screen bg-background">
@@ -91,11 +105,12 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
             <p className="text-label">{roleLabels[user.role]}</p>
           </div>
           <nav className="flex flex-wrap gap-2" aria-label="Điều hướng vai trò">
-            {roleNav.map((item) => (
+            {navigationItems.map((item) => (
               <Link
                 key={item.role}
                 href={item.href}
                 className="flex min-h-11 items-center rounded-2xl px-4 text-label font-semibold text-[#12332E]"
+                aria-current={pathname === item.href ? "page" : undefined}
               >
                 {item.label}
               </Link>
@@ -112,11 +127,20 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8">
-        {wrongRole ? (
+        {privacyRedirectRequired ? (
           <section className="rounded-3xl bg-white p-6 shadow-sm">
-            <h1 className="text-heading">Bạn không có quyền xem nội dung này.</h1>
+            <h1 className="text-heading">Cần xác nhận quyền riêng tư trước khi vào cổng học sinh.</h1>
             <p className="mt-3 text-body">
-              BeYou sẽ đưa bạn về đúng không gian phù hợp với vai trò hiện tại.
+              BeYou đang chuyển em tới trang giải thích ai có thể xem thông tin của em. Nội dung học sinh sẽ chỉ mở
+              sau khi em xác nhận đã hiểu.
+            </p>
+          </section>
+        ) : wrongRole ? (
+          <section className="rounded-3xl bg-white p-6 shadow-sm">
+            <h1 className="text-heading">Không thể mở cổng này với vai trò hiện tại.</h1>
+            <p className="mt-3 text-body">
+              BeYou chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng của
+              bạn để tiếp tục hỗ trợ an toàn.
             </p>
             <Link
               href={user.dashboard_route}

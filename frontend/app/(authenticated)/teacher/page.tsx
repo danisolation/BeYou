@@ -92,12 +92,14 @@ export function RoleStudentList({
   notifications?: InAppNotification[];
 }) {
   const supportByStudent = new Map(supportOverview.map((item) => [item.student.id, item]));
+  const roleContext = summaryBasePath === "/parent/students" ? "parent" : "teacher";
   return (
     <section className="space-y-5">
       <div>
         <h1 className="text-display">{title}</h1>
         <p className="mt-3 max-w-2xl text-body">{subtitle}</p>
       </div>
+      <PrivacyBoundaryCard roleContext={roleContext} />
       <NotificationList notifications={notifications} />
       {students.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />
@@ -132,6 +134,25 @@ export function RoleStudentList({
           ))}
         </div>
       )}
+    </section>
+  );
+}
+
+function PrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "parent" }) {
+  const isParent = roleContext === "parent";
+  return (
+    <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <h2 className="text-heading">
+        {isParent ? "Ranh giới hỗ trợ của phụ huynh" : "Ranh giới hỗ trợ của giáo viên"}
+      </h2>
+      <p className="mt-3 text-body">
+        {isParent
+          ? "Phụ huynh chỉ xem thông tin của con đã được liên kết: tóm tắt hỗ trợ, trạng thái SOS và gợi ý cần thiết để đồng hành."
+          : "Giáo viên chỉ xem học sinh được liên kết: tóm tắt hỗ trợ, trạng thái SOS và gợi ý cần thiết để phối hợp chăm sóc."}
+      </p>
+      <p className="mt-3 text-body">
+        BeYou không hiển thị câu trả lời tự kiểm tra chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
+      </p>
     </section>
   );
 }

@@ -81,6 +81,15 @@ export function SosAlertDetail({
       </header>
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
+        <h2 className="text-heading">{mode === "teacher" ? "Vai trò giáo viên" : "Chế độ xem chỉ đọc của phụ huynh"}</h2>
+        <p className="mt-3 text-body">
+          {mode === "teacher"
+            ? "Giáo viên được phân quyền có thể cập nhật tiến trình SOS để học sinh và phụ huynh biết tín hiệu đang được xử lý."
+            : "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong BeYou dành cho giáo viên được phân quyền."}
+        </p>
+      </section>
+
+      <section className="rounded-3xl bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <SosStatusBadge status={alert.current_status} />
           <span className="rounded-full border border-[#F3C0C0] px-3 py-2 text-label">
@@ -119,7 +128,7 @@ export function SosAlertDetail({
 
       {mode === "teacher" ? (
         <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <h2 className="text-heading">Cập nhật trạng thái SOS</h2>
+          <h2 className="text-heading">Cập nhật trạng thái SOS dành cho giáo viên</h2>
           {next ? (
             <>
               <label className="mt-4 block text-label" htmlFor="sos-update-note">

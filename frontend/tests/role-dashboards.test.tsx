@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -65,6 +65,11 @@ describe("role dashboards", () => {
 
     expect(screen.getByText("Đang tải thông tin...")).toBeInTheDocument();
     expect(await screen.findByText("Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.")).toBeInTheDocument();
+    const nav = screen.getByRole("navigation", { name: "Điều hướng vai trò" });
+    expect(within(nav).getByRole("link", { name: "Học sinh" })).toHaveAttribute("href", "/student");
+    expect(within(nav).queryByRole("link", { name: "Giáo viên" })).not.toBeInTheDocument();
+    expect(within(nav).queryByRole("link", { name: "Phụ huynh" })).not.toBeInTheDocument();
+    expect(within(nav).queryByRole("link", { name: "Quản trị" })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Đăng xuất" }));
 
     await waitFor(() => expect(push).toHaveBeenCalledWith("/login"));
@@ -75,7 +80,7 @@ describe("role dashboards", () => {
     expect(localStorageSpy).not.toHaveBeenCalled();
   });
 
-  it("shows unauthorized copy and backend correct-dashboard link for wrong role portal", async () => {
+  it("shows supportive wrong-role copy and backend correct-dashboard link", async () => {
     pathname = "/teacher";
     mockFetch({ "/api/auth/me": authUser });
 
@@ -85,8 +90,33 @@ describe("role dashboards", () => {
       </AuthenticatedLayout>,
     );
 
-    expect(await screen.findByText("Bạn không có quyền xem nội dung này.")).toBeInTheDocument();
+    expect(await screen.findByText("Không thể mở cổng này với vai trò hiện tại.")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "BeYou chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng của bạn để tiếp tục hỗ trợ an toàn.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Đi tới cổng phù hợp" })).toHaveAttribute("href", "/student");
+  });
+
+  it("redirects unacknowledged students to privacy before rendering student content", async () => {
+    pathname = "/student/self-checks";
+    mockFetch({
+      "/api/auth/me": {
+        ...authUser,
+        privacy_acknowledgement_required: true,
+      },
+    });
+
+    render(
+      <AuthenticatedLayout>
+        <p>Nội dung học sinh nhạy cảm</p>
+      </AuthenticatedLayout>,
+    );
+
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/privacy?next=%2Fstudent%2Fself-checks"));
+    expect(screen.getByText("Cần xác nhận quyền riêng tư trước khi vào cổng học sinh.")).toBeInTheDocument();
+    expect(screen.queryByText("Nội dung học sinh nhạy cảm")).not.toBeInTheDocument();
   });
 
   it("renders student profile school, class, support adults, Demo badge, and privacy link", async () => {
@@ -153,6 +183,13 @@ describe("role dashboards", () => {
 
     expect(await screen.findByText("Cổng giáo viên")).toBeInTheDocument();
     expect(screen.getByText("Cổng phụ huynh")).toBeInTheDocument();
+    expect(screen.getByText("Ranh giới hỗ trợ của giáo viên")).toBeInTheDocument();
+    expect(screen.getByText("Ranh giới hỗ trợ của phụ huynh")).toBeInTheDocument();
+    expect(
+      screen.getAllByText(
+        "BeYou không hiển thị câu trả lời tự kiểm tra chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.",
+      ),
+    ).toHaveLength(2);
     expect(screen.getAllByText("Nguyễn An Demo")).toHaveLength(2);
   });
 

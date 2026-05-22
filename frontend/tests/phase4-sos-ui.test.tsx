@@ -210,7 +210,12 @@ describe("Phase 4 adult support portals", () => {
 
     render(<TeacherSosAlertPage params={{ alertId: "alert-1" }} />);
 
-    expect(await screen.findByText("Cập nhật trạng thái SOS")).toBeInTheDocument();
+    expect(await screen.findByText("Cập nhật trạng thái SOS dành cho giáo viên")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Giáo viên được phân quyền có thể cập nhật tiến trình SOS để học sinh và phụ huynh biết tín hiệu đang được xử lý.",
+      ),
+    ).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Ghi chú hỗ trợ (không bắt buộc)"), "Cô đã nhận tín hiệu.");
     await userEvent.click(screen.getByRole("button", { name: "Đánh dấu đã nhận" }));
 
@@ -234,6 +239,12 @@ describe("Phase 4 adult support portals", () => {
     rerender(<ParentSosAlertPage params={{ alertId: "alert-1" }} />);
     expect(await screen.findByText("Trạng thái SOS")).toBeInTheDocument();
     expect(screen.getByText("Bạn đang xem trạng thái hỗ trợ và tóm tắt được phép xem, không phải câu trả lời riêng tư của học sinh.")).toBeInTheDocument();
+    expect(screen.getByText("Chế độ xem chỉ đọc của phụ huynh")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong BeYou dành cho giáo viên được phân quyền.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Đánh dấu đã nhận" })).not.toBeInTheDocument();
   });
 });
