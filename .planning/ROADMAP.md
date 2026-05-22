@@ -3,7 +3,7 @@
 **Created:** 2026-05-21  
 **Granularity:** Coarse  
 **Milestone:** v1.1 Production Hardening & Support Polish  
-**Coverage:** 30/30 v1.1 requirements mapped; 18/30 complete
+**Coverage:** 30/30 v1.1 requirements mapped; 24/30 complete
 
 ## Phase Overview
 
@@ -20,7 +20,7 @@
 - [x] Phase 7: Production Readiness & Safe Operations Foundation
 - [x] Phase 8: Backend-Owned SOS Email Notification Readiness
 - [x] Phase 9: Role & Privacy UX Polish
-- [ ] Phase 10: Nested Admin Content Editing
+- [x] Phase 10: Nested Admin Content Editing
 - [ ] Phase 11: Metadata-Only Operational Visibility
 
 ## Phase Details
@@ -97,7 +97,7 @@ Plans:
 **Depends on:** Phase 9  
 **Requirements:** CONTENT-01, CONTENT-02, CONTENT-03, CONTENT-04, CONTENT-05, CONTENT-06  
 **UI hint:** yes  
-**Status:** Pending
+**Status:** Complete (2026-05-22)
 
 **Success criteria:**
 1. Admin can edit nested self-check metadata, questions, choices, scores, thresholds, and lifecycle state.
@@ -106,7 +106,12 @@ Plans:
 4. Publishing invalid scenario structures is blocked with actionable validation errors.
 5. Preview and snapshot/version-safe behavior protect student-facing content and historical attempts.
 
-**Plans:** 0/0 pending
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 10-01-PLAN.md - Complete self-check nested editor
+- [x] 10-02-PLAN.md - Complete scenario nested editor
+- [x] 10-03-PLAN.md - Validation copy and version-safe closure
 
 ### Phase 11: Metadata-Only Operational Visibility
 
@@ -147,12 +152,12 @@ Plans:
 | UX-03 | Phase 9 | Complete |
 | UX-04 | Phase 9 | Complete |
 | UX-05 | Phase 9 | Complete |
-| CONTENT-01 | Phase 10 | Pending |
-| CONTENT-02 | Phase 10 | Pending |
-| CONTENT-03 | Phase 10 | Pending |
-| CONTENT-04 | Phase 10 | Pending |
-| CONTENT-05 | Phase 10 | Pending |
-| CONTENT-06 | Phase 10 | Pending |
+| CONTENT-01 | Phase 10 | Complete |
+| CONTENT-02 | Phase 10 | Complete |
+| CONTENT-03 | Phase 10 | Complete |
+| CONTENT-04 | Phase 10 | Complete |
+| CONTENT-05 | Phase 10 | Complete |
+| CONTENT-06 | Phase 10 | Complete |
 | OPS-01 | Phase 11 | Pending |
 | OPS-02 | Phase 11 | Pending |
 | OPS-03 | Phase 11 | Pending |
@@ -163,7 +168,7 @@ Plans:
 **Coverage:**
 - v1.1 requirements: 30 total
 - Mapped to phases: 30
-- Complete: 18
+- Complete: 24
 - Unmapped: 0
 
 ## Assumptions

@@ -36,12 +36,12 @@ Requirements for Production Hardening & Support Polish. Each maps to exactly one
 
 ### Admin Content Management
 
-- [ ] **CONTENT-01**: Admin can edit complete self-check structures including metadata, ordered questions, ordered choices, scoring values, thresholds, and lifecycle status.
-- [ ] **CONTENT-02**: System blocks publishing self-checks with missing or invalid nested fields, choices, scores, thresholds, or unsafe lifecycle state and shows actionable validation errors.
-- [ ] **CONTENT-03**: Admin can edit complete scenario structures including situation, ordered choices, feedback, recommended response, lesson, skill tags, and lifecycle status.
-- [ ] **CONTENT-04**: System blocks publishing scenarios with missing or invalid choices, feedback, recommendation, lesson, skill metadata, or unsafe lifecycle state and shows actionable validation errors.
-- [ ] **CONTENT-05**: Admin can preview nested self-check and scenario content before publishing so student-facing flow can be checked.
-- [ ] **CONTENT-06**: Historical self-check and scenario attempts remain interpretable after content edits through snapshots or version-safe behavior.
+- [x] **CONTENT-01**: Admin can edit complete self-check structures including metadata, ordered questions, ordered choices, scoring values, thresholds, and lifecycle status.
+- [x] **CONTENT-02**: System blocks publishing self-checks with missing or invalid nested fields, choices, scores, thresholds, or unsafe lifecycle state and shows actionable validation errors.
+- [x] **CONTENT-03**: Admin can edit complete scenario structures including situation, ordered choices, feedback, recommended response, lesson, skill tags, and lifecycle status.
+- [x] **CONTENT-04**: System blocks publishing scenarios with missing or invalid choices, feedback, recommendation, lesson, skill metadata, or unsafe lifecycle state and shows actionable validation errors.
+- [x] **CONTENT-05**: Admin can preview nested self-check and scenario content before publishing so student-facing flow can be checked.
+- [x] **CONTENT-06**: Historical self-check and scenario attempts remain interpretable after content edits through snapshots or version-safe behavior.
 
 ### Operational Visibility
 
@@ -116,12 +116,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UX-03 | Phase 9 | Complete |
 | UX-04 | Phase 9 | Complete |
 | UX-05 | Phase 9 | Complete |
-| CONTENT-01 | Phase 10 | Pending |
-| CONTENT-02 | Phase 10 | Pending |
-| CONTENT-03 | Phase 10 | Pending |
-| CONTENT-04 | Phase 10 | Pending |
-| CONTENT-05 | Phase 10 | Pending |
-| CONTENT-06 | Phase 10 | Pending |
+| CONTENT-01 | Phase 10 | Complete |
+| CONTENT-02 | Phase 10 | Complete |
+| CONTENT-03 | Phase 10 | Complete |
+| CONTENT-04 | Phase 10 | Complete |
+| CONTENT-05 | Phase 10 | Complete |
+| CONTENT-06 | Phase 10 | Complete |
 | OPS-01 | Phase 11 | Pending |
 | OPS-02 | Phase 11 | Pending |
 | OPS-03 | Phase 11 | Pending |
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-21*
-*Last updated: 2026-05-22 after Phase 9 completion*
+*Last updated: 2026-05-22 after Phase 10 completion*
 
