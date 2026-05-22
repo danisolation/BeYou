@@ -100,12 +100,63 @@
 - Autonomous execution was effective for phases with clear privacy constraints and existing regression suites.
 - The largest manual overhead was milestone archival/document normalization, not feature implementation.
 
+## Milestone: v1.2 - Trusted Adult Plan & Mood Check-ins
+
+**Shipped:** 2026-05-22
+**Phases:** 4
+**Plans:** 12
+**Requirements:** 24/24 satisfied
+
+### What Was Built
+
+- Student-owned trusted adult support plans with selected linked adults, shareable support preferences, lifecycle controls, and metadata-only audit.
+- Lightweight student mood check-ins with non-clinical prompts, optional private notes, timestamped repeat entries, history, and supportive trend guidance.
+- Teacher/parent support summaries that combine selected support-plan details and mood trend summaries without raw private notes or raw check-in details.
+- Admin mood check-in configuration for prompts, option labels, guidance, lifecycle status, validation, and preview.
+- v1.2 operations metadata buckets for support-plan, mood-check-in, adult-summary, and admin-config activity.
+
+### What Worked
+
+- Student-owned privacy boundaries from Phases 12 and 13 made Phase 14 adult summaries straightforward and safe.
+- Keeping SOS separate from mood check-ins avoided accidental escalation side effects.
+- Phase 15's cross-surface privacy regression caught the exact integration surfaces needed for milestone audit.
+- The integration checker found a real CORS `PUT` gap before archive, and the fix was small and testable.
+
+### What Was Inefficient
+
+- GSD accomplishment extraction again returned none, requiring manual enrichment of MILESTONES.md.
+- `gsd-tools milestone complete` archived core files but still required manual ROADMAP/PROJECT/STATE normalization.
+- Phase directories had to be moved manually after archive to match prior milestone organization.
+- Frontend lint remains blocked by Next 16 `next lint` script drift.
+
+### Patterns Established
+
+- Proactive support features should stay student-owned and selected-adult scoped.
+- Mood tracking must remain lightweight, non-clinical, and explicitly separate from SOS automation.
+- Adult views should expose trend/support summaries only, not raw private detail.
+- Admin configuration can improve copy and guidance without expanding raw data access.
+- CORS preflight coverage should be included for every browser mutation method used by the frontend.
+
+### Key Lessons
+
+- Cross-phase integration checks are valuable even after phase-level tests pass; they catch deployment-shaped wiring gaps.
+- For sensitive student support features, privacy rules need to be tested at API schemas, UI copy, audit metadata, and operations summaries together.
+- Archival automation should be treated as a first pass; living project docs need a deliberate product-state review.
+- Keep future notification/reminder work separate until consent, quiet hours, retries, and provider governance are designed.
+
+### Cost Observations
+
+- Model mix and token cost were not tracked in this session.
+- Autonomous execution was effective because v1.2 had clear privacy/safety invariants and small phase boundaries.
+- Most manual effort was again document/archive normalization rather than feature implementation.
+
 ## Cross-Milestone Trends
 
 | Theme | v1.0 Observation | Follow-up |
 |---|---|---|
-| Privacy defaults | Effective when decided before feature work | v1.1 confirmed this should stay a release gate for readiness, email, operations, and admin tooling |
-| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.1; audit and archive artifacts before completion |
-| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.1 resolved them through authenticated layout gating and role-specific nav |
-| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.1 closed the nested editing gap |
-| Operations visibility | v1.0 avoided raw sensitive reports | v1.1 extended metadata-only visibility to readiness, delivery, and audit operations |
+| Privacy defaults | Effective when decided before feature work | v1.2 confirmed this must extend to support plans, mood notes, adult summaries, admin config, and operations metadata |
+| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.2; audit and archive artifacts before completion |
+| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.1 resolved layout gating; v1.2 reused it for support-plan and mood-check-in routes |
+| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.1 closed nested editing; v1.2 added safe configuration for mood prompts/guidance |
+| Operations visibility | v1.0 avoided raw sensitive reports | v1.2 extends metadata-only visibility to proactive support and mood activity |
+| Integration audit | Phase tests catch local behavior | v1.2 showed milestone integration checks can catch deployment-shaped gaps such as missing CORS methods |

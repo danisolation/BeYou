@@ -1,31 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Trusted Adult Plan & Mood Check-ins
-status: milestone_audit_passed
-stopped_at: v1.2 milestone audit passed; ready to complete milestone
-last_updated: "2026-05-22T13:10:00+07:00"
+milestone: none
+milestone_name: none
+status: ready_for_next_milestone
+stopped_at: v1.2 archived and tagged; ready to start a new milestone
+last_updated: "2026-05-22T13:30:00+07:00"
 last_activity: 2026-05-22
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after passing v1.2 milestone audit  
-**Status:** Milestone audit passed
+**Last updated:** 2026-05-22 after archiving v1.2
+**Status:** Ready for next milestone
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** v1.2 - Trusted Adult Plan & Mood Check-ins
+**Current focus:** Planning next milestone
 
 ## Planning Artifacts
 
@@ -34,10 +34,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Current requirements | `.planning/REQUIREMENTS.md` | Current |
-| Current roadmap | `.planning/ROADMAP.md` | Current |
-| v1.2 milestone audit | `.planning/v1.2-MILESTONE-AUDIT.md` | Passed |
-| v1.2 research | `.planning/research/` | Current |
+| Current roadmap | `.planning/ROADMAP.md` | Collapsed archive index |
+| v1.2 roadmap archive | `.planning/milestones/v1.2-ROADMAP.md` | Archived |
+| v1.2 requirements archive | `.planning/milestones/v1.2-REQUIREMENTS.md` | Archived |
+| v1.2 audit archive | `.planning/milestones/v1.2-MILESTONE-AUDIT.md` | Passed |
+| v1.2 phase artifacts | `.planning/milestones/v1.2-phases/` | Archived |
 | v1.1 roadmap archive | `.planning/milestones/v1.1-ROADMAP.md` | Archived |
 | v1.1 requirements archive | `.planning/milestones/v1.1-REQUIREMENTS.md` | Archived |
 | v1.1 audit archive | `.planning/milestones/v1.1-MILESTONE-AUDIT.md` | Passed |
@@ -51,54 +52,40 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 | Milestone | Status | Scope |
 |---|---|---|
+| v1.2 Trusted Adult Plan & Mood Check-ins | Complete | 4 phases, 12 plans, 24/24 requirements |
 | v1.1 Production Hardening & Support Polish | Complete | 5 phases, 15 plans, 30/30 requirements |
 | v1.0 MVP Demo | Complete | 6 phases, 26 plans, 47/47 requirements |
 
 ## Current Position
 
-Phase: 15 of 15 - Admin Configuration & Metadata Operations Closure  
-Plan: 3/3 complete  
-Status: Audit passed  
-Last activity: 2026-05-22 - completed v1.2 milestone audit
-
-## Progress
-
-Progress: 4/4 phases complete
-
-| Phase | Status | Plans | Progress |
-|-------|--------|-------|----------|
-| 12 - Trusted Adult Support Plan | Complete | 3/3 | 100% |
-| 13 - Mood Check-ins & Student History | Complete | 3/3 | 100% |
-| 14 - Adult Support Summaries | Complete | 3/3 | 100% |
-| 15 - Admin Configuration & Metadata Operations Closure | Complete | 3/3 | 100% |
+No active milestone. The next action is to define a new milestone with fresh requirements and a roadmap.
 
 ## Requirements Coverage
 
-- v1.2 requirements: 24 total
-- mapped to phases: 24
-- complete: 24
-- unmapped: 0
+- cumulative shipped requirements: 101 total
+- v1.2 requirements archived: 24/24 complete
+- active requirements file: none
 - blocker gaps: 0
 
 ## Key Decisions
 
 | Decision | Outcome |
 |---|---|
-| Continue phase numbering from v1.1 | v1.2 starts at Phase 12 |
+| Continue phase numbering from v1.1 | v1.2 used Phases 12-15 |
 | Choose proactive support over external channels | Trusted adult plan and mood check-ins deepen support without adding Zalo/SMS/push risk |
-| Keep in-app SOS as source of truth | Mood check-ins can suggest SOS but never send SOS automatically |
-| Keep optional mood notes student-only by default | Adult/admin summaries must exclude raw private notes |
+| Keep in-app SOS as source of truth | Mood check-ins suggest SOS but never send SOS automatically |
+| Keep optional mood notes student-only by default | Adult/admin summaries exclude raw private notes |
 | Preserve metadata-only operations | Operations views use safe counts/statuses only |
 
 ## Known Tech Debt
 
-- `npm run lint` currently calls `next lint`, which is invalid in this Next.js setup. Frontend tests and production build are passing.
-- Deferred future work remains: notification retry queues, Zalo/SMS/push channels, reason-for-access prompts, content diff/version history, multi-school tenancy, and production OAuth/SSO.
+- `npm run lint` currently calls invalid Next 16 `next lint`; frontend tests and production build are passing.
+- Deferred future work remains: notification retry queues, Zalo/SMS/push channels, selective private-note sharing, reason-for-access prompts, counselor handoff, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: v1.2 milestone audit passed; next action is milestone completion  
+Stopped at: v1.2 archived and tagged; ready to start the next milestone
 Resume file: none
 
 ## Next Action
@@ -106,7 +93,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-complete-milestone v1.2
+/gsd-new-milestone
 ```
-
-Milestone completion should archive and tag v1.2.

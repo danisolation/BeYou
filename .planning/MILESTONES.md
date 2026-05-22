@@ -1,5 +1,44 @@
 # Project Milestones: BeYou - Tu Tin La Minh
 
+## v1.2 Trusted Adult Plan & Mood Check-ins (Shipped: 2026-05-22)
+
+**Delivered:** Student-owned trusted adult support plans, lightweight mood check-ins/history, privacy-preserving adult support summaries, and admin mood configuration with metadata-only operations closure.
+
+**Phases completed:** 12-15 (12 plans total)
+
+**Key accomplishments:**
+
+- Added student trusted-adult support plans with linked-adult validation, lifecycle controls, selected-adult sharing boundaries, and metadata-only audit.
+- Added student mood check-ins/history with non-clinical prompts, optional private notes, repeat timestamped entries, trend guidance, and no automatic SOS side effects.
+- Added teacher/parent support summaries that combine selected support-plan preferences and mood trend summaries without raw private notes or check-in drilldowns.
+- Added admin mood check-in prompt/guidance configuration with validation, preview, lifecycle status, and published-config fallback for student options.
+- Extended admin operations with v1.2 metadata buckets for support-plan, mood-check-in, adult-summary, and admin-config activity.
+- Passed milestone audit after fixing CORS `PUT` coverage for browser support-plan and admin-config mutation flows.
+
+**Stats:**
+
+- 99 tracked files changed from v1.2 start through milestone audit
+- 7,306 insertions and 558 deletions during the v1.2 implementation/audit range
+- 25,825 backend/frontend code lines after v1.2 (`16,254` Python, `9,571` TypeScript/TSX)
+- 4 phases, 12 plans, 24 requirements
+- 18 commits from v1.2 start through milestone audit
+- 1 calendar day from first v1.2 milestone commit to audit
+
+**Git range:** `ddc5dc9` -> `b968644` before final archive commit
+
+**Verification:**
+
+- Milestone audit: 24/24 requirements satisfied, 4/4 phases passed, 6/6 integration flows passed.
+- Latest Phase 15 regression: backend pytest `101 passed`, frontend Vitest `68 passed`, frontend build passed.
+
+**Known non-blocking tech debt:**
+
+- `npm run lint` remains blocked by the existing invalid Next 16 `next lint` script; frontend tests and production build pass.
+
+**What's next:** Define the next milestone with `/gsd-new-milestone`; likely candidates include reminders/notification consent, selective private-note sharing, reason-for-access controls, tenant policy customization, or production identity readiness.
+
+---
+
 ## v1.1 Production Hardening & Support Polish (Shipped: 2026-05-22)
 
 **Delivered:** Production hardening and support polish with readiness checks, backend-owned SOS email delivery readiness, clearer role/privacy UX, complete nested admin content editing, and metadata-only operations visibility.
