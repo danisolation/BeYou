@@ -1,5 +1,46 @@
 # Project Milestones: BeYou - Tu Tin La Minh
 
+## v1.3 Pilot UX & Demo Readiness (Shipped: 2026-05-22)
+
+**Delivered:** Public guided demo entry, responsive/accessibility guardrails, supportive critical-action polish, metadata-only demo operations readiness, production smoke coverage, and repaired Next 16 frontend quality gates.
+
+**Phases completed:** 16-20 (5 plans total)
+
+**Key accomplishments:**
+
+- Added public landing and one-step demo role entry with role-specific guided walkthrough cards.
+- Added global responsive/accessibility guardrails and targeted smoke coverage across mobile, tablet, and desktop role entry/dashboard surfaces.
+- Polished student/adult/admin copy and critical interaction outcome states while preserving privacy-by-default and support-not-surveillance boundaries.
+- Added metadata-only demo seed, connectivity/session, and production smoke readiness to admin operations.
+- Added `npm --prefix frontend run smoke:production` for deployed frontend/backend, CORS, login/session cookie, and role dashboard checks.
+- Replaced broken Next 16 `next lint` with ESLint flat config and passed lint, full frontend tests, and production build.
+
+**Stats:**
+
+- 74 tracked files changed from v1.3 start through milestone audit
+- 7,799 insertions and 674 deletions during the v1.3 implementation/audit range
+- 24,734 backend/frontend tracked code lines after v1.3 (`14,278` Python, `10,456` TypeScript/TSX)
+- 5 phases, 5 plans, 20 requirements
+- 9 commits from v1.3 start through milestone audit
+- 1 calendar day from first v1.3 milestone commit to audit
+
+**Git range:** `13f2a6e` -> `74019f3` before final archive commit
+
+**Verification:**
+
+- Milestone audit: 20/20 requirements satisfied, 5/5 phases passed, 5/5 integration flows passed.
+- Latest Phase 20 regression: frontend lint passed, frontend Vitest `79 passed`, frontend build passed.
+- Phase 19 backend regression: backend pytest `104 passed`; production smoke `16/16 passed`.
+
+**Known non-blocking tech debt:**
+
+- Existing moderate Next/PostCSS advisory remains until a non-breaking stable Next release resolves it; forced audit fix proposes a breaking downgrade.
+- Future hardening can add direct DemoRoleEntry click-through tests and authenticated browser dashboard hydration in production smoke.
+
+**What's next:** Define v1.4 with `/gsd-new-milestone`; likely candidates include reminder/notification consent, selective private-note sharing, reason-for-access controls, school/tenant policy customization, or production identity/OAuth readiness.
+
+---
+
 ## v1.2 Trusted Adult Plan & Mood Check-ins (Shipped: 2026-05-22)
 
 **Delivered:** Student-owned trusted adult support plans, lightweight mood check-ins/history, privacy-preserving adult support summaries, and admin mood configuration with metadata-only operations closure.

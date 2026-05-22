@@ -150,13 +150,63 @@
 - Autonomous execution was effective because v1.2 had clear privacy/safety invariants and small phase boundaries.
 - Most manual effort was again document/archive normalization rather than feature implementation.
 
+## Milestone: v1.3 - Pilot UX & Demo Readiness
+
+**Shipped:** 2026-05-22
+**Phases:** 5
+**Plans:** 5
+**Requirements:** 20/20 satisfied
+
+### What Was Built
+
+- Public guided demo landing and one-step role entry for student, teacher, parent, and admin evaluators.
+- Role-specific guided walkthrough cards and demo/live indicators across the dashboards.
+- Global responsive/accessibility guardrails plus smoke coverage for critical mobile/tablet/desktop routes.
+- Supportive Vietnamese copy and critical-action outcome states for SOS, adult/admin support framing, destructive actions, and config changes.
+- Metadata-only demo operations readiness for seed state, connectivity/session contract, and production smoke checklist.
+- Next 16-compatible ESLint flat config, passing lint, targeted responsive smoke, full frontend regression, and production build gates.
+
+### What Worked
+
+- Treating v1.3 as UX/operations hardening avoided scope creep into new sensitive data-sharing features.
+- Existing privacy invariants made copy polish and operations readiness safer to implement quickly.
+- Production smoke exposed the exact public demo state: live role flows pass while `/health/ready` remains `not_ready` because demo seeding is enabled.
+- Fixing lint in Phase 20 converted a known v1.2 tooling debt into a durable regression gate.
+
+### What Was Inefficient
+
+- GSD automatic milestone archive still produced sparse accomplishments and required manual MILESTONES/PROJECT/STATE enrichment.
+- SUMMARY artifacts still lack standardized machine-readable one-liners, making cross-source audit partly manual.
+- Phase directories still needed manual archive movement to match prior milestone organization.
+- Smoke coverage remains mostly semantic/API-level; authenticated browser hydration across deployed role dashboards is deferred.
+
+### Patterns Established
+
+- Demo/pilot readiness should have two separate signals: public demo usability smoke and stricter production launch readiness.
+- Operations dashboards should expose connectivity/session/seed metadata, not cookie values, secrets, exports, or raw student content.
+- Responsive smoke can be fast and useful in Vitest/jsdom when it verifies semantic role entry and critical links at representative widths.
+- Next 16 frontend quality should use ESLint flat config and direct ESLint CLI rather than `next lint`.
+
+### Key Lessons
+
+- Demo UX is product functionality: role entry, copy, and guide cards need the same verification rigor as backend APIs.
+- For live demos with public seed data, document the intentional gap between demo readiness and real production readiness.
+- Keep lint/test/build/smoke evidence in phase verification so milestone audit can cross-check requirements quickly.
+- Archive automation should run before manual doc evolution, but the output needs deliberate human/agent review.
+
+### Cost Observations
+
+- Model mix and token cost were not tracked in this session.
+- Autonomous execution remained effective because the milestone had narrow phase boundaries and strict privacy constraints.
+- The largest manual overhead remained archival/document normalization and audit synthesis.
+
 ## Cross-Milestone Trends
 
 | Theme | v1.0 Observation | Follow-up |
 |---|---|---|
-| Privacy defaults | Effective when decided before feature work | v1.2 confirmed this must extend to support plans, mood notes, adult summaries, admin config, and operations metadata |
-| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.2; audit and archive artifacts before completion |
-| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.1 resolved layout gating; v1.2 reused it for support-plan and mood-check-in routes |
+| Privacy defaults | Effective when decided before feature work | v1.3 confirmed demo entry, copy polish, and operations readiness can improve UX without expanding raw access |
+| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.3; audit and archive artifacts before completion, then manually enrich living docs |
+| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.3 turned UX into first-class milestone scope with responsive/accessibility and critical-action regression coverage |
 | Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.1 closed nested editing; v1.2 added safe configuration for mood prompts/guidance |
-| Operations visibility | v1.0 avoided raw sensitive reports | v1.2 extends metadata-only visibility to proactive support and mood activity |
-| Integration audit | Phase tests catch local behavior | v1.2 showed milestone integration checks can catch deployment-shaped gaps such as missing CORS methods |
+| Operations visibility | v1.0 avoided raw sensitive reports | v1.3 extends metadata-only visibility to demo seed, connectivity/session contract, and production smoke readiness |
+| Integration audit | Phase tests catch local behavior | v1.3 showed audit should distinguish demo usability from stricter production launch readiness |

@@ -12,10 +12,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.2 Trusted Adult Plan & Mood Check-ins on 2026-05-22
+**Shipped version:** v1.3 Pilot UX & Demo Readiness on 2026-05-22
 **Milestone status:** Complete, audited, archived, and tagged for release
-**Scope shipped:** 15 total phases, 53 total plans, 101/101 cumulative requirements satisfied
-**Latest audit:** `.planning/milestones/v1.2-MILESTONE-AUDIT.md` passed with 24/24 v1.2 requirements, 4/4 phases, and 6/6 integration flows
+**Scope shipped:** 20 total phases, 58 total plans, 121/121 cumulative requirements satisfied
+**Latest audit:** `.planning/milestones/v1.3-MILESTONE-AUDIT.md` passed with 20/20 v1.3 requirements, 5/5 phases, and 5/5 integration flows
 
 ### Built Product
 
@@ -24,32 +24,40 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, confirmed SOS alerts, trusted adult support plans, and mood check-ins/history.
 - Adult support flows: linked teacher/parent views, summary-only wellbeing support, selected support-plan visibility, mood trend summaries without raw private notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, privacy-limited aggregate reports, and metadata-only operations dashboard.
+- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, metadata-only demo readiness, production smoke command, and Next 16-compatible lint/test/build gates.
 
 ### Latest Verification Snapshot
 
-- Backend pytest: `101 passed`
-- Frontend Vitest: `68 passed`
+- Backend pytest: `104 passed`
+- Frontend Vitest: `79 passed`
+- Frontend lint: passed
 - Frontend production build: passed
-- Milestone audit: `24/24` v1.2 requirements satisfied, `6/6` integration flows passed
+- Production smoke: `16/16` passed against deployed demo URLs
+- Milestone audit: `20/20` v1.3 requirements satisfied, `5/5` integration flows passed
 
 ### Planning Archives
 
+- v1.3 roadmap archive: `.planning/milestones/v1.3-ROADMAP.md`
+- v1.3 requirements archive: `.planning/milestones/v1.3-REQUIREMENTS.md`
+- v1.3 audit archive: `.planning/milestones/v1.3-MILESTONE-AUDIT.md`
+- v1.3 phase artifacts: `.planning/milestones/v1.3-phases/`
 - v1.2 roadmap archive: `.planning/milestones/v1.2-ROADMAP.md`
 - v1.2 requirements archive: `.planning/milestones/v1.2-REQUIREMENTS.md`
 - v1.2 audit archive: `.planning/milestones/v1.2-MILESTONE-AUDIT.md`
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.3 Pilot UX & Demo Readiness
+## Next Milestone Goals
 
-**Goal:** Make the live BeYou deployment feel polished, trustworthy, and easy to evaluate on mobile, tablet, and desktop for students, adults, admins, and school pilot stakeholders.
+No active milestone is currently defined. Use `/gsd-new-milestone` to gather requirements and create the next roadmap.
 
-**Target features:**
-- Guided public/demo entry that explains BeYou and helps evaluators enter the correct role quickly.
-- Responsive and accessibility baseline across the production student, adult, admin, and auth flows.
-- Friendlier UX copy and interaction polish while preserving privacy, SOS, and non-clinical boundaries.
-- Demo/pilot operations improvements that make demo seed, deploy state, and live walkthroughs more reliable.
-- Frontend developer quality improvements, including the Next 16 lint script issue and lightweight responsive smoke coverage.
+Likely candidates:
+
+- Reminder/notification consent flows with quiet hours and opt-in boundaries.
+- Selective private mood-note sharing controlled by students.
+- Reason-for-access controls for sensitive adult/admin access.
+- School/tenant policy customization and operational launch readiness.
+- Production identity/OAuth readiness with a selected school identity provider.
 
 ## Requirements
 
@@ -78,13 +86,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Admins can configure mood check-in prompts/guidance and inspect v1.2 support activity metadata safely.
 - [x] New support-plan/check-in flows preserve BeYou's privacy-by-default, non-clinical, support-not-surveillance boundaries.
 
+### Validated in v1.3
+
+- [x] Live demo/pilot entry point is understandable and role-guided for first-time evaluators.
+- [x] Key production flows have tested responsive and accessibility coverage on mobile, tablet, and desktop.
+- [x] Student, adult, and admin copy/interactions are polished without weakening student privacy boundaries.
+- [x] Demo/pilot operations expose safe readiness feedback for seed state, connectivity, CORS/session behavior, and live walkthrough smoke checks.
+- [x] Frontend quality tooling works on Next 16 with lightweight responsive/demo regression coverage.
+
 ### Active
 
-- [ ] Make the live demo/pilot entry point understandable and role-guided for first-time evaluators.
-- [ ] Bring key production flows to a tested responsive and accessibility baseline on mobile, tablet, and desktop.
-- [ ] Polish user-facing copy and interaction states without weakening student privacy boundaries.
-- [ ] Improve demo/pilot operations feedback so live walkthroughs are more reliable.
-- [ ] Repair frontend quality tooling and add lightweight regression coverage for responsive UX.
+- [ ] Define the next milestone through `/gsd-new-milestone`.
 
 ### Out of Scope
 
@@ -157,15 +169,21 @@ Roles:
 | Keep optional mood notes student-only by default | Private notes are for student reflection, not adult/admin monitoring | Validated in Phases 13-15 |
 | Let adults see trends and selected support preferences, not raw details | Adults need supportive context without raw private notes or check-in drilldowns | Validated in Phase 14 |
 | Let admins configure prompts/guidance but not raw student data | Configuration should improve copy while preserving metadata-only operations | Validated in Phase 15 |
+| Use public landing plus one-step demo role entry | Evaluators should understand BeYou and enter each seeded role quickly without manual credential copying | Validated in Phase 16 |
+| Use global responsive/accessibility guardrails before per-page polish | Shared layout fixes reduce overflow/focus risks across current and future screens | Validated in Phase 17 |
+| Make critical actions narrate consequences and outcomes | SOS, destructive, and config changes should be understandable and accessible without expanding private data access | Validated in Phase 18 |
+| Keep live demo smoke separate from production launch readiness | Public demo usability can pass while production `/health/ready` remains `not_ready` until demo seeding is disabled for real launch | Validated in Phase 19 |
+| Use ESLint flat config for Next 16 | Direct ESLint CLI replaces deprecated/broken `next lint` while preserving strict frontend quality gates | Validated in Phase 20 |
 
 ## Known Tech Debt
 
-- `npm run lint` currently calls invalid Next 16 `next lint`; frontend tests and production build are passing.
+- `npm --prefix frontend audit --omit=dev` reports an existing moderate Next/PostCSS advisory; `npm audit fix --force` proposes a breaking downgrade, so track until a non-breaking stable Next release resolves it.
+- Future hardening can add direct DemoRoleEntry click-through tests and authenticated browser dashboard hydration in production smoke.
 - Deferred future work includes notification retry queues, Zalo/SMS/push channels, selective private-note sharing, reason-for-access prompts, counselor handoff, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Next Milestone Goals
 
-v1.3 is active and focuses on pilot UX and demo readiness. Deferred candidates remain reminder/notification consent flows, selective private-note sharing, reason-for-access controls, school/tenant policy customization, and production identity/OAuth readiness.
+The next milestone is not yet defined. Deferred candidates remain reminder/notification consent flows, selective private-note sharing, reason-for-access controls, school/tenant policy customization, and production identity/OAuth readiness.
 
 ## Evolution
 
@@ -185,4 +203,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after starting v1.3 milestone*
+*Last updated: 2026-05-22 after v1.3 milestone*

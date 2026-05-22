@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Pilot UX & Demo Readiness
-status: phase_20_complete
-stopped_at: Phase 20 complete; ready for milestone audit
-last_updated: "2026-05-22T16:38:00+07:00"
+status: completed
+stopped_at: v1.3 archived; ready for next milestone definition
+last_updated: "2026-05-22T16:50:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 5
@@ -17,15 +17,15 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing Phase 20
-**Status:** Phase 20 complete; ready for milestone audit
+**Last updated:** 2026-05-22 after archiving v1.3
+**Status:** v1.3 milestone complete; ready for next milestone definition
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** v1.3 Pilot UX & Demo Readiness
+**Current focus:** Planning next milestone
 
 ## Planning Artifacts
 
@@ -34,8 +34,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Current roadmap | `.planning/ROADMAP.md` | Active v1.3 roadmap |
-| Active requirements | `.planning/REQUIREMENTS.md` | Active v1.3 requirements |
+| Roadmap summary | `.planning/ROADMAP.md` | Completed milestones summary; next milestone not started |
+| Active requirements | `.planning/REQUIREMENTS.md` | Not present until next milestone is defined |
+| v1.3 roadmap archive | `.planning/milestones/v1.3-ROADMAP.md` | Archived |
+| v1.3 requirements archive | `.planning/milestones/v1.3-REQUIREMENTS.md` | Archived |
+| v1.3 audit archive | `.planning/milestones/v1.3-MILESTONE-AUDIT.md` | Passed |
+| v1.3 phase artifacts | `.planning/milestones/v1.3-phases/` | Archived |
 | v1.2 roadmap archive | `.planning/milestones/v1.2-ROADMAP.md` | Archived |
 | v1.2 requirements archive | `.planning/milestones/v1.2-REQUIREMENTS.md` | Archived |
 | v1.2 audit archive | `.planning/milestones/v1.2-MILESTONE-AUDIT.md` | Passed |
@@ -53,22 +57,23 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 | Milestone | Status | Scope |
 |---|---|---|
+| v1.3 Pilot UX & Demo Readiness | Complete | 5 phases, 5 plans, 20/20 requirements |
 | v1.2 Trusted Adult Plan & Mood Check-ins | Complete | 4 phases, 12 plans, 24/24 requirements |
 | v1.1 Production Hardening & Support Polish | Complete | 5 phases, 15 plans, 30/30 requirements |
 | v1.0 MVP Demo | Complete | 6 phases, 26 plans, 47/47 requirements |
 
 ## Current Position
 
-Phase: Milestone audit - v1.3 Pilot UX & Demo Readiness
+Phase: Next milestone definition
 Plan: -  
-Status: Ready for audit
-Last activity: 2026-05-22 - Phase 20 completed
+Status: Ready for `/gsd-new-milestone`
+Last activity: 2026-05-22 - v1.3 archived
 
 ## Requirements Coverage
 
-- cumulative shipped requirements: 101 total
+- cumulative shipped requirements: 121 total
+- v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
-- v1.3 requirements: 20 total, 20/20 mapped, 20 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -96,7 +101,7 @@ Last activity: 2026-05-22 - Phase 20 completed
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: Phase 20 completed; ready for milestone audit
+Stopped at: v1.3 archived; ready for next milestone definition
 Resume file: none
 
 ## Next Action
@@ -104,5 +109,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-audit-milestone
+/gsd-new-milestone
 ```
