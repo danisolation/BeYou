@@ -1,63 +1,49 @@
-# Feature Landscape: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
+# Feature Research: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
 **Researched:** 2026-05-22
 
 ## Summary
 
-v1.2 should deepen proactive support before SOS escalation. The milestone should help students express who they trust, what support feels safe, and how their mood is trending, while giving adults enough context to support without raw private detail.
+v1.4 should make BeYou's support flows more transparent and student-controlled without expanding surveillance. The safe product shape is in-app-only reminders, student-owned sharing, policy-driven reason prompts, and metadata-only operations.
 
-## Feature Categories
+## Table Stakes
 
-| Category | Table stakes | Differentiators | Anti-features |
-|---|---|---|---|
-| Trusted adult plan | Choose linked adults, support preferences, boundaries, update/deactivate | Student-friendly scripts, "what helps/doesn't help", shareable support notes | Forced adult access to everything |
-| Mood check-ins | Low-friction mood input, optional private note, history | Weekly trend reflection, supportive next steps, SOS suggestion for high concern | Clinical scoring or diagnosis |
-| Adult summaries | Linked adult can see trend/recency and suggested support | Different teacher vs parent copy and actions | Raw notes, risk leaderboards |
-| Admin config | Manage prompts/guidance and lifecycle | Metadata-only audit and validation | Admin browsing of individual raw mood content |
-| Privacy/safety | Consent/boundary copy, role checks, audit | Student-owned sharing controls | Automatic emergency escalation |
+| Category | Expected behavior | Boundary |
+|---|---|---|
+| Student reminder preferences | Student can enable/disable in-app reminders, set quiet hours, pause/resume, and see active channel boundaries. | Default consent is off; external channels unavailable. |
+| Mood check-in reminders | Eligible students see optional supportive reminders and can dismiss, snooze, or open the check-in flow. | No automatic SOS, adult notification, risk score, or auto-submit. |
+| Selective note sharing | Student can share a specific private mood note or student-written summary with chosen linked adults. | Sharing is per-note/per-adult and revocable. |
+| Adult shared-note access | Teachers/parents see only notes currently shared with them and receive supportive response guidance. | Relationship alone is not enough; active share is required. |
+| Reason-for-access | Adult/admin users provide controlled support-oriented reasons before protected sensitive access when policy requires. | Reason prompt never bypasses authorization. |
+| Admin policy defaults | Admin configures safe defaults for reminders, reason requirements, allowed reason choices, and v1.4 helper copy. | Admin cannot force raw note exposure or external channels. |
+| Operations visibility | Admin sees counts/status/readiness for v1.4 controls. | No raw notes, reason text, identifiers, exports, or risk drilldowns. |
 
-## Suggested v1.2 Scope
+## Differentiators
 
-1. Student-owned trusted adult plan:
-   - select from existing linked teachers/parents;
-   - define preferred support style, safe contact windows, "what helps", "what does not help", and shareable notes;
-   - update, deactivate, and review privacy boundaries.
-2. Lightweight mood check-ins:
-   - daily/weekly prompt with simple mood/energy/stress tags;
-   - optional private note;
-   - student history and simple trend view;
-   - supportive next steps and SOS/trusted-adult suggestion for high concern.
-3. Adult support summaries:
-   - teacher/parent see linked-student trend summaries and support preferences;
-   - no raw notes or raw answer exports;
-   - supportive action copy tailored to role.
-4. Admin-safe configuration:
-   - manage active check-in prompts, option labels, and support guidance;
-   - audit changes as metadata only;
-   - expose only metadata in operations.
+- Student can make policy stricter by disabling or pausing reminders.
+- Student privacy map explains what adults can and cannot see.
+- Per-adult note sharing supports different support relationships.
+- Shared-note views include adult guidance for listening without pressure.
+- Policy previews show how admin settings affect student/adult screens.
 
-## Edge Cases
+## Anti-Features
 
-- Student has no linked adults: plan should explain how admin/teacher link setup is needed and avoid dead ends.
-- Student selects only one adult: adult summaries must respect the selected support plan and existing relationship links.
-- Student submits multiple check-ins in a day: define update vs additional entry behavior.
-- Student adds optional note: it remains student-only unless a future explicit sharing requirement is scoped.
-- High concern mood: show SOS/trusted-adult guidance without automatic SOS.
-- Adult route for unlinked student: deny without leaking sensitive existence.
+- Zalo/SMS/push/email reminders in v1.4.
+- Reminder-created SOS or missed-reminder risk scoring.
+- Adult access to all private mood notes.
+- Admin browsing of private/shared note text.
+- Forced sharing with all linked adults.
+- Permanent irrevocable sharing.
+- Hidden adult/admin sensitive access.
+- Clinical, punitive, or surveillance copy.
 
-## Privacy and Consent Boundaries
+## Suggested Requirement Categories
 
-- Student sees clear copy before creating a support plan or check-in.
-- Adults see support preferences and derived summaries, not private notes.
-- Admins configure prompts/guidance, not raw student mood entries.
-- Audit records action metadata only.
-
-## Future Scope
-
-- Reminder scheduling.
-- Zalo/SMS/push notification channels.
-- Human counselor handoff.
-- Reason-for-access prompts.
-- Student-controlled sharing of selected notes.
-- Multi-school policy customization.
+- **NOTIF:** Student consent and reminder preferences.
+- **REMIND:** Non-clinical in-app mood check-in reminders.
+- **SHARE:** Selective private mood-note sharing and revocation.
+- **ACCESS:** Reason-for-access transparency.
+- **POLICY:** Admin policy defaults.
+- **OPS:** Metadata-only operations visibility.
+- **QA:** Cross-role privacy regression and demo readiness.

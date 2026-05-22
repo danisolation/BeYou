@@ -1,57 +1,46 @@
-# Domain Pitfalls: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
+# Pitfalls Research: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
 **Researched:** 2026-05-22
 
 ## Summary
 
-The main risk is turning proactive support into monitoring. v1.2 must keep support plans student-owned, check-in notes private by default, adult views summary-only, and admin/operations visibility metadata-only.
+v1.4 touches BeYou's highest-trust boundaries: reminders, adult access, private-note sharing, audit visibility, and school defaults. The biggest failure mode is accidental scope expansion from support into surveillance.
 
-## Pitfalls Table
+The non-negotiable line remains: no raw private note exposure by default, no automatic SOS, no external channel delivery, no risk leaderboards, and no punitive/clinical copy.
 
-| Pitfall | Impact | Prevention | Phase implication |
+## Pitfalls and Prevention
+
+| Area | Pitfall | Prevention | Phase |
 |---|---|---|---|
-| Raw mood notes exposed to adults/admins | Breaks student trust and privacy guarantees | Separate raw note fields from derived summaries; test response shapes | Mood and adult summary phases |
-| Mood trends become risk leaderboards | Product shifts from support to surveillance | Use supportive trend language, no rankings, no exports/drilldowns | Adult/admin phases |
-| Support plan ignores linked-adult relationship | Unauthorized disclosure | Validate selected adults against existing links and role permissions | Support plan phase |
-| High concern check-in auto-sends SOS | Unsafe escalation and consent violation | Suggest SOS/trusted adult contact only; require explicit SOS confirmation | Mood phase |
-| Admin config enables punitive/clinical copy | Harmful UX and scope drift | Validation, preview, and non-clinical copy guidelines | Admin config phase |
-| Audit metadata leaks private text | Sensitive data in operations logs | Reuse sanitizer and assert forbidden keys/text are absent | Every phase |
-| Student cannot understand sharing boundaries | Consent failure | Add clear Vietnamese privacy copy before plan/check-in flows | Student UI phases |
-| Multiple check-ins create confusing history | Poor UX and noisy summaries | Define same-day update/add behavior and show timestamps clearly | Mood phase |
+| Consent | Admin defaults silently become student consent. | Store policy defaults separately; student explicit consent controls effective reminder state. | 21 |
+| Channels | Broad notification toggle implies SMS/Zalo/push. | Per-channel state; v1.4 API rejects external activation. | 21-22 |
+| Quiet hours | Time windows fail overnight or timezone semantics. | Store local `HH:MM` windows with `Asia/Ho_Chi_Minh` default and tests for overnight ranges. | 22 |
+| Pause | UI hides reminders but backend still returns due state. | Backend reminder eligibility checks pause state. | 22 |
+| Reminders | Copy becomes clinical, urgent, or pressuring. | Vietnamese supportive optional copy; no risk/diagnosis language. | 22 |
+| SOS | Reminders/check-ins trigger SOS or adult alerts. | Explicit regression tests; reminder service must not call SOS/adult notification paths. | 22, 26 |
+| Sharing | One consent shares all future notes. | Grant scope is one check-in/note and selected adult(s) only. | 23 |
+| Revocation | Frontend hides revoked notes but API still serves them. | Active grant checked server-side on every read. | 23 |
+| Links | Sharing with unlinked/revoked adults. | Reuse active `StudentAdultLink` validation. | 23 |
+| Reasons | Free-text reason stores sensitive narratives. | Controlled reason codes; no raw detail in audit. | 24 |
+| Bypass | Reason prompt enforced only in UI. | Gate in service/API layer for teacher and parent routes. | 24 |
+| Audit | New metadata keys leak note text or identifiers. | Extend forbidden key sanitizer and test nested metadata. | 21, 26 |
+| Operations | Admin dashboard becomes per-student monitoring. | Counts/status/readiness only; no drilldowns or raw exports. | 25 |
 
-## Privacy and Safety Risks
+## Required Safeguards
 
-- Optional notes are the highest-risk data. Keep them student-only unless a future explicit sharing model is designed.
-- Adult summaries should show trend direction, recency, and support suggestions, not raw details.
-- Admins should configure prompts/guidance but not browse individual submissions.
-- Audit events must remain metadata-only and sanitized recursively.
+- Reminder eligibility requires explicit student consent, not paused, outside quiet hours, allowed by policy, active account, and privacy acknowledgement.
+- Mood reminders are in-app only and optional.
+- Private mood notes remain student-only unless a specific active share grant exists.
+- Revocation immediately removes future adult API access.
+- Reason codes are selected before protected access when policy requires.
+- Admin policy may restrict or provide safe defaults, but cannot force external channels or raw private-note exposure.
 
-## UX Risks
+## Verification Traps
 
-- If check-ins feel like homework or surveillance, students may avoid them.
-- If support plans are too long, students will not complete them.
-- If adult copy sounds disciplinary, the feature undermines trust.
-- If high-concern copy is too alarming, it may discourage honest check-ins.
-
-## Architecture and Data Risks
-
-- Support plan and mood models need explicit lifecycle/status fields to avoid hard deletes breaking history.
-- Adult summaries should be generated through a service boundary, not by returning raw model fields.
-- Existing privacy acknowledgement and authenticated role layout must cover new student pages.
-- Future reminder/notification work should not be smuggled into v1.2.
-
-## Testing Gaps to Avoid
-
-- Missing negative authorization tests for unlinked teacher/parent access.
-- Missing assertions that adult/admin/operations responses exclude raw notes.
-- Missing frontend tests for role-specific adult copy.
-- Missing regression for privacy-blocked student direct navigation to new pages.
-
-## Prevention Strategy
-
-- Make privacy boundaries explicit requirements.
-- Build student-owned domain first, then derive adult summaries.
-- Add tests before or alongside every adult/admin response surface.
-- Keep high-concern escalation advisory until explicit SOS confirmation.
-- Close with a cross-surface privacy audit.
+- Frontend-only controls that direct API calls can bypass.
+- Reason prompts added to only one adult route.
+- Audit key drift with names like `shared_excerpt`, `reason_detail`, `student_summary`, or `notification_body`.
+- Revoked shares still present in adult detail endpoints.
+- Operations views leaking `resource_id`, names, emails, or private content.
+- Copy regression into red/urgent/diagnostic/disciplinary language.

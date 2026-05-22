@@ -1,110 +1,68 @@
-# Architecture: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
+# Architecture Research: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
 **Researched:** 2026-05-22
 
 ## Summary
 
-The v1.2 architecture should be additive. It should introduce support-plan and mood-check-in domain models, student APIs/UI, adult summary APIs/UI, and admin configuration, while reusing existing authorization, audit, and authenticated layout patterns.
+v1.4 should reuse the existing architecture seams: FastAPI routers, service-layer authorization/audit, PostgreSQL models, Next.js client pages, and metadata-only operations. Do not create a parallel notification or access-control subsystem.
 
-## Domain Model
+Recommended build order: policy/contracts first, then student reminder preferences/reminders, then selective mood-note sharing, then reason-for-access, then admin policy/operations and cross-role regression.
 
-Recommended new or extended entities:
+## Current Architecture Touchpoints
 
-- `StudentSupportPlan`
-  - `student_id`
-  - lifecycle/status fields
-  - preferred support style, contact preferences, "what helps", "what does not help"
-  - student-visible/shareable note fields only
-  - timestamps
-- `StudentSupportPlanAdult`
-  - support plan to linked adult mapping
-  - recipient role and relationship identifiers
-  - share flags or selected role in support circle
-- `MoodCheckInPrompt`
-  - admin-managed prompt text/options/guidance
-  - lifecycle status and sort order
-- `MoodCheckIn`
-  - student, prompt, mood value/tags, energy/stress/context fields
-  - optional private note
-  - derived non-clinical summary/trend fields
-  - timestamps
+| Area | Existing component | v1.4 integration |
+|---|---|---|
+| Models | `backend/app/db/models.py` | Add preference, reminder state, share grant, and policy default tables. |
+| Migrations | `backend/alembic/versions/*` | Add v1.4 migration after mood check-in config migration. |
+| Authorization | `backend/app/core/authorization.py` | Add v1.4 resource types and keep relationship checks central. |
+| Audit | `backend/app/services/audit.py` | Extend forbidden metadata keys and safe summaries. |
+| Mood check-ins | `student_mood_checkins`, `mood_checkins` | Reminder entry and specific private-note share controls. |
+| Adult summaries | `adult_summaries` | Reason-gated access and shared-note section. |
+| Admin operations | `admin_operations` | v1.4 metadata buckets and readiness warnings. |
+| Frontend | authenticated student/adult/admin pages | New settings/policy pages and guarded adult access prompts. |
 
-## Backend APIs, Services, and Schemas
+## Proposed Data Model
 
-Suggested routers:
+- `student_notification_preferences`: student-owned consent, cadence, quiet hours, pause state, timezone, enabled in-app channel, and demo flag.
+- `mood_checkin_reminder_states`: last shown/dismissed/snoozed/opened timestamps for request-time in-app reminders.
+- `mood_note_shares`: student-created active/revoked grants linking one mood check-in to one adult, with share scope and optional student summary.
+- `school_privacy_policy_defaults`: single-school v1.4 defaults for reminders, quiet hours, reason requirements, allowed reasons, and external-channel disabled status.
 
-- `student_support.py`
-  - `GET/PUT /api/student/support-plan`
-  - `GET /api/student/support-plan/adults`
-- `student_mood.py`
-  - `GET /api/student/mood-check-ins/prompts`
-  - `POST /api/student/mood-check-ins`
-  - `GET /api/student/mood-check-ins/history`
-- `teacher_support.py` / `parent_support.py`
-  - extend linked-student detail/support endpoints with support plan and mood trend summaries.
-- `admin_wellbeing.py` or existing admin content router
-  - CRUD/lifecycle for mood prompts and support guidance.
+## API/Service Flow
 
-Suggested services:
+### Consent preferences
 
-- Support plan service for student ownership, linked-adult validation, and shareable summary generation.
-- Mood check-in service for submission validation, trend summary generation, and high-concern guidance.
-- Adult summary service that strips raw notes and exposes only safe summaries.
+`GET/PUT /api/student/notification-preferences` returns effective policy defaults plus student preferences. PUT validates in-app-only channels, quiet hours, pause state, and emits metadata-only audit.
 
-## Authorization and Audit
+### Mood reminders
 
-- Student owns support plans and mood check-ins.
-- Adults can only access summaries for linked/managed students.
-- Admin can configure prompts/guidance but cannot read raw individual mood notes.
-- Wrong-role/unlinked access should return existing denial behavior without leaking student existence.
-- Audit events should include metadata such as action type, actor role/id, target type/id, status, and safe counts; never raw notes or raw answers.
+`GET /api/student/reminders/mood-check-in` computes due state from consent, quiet hours, pause, and recent check-ins. Dismiss/snooze/open endpoints update reminder state and safe audit only. Reminder services must not call SOS or adult notification services.
 
-## Frontend Surfaces
+### Selective mood-note sharing
 
-- Student:
-  - support plan page/card;
-  - mood check-in page/card;
-  - mood history/trends page or dashboard section.
-- Teacher/parent:
-  - support summary card on linked student support/detail pages;
-  - role-specific supportive action copy.
-- Admin:
-  - mood prompt/guidance management area;
-  - validation and preview of student-facing copy.
-- Operations:
-  - minimal metadata audit entries only; no raw drilldowns.
+Student routes manage shares under `/api/student/mood-check-ins/{checkin_id}/shares`. Services validate ownership, private-note presence, active adult links, active grants, and revocation. Adult routes return only active shares for the current linked adult.
 
-## Data Flows
+### Reason-for-access
 
-1. Student creates support plan -> backend validates linked adults -> stores shareable preferences -> emits metadata audit -> adult summary can include selected support preferences.
-2. Student submits mood check-in -> backend stores structured mood and optional private note -> derives safe trend summary -> emits metadata audit -> student can view full history.
-3. Adult views linked student support summary -> backend checks relationship -> returns support preferences and trend labels only -> emits metadata audit if existing patterns require.
-4. Admin updates mood prompt/guidance -> backend validates lifecycle/content -> emits metadata audit -> student prompt list updates.
+Sensitive adult routes use controlled reason codes before returning protected summaries/shared notes when policy requires. Missing reason should return a clear precondition response; invalid reason is rejected. The service layer, not only frontend, must enforce this.
 
-## Testing Strategy
+### Admin policy and operations
 
-- Backend:
-  - migration/model tests;
-  - student support plan and check-in API tests;
-  - adult summary authorization/privacy tests;
-  - admin prompt validation tests;
-  - audit metadata sanitization tests.
-- Frontend:
-  - student plan/check-in/history tests;
-  - teacher/parent summary-only tests;
-  - admin prompt UI tests;
-  - protected route/privacy redirect regression.
+Admin policy routes read/update safe defaults and reject external channels. Admin operations aggregates v1.4 counts/status/readiness while stripping identifiers and raw sensitive text.
 
-## Suggested Build Order
+## Frontend Flow
 
-1. Support plan backend/domain and student UI.
-2. Mood check-in backend/domain and student UI/history.
-3. Adult summary APIs and teacher/parent UI.
-4. Admin prompt/guidance config plus operations/audit closure.
+- Student settings page for reminder consent, quiet hours, pause/resume, and channel boundaries.
+- Student dashboard reminder card with dismiss/snooze/open actions and non-clinical copy.
+- Mood history share/revoke UI with exact preview and per-adult status.
+- Teacher/parent support summary reason prompt before protected fetches.
+- Admin policy page and operations v1.4 panel.
 
-## Open Risks
+## Authorization/Audit
 
-- Optional notes can easily leak through summaries, logs, audit metadata, or test fixtures.
-- Adult summaries can drift into surveillance if trend labels become rankings.
-- High-concern check-ins must support escalation without automatic SOS side effects.
+- Student preferences are readable/writable only by the student.
+- Note sharing requires mood check-in ownership and active linked adult relationship.
+- Adult shared-note reads require both active relationship and active student-created share grant.
+- Reason-for-access never grants access by itself.
+- Audit metadata cannot include raw note text, student summary text, reminder message bodies, free-text reason details, names, emails, or private content.

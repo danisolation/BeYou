@@ -1,81 +1,70 @@
-# Technology Stack Research: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
+# Stack Research: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
 **Researched:** 2026-05-22
 
 ## Summary
 
-v1.2 should reuse the existing FastAPI, PostgreSQL, SQLAlchemy/Alembic, Next.js, TypeScript, Vitest, and pytest stack. Trusted adult plans and mood check-ins are mostly domain/model/API/UI work; no new infrastructure or third-party dependency is needed for the planned scope.
+v1.4 should stay inside the current FastAPI, PostgreSQL, SQLAlchemy/Alembic, Pydantic, cookie-session, metadata-only audit, and Next.js/TypeScript stack. No new external notification providers, queues, workers, mobile push, Zalo/SMS, or email reminder delivery are needed.
 
-## Recommended Stack
+The main stack work is additive: database-backed student reminder consent, in-app reminder state, student-controlled mood-note share grants, school privacy policy defaults, controlled reason-for-access codes, and metadata-only operations buckets.
 
-| Area | Recommendation | Why |
-|---|---|---|
-| Backend runtime/API | Keep FastAPI + Pydantic schemas | Existing role routers, services, schemas, and tests already fit the feature shape |
-| Persistence | Keep PostgreSQL + SQLAlchemy + Alembic | Support plans, check-ins, summaries, and audit events are relational |
-| Frontend | Keep Next.js + TypeScript + existing authenticated layout | Student/adult/admin pages already share role gating and cookie-authenticated API helpers |
-| Testing | Keep pytest, Ruff, Vitest, and production build | Current regressions cover privacy, role, and UI behavior without adding tooling |
-| Background jobs | Do not add Celery/Redis yet | v1.2 is not sending external notifications or scheduled reminders |
-| Analytics/AI scoring | Do not add AI/sentiment scoring | Mood check-ins should stay low-friction and non-clinical, not become surveillance |
+## Stack Additions
 
-## No-New-Dependency Decision
+- New Alembic migration for v1.4 privacy controls.
+- New SQLAlchemy models:
+  - `StudentNotificationPreference`
+  - `MoodCheckinReminderState`
+  - `MoodNoteShare`
+  - `SchoolPrivacyPolicyDefault`
+- New backend schemas/services/routes for notification preferences, reminders, mood-note sharing, access reasons, and admin privacy policy.
+- Extended metadata sanitizer/forbidden audit keys for shared note text, student summary text, reminder bodies, reason details, and contact identifiers.
+- Frontend API clients and pages using existing `apiFetch`, local state, and Vitest patterns.
 
-No new dependency is required for:
+## Backend Integration Points
 
-- Student support-plan CRUD.
-- Mood check-in submission and history.
-- Simple trend aggregation.
-- Teacher/parent summary views.
-- Admin prompt/guidance configuration.
-- Metadata-only audit and operations visibility.
+- `backend/app/db/models.py` and Alembic versions for new tables.
+- `backend/app/core/authorization.py` for v1.4 resource types.
+- `backend/app/services/audit.py` for metadata-only safeguards.
+- Existing mood check-in services/routes for reminder entry and shareable notes.
+- Existing adult summary services/routes for reason-gated access and shared-note views.
+- Existing admin operations service/schema for v1.4 metadata buckets.
+- Demo seed for safe policy/preference sample data.
 
-Avoid adding charting, notification, analytics, or AI classification packages unless a later milestone explicitly scopes them.
+## Frontend Integration Points
 
-## Backend Impact
+- Student notification/privacy controls page for consent, quiet hours, pause/resume, and in-app-only boundaries.
+- Student dashboard reminder card that opens the existing mood check-in flow, can be dismissed/snoozed, and never triggers SOS.
+- Mood check-in history share/revoke controls for specific private notes.
+- Teacher/parent support summary reason prompt before protected sensitive access.
+- Admin privacy controls page and operations panel.
 
-- Add tables for student support plans, shareable support preferences, mood check-in prompts/options, mood check-in submissions, and optional derived summary metadata.
-- Add Alembic migration with conservative nullable/backfill behavior.
-- Add student APIs for support plan and check-in submission/history.
-- Add teacher/parent APIs for linked-student summaries only.
-- Add admin APIs for prompt/guidance configuration and lifecycle status.
-- Reuse `AuditEvent` for metadata-only support plan, check-in, adult summary, and admin config activity.
+## Testing/Verification
 
-## Frontend Impact
+Use existing gates:
 
-- Add student pages or dashboard cards for:
-  - trusted adult plan;
-  - mood check-in submission;
-  - mood history/trends.
-- Extend teacher/parent support pages with privacy-preserving check-in/support-plan summary cards.
-- Extend admin content/config area for check-in prompts and supportive guidance.
-- Add API helpers in `frontend/lib` following existing cookie-authenticated patterns.
+- `pytest backend/tests`
+- `npm --prefix frontend run test`
+- `npm --prefix frontend run lint`
+- `npm --prefix frontend run build`
 
-## Data and Privacy Controls
+Add targeted tests for:
 
-- Raw optional mood notes remain student-only by default.
-- Adult summaries expose trend labels, recency, student-shareable preferences, and suggested supportive actions only.
-- Admin and operations views must not expose raw notes, raw check-in answers, risk leaderboards, or per-student drilldowns.
-- Public/student copy should remain non-clinical and should not diagnose mood states.
-- High-concern check-ins can suggest SOS/trusted adult contact, but must not automatically trigger SOS.
+- external channels rejected;
+- consent defaults off;
+- quiet hours and pause suppress reminders;
+- reminders never create SOS/adult notifications;
+- share grants require active linked adults;
+- revocation blocks adult access;
+- reason prompts cannot bypass role/relationship authorization;
+- operations remains metadata-only.
 
-## Testing Impact
+## Not In Scope
 
-- Backend tests should cover:
-  - student CRUD/submission;
-  - role/relationship authorization;
-  - adult summary privacy boundaries;
-  - admin validation and audit metadata;
-  - no raw notes in adult/admin/operations responses.
-- Frontend tests should cover:
-  - student support-plan/check-in flows;
-  - privacy copy and history/trend display;
-  - teacher/parent summary-only UI;
-  - admin config validation;
-  - no blocked child rendering in protected routes.
-
-## Risks and Non-Goals
-
-- Do not turn check-ins into diagnosis, monitoring, or discipline workflows.
-- Do not introduce external notification delivery in v1.2.
-- Do not expose raw private notes to adults/admins.
-- Do not add dashboards that rank students by mood/risk.
+- Zalo/SMS/browser push/native push/email reminder delivery.
+- New provider packages such as Twilio, Firebase, OneSignal, Zalo SDK, or web-push.
+- Celery/RQ/Redis/cron worker infrastructure.
+- Automatic SOS from reminders, mood check-ins, note sharing, or missed reminders.
+- Adult/admin raw private mood-note access by default.
+- Free-text reason storage as a sensitive narrative log.
+- Risk leaderboards, per-student reminder compliance reports, raw exports, or multi-school tenancy.
