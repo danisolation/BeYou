@@ -21,6 +21,8 @@ class ContextTagOption(BaseModel):
 
 
 class MoodCheckInOptionsResponse(BaseModel):
+    student_prompt: str | None = None
+    adult_guidance: str | None = None
     mood_options: list[MoodOption]
     context_tags: list[ContextTagOption]
     privacy_notes: list[str]

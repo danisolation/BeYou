@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.schemas.readiness import ReadinessCheckStatus, ReadinessOverallStatus
 
@@ -85,5 +85,6 @@ class AdminOperationsDashboardResponse(BaseModel):
     privacy_notes: list[str]
     readiness: OperationReadinessSummary
     sos_email: SosEmailDeliverySummary
+    v1_2_audit: list[OperationCountBucket] = Field(default_factory=list)
     audit: AuditEventSummary
 

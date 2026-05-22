@@ -58,6 +58,7 @@ export type AdminOperationsDashboard = {
     by_error_code: OperationCountBucket[];
     recent: SosEmailDeliveryItem[];
   };
+  v1_2_audit?: OperationCountBucket[];
   audit: {
     total_matching: number;
     filters: {

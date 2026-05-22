@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session as OrmSession
 
 from app.api import (
     admin_content,
+    admin_mood_checkins,
     admin_reports,
     admin_links,
     admin_operations,
@@ -83,6 +84,7 @@ def create_app() -> FastAPI:
     app.include_router(admin_users.router, prefix="/api/admin/users", tags=["admin"])
     app.include_router(admin_links.router, prefix="/api/admin/links", tags=["admin"])
     app.include_router(admin_content.router, prefix="/api/admin/content", tags=["admin"])
+    app.include_router(admin_mood_checkins.router, prefix="/api/admin/mood-checkins", tags=["admin"])
     app.include_router(admin_reports.router, prefix="/api/admin/reports", tags=["admin"])
     app.include_router(admin_operations.router, prefix="/api/admin/operations", tags=["admin"])
 

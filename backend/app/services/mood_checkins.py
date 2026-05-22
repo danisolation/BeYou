@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
-from app.db.models import MoodCheckIn, User
+from app.db.models import ContentStatus, MoodCheckIn, MoodCheckInConfig, User
 from app.schemas.mood_checkins import (
     ContextTagOption,
     MoodCheckInCreate,
@@ -41,8 +41,30 @@ MOOD_PRIVACY_NOTES = [
 ]
 
 
-def get_mood_checkin_options() -> MoodCheckInOptionsResponse:
+def _published_config(db: OrmSession) -> MoodCheckInConfig | None:
+    return db.scalar(
+        select(MoodCheckInConfig)
+        .where(MoodCheckInConfig.status == ContentStatus.PUBLISHED.value)
+        .order_by(MoodCheckInConfig.sort_order.asc(), MoodCheckInConfig.updated_at.desc())
+    )
+
+
+def get_mood_checkin_options(db: OrmSession | None = None) -> MoodCheckInOptionsResponse:
+    if db is not None:
+        config = _published_config(db)
+        if config is not None:
+            return MoodCheckInOptionsResponse(
+                student_prompt=config.student_prompt,
+                adult_guidance=config.adult_guidance,
+                mood_options=[MoodOption.model_validate(option) for option in config.mood_options],
+                context_tags=[ContextTagOption.model_validate(tag) for tag in config.context_tags],
+                privacy_notes=MOOD_PRIVACY_NOTES,
+                energy_scale_label="1 là rất ít năng lượng, 5 là nhiều năng lượng",
+                stress_scale_label="1 là rất nhẹ, 5 là rất căng",
+            )
     return MoodCheckInOptionsResponse(
+        student_prompt="Dành một phút gọi tên cảm xúc hiện tại của em.",
+        adult_guidance="Bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào.",
         mood_options=MOOD_OPTIONS,
         context_tags=CONTEXT_TAG_OPTIONS,
         privacy_notes=MOOD_PRIVACY_NOTES,

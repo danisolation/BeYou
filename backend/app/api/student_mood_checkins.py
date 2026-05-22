@@ -40,7 +40,7 @@ def read_mood_checkin_options(
     db: OrmSession = Depends(get_db),
 ) -> MoodCheckInOptionsResponse:
     _require_student_with_privacy_ack(db, current_user)
-    return get_mood_checkin_options()
+    return get_mood_checkin_options(db)
 
 
 @router.post("", response_model=MoodCheckInResponse, status_code=status.HTTP_201_CREATED)

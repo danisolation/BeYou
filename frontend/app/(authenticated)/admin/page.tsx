@@ -49,6 +49,12 @@ export default function AdminDashboardPage() {
           countLabel="Cài đặt an toàn"
         />
         <AdminEntryCard
+          href="/admin/mood-checkins"
+          title="Cấu hình mood check-in"
+          description="Quản lý nhãn, prompt và guidance không chẩn đoán cho check-in cảm xúc."
+          countLabel="Mood config"
+        />
+        <AdminEntryCard
           href="/admin/content"
           title="Nội dung tự kiểm tra và tình huống"
           description="Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn."

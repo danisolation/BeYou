@@ -251,6 +251,30 @@ class MoodCheckIn(Base):
     )
 
 
+class MoodCheckInConfig(Base):
+    __tablename__ = "mood_checkin_configs"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(96), nullable=False, unique=True)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default=ContentStatus.DRAFT.value)
+    student_prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    adult_guidance: Mapped[str] = mapped_column(Text, nullable=False)
+    mood_options: Mapped[list[dict]] = mapped_column(JSONB, default=list, nullable=False)
+    context_tags: Mapped[list[dict]] = mapped_column(JSONB, default=list, nullable=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    __table_args__ = (
+        Index("ix_mood_checkin_configs_status_sort", "status", "sort_order"),
+        Index("ix_mood_checkin_configs_is_demo", "is_demo"),
+    )
+
+
 class AuditEvent(Base):
     __tablename__ = "audit_events"
 

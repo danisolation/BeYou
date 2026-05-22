@@ -52,8 +52,16 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
 PRIVACY_NOTES = [
     "Chỉ hiển thị metadata vận hành: trạng thái, loại hành động, loại mục tiêu, thời gian và mã lỗi an toàn.",
     "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
+    "Support plan, mood check-in, adult summary và admin config chỉ hiển thị bằng count/status metadata an toàn.",
     "Dùng trang này để kiểm tra vận hành và xử lý sự cố, không dùng để giám sát từng học sinh.",
 ]
+
+V1_2_RESOURCE_LABELS = {
+    "support_plan": "Support plans",
+    "mood_check_in": "Mood check-ins",
+    "adult_support_summary": "Adult summaries",
+    "mood_checkin_config": "Mood config",
+}
 
 
 def _bucket(key: str, count: int, label_map: Mapping[str, str] | None = None) -> OperationCountBucket:
@@ -206,6 +214,20 @@ def _audit_summary(
     )
 
 
+def _v1_2_audit_buckets(db: OrmSession) -> list[OperationCountBucket]:
+    rows = db.execute(
+        select(AuditEvent.resource_type, func.count())
+        .where(AuditEvent.resource_type.in_(V1_2_RESOURCE_LABELS))
+        .group_by(AuditEvent.resource_type)
+        .order_by(AuditEvent.resource_type)
+    ).all()
+    counts = {resource_type: count for resource_type, count in rows}
+    return [
+        _bucket(resource_type, counts.get(resource_type, 0), V1_2_RESOURCE_LABELS)
+        for resource_type in V1_2_RESOURCE_LABELS
+    ]
+
+
 def record_readiness_audit(db: OrmSession, *, actor: User, report: ReadinessReport, resource_type: str) -> None:
     fail_count = sum(1 for check in report.checks if check.status == "fail")
     warn_count = sum(1 for check in report.checks if check.status == "warn")
@@ -247,6 +269,7 @@ def build_operations_dashboard(
         privacy_notes=PRIVACY_NOTES,
         readiness=_readiness_summary(readiness_report),
         sos_email=_delivery_summary(db, limit=limit),
+        v1_2_audit=_v1_2_audit_buckets(db),
         audit=_audit_summary(
             db,
             start_at=start_at,

@@ -207,6 +207,9 @@ export default function AdminOperationsPage() {
             <MetricCard title="SOS email attempts" value={dashboard.sos_email.total} description="Tổng attempt email SOS metadata." />
             <MetricCard title="Audit matching" value={dashboard.audit.total_matching} description="Số audit event khớp bộ lọc." />
           </div>
+          <Panel title="v1.2 support metadata" description="Support plan, mood check-in, adult summary và admin config theo count metadata an toàn.">
+            <BucketList buckets={dashboard.v1_2_audit ?? []} emptyCopy="Chưa có audit v1.2." />
+          </Panel>
 
           <section className="grid gap-4 lg:grid-cols-2">
             <Panel title="Readiness checks" description="Chỉ hiển thị key, trạng thái và hướng xử lý đã được masking.">

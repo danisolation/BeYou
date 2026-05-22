@@ -81,7 +81,8 @@ export default function StudentMoodCheckInPage() {
       <div className="rounded-3xl bg-secondary p-6 shadow-sm">
         <h1 className="text-display">Check-in cảm xúc</h1>
         <p className="mt-4 text-body">
-          Dành một phút để gọi tên cảm xúc hiện tại. BeYou dùng thông tin này để gợi ý bước hỗ trợ nhẹ nhàng cho em.
+          {options.student_prompt ??
+            "Dành một phút để gọi tên cảm xúc hiện tại. BeYou dùng thông tin này để gợi ý bước hỗ trợ nhẹ nhàng cho em."}
         </p>
         <div className="mt-5 rounded-3xl bg-white p-5">
           <h2 className="text-heading">Ranh giới riêng tư</h2>

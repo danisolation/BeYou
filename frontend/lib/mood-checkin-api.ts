@@ -14,6 +14,8 @@ export type ContextTagOption = {
 };
 
 export type MoodCheckInOptions = {
+  student_prompt: string | null;
+  adult_guidance: string | null;
   mood_options: MoodOption[];
   context_tags: ContextTagOption[];
   privacy_notes: string[];

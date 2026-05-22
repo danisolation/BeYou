@@ -81,6 +81,7 @@ def require_permission(
             "self_check_content",
             "scenario_content",
             "chatbot_safety_config",
+            "mood_checkin_config",
             "aggregate_report",
             "operations_readiness",
         }

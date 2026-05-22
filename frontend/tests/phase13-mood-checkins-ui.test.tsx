@@ -7,6 +7,8 @@ import StudentMoodCheckInHistoryPage from "@/app/(authenticated)/student/mood-ch
 import StudentMoodCheckInPage from "@/app/(authenticated)/student/mood-check-ins/page";
 
 const optionsResponse = {
+  student_prompt: "Dành một phút gọi tên cảm xúc hiện tại của em.",
+  adult_guidance: "Bắt đầu bằng lắng nghe.",
   mood_options: [
     { key: "steady", label: "Khá ổn", helper: "Em thấy tương đối cân bằng." },
     { key: "overwhelmed", label: "Quá tải", helper: "Em thấy mọi thứ hơi nhiều với mình." },
