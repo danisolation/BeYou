@@ -45,12 +45,12 @@ Requirements for Production Hardening & Support Polish. Each maps to exactly one
 
 ### Operational Visibility
 
-- [ ] **OPS-01**: Admin can view a metadata-only operations dashboard with readiness status, SOS email delivery status, and recent support/admin activity.
-- [ ] **OPS-02**: Admin can filter audit events by date, actor role, action type, target type, and status using metadata only.
-- [ ] **OPS-03**: Admin can inspect SOS email delivery attempts and error categories without seeing raw student distress content or recipient credentials.
-- [ ] **OPS-04**: Non-admin users cannot access operations endpoints or operations UI.
-- [ ] **OPS-05**: Operations visibility excludes raw self-check answers, chatbot transcripts, SOS notes, secret values, raw exports, student risk leaderboards, and per-student risk drilldowns.
-- [ ] **OPS-06**: v1.1 readiness checks, email delivery attempts, content publish actions, and sensitive support/admin actions emit minimal metadata audit events.
+- [x] **OPS-01**: Admin can view a metadata-only operations dashboard with readiness status, SOS email delivery status, and recent support/admin activity.
+- [x] **OPS-02**: Admin can filter audit events by date, actor role, action type, target type, and status using metadata only.
+- [x] **OPS-03**: Admin can inspect SOS email delivery attempts and error categories without seeing raw student distress content or recipient credentials.
+- [x] **OPS-04**: Non-admin users cannot access operations endpoints or operations UI.
+- [x] **OPS-05**: Operations visibility excludes raw self-check answers, chatbot transcripts, SOS notes, secret values, raw exports, student risk leaderboards, and per-student risk drilldowns.
+- [x] **OPS-06**: v1.1 readiness checks, email delivery attempts, content publish actions, and sensitive support/admin actions emit minimal metadata audit events.
 
 ## Future Requirements
 
@@ -122,12 +122,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONTENT-04 | Phase 10 | Complete |
 | CONTENT-05 | Phase 10 | Complete |
 | CONTENT-06 | Phase 10 | Complete |
-| OPS-01 | Phase 11 | Pending |
-| OPS-02 | Phase 11 | Pending |
-| OPS-03 | Phase 11 | Pending |
-| OPS-04 | Phase 11 | Pending |
-| OPS-05 | Phase 11 | Pending |
-| OPS-06 | Phase 11 | Pending |
+| OPS-01 | Phase 11 | Complete |
+| OPS-02 | Phase 11 | Complete |
+| OPS-03 | Phase 11 | Complete |
+| OPS-04 | Phase 11 | Complete |
+| OPS-05 | Phase 11 | Complete |
+| OPS-06 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 30 total
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-21*
-*Last updated: 2026-05-22 after Phase 10 completion*
+*Last updated: 2026-05-22 after Phase 11 completion*
 

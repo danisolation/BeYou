@@ -3,7 +3,7 @@
 **Created:** 2026-05-21  
 **Granularity:** Coarse  
 **Milestone:** v1.1 Production Hardening & Support Polish  
-**Coverage:** 30/30 v1.1 requirements mapped; 24/30 complete
+**Coverage:** 30/30 v1.1 requirements mapped; 30/30 complete
 
 ## Phase Overview
 
@@ -21,7 +21,7 @@
 - [x] Phase 8: Backend-Owned SOS Email Notification Readiness
 - [x] Phase 9: Role & Privacy UX Polish
 - [x] Phase 10: Nested Admin Content Editing
-- [ ] Phase 11: Metadata-Only Operational Visibility
+- [x] Phase 11: Metadata-Only Operational Visibility
 
 ## Phase Details
 
@@ -119,7 +119,7 @@ Plans:
 **Depends on:** Phases 7, 8, 10  
 **Requirements:** OPS-01, OPS-02, OPS-03, OPS-04, OPS-05, OPS-06  
 **UI hint:** yes  
-**Status:** Pending
+**Status:** Complete (2026-05-22)
 
 **Success criteria:**
 1. Admin operations dashboard shows readiness, SOS email delivery status, and recent metadata-only support/admin activity.
@@ -128,7 +128,12 @@ Plans:
 4. Non-admin users cannot access operations endpoints or UI.
 5. Operations responses and UI exclude raw sensitive fields, secrets, risk leaderboards, and per-student risk drilldowns.
 
-**Plans:** 0/0 pending
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 11-01-PLAN.md - Backend operations dashboard API
+- [x] 11-02-PLAN.md - Frontend operations visibility UI
+- [x] 11-03-PLAN.md - Regression, review, and milestone closure prep
 
 ## Traceability
 
@@ -158,17 +163,17 @@ Plans:
 | CONTENT-04 | Phase 10 | Complete |
 | CONTENT-05 | Phase 10 | Complete |
 | CONTENT-06 | Phase 10 | Complete |
-| OPS-01 | Phase 11 | Pending |
-| OPS-02 | Phase 11 | Pending |
-| OPS-03 | Phase 11 | Pending |
-| OPS-04 | Phase 11 | Pending |
-| OPS-05 | Phase 11 | Pending |
-| OPS-06 | Phase 11 | Pending |
+| OPS-01 | Phase 11 | Complete |
+| OPS-02 | Phase 11 | Complete |
+| OPS-03 | Phase 11 | Complete |
+| OPS-04 | Phase 11 | Complete |
+| OPS-05 | Phase 11 | Complete |
+| OPS-06 | Phase 11 | Complete |
 
 **Coverage:**
 - v1.1 requirements: 30 total
 - Mapped to phases: 30
-- Complete: 24
+- Complete: 30
 - Unmapped: 0
 
 ## Assumptions
