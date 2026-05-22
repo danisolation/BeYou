@@ -26,6 +26,9 @@ function mockFetch(responses: Record<string, unknown>) {
   const fetchMock = vi.fn((url: string, init?: RequestInit) => {
     const path = new URL(url).pathname;
     const body = responses[path];
+    if (body instanceof Response) {
+      return Promise.resolve(body);
+    }
     return Promise.resolve(
       new Response(JSON.stringify(body), {
         status: body === undefined ? 404 : 200,
@@ -313,6 +316,8 @@ describe("admin content management UI", () => {
     expect(screen.getByLabelText("Tóm tắt gợi ý")).toBeInTheDocument();
     expect(screen.getByLabelText("Nội dung tích cực")).toBeInTheDocument();
     expect(screen.getByLabelText("Hành động tiếp theo gợi ý")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Thêm câu hỏi" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Thêm ngưỡng điểm" })).toBeInTheDocument();
     expect(screen.getByLabelText("Tiêu đề tình huống")).toBeInTheDocument();
     expect(screen.getByLabelText("Mô tả tình huống")).toBeInTheDocument();
     expect(screen.getByLabelText("Lựa chọn phản hồi")).toBeInTheDocument();
@@ -321,11 +326,131 @@ describe("admin content management UI", () => {
     expect(screen.getByLabelText("Cách phản hồi nên thử")).toBeInTheDocument();
     expect(screen.getByLabelText("Điều em có thể rút ra")).toBeInTheDocument();
     expect(screen.getByLabelText("Kỹ năng liên quan")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Thêm lựa chọn tình huống" })).toBeInTheDocument();
+    expect(screen.getByText("Bản xem trước câu hỏi")).toBeInTheDocument();
+    expect(screen.getByText("Bản xem trước ngưỡng điểm")).toBeInTheDocument();
+    expect(screen.getByText("Bản xem trước lựa chọn")).toBeInTheDocument();
+    expect(screen.getByText("Bài học và phản hồi gợi ý")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Lưu bản nháp" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Xuất bản" })[0]).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Lưu trữ" })[0]).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp chưa dùng" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp tình huống chưa dùng" })).toBeInTheDocument();
+  });
+
+  it("adds and saves additional self-check questions, choices, thresholds, and preview content", async () => {
+    const fetchMock = mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/self-checks/self-check-1": selfCheckContent,
+    });
+
+    render(<AdminContentPage />);
+
+    await screen.findByText("Quản lý bài tự kiểm tra");
+    await userEvent.click(screen.getByRole("button", { name: "Thêm câu hỏi" }));
+    await userEvent.type(screen.getByLabelText("Câu hỏi tự kiểm tra 2"), "Em có người lớn tin cậy không?");
+    await userEvent.type(screen.getByLabelText("Lựa chọn trả lời 2.1"), "Có, em có thể nói chuyện.");
+    await userEvent.type(screen.getByLabelText("Lựa chọn trả lời 2.2"), "Chưa chắc.");
+    await userEvent.clear(screen.getByLabelText("Giá trị điểm 2.2"));
+    await userEvent.type(screen.getByLabelText("Giá trị điểm 2.2"), "2");
+    await userEvent.click(screen.getByRole("button", { name: "Thêm ngưỡng điểm" }));
+    await userEvent.clear(screen.getByLabelText("Điểm tối thiểu 2"));
+    await userEvent.type(screen.getByLabelText("Điểm tối thiểu 2"), "2");
+    await userEvent.clear(screen.getByLabelText("Điểm tối đa 2"));
+    await userEvent.type(screen.getByLabelText("Điểm tối đa 2"), "3");
+    await userEvent.selectOptions(screen.getByLabelText("Nhãn trạng thái 2"), "Can chu y");
+    await userEvent.type(screen.getByLabelText("Nhận xét 2"), "Em nên được hỏi thăm thêm.");
+    await userEvent.type(screen.getByLabelText("Tóm tắt gợi ý 2"), "Chọn một bước an toàn.");
+    await userEvent.type(screen.getByLabelText("Hành động tiếp theo gợi ý 2"), "Nói với người lớn tin cậy.");
+
+    expect(screen.getByText("Em có người lớn tin cậy không?")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Lưu bản nháp" }));
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:8000/api/admin/content/self-checks/self-check-1",
+        expect.objectContaining({ method: "PATCH" }),
+      ),
+    );
+    const updateCall = fetchMock.mock.calls.find(
+      ([url, init]) =>
+        url === "http://localhost:8000/api/admin/content/self-checks/self-check-1" &&
+        init?.method === "PATCH",
+    );
+    const payload = JSON.parse(String(updateCall?.[1]?.body));
+
+    expect(payload.questions).toHaveLength(2);
+    expect(payload.questions[1].text).toBe("Em có người lớn tin cậy không?");
+    expect(payload.questions[1].choices).toHaveLength(2);
+    expect(payload.questions[1].choices[1]).toMatchObject({ text: "Chưa chắc.", score_value: 2, sort_order: 2 });
+    expect(payload.thresholds).toHaveLength(2);
+    expect(payload.thresholds[1]).toMatchObject({
+      state_label: "Can chu y",
+      min_score: 2,
+      max_score: 3,
+      comment: "Em nên được hỏi thăm thêm.",
+    });
+  });
+
+  it("saves edits to non-first scenario choices and shows them in preview", async () => {
+    const fetchMock = mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/scenarios/scenario-1": scenarioContent,
+    });
+
+    render(<AdminContentPage />);
+
+    await screen.findByText("Quản lý tình huống");
+    await userEvent.clear(screen.getByLabelText("Lựa chọn phản hồi 2"));
+    await userEvent.type(screen.getByLabelText("Lựa chọn phản hồi 2"), "Em dừng lại và gọi người lớn.");
+    await userEvent.clear(screen.getByLabelText("Phản hồi cho lựa chọn 2"));
+    await userEvent.type(screen.getByLabelText("Phản hồi cho lựa chọn 2"), "Dừng lại giúp em an toàn hơn.");
+    await userEvent.selectOptions(screen.getByLabelText("Tín hiệu constructive/risky 2"), "constructive");
+
+    expect(screen.getByText(/Em dừng lại và gọi người lớn/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Lưu bản nháp tình huống" }));
+
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:8000/api/admin/content/scenarios/scenario-1",
+        expect.objectContaining({ method: "PATCH" }),
+      ),
+    );
+    const updateCall = fetchMock.mock.calls.find(
+      ([url, init]) =>
+        url === "http://localhost:8000/api/admin/content/scenarios/scenario-1" &&
+        init?.method === "PATCH",
+    );
+    const payload = JSON.parse(String(updateCall?.[1]?.body));
+
+    expect(payload.choices).toHaveLength(2);
+    expect(payload.choices[1]).toMatchObject({
+      text: "Em dừng lại và gọi người lớn.",
+      signal: "constructive",
+      feedback: "Dừng lại giúp em an toàn hơn.",
+    });
+  });
+
+  it("surfaces backend publish validation detail instead of generic failure copy", async () => {
+    mockFetch({
+      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/self-checks/self-check-1/publish": new Response(
+        JSON.stringify({ detail: "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm." }),
+        { status: 400, headers: { "Content-Type": "application/json" } },
+      ),
+    });
+
+    render(<AdminContentPage />);
+
+    await screen.findByText("Quản lý bài tự kiểm tra");
+    await userEvent.click(screen.getAllByRole("button", { name: "Xuất bản" })[0]);
+
+    expect(
+      await screen.findByText("Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."),
+    ).toBeInTheDocument();
   });
 
   it("preserves existing self-check questions, choices, and thresholds when saving a single edited field", async () => {
@@ -364,7 +489,7 @@ describe("admin content management UI", () => {
 
     render(<AdminContentPage />);
 
-    const questionField = await screen.findByLabelText("Câu hỏi tự kiểm tra");
+    const questionField = await screen.findByDisplayValue("Hôm nay em thấy thế nào?");
     await userEvent.clear(questionField);
     await userEvent.type(questionField, "Câu hỏi đã cập nhật");
     await userEvent.clear(screen.getByLabelText("Lựa chọn trả lời"));

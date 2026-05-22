@@ -29,10 +29,12 @@ import {
   type AdminScenarioSignal,
   type AdminSelfCheckContent,
 } from "@/lib/admin-content-api";
+import { ApiError } from "@/lib/api";
 
 const statusOptions: AdminContentStatus[] = ["draft", "published", "archived"];
 const riskLabels: AdminRiskStateLabel[] = ["On dinh", "Can chu y", "Nen tim ho tro", "Can ho tro som"];
 const signalOptions: AdminScenarioSignal[] = ["constructive", "risky"];
+const defaultErrorCopy = "Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.";
 
 const emptySelfCheck: AdminSelfCheckContent = {
   title: "",
@@ -157,6 +159,70 @@ function TextAreaField({
   );
 }
 
+function toNumber(value: string): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function labelFor(base: string, index: number): string {
+  return index === 0 ? base : `${base} ${index + 1}`;
+}
+
+function choiceLabel(base: string, questionIndex: number, choiceIndex: number): string {
+  return questionIndex === 0 && choiceIndex === 0 ? base : `${base} ${questionIndex + 1}.${choiceIndex + 1}`;
+}
+
+function errorCopy(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (typeof error.detail === "string") {
+      return error.detail;
+    }
+    if (
+      error.detail !== null &&
+      typeof error.detail === "object" &&
+      "detail" in error.detail &&
+      typeof error.detail.detail === "string"
+    ) {
+      return error.detail.detail;
+    }
+  }
+  return defaultErrorCopy;
+}
+
+function nextSortOrder(items: Array<{ sort_order: number }>): number {
+  return Math.max(0, ...items.map((item) => item.sort_order)) + 1;
+}
+
+function newSelfCheckChoice(sortOrder: number): AdminSelfCheckContent["questions"][number]["choices"][number] {
+  return { text: "", score_value: 0, sort_order: sortOrder, is_demo: false };
+}
+
+function newSelfCheckQuestion(sortOrder: number): AdminSelfCheckContent["questions"][number] {
+  return {
+    text: "",
+    sort_order: sortOrder,
+    choices: [newSelfCheckChoice(1), newSelfCheckChoice(2)],
+    is_demo: false,
+  };
+}
+
+function newThreshold(sortOrder: number): AdminSelfCheckContent["thresholds"][number] {
+  return {
+    state_label: "On dinh",
+    min_score: sortOrder - 1,
+    max_score: sortOrder - 1,
+    comment: "",
+    advice: "",
+    positive_content: "",
+    suggested_next_action: "",
+    is_demo: false,
+  };
+}
+
+function newScenarioChoice(sortOrder: number): AdminScenarioContent["choices"][number] {
+  return { text: "", signal: "constructive", feedback: "", sort_order: sortOrder, is_demo: false };
+}
+
 export default function AdminContentPage() {
   const [selfChecks, setSelfChecks] = useState<AdminSelfCheckContent[]>([]);
   const [scenarios, setScenarios] = useState<AdminScenarioContent[]>([]);
@@ -178,73 +244,128 @@ export default function AdminContentPage() {
     refreshContent().finally(() => setIsLoading(false));
   }, []);
 
-  function updateSelfCheckQuestion(value: string) {
+  function updateSelfCheckQuestion(questionIndex: number, field: "text" | "sort_order", value: string) {
     setSelfCheckDraft((current) => ({
       ...current,
-      questions:
-        current.questions.length > 0
-          ? current.questions.map((question, index) => (index === 0 ? { ...question, text: value } : question))
-          : [{ ...emptySelfCheck.questions[0], text: value }],
+      questions: current.questions.map((question, index) =>
+        index === questionIndex ? { ...question, [field]: field === "sort_order" ? toNumber(value) : value } : question,
+      ),
     }));
   }
 
-  function updateSelfCheckChoice(field: "text" | "score_value", value: string) {
-    setSelfCheckDraft((current) => {
-      const updateChoice = (choice = emptySelfCheck.questions[0].choices[0]) => ({
-        ...choice,
-        [field]: field === "score_value" ? Number(value) : value,
-      });
-      const updateQuestion = (question = emptySelfCheck.questions[0]) => ({
-        ...question,
-        choices:
-          question.choices.length > 0
-            ? question.choices.map((choice, index) => (index === 0 ? updateChoice(choice) : choice))
-            : [updateChoice()],
-      });
-
-      return {
-        ...current,
-        questions:
-          current.questions.length > 0
-            ? current.questions.map((question, index) => (index === 0 ? updateQuestion(question) : question))
-            : [updateQuestion()],
-      };
-    });
+  function addSelfCheckQuestion() {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      questions: [...current.questions, newSelfCheckQuestion(nextSortOrder(current.questions))],
+    }));
   }
 
-  function updateThreshold(field: keyof AdminSelfCheckContent["thresholds"][number], value: string) {
-    setSelfCheckDraft((current) => {
-      const numericFields = ["min_score", "max_score"];
-      return {
-        ...current,
-        thresholds:
-          current.thresholds.length > 0
-            ? current.thresholds.map((threshold, index) =>
-                index === 0
-                  ? {
-                      ...threshold,
-                      [field]: numericFields.includes(String(field)) ? Number(value) : value,
-                    }
-                  : threshold,
-              )
-            : [
-                {
-                  ...emptySelfCheck.thresholds[0],
-                  [field]: numericFields.includes(String(field)) ? Number(value) : value,
-                },
-              ],
-      };
-    });
+  function removeSelfCheckQuestion(questionIndex: number) {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      questions: current.questions.filter((_, index) => index !== questionIndex),
+    }));
   }
 
-  function updateScenarioChoice(field: "text" | "signal" | "feedback", value: string) {
-    setScenarioDraft((current) => {
-      const choice = current.choices[0] ?? emptyScenario.choices[0];
-      return {
-        ...current,
-        choices: [{ ...choice, [field]: value }, ...current.choices.slice(1)],
-      };
-    });
+  function updateSelfCheckChoice(
+    questionIndex: number,
+    choiceIndex: number,
+    field: "text" | "score_value" | "sort_order",
+    value: string,
+  ) {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question, index) =>
+        index === questionIndex
+          ? {
+              ...question,
+              choices: question.choices.map((choice, currentChoiceIndex) =>
+                currentChoiceIndex === choiceIndex
+                  ? { ...choice, [field]: field === "text" ? value : toNumber(value) }
+                  : choice,
+              ),
+            }
+          : question,
+      ),
+    }));
+  }
+
+  function addSelfCheckChoice(questionIndex: number) {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question, index) =>
+        index === questionIndex
+          ? { ...question, choices: [...question.choices, newSelfCheckChoice(nextSortOrder(question.choices))] }
+          : question,
+      ),
+    }));
+  }
+
+  function removeSelfCheckChoice(questionIndex: number, choiceIndex: number) {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      questions: current.questions.map((question, index) =>
+        index === questionIndex
+          ? { ...question, choices: question.choices.filter((_, currentChoiceIndex) => currentChoiceIndex !== choiceIndex) }
+          : question,
+      ),
+    }));
+  }
+
+  function updateThreshold(indexToUpdate: number, field: keyof AdminSelfCheckContent["thresholds"][number], value: string) {
+    const numericFields = ["min_score", "max_score"];
+    setSelfCheckDraft((current) => ({
+      ...current,
+      thresholds: current.thresholds.map((threshold, index) =>
+        index === indexToUpdate
+          ? {
+              ...threshold,
+              [field]: numericFields.includes(String(field)) ? toNumber(value) : value,
+            }
+          : threshold,
+      ),
+    }));
+  }
+
+  function addThreshold() {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      thresholds: [...current.thresholds, newThreshold(current.thresholds.length + 1)],
+    }));
+  }
+
+  function removeThreshold(thresholdIndex: number) {
+    setSelfCheckDraft((current) => ({
+      ...current,
+      thresholds: current.thresholds.filter((_, index) => index !== thresholdIndex),
+    }));
+  }
+
+  function updateScenarioChoice(
+    choiceIndex: number,
+    field: "text" | "signal" | "feedback" | "sort_order",
+    value: string,
+  ) {
+    setScenarioDraft((current) => ({
+      ...current,
+      choices: current.choices.map((choice, index) =>
+        index === choiceIndex ? { ...choice, [field]: field === "sort_order" ? toNumber(value) : value } : choice,
+      ),
+    }));
+  }
+
+  function addScenarioChoice() {
+    setScenarioDraft((current) => ({
+      ...current,
+      choices: [...current.choices, newScenarioChoice(nextSortOrder(current.choices))],
+    }));
+  }
+
+  function removeScenarioChoice(choiceIndex: number) {
+    setScenarioDraft((current) => ({
+      ...current,
+      choices: current.choices.filter((_, index) => index !== choiceIndex),
+    }));
   }
 
   async function runAction(action: () => Promise<unknown>) {
@@ -252,8 +373,8 @@ export default function AdminContentPage() {
       setError("");
       await action();
       await refreshContent();
-    } catch {
-      setError("Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.");
+    } catch (actionError) {
+      setError(errorCopy(actionError));
     }
   }
 
@@ -266,8 +387,8 @@ export default function AdminContentPage() {
       const loadedSelfChecks = await listAdminSelfChecks();
       setSelfChecks(loadedSelfChecks);
       setSelfCheckDraft(cloneSelfCheck(saved));
-    } catch {
-      setError("Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.");
+    } catch (saveError) {
+      setError(errorCopy(saveError));
     }
   }
 
@@ -280,8 +401,8 @@ export default function AdminContentPage() {
       const loadedScenarios = await listAdminScenarios();
       setScenarios(loadedScenarios);
       setScenarioDraft(cloneScenario(saved));
-    } catch {
-      setError("Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.");
+    } catch (saveError) {
+      setError(errorCopy(saveError));
     }
   }
 
@@ -365,52 +486,209 @@ export default function AdminContentPage() {
                 ))}
               </select>
             </label>
-            <TextAreaField
-              label="Câu hỏi tự kiểm tra"
-              value={selfCheckDraft.questions[0]?.text ?? ""}
-              onChange={updateSelfCheckQuestion}
-            />
-            <Field
-              label="Lựa chọn trả lời"
-              value={selfCheckDraft.questions[0]?.choices[0]?.text ?? ""}
-              onChange={(value) => updateSelfCheckChoice("text", value)}
-            />
-            <Field
-              label="Giá trị điểm"
-              value={selfCheckDraft.questions[0]?.choices[0]?.score_value ?? 0}
-              type="number"
-              onChange={(value) => updateSelfCheckChoice("score_value", value)}
-            />
-            <label className="space-y-1 text-label font-semibold">
-              Nhãn trạng thái
-              <select
-                aria-label="Nhãn trạng thái"
-                value={selfCheckDraft.thresholds[0]?.state_label ?? "On dinh"}
-                onChange={(event) => updateThreshold("state_label", event.target.value)}
-                className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
-              >
-                {riskLabels.map((label) => (
-                  <option key={label} value={label}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Field label="Điểm tối thiểu" value={selfCheckDraft.thresholds[0]?.min_score ?? 0} type="number" onChange={(value) => updateThreshold("min_score", value)} />
-            <Field label="Điểm tối đa" value={selfCheckDraft.thresholds[0]?.max_score ?? 0} type="number" onChange={(value) => updateThreshold("max_score", value)} />
-            <TextAreaField label="Nhận xét" value={selfCheckDraft.thresholds[0]?.comment ?? ""} onChange={(value) => updateThreshold("comment", value)} />
-            <TextAreaField label="Tóm tắt gợi ý" value={selfCheckDraft.thresholds[0]?.advice ?? ""} onChange={(value) => updateThreshold("advice", value)} />
-            <TextAreaField label="Nội dung tích cực" value={selfCheckDraft.thresholds[0]?.positive_content ?? ""} onChange={(value) => updateThreshold("positive_content", value)} />
-            <TextAreaField
-              label="Hành động tiếp theo gợi ý"
-              value={selfCheckDraft.thresholds[0]?.suggested_next_action ?? ""}
-              onChange={(value) => updateThreshold("suggested_next_action", value)}
-            />
+            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-heading">Câu hỏi và lựa chọn</h3>
+                <button
+                  type="button"
+                  onClick={addSelfCheckQuestion}
+                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                >
+                  Thêm câu hỏi
+                </button>
+              </div>
+              {selfCheckDraft.questions.length === 0 ? (
+                <p className="text-body">Chưa có câu hỏi. Thêm câu hỏi trước khi xuất bản.</p>
+              ) : null}
+              {selfCheckDraft.questions.map((question, questionIndex) => (
+                <section key={question.id ?? `draft-question-${questionIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="text-heading">Câu hỏi {questionIndex + 1}</h4>
+                    <button
+                      type="button"
+                      onClick={() => removeSelfCheckQuestion(questionIndex)}
+                      className="min-h-11 rounded-2xl border border-warning px-4"
+                    >
+                      Xóa câu hỏi
+                    </button>
+                  </div>
+                  <TextAreaField
+                    label={labelFor("Câu hỏi tự kiểm tra", questionIndex)}
+                    value={question.text}
+                    onChange={(value) => updateSelfCheckQuestion(questionIndex, "text", value)}
+                  />
+                  <Field
+                    label={labelFor("Thứ tự câu hỏi", questionIndex)}
+                    value={question.sort_order}
+                    type="number"
+                    onChange={(value) => updateSelfCheckQuestion(questionIndex, "sort_order", value)}
+                  />
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-label font-semibold">Lựa chọn trả lời</p>
+                      <button
+                        type="button"
+                        onClick={() => addSelfCheckChoice(questionIndex)}
+                        className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4"
+                      >
+                        Thêm lựa chọn
+                      </button>
+                    </div>
+                    {question.choices.length === 0 ? (
+                      <p className="text-body">Câu hỏi này chưa có lựa chọn.</p>
+                    ) : null}
+                    {question.choices.map((choice, choiceIndex) => (
+                      <div key={choice.id ?? `draft-choice-${questionIndex}-${choiceIndex}`} className="grid gap-3 rounded-2xl bg-white p-4 md:grid-cols-2">
+                        <Field
+                          label={choiceLabel("Lựa chọn trả lời", questionIndex, choiceIndex)}
+                          value={choice.text}
+                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "text", value)}
+                        />
+                        <Field
+                          label={choiceLabel("Giá trị điểm", questionIndex, choiceIndex)}
+                          value={choice.score_value}
+                          type="number"
+                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "score_value", value)}
+                        />
+                        <Field
+                          label={choiceLabel("Thứ tự lựa chọn", questionIndex, choiceIndex)}
+                          value={choice.sort_order}
+                          type="number"
+                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "sort_order", value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeSelfCheckChoice(questionIndex, choiceIndex)}
+                          className="min-h-11 self-end rounded-2xl border border-warning px-4"
+                        >
+                          Xóa lựa chọn
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-heading">Ngưỡng điểm</h3>
+                <button
+                  type="button"
+                  onClick={addThreshold}
+                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                >
+                  Thêm ngưỡng điểm
+                </button>
+              </div>
+              {selfCheckDraft.thresholds.length === 0 ? (
+                <p className="text-body">Chưa có ngưỡng điểm. Thêm ngưỡng điểm trước khi xuất bản.</p>
+              ) : null}
+              {selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
+                <section key={threshold.id ?? `draft-threshold-${thresholdIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="text-heading">Ngưỡng {thresholdIndex + 1}</h4>
+                    <button
+                      type="button"
+                      onClick={() => removeThreshold(thresholdIndex)}
+                      className="min-h-11 rounded-2xl border border-warning px-4"
+                    >
+                      Xóa ngưỡng điểm
+                    </button>
+                  </div>
+                  <label className="space-y-1 text-label font-semibold">
+                    {labelFor("Nhãn trạng thái", thresholdIndex)}
+                    <select
+                      aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
+                      value={threshold.state_label}
+                      onChange={(event) => updateThreshold(thresholdIndex, "state_label", event.target.value)}
+                      className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                    >
+                      {riskLabels.map((label) => (
+                        <option key={label} value={label}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <Field
+                    label={labelFor("Điểm tối thiểu", thresholdIndex)}
+                    value={threshold.min_score}
+                    type="number"
+                    onChange={(value) => updateThreshold(thresholdIndex, "min_score", value)}
+                  />
+                  <Field
+                    label={labelFor("Điểm tối đa", thresholdIndex)}
+                    value={threshold.max_score}
+                    type="number"
+                    onChange={(value) => updateThreshold(thresholdIndex, "max_score", value)}
+                  />
+                  <TextAreaField
+                    label={labelFor("Nhận xét", thresholdIndex)}
+                    value={threshold.comment ?? ""}
+                    onChange={(value) => updateThreshold(thresholdIndex, "comment", value)}
+                  />
+                  <TextAreaField
+                    label={labelFor("Tóm tắt gợi ý", thresholdIndex)}
+                    value={threshold.advice ?? ""}
+                    onChange={(value) => updateThreshold(thresholdIndex, "advice", value)}
+                  />
+                  <TextAreaField
+                    label={labelFor("Nội dung tích cực", thresholdIndex)}
+                    value={threshold.positive_content ?? ""}
+                    onChange={(value) => updateThreshold(thresholdIndex, "positive_content", value)}
+                  />
+                  <TextAreaField
+                    label={labelFor("Hành động tiếp theo gợi ý", thresholdIndex)}
+                    value={threshold.suggested_next_action ?? ""}
+                    onChange={(value) => updateThreshold(thresholdIndex, "suggested_next_action", value)}
+                  />
+                </section>
+              ))}
+            </div>
           </div>
           <div className="rounded-2xl bg-secondary p-4">
             <h3 className="text-heading">{selfCheckDraft.title || "Bản xem trước bài tự kiểm tra"}</h3>
             <p className="mt-2 text-body">{selfCheckDraft.description || "Nội dung hỗ trợ học sinh sẽ hiển thị tại đây."}</p>
             <p className="mt-2 text-label">Trạng thái nội dung: {selfCheckDraft.status}</p>
+            <div className="mt-4 space-y-3">
+              <h4 className="text-heading">Bản xem trước câu hỏi</h4>
+              {selfCheckDraft.questions.length === 0 ? (
+                <p className="text-body">Chưa có câu hỏi để xem trước.</p>
+              ) : (
+                selfCheckDraft.questions
+                  .slice()
+                  .sort((left, right) => left.sort_order - right.sort_order)
+                  .map((question, questionIndex) => (
+                    <article key={question.id ?? `preview-question-${questionIndex}`} className="rounded-2xl bg-white p-3">
+                      <p className="font-semibold">
+                        {questionIndex + 1}. {question.text || "Câu hỏi chưa nhập"}
+                      </p>
+                      <ul className="mt-2 space-y-1 text-label">
+                        {question.choices
+                          .slice()
+                          .sort((left, right) => left.sort_order - right.sort_order)
+                          .map((choice, choiceIndex) => (
+                            <li key={choice.id ?? `preview-choice-${questionIndex}-${choiceIndex}`}>
+                              {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} - {choice.score_value} điểm
+                            </li>
+                          ))}
+                      </ul>
+                    </article>
+                  ))
+              )}
+            </div>
+            <div className="mt-4 space-y-2">
+              <h4 className="text-heading">Bản xem trước ngưỡng điểm</h4>
+              {selfCheckDraft.thresholds.length === 0 ? (
+                <p className="text-body">Chưa có ngưỡng điểm để xem trước.</p>
+              ) : (
+                selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
+                  <p key={threshold.id ?? `preview-threshold-${thresholdIndex}`} className="text-label">
+                    {threshold.state_label}: {threshold.min_score}-{threshold.max_score} điểm
+                  </p>
+                ))
+              )}
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white">
@@ -473,23 +751,66 @@ export default function AdminContentPage() {
                 ))}
               </select>
             </label>
-            <Field label="Lựa chọn phản hồi" value={scenarioDraft.choices[0]?.text ?? ""} onChange={(value) => updateScenarioChoice("text", value)} />
-            <label className="space-y-1 text-label font-semibold">
-              Tín hiệu constructive/risky
-              <select
-                aria-label="Tín hiệu constructive/risky"
-                value={scenarioDraft.choices[0]?.signal ?? "constructive"}
-                onChange={(event) => updateScenarioChoice("signal", event.target.value)}
-                className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
-              >
-                {signalOptions.map((signal) => (
-                  <option key={signal} value={signal}>
-                    {signal}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <TextAreaField label="Phản hồi cho lựa chọn" value={scenarioDraft.choices[0]?.feedback ?? ""} onChange={(value) => updateScenarioChoice("feedback", value)} />
+            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="text-heading">Lựa chọn tình huống</h3>
+                <button
+                  type="button"
+                  onClick={addScenarioChoice}
+                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                >
+                  Thêm lựa chọn tình huống
+                </button>
+              </div>
+              {scenarioDraft.choices.length === 0 ? (
+                <p className="text-body">Chưa có lựa chọn tình huống. Thêm ít nhất hai lựa chọn trước khi xuất bản.</p>
+              ) : null}
+              {scenarioDraft.choices.map((choice, choiceIndex) => (
+                <section key={choice.id ?? `draft-scenario-choice-${choiceIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <h4 className="text-heading">Lựa chọn {choiceIndex + 1}</h4>
+                    <button
+                      type="button"
+                      onClick={() => removeScenarioChoice(choiceIndex)}
+                      className="min-h-11 rounded-2xl border border-warning px-4"
+                    >
+                      Xóa lựa chọn tình huống
+                    </button>
+                  </div>
+                  <Field
+                    label={labelFor("Lựa chọn phản hồi", choiceIndex)}
+                    value={choice.text}
+                    onChange={(value) => updateScenarioChoice(choiceIndex, "text", value)}
+                  />
+                  <label className="space-y-1 text-label font-semibold">
+                    {labelFor("Tín hiệu constructive/risky", choiceIndex)}
+                    <select
+                      aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}
+                      value={choice.signal}
+                      onChange={(event) => updateScenarioChoice(choiceIndex, "signal", event.target.value)}
+                      className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                    >
+                      {signalOptions.map((signal) => (
+                        <option key={signal} value={signal}>
+                          {signal}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <TextAreaField
+                    label={labelFor("Phản hồi cho lựa chọn", choiceIndex)}
+                    value={choice.feedback}
+                    onChange={(value) => updateScenarioChoice(choiceIndex, "feedback", value)}
+                  />
+                  <Field
+                    label={labelFor("Thứ tự lựa chọn tình huống", choiceIndex)}
+                    value={choice.sort_order}
+                    type="number"
+                    onChange={(value) => updateScenarioChoice(choiceIndex, "sort_order", value)}
+                  />
+                </section>
+              ))}
+            </div>
             <TextAreaField
               label="Cách phản hồi nên thử"
               value={scenarioDraft.recommended_response}
@@ -503,7 +824,31 @@ export default function AdminContentPage() {
               {scenarioDraft.is_demo ? <DemoBadge /> : null}
             </div>
             <p className="mt-2 text-body">{scenarioDraft.situation || "Mô tả tình huống sẽ hiển thị tại đây."}</p>
+            <p className="mt-2 text-label">Kỹ năng: {scenarioDraft.skill_tag || "Chưa nhập"}</p>
             <p className="mt-2 text-label">Trạng thái nội dung: {scenarioDraft.status}</p>
+            <div className="mt-4 space-y-3">
+              <h4 className="text-heading">Bản xem trước lựa chọn</h4>
+              {scenarioDraft.choices.length === 0 ? (
+                <p className="text-body">Chưa có lựa chọn để xem trước.</p>
+              ) : (
+                scenarioDraft.choices
+                  .slice()
+                  .sort((left, right) => left.sort_order - right.sort_order)
+                  .map((choice, choiceIndex) => (
+                    <article key={choice.id ?? `preview-scenario-choice-${choiceIndex}`} className="rounded-2xl bg-white p-3">
+                      <p className="font-semibold">
+                        {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} ({choice.signal})
+                      </p>
+                      <p className="mt-2 text-label">{choice.feedback || "Phản hồi chưa nhập"}</p>
+                    </article>
+                  ))
+              )}
+            </div>
+            <div className="mt-4 rounded-2xl bg-white p-3">
+              <h4 className="text-heading">Bài học và phản hồi gợi ý</h4>
+              <p className="mt-2 text-body">{scenarioDraft.recommended_response || "Cách phản hồi nên thử sẽ hiển thị tại đây."}</p>
+              <p className="mt-2 text-label">{scenarioDraft.lesson || "Điều học sinh có thể rút ra sẽ hiển thị tại đây."}</p>
+            </div>
           </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4">
