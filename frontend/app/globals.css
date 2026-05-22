@@ -36,6 +36,24 @@ body {
   overflow-x: hidden;
 }
 
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+form,
+fieldset,
+div {
+  min-width: 0;
+}
+
+table {
+  max-width: 100%;
+  border-collapse: collapse;
+}
+
 button,
 input,
 select,
@@ -56,6 +74,7 @@ input[type="checkbox"]:not(:disabled),
 input[type="radio"]:not(:disabled),
 a[href] {
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 button:disabled {
@@ -99,12 +118,23 @@ textarea {
   resize: vertical;
 }
 
+:where(p, li, dd, dt, h1, h2, h3, h4, span) {
+  overflow-wrap: break-word;
+}
+
 svg {
   flex-shrink: 0;
 }
 
 ::selection {
   background: rgba(44, 165, 141, 0.2);
+}
+
+@media (max-width: 640px) {
+  table {
+    display: block;
+    overflow-x: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

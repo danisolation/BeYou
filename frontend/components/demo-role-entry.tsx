@@ -37,7 +37,7 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" aria-busy={loadingRole !== null}>
       <div className={compact ? "grid gap-2 sm:grid-cols-2" : "grid gap-3 sm:grid-cols-2"}>
         {demoAccounts.map((account) => (
           <button
@@ -54,7 +54,11 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
           </button>
         ))}
       </div>
-      {error ? <p className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">{error}</p> : null}
+      {error ? (
+        <p role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }

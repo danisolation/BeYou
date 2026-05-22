@@ -16,10 +16,10 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Responsive & Accessibility
 
-- [ ] **RESP-01**: Auth, privacy, student, teacher, parent, and admin routes render without horizontal overflow at mobile, tablet, and desktop widths.
-- [ ] **RESP-02**: Header navigation, cards, forms, and action groups adapt to touch-friendly mobile layouts.
-- [ ] **RESP-03**: Keyboard focus, tab order, labels, and control semantics are usable across key flows.
-- [ ] **RESP-04**: Visual states for hover, focus, disabled, loading, empty, success, and error are consistent.
+- [x] **RESP-01**: Auth, privacy, student, teacher, parent, and admin routes render without horizontal overflow at mobile, tablet, and desktop widths.
+- [x] **RESP-02**: Header navigation, cards, forms, and action groups adapt to touch-friendly mobile layouts.
+- [x] **RESP-03**: Keyboard focus, tab order, labels, and control semantics are usable across key flows.
+- [x] **RESP-04**: Visual states for hover, focus, disabled, loading, empty, success, and error are consistent.
 - [ ] **RESP-05**: Responsive smoke coverage verifies critical routes and role entry points.
 
 ### UX Copy & Interaction Polish
@@ -27,7 +27,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [ ] **UX-01**: Student-facing copy stays supportive, Vietnamese, non-clinical, and easy to understand.
 - [ ] **UX-02**: Adult and admin copy reinforces support-not-surveillance and privacy-limited visibility.
 - [ ] **UX-03**: Critical actions such as SOS, disable/delete/revoke, and configuration changes have clear confirmation and outcome states.
-- [ ] **UX-04**: Cards, buttons, forms, and page hierarchy use a consistent visual system.
+- [x] **UX-04**: Cards, buttons, forms, and page hierarchy use a consistent visual system.
 
 ### Demo/Pilot Operations
 
@@ -86,15 +86,15 @@ Roadmap mapping is filled during roadmap creation.
 | DEMO-02 | Phase 16 | Complete |
 | DEMO-03 | Phase 16 | Complete |
 | DEMO-04 | Phase 16 | Complete |
-| RESP-01 | Phase 17 | Pending |
-| RESP-02 | Phase 17 | Pending |
-| RESP-03 | Phase 17 | Pending |
-| RESP-04 | Phase 17 | Pending |
+| RESP-01 | Phase 17 | Complete |
+| RESP-02 | Phase 17 | Complete |
+| RESP-03 | Phase 17 | Complete |
+| RESP-04 | Phase 17 | Complete |
 | RESP-05 | Phase 20 | Pending |
 | UX-01 | Phase 18 | Pending |
 | UX-02 | Phase 18 | Pending |
 | UX-03 | Phase 18 | Pending |
-| UX-04 | Phase 17 | Pending |
+| UX-04 | Phase 17 | Complete |
 | OPS-01 | Phase 19 | Pending |
 | OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Pending |
@@ -110,4 +110,4 @@ Roadmap mapping is filled during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 16 completion*
+*Last updated: 2026-05-22 after Phase 17 completion*

@@ -131,7 +131,7 @@ export default function LoginPage() {
               </div>
 
               {error ? (
-                <div className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+                <div role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
                   {error}
                 </div>
               ) : null}

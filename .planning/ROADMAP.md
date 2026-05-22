@@ -18,7 +18,7 @@
 ## Phase Checklist
 
 - [x] Phase 16: Guided Demo Entry & Role Onboarding
-- [ ] Phase 17: Responsive Accessibility Baseline
+- [x] Phase 17: Responsive Accessibility Baseline
 - [ ] Phase 18: Supportive Copy & Critical Interaction Polish
 - [ ] Phase 19: Demo/Pilot Operations Readiness
 - [ ] Phase 20: Frontend Quality & Regression Closure
@@ -50,7 +50,7 @@ Plans:
 **Depends on:** Phase 16 design direction
 **Requirements:** RESP-01, RESP-02, RESP-03, RESP-04, UX-04
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Auth, privacy, student, teacher, parent, and admin routes have no horizontal overflow at representative mobile, tablet, and desktop widths.
@@ -58,10 +58,10 @@ Plans:
 3. Keyboard focus, tab order, labels, and control semantics are usable across key flows.
 4. Shared visual hierarchy and states for cards, buttons, forms, loading, empty, disabled, success, and error are consistent.
 
-**Plans:** 0/0 pending planning
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] To be created by `/gsd-plan-phase 17`
+- [x] 17-01-PLAN.md - Responsive overflow guardrails, accessibility states, and smoke coverage
 
 ### Phase 18: Supportive Copy & Critical Interaction Polish
 
@@ -128,15 +128,15 @@ Plans:
 | DEMO-02 | Phase 16 | Complete |
 | DEMO-03 | Phase 16 | Complete |
 | DEMO-04 | Phase 16 | Complete |
-| RESP-01 | Phase 17 | Pending |
-| RESP-02 | Phase 17 | Pending |
-| RESP-03 | Phase 17 | Pending |
-| RESP-04 | Phase 17 | Pending |
+| RESP-01 | Phase 17 | Complete |
+| RESP-02 | Phase 17 | Complete |
+| RESP-03 | Phase 17 | Complete |
+| RESP-04 | Phase 17 | Complete |
 | RESP-05 | Phase 20 | Pending |
 | UX-01 | Phase 18 | Pending |
 | UX-02 | Phase 18 | Pending |
 | UX-03 | Phase 18 | Pending |
-| UX-04 | Phase 17 | Pending |
+| UX-04 | Phase 17 | Complete |
 | OPS-01 | Phase 19 | Pending |
 | OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Pending |
@@ -148,7 +148,7 @@ Plans:
 **Coverage:**
 - v1.3 requirements: 20 total
 - Mapped to phases: 20
-- Complete: 6
+- Complete: 11
 - Unmapped: 0
 
 ## Assumptions
@@ -160,4 +160,4 @@ Plans:
 - Recent post-v1.2 UI responsive polish is treated as useful context, but v1.3 requirements still need formal GSD planning, implementation, review, and verification.
 
 ---
-*Last updated: 2026-05-22 after Phase 16 completion*
+*Last updated: 2026-05-22 after Phase 17 completion*
