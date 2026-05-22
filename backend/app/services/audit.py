@@ -23,6 +23,16 @@ FORBIDDEN_METADATA_KEYS = {
     "chat_transcript_raw",
     "self_check_raw_answers",
     "full_self_check_answers",
+    "private_note",
+    "support_plan_private_note",
+    "mood_note",
+    "raw_mood",
+    "raw_mood_note",
+    "shareable_note",
+    "what_helps",
+    "what_does_not_help",
+    "preferred_contact_method",
+    "safe_contact_times",
 }
 
 

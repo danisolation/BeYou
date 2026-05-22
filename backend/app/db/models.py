@@ -79,6 +79,12 @@ class SosNotificationDeliveryStatus(str, enum.Enum):
     FAILED = "failed"
 
 
+class SupportPlanStatus(str, enum.Enum):
+    ACTIVE = "active"
+    PAUSED = "paused"
+    DEACTIVATED = "deactivated"
+
+
 class ChatMessageRole(str, enum.Enum):
     STUDENT = "student"
     ASSISTANT = "assistant"
@@ -166,6 +172,57 @@ class StudentAdultLink(Base):
             unique=True,
             postgresql_where=(status == LinkStatus.ACTIVE.value),
         ),
+    )
+
+
+class StudentSupportPlan(Base):
+    __tablename__ = "student_support_plans"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    status: Mapped[str] = mapped_column(String(32), default=SupportPlanStatus.ACTIVE.value, nullable=False)
+    what_helps: Mapped[str | None] = mapped_column(Text, nullable=True)
+    what_does_not_help: Mapped[str | None] = mapped_column(Text, nullable=True)
+    preferred_contact_method: Mapped[str | None] = mapped_column(Text, nullable=True)
+    safe_contact_times: Mapped[str | None] = mapped_column(Text, nullable=True)
+    shareable_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+    paused_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    deactivated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    selected_adults: Mapped[list["StudentSupportPlanAdult"]] = relationship(
+        back_populates="support_plan", cascade="all, delete-orphan"
+    )
+
+    __table_args__ = (
+        UniqueConstraint("student_id", name="uq_student_support_plans_student_id"),
+        Index("ix_student_support_plans_status", "status"),
+        Index("ix_student_support_plans_is_demo", "is_demo"),
+    )
+
+
+class StudentSupportPlanAdult(Base):
+    __tablename__ = "student_support_plan_adults"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    support_plan_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("student_support_plans.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    adult_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    relationship_type_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
+    adult_full_name_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    support_plan: Mapped[StudentSupportPlan] = relationship(back_populates="selected_adults")
+
+    __table_args__ = (
+        UniqueConstraint("support_plan_id", "adult_id", name="uq_student_support_plan_adult"),
+        Index("ix_student_support_plan_adults_is_demo", "is_demo"),
     )
 
 

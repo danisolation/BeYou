@@ -118,6 +118,13 @@ export default function StudentDashboardPage() {
           historyHref="/student/scenarios/history"
           historyLabel="Xem lịch sử tình huống"
         />
+        <WellbeingEntryCard
+          title="Kế hoạch người lớn tin cậy"
+          body="Chuẩn bị trước điều em muốn chia sẻ và chọn người lớn đã liên kết để hỗ trợ đúng cách."
+          href="/student/support-plan"
+          historyHref="/student/support-plan"
+          historyLabel="Mở kế hoạch hỗ trợ"
+        />
       </div>
 
       <section className="rounded-3xl border-2 border-[#F3C0C0] bg-white p-6 shadow-sm">

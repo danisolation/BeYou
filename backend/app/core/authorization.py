@@ -119,6 +119,13 @@ def require_permission(
             and student_id == actor.id
         ):
             return
+        if (
+            resource_type == "support_plan"
+            and action in {"read", "write"}
+            and purpose == "student_private_support"
+            and student_id == actor.id
+        ):
+            return
 
     if (
         actor.role in {UserRole.TEACHER.value, UserRole.PARENT.value}

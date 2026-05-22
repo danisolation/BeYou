@@ -19,6 +19,7 @@ from app.api import (
     student,
     student_scenarios,
     student_self_checks,
+    student_support_plan,
     teacher,
 )
 from app.core.config import Settings, get_settings
@@ -71,6 +72,7 @@ def create_app() -> FastAPI:
         student_self_checks.router, prefix="/api/student/self-checks", tags=["student"]
     )
     app.include_router(student_scenarios.router, prefix="/api/student/scenarios", tags=["student"])
+    app.include_router(student_support_plan.router, prefix="/api/student/support-plan", tags=["student"])
     app.include_router(teacher.router, prefix="/api/teacher", tags=["teacher"])
     app.include_router(parent.router, prefix="/api/parent", tags=["parent"])
     app.include_router(adult_summaries.router, prefix="/api", tags=["adult-summaries"])
