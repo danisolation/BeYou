@@ -9,12 +9,12 @@ Requirements for Production Hardening & Support Polish. Each maps to exactly one
 
 ### Production Readiness
 
-- [ ] **READY-01**: Admin/operator can view liveness and readiness states that distinguish process health from production readiness.
-- [ ] **READY-02**: System flags unsafe production configuration including debug/dev mode, placeholder session secrets, demo seed enabled, and missing required provider secrets.
-- [ ] **READY-03**: System verifies database connectivity and Alembic migration head/current status and surfaces migration drift safely.
-- [ ] **READY-04**: System flags unsafe credentialed CORS and session-cookie settings such as wildcard origins, insecure production cookies, missing explicit frontend origin, or unsafe SameSite/HttpOnly values.
-- [ ] **READY-05**: Readiness responses show status and remediation hints while masking secret values and sensitive environment data.
-- [ ] **READY-06**: Public health/readiness endpoints expose only non-sensitive overall status while detailed readiness data requires admin access.
+- [x] **READY-01**: Admin/operator can view liveness and readiness states that distinguish process health from production readiness.
+- [x] **READY-02**: System flags unsafe production configuration including debug/dev mode, placeholder session secrets, demo seed enabled, and missing required provider secrets.
+- [x] **READY-03**: System verifies database connectivity and Alembic migration head/current status and surfaces migration drift safely.
+- [x] **READY-04**: System flags unsafe credentialed CORS and session-cookie settings such as wildcard origins, insecure production cookies, missing explicit frontend origin, or unsafe SameSite/HttpOnly values.
+- [x] **READY-05**: Readiness responses show status and remediation hints while masking secret values and sensitive environment data.
+- [x] **READY-06**: Public health/readiness endpoints expose only non-sensitive overall status while detailed readiness data requires admin access.
 
 ### SOS Email Notification Readiness
 
@@ -98,12 +98,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| READY-01 | Phase 7 | Pending |
-| READY-02 | Phase 7 | Pending |
-| READY-03 | Phase 7 | Pending |
-| READY-04 | Phase 7 | Pending |
-| READY-05 | Phase 7 | Pending |
-| READY-06 | Phase 7 | Pending |
+| READY-01 | Phase 7 | Complete |
+| READY-02 | Phase 7 | Complete |
+| READY-03 | Phase 7 | Complete |
+| READY-04 | Phase 7 | Complete |
+| READY-05 | Phase 7 | Complete |
+| READY-06 | Phase 7 | Complete |
 | EMAIL-01 | Phase 8 | Pending |
 | EMAIL-02 | Phase 8 | Pending |
 | EMAIL-03 | Phase 8 | Pending |
@@ -136,5 +136,5 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-21*
-*Last updated: 2026-05-21 after v1.1 roadmap creation*
+*Last updated: 2026-05-21 after Phase 7 completion*
 

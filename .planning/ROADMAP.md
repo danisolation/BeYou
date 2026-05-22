@@ -3,7 +3,7 @@
 **Created:** 2026-05-21  
 **Granularity:** Coarse  
 **Milestone:** v1.1 Production Hardening & Support Polish  
-**Coverage:** 30/30 v1.1 requirements mapped
+**Coverage:** 30/30 v1.1 requirements mapped; 6/30 complete
 
 ## Phase Overview
 
@@ -15,6 +15,14 @@
 | 10 | Nested Admin Content Editing | Admins can safely manage complete self-check and scenario structures without breaking student history. | CONTENT-01..CONTENT-06 | Phase 9 | yes |
 | 11 | Metadata-Only Operational Visibility | Admins can inspect readiness, delivery, and support/admin activity metadata without exposing sensitive student content. | OPS-01..OPS-06 | Phases 7, 8, 10 | yes |
 
+## Phase Checklist
+
+- [x] Phase 7: Production Readiness & Safe Operations Foundation
+- [ ] Phase 8: Backend-Owned SOS Email Notification Readiness
+- [ ] Phase 9: Role & Privacy UX Polish
+- [ ] Phase 10: Nested Admin Content Editing
+- [ ] Phase 11: Metadata-Only Operational Visibility
+
 ## Phase Details
 
 ### Phase 7: Production Readiness & Safe Operations Foundation
@@ -23,7 +31,7 @@
 **Depends on:** v1.0 archive  
 **Requirements:** READY-01, READY-02, READY-03, READY-04, READY-05, READY-06  
 **UI hint:** yes  
-**Status:** Pending
+**Status:** Complete (2026-05-21)
 
 **Success criteria:**
 1. Admin/operator can distinguish liveness from full production readiness.
@@ -32,7 +40,12 @@
 4. Cookie and credentialed CORS safety checks catch insecure production settings.
 5. Public readiness output stays non-sensitive while admin readiness includes masked remediation hints.
 
-**Plans:** 0/0 pending
+**Plans:** 3/3 complete
+
+Plans:
+- [x] 07-01-PLAN.md - Readiness service and API contracts
+- [x] 07-02-PLAN.md - Readiness validation tests
+- [x] 07-03-PLAN.md - Review, verification, and closure
 
 ### Phase 8: Backend-Owned SOS Email Notification Readiness
 
@@ -106,12 +119,12 @@
 
 | Requirement | Phase | Status |
 |---|---|---|
-| READY-01 | Phase 7 | Pending |
-| READY-02 | Phase 7 | Pending |
-| READY-03 | Phase 7 | Pending |
-| READY-04 | Phase 7 | Pending |
-| READY-05 | Phase 7 | Pending |
-| READY-06 | Phase 7 | Pending |
+| READY-01 | Phase 7 | Complete |
+| READY-02 | Phase 7 | Complete |
+| READY-03 | Phase 7 | Complete |
+| READY-04 | Phase 7 | Complete |
+| READY-05 | Phase 7 | Complete |
+| READY-06 | Phase 7 | Complete |
 | EMAIL-01 | Phase 8 | Pending |
 | EMAIL-02 | Phase 8 | Pending |
 | EMAIL-03 | Phase 8 | Pending |
@@ -140,6 +153,7 @@
 **Coverage:**
 - v1.1 requirements: 30 total
 - Mapped to phases: 30
+- Complete: 6
 - Unmapped: 0
 
 ## Assumptions
