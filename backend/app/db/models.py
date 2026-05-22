@@ -73,6 +73,12 @@ class SosAlertStatus(str, enum.Enum):
     COMPLETED = "completed"
 
 
+class SosNotificationDeliveryStatus(str, enum.Enum):
+    QUEUED = "queued"
+    SENT = "sent"
+    FAILED = "failed"
+
+
 class ChatMessageRole(str, enum.Enum):
     STUDENT = "student"
     ASSISTANT = "assistant"
@@ -393,6 +399,9 @@ class SosAlert(Base):
     status_events: Mapped[list["SosStatusEvent"]] = relationship(
         back_populates="alert", cascade="all, delete-orphan"
     )
+    notification_deliveries: Mapped[list["SosNotificationDelivery"]] = relationship(
+        back_populates="alert", cascade="all, delete-orphan"
+    )
 
     __table_args__ = (
         Index("ix_sos_alerts_student_created", "student_id", "created_at"),
@@ -419,6 +428,37 @@ class SosStatusEvent(Base):
     __table_args__ = (
         Index("ix_sos_status_events_alert_created", "alert_id", "created_at"),
         Index("ix_sos_status_events_is_demo", "is_demo"),
+    )
+
+
+class SosNotificationDelivery(Base):
+    __tablename__ = "sos_notification_deliveries"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    alert_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("sos_alerts.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    recipient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    channel: Mapped[str] = mapped_column(String(32), nullable=False)
+    provider: Mapped[str] = mapped_column(String(32), nullable=False)
+    recipient_role_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    attempt_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    last_attempt_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    error_code: Mapped[str | None] = mapped_column(String(96), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    alert: Mapped[SosAlert] = relationship(back_populates="notification_deliveries")
+
+    __table_args__ = (
+        Index("ix_sos_notification_deliveries_alert_created", "alert_id", "created_at"),
+        Index("ix_sos_notification_deliveries_status", "status"),
+        Index("ix_sos_notification_deliveries_is_demo", "is_demo"),
     )
 
 

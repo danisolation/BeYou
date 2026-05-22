@@ -378,7 +378,7 @@ def _seed_self_check_attempts(db: OrmSession, *, student: User, tests: list[Self
         db.commit()
 
 
-def _seed_sos_workflow(db: OrmSession, *, student: User) -> None:
+def _seed_sos_workflow(db: OrmSession, *, student: User, settings: Settings) -> None:
     existing = db.scalar(
         select(SosAlert).where(
             SosAlert.student_id == student.id,
@@ -396,6 +396,7 @@ def _seed_sos_workflow(db: OrmSession, *, student: User) -> None:
             source=SosSource.DEMO_SEED.value,
             note="Dữ liệu demo: em muốn người lớn biết em cần được hỏi thăm.",
         ),
+        settings=settings,
     )
 
 
@@ -435,7 +436,7 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     for seed in SCENARIO_SEEDS:
         _upsert_scenario_content(db, seed)
     _seed_self_check_attempts(db, student=student, tests=tests)
-    _seed_sos_workflow(db, student=student)
+    _seed_sos_workflow(db, student=student, settings=settings)
     return True
 
 

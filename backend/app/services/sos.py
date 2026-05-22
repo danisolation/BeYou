@@ -7,6 +7,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
+from app.core.config import Settings
 from app.db.models import (
     InAppNotification,
     LinkStatus,
@@ -14,7 +15,6 @@ from app.db.models import (
     SosAlert,
     SosAlertStatus,
     SosSeverity,
-    SosSource,
     SosStatusEvent,
     StudentAdultLink,
     User,
@@ -31,6 +31,7 @@ from app.schemas.sos import (
     SosStudentContext,
 )
 from app.services.audit import record_audit_event
+from app.services.sos_email import create_sos_email_deliveries
 
 STATUS_SEQUENCE = [
     SosAlertStatus.SENT.value,
@@ -210,7 +211,13 @@ def _record_sos_read(
     )
 
 
-def create_sos_alert(db: OrmSession, student: User, payload: SosAlertCreate) -> SosAlertResponse:
+def create_sos_alert(
+    db: OrmSession,
+    student: User,
+    payload: SosAlertCreate,
+    *,
+    settings: Settings,
+) -> SosAlertResponse:
     require_permission(
         db,
         student,
@@ -254,6 +261,13 @@ def create_sos_alert(db: OrmSession, student: User, payload: SosAlertCreate) -> 
                 is_demo=student.is_demo or recipient.is_demo,
             )
         )
+    create_sos_email_deliveries(
+        db,
+        alert=alert,
+        student=student,
+        recipients=recipients,
+        settings=settings,
+    )
     record_audit_event(
         db,
         actor=student,

@@ -26,6 +26,14 @@ class Settings(BaseSettings):
     )
     freemodel_model: str = Field(default="freemodel-default", validation_alias="FREEMODEL_MODEL")
     freemodel_timeout_seconds: float = Field(default=20.0, validation_alias="FREEMODEL_TIMEOUT_SECONDS")
+    sos_email_provider: str = Field(default="disabled", validation_alias="SOS_EMAIL_PROVIDER")
+    smtp_host: str = Field(default="", validation_alias="SMTP_HOST")
+    smtp_port: int = Field(default=587, validation_alias="SMTP_PORT")
+    smtp_username: str = Field(default="", validation_alias="SMTP_USERNAME")
+    smtp_password: str = Field(default="", validation_alias="SMTP_PASSWORD")
+    smtp_from: str = Field(default="", validation_alias="SMTP_FROM")
+    smtp_use_tls: bool = Field(default=True, validation_alias="SMTP_USE_TLS")
+    smtp_timeout_seconds: float = Field(default=10.0, validation_alias="SMTP_TIMEOUT_SECONDS")
 
     @field_validator("session_cookie_name")
     @classmethod
@@ -53,6 +61,14 @@ class Settings(BaseSettings):
         normalized = value.strip().lower()
         if normalized not in {"fallback", "freemodel"}:
             raise ValueError("CHAT_PROVIDER must be fallback or freemodel")
+        return normalized
+
+    @field_validator("sos_email_provider")
+    @classmethod
+    def validate_sos_email_provider(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"disabled", "local_outbox", "smtp"}:
+            raise ValueError("SOS_EMAIL_PROVIDER must be disabled, local_outbox, or smtp")
         return normalized
 
     @staticmethod

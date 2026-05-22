@@ -46,7 +46,7 @@ def create_student_sos_alert(
 ) -> SosAlertResponse:
     require_same_site_mutation(request, settings)
     require_role(current_user, UserRole.STUDENT)
-    return create_sos_alert(db, current_user, payload)
+    return create_sos_alert(db, current_user, payload, settings=settings)
 
 
 @router.get("/student/sos-alerts", response_model=list[SosAlertResponse])

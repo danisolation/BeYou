@@ -249,6 +249,47 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
+    if settings.sos_email_provider == "smtp":
+        missing_smtp_config = not settings.smtp_host.strip() or not settings.smtp_from.strip()
+        if missing_smtp_config:
+            checks.append(
+                _safe_check(
+                    key="sos_email_readiness",
+                    category="configuration",
+                    status="fail" if is_production else "warn",
+                    summary="SOS email SMTP mode is missing required backend sender configuration.",
+                    remediation="Configure backend SMTP host and sender before enabling production email delivery.",
+                )
+            )
+        else:
+            checks.append(
+                _safe_check(
+                    key="sos_email_readiness",
+                    category="configuration",
+                    status="pass",
+                    summary="SOS email SMTP configuration has required backend sender fields.",
+                )
+            )
+    elif settings.sos_email_provider == "local_outbox" and is_production:
+        checks.append(
+            _safe_check(
+                key="sos_email_readiness",
+                category="configuration",
+                status="warn",
+                summary="SOS email is configured for local outbox in production.",
+                remediation="Use SMTP mode for real external email delivery, or confirm email is intentionally simulated.",
+            )
+        )
+    else:
+        checks.append(
+            _safe_check(
+                key="sos_email_readiness",
+                category="configuration",
+                status="pass",
+                summary="SOS email provider mode is safe for this environment.",
+            )
+        )
+
     return checks
 
 
