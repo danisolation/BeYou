@@ -137,6 +137,9 @@ export default function StudentSupportPlanPage() {
         <p className="mt-4 text-body">
           Em có thể chuẩn bị trước cách người lớn tin cậy nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
         </p>
+        <p className="mt-3 text-label">
+          Kế hoạch này giúp em nói trước điều mình cần; em vẫn quyết định người lớn nào được chọn để xem phần chia sẻ.
+        </p>
         <div className="mt-5 rounded-3xl bg-white p-5">
           <h2 className="text-heading">Ranh giới chia sẻ</h2>
           <ul className="mt-3 space-y-2 text-body">
@@ -238,8 +241,8 @@ export default function StudentSupportPlanPage() {
           <p className="mt-3 text-label">
             Tạm dừng hoặc ngừng chia sẻ không xoá lịch sử metadata, nhưng người lớn sẽ không còn được chọn trong kế hoạch đang mở.
           </p>
-          {errorMessage ? <p className="mt-4 text-body text-red-700">{errorMessage}</p> : null}
-          {saveMessage ? <p className="mt-4 text-body text-accent">{saveMessage}</p> : null}
+          {errorMessage ? <p role="alert" className="mt-4 text-body text-red-700">{errorMessage}</p> : null}
+          {saveMessage ? <p role="status" className="mt-4 text-body text-accent">{saveMessage}</p> : null}
           <button
             type="submit"
             disabled={!canSave}

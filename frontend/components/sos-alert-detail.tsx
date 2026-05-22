@@ -43,6 +43,7 @@ export function SosAlertDetail({
   const [note, setNote] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const next = nextStatus[alert.current_status];
 
   async function handleStatusUpdate() {
@@ -51,10 +52,12 @@ export function SosAlertDetail({
     }
     setIsUpdating(true);
     setError(null);
+    setStatusMessage(null);
     try {
       const updated = await updateTeacherSosStatus(alert.id, { status: next, note: note || null });
       setAlert(updated);
       setNote("");
+      setStatusMessage(`Đã cập nhật trạng thái SOS thành ${sosStatusLabels[updated.current_status]}.`);
     } catch {
       setError("Chưa cập nhật được trạng thái. Hãy thử lại từ trang chính.");
     } finally {
@@ -134,13 +137,17 @@ export function SosAlertDetail({
               <label className="mt-4 block text-label" htmlFor="sos-update-note">
                 Ghi chú hỗ trợ (không bắt buộc)
               </label>
+              <p className="mt-2 text-label">
+                Ghi chú này chỉ mô tả tiến trình hỗ trợ; không yêu cầu học sinh tiết lộ thêm nội dung riêng tư.
+              </p>
               <textarea
                 id="sos-update-note"
                 value={note}
                 onChange={(event) => setNote(event.target.value)}
                 className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
               />
-              {error ? <p className="mt-3 text-body text-red-700">{error}</p> : null}
+              {error ? <p role="alert" className="mt-3 text-body text-red-700">{error}</p> : null}
+              {statusMessage ? <p role="status" className="mt-3 text-body text-accent">{statusMessage}</p> : null}
               <button
                 type="button"
                 onClick={handleStatusUpdate}

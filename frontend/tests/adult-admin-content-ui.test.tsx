@@ -154,7 +154,7 @@ describe("adult summary-only UI", () => {
 
     expect(await screen.findByText("Tóm tắt được phép xem")).toBeInTheDocument();
     expect(screen.getByText("Tóm tắt hỗ trợ của con")).toBeInTheDocument();
-    expect(screen.getByText("học sinh cần được quan tâm")).toBeInTheDocument();
+    expect(screen.getByText("Tóm tắt này dùng để mở lời hỗ trợ, không phải theo dõi hay xếp hạng học sinh.")).toBeInTheDocument();
 
     await waitFor(() => expect(screen.queryByText("Đang tải thông tin...")).not.toBeInTheDocument());
   });

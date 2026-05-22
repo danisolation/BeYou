@@ -30,6 +30,8 @@ export default function AdminUsersPage() {
   const [selectedRoles, setSelectedRoles] = useState<Record<string, AdminUser["role"]>>({});
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   async function refreshUsers() {
@@ -48,6 +50,7 @@ export default function AdminUsersPage() {
         message: DISABLE_ACCOUNT_COPY,
         cancelLabel: KEEP_ACCOUNT_COPY,
         confirmLabel: CONFIRM_DISABLE_ACCOUNT_COPY,
+        supportingText: "Thao tác này chỉ đổi trạng thái đăng nhập; dữ liệu riêng tư của học sinh không được mở thêm.",
       };
     }
     if (confirmation?.type === "delete-demo") {
@@ -55,39 +58,56 @@ export default function AdminUsersPage() {
         message: DELETE_DEMO_ACCOUNT_COPY,
         cancelLabel: KEEP_DEMO_ACCOUNT_COPY,
         confirmLabel: CONFIRM_DELETE_DEMO_ACCOUNT_COPY,
+        supportingText: "Chỉ tài khoản demo mới có nút xóa vật lý trong giao diện này.",
       };
     }
     return {
       message: ROLE_CHANGE_COPY,
       cancelLabel: CANCEL_ROLE_CHANGE_COPY,
       confirmLabel: CONFIRM_ROLE_CHANGE_COPY,
+      supportingText: "Vai trò quyết định cổng được phép truy cập; hãy giữ đúng ranh giới hỗ trợ, không giám sát.",
     };
   }, [confirmation]);
 
   async function handleConfirm() {
+    if (confirmation === null) {
+      return;
+    }
+    const confirmed = confirmation;
     try {
       setError("");
-      if (confirmation?.type === "disable") {
-        await updateUser(confirmation.user.id, { status: "disabled" });
+      setNotice("");
+      setIsConfirming(true);
+      let successMessage = "";
+      if (confirmed.type === "disable") {
+        await updateUser(confirmed.user.id, { status: "disabled" });
+        successMessage = `Đã tạm khóa tài khoản ${confirmed.user.full_name}.`;
       }
-      if (confirmation?.type === "delete-demo") {
-        await deleteUser(confirmation.user.id);
+      if (confirmed.type === "delete-demo") {
+        await deleteUser(confirmed.user.id);
+        successMessage = `Đã xóa tài khoản demo ${confirmed.user.full_name}.`;
       }
-      if (confirmation?.type === "role") {
-        await updateUser(confirmation.user.id, { role: confirmation.role });
+      if (confirmed.type === "role") {
+        await updateUser(confirmed.user.id, { role: confirmed.role });
+        successMessage = `Đã lưu vai trò mới cho ${confirmed.user.full_name}.`;
       }
-      setConfirmation(null);
       await refreshUsers();
+      setNotice(successMessage);
     } catch {
       setError("Chưa lưu được thay đổi tài khoản. Hãy thử lại.");
+    } finally {
+      setIsConfirming(false);
+      setConfirmation(null);
     }
   }
 
   async function handleCreate(payload: Parameters<typeof createUser>[0]) {
     try {
       setError("");
+      setNotice("");
       await createUser(payload);
       await refreshUsers();
+      setNotice(`Đã tạo tài khoản ${payload.full_name}.`);
     } catch {
       setError("Chưa tạo được tài khoản. Hãy kiểm tra lại thông tin và thử lại.");
     }
@@ -98,9 +118,13 @@ export default function AdminUsersPage() {
       <div>
         <h1 className="text-display">Quản lý tài khoản</h1>
         <p className="mt-3 text-body">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
+        <p className="mt-2 text-label">
+          Thao tác tài khoản chỉ thay đổi quyền truy cập; không mở câu trả lời tự kiểm tra, chat riêng tư hoặc mood note của học sinh.
+        </p>
       </div>
       <UserForm onSubmit={handleCreate} />
-      {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-heading">Danh sách tài khoản</h2>
@@ -174,6 +198,8 @@ export default function AdminUsersPage() {
         message={dialogProps.message}
         cancelLabel={dialogProps.cancelLabel}
         confirmLabel={dialogProps.confirmLabel}
+        supportingText={dialogProps.supportingText}
+        isConfirming={isConfirming}
         onCancel={() => setConfirmation(null)}
         onConfirm={handleConfirm}
       />

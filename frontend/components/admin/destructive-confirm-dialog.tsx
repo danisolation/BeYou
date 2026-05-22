@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 export const DISABLE_ACCOUNT_COPY =
   "Tạm khóa tài khoản này? Người dùng sẽ không thể đăng nhập cho đến khi được mở lại.";
 export const KEEP_ACCOUNT_COPY = "Giữ tài khoản";
@@ -26,6 +28,8 @@ type DestructiveConfirmDialogProps = {
   message: string;
   cancelLabel: string;
   confirmLabel: string;
+  supportingText?: string;
+  isConfirming?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -35,23 +39,47 @@ export function DestructiveConfirmDialog({
   message,
   cancelLabel,
   confirmLabel,
+  supportingText,
+  isConfirming = false,
   onCancel,
   onConfirm,
 }: DestructiveConfirmDialogProps) {
+  const titleId = useId();
+  const descriptionId = useId();
+
   if (!open) {
     return null;
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4">
-      <section className="max-w-md rounded-3xl bg-white p-6 shadow-lg" role="dialog" aria-modal="true">
-        <h2 className="text-heading">Xác nhận thao tác</h2>
-        <p className="mt-3 text-body">{message}</p>
+      <section
+        className="max-w-md rounded-3xl bg-white p-6 shadow-lg"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+      >
+        <h2 id={titleId} className="text-heading">Xác nhận thao tác</h2>
+        <div id={descriptionId} className="mt-3 space-y-3 text-body">
+          <p>{message}</p>
+          {supportingText ? <p className="text-label">{supportingText}</p> : null}
+        </div>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
-          <button type="button" onClick={onCancel} className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4">
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={isConfirming}
+            className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 disabled:opacity-60"
+          >
             {cancelLabel}
           </button>
-          <button type="button" onClick={onConfirm} className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white">
-            {confirmLabel}
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={isConfirming}
+            className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white disabled:opacity-60"
+          >
+            {isConfirming ? "Đang xử lý..." : confirmLabel}
           </button>
         </div>
       </section>

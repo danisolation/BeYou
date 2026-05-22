@@ -170,15 +170,19 @@ export default function StudentMoodCheckInPage() {
 
         <label className="block text-label" htmlFor="private-note">
           Ghi chú riêng tư cho chính em (không bắt buộc)
-          <textarea
-            id="private-note"
-            value={privateNote}
-            onChange={(event) => setPrivateNote(event.target.value)}
-            className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4 text-body"
-          />
         </label>
+        <p id="private-note-helper" className="mt-2 text-label">
+          Viết điều em muốn nhớ cho chính mình; ghi chú này không tự động gửi cho người lớn.
+        </p>
+        <textarea
+          id="private-note"
+          aria-describedby="private-note-helper"
+          value={privateNote}
+          onChange={(event) => setPrivateNote(event.target.value)}
+          className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4 text-body"
+        />
 
-        {errorMessage ? <p className="text-body text-red-700">{errorMessage}</p> : null}
+        {errorMessage ? <p role="alert" className="text-body text-red-700">{errorMessage}</p> : null}
         <button
           type="submit"
           disabled={isSubmitting}
@@ -197,7 +201,7 @@ function MoodResultCard({ result }: { result: MoodCheckIn }) {
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
       <h2 className="text-heading">Đã lưu check-in</h2>
-      <p className="mt-3 text-body">
+      <p role="status" className="mt-3 text-body">
         <strong>{result.trend_label}:</strong> {result.supportive_message}
       </p>
       <p className="mt-3 text-body">{result.suggested_next_action}</p>

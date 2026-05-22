@@ -105,6 +105,9 @@ export default function AdminMoodCheckInsPage() {
         <p className="mt-3 max-w-3xl text-body">
           Quản lý nhãn, hướng dẫn và lifecycle cho check-in cảm xúc. Copy phải hỗ trợ, không chẩn đoán, không giám sát.
         </p>
+        <p className="mt-2 max-w-3xl text-label">
+          Khi xuất bản, hãy dùng ngôn ngữ giúp học sinh tự gọi tên cảm xúc và người lớn mở lời hỗ trợ, không suy luận bệnh lý.
+        </p>
       </header>
 
       <section className="rounded-3xl bg-secondary p-6">
@@ -191,8 +194,8 @@ export default function AdminMoodCheckInsPage() {
           </div>
         </section>
 
-        {message ? <p className="text-body text-accent">{message}</p> : null}
-        {error ? <p className="text-body text-red-700">{error}</p> : null}
+        {message ? <p role="status" className="text-body text-accent">{message}</p> : null}
+        {error ? <p role="alert" className="text-body text-red-700">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
           <button type="submit" disabled={isSaving} className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white">
             {isSaving ? "Đang lưu..." : "Lưu cấu hình"}

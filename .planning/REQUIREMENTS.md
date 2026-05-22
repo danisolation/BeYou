@@ -24,9 +24,9 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### UX Copy & Interaction Polish
 
-- [ ] **UX-01**: Student-facing copy stays supportive, Vietnamese, non-clinical, and easy to understand.
-- [ ] **UX-02**: Adult and admin copy reinforces support-not-surveillance and privacy-limited visibility.
-- [ ] **UX-03**: Critical actions such as SOS, disable/delete/revoke, and configuration changes have clear confirmation and outcome states.
+- [x] **UX-01**: Student-facing copy stays supportive, Vietnamese, non-clinical, and easy to understand.
+- [x] **UX-02**: Adult and admin copy reinforces support-not-surveillance and privacy-limited visibility.
+- [x] **UX-03**: Critical actions such as SOS, disable/delete/revoke, and configuration changes have clear confirmation and outcome states.
 - [x] **UX-04**: Cards, buttons, forms, and page hierarchy use a consistent visual system.
 
 ### Demo/Pilot Operations
@@ -91,9 +91,9 @@ Roadmap mapping is filled during roadmap creation.
 | RESP-03 | Phase 17 | Complete |
 | RESP-04 | Phase 17 | Complete |
 | RESP-05 | Phase 20 | Pending |
-| UX-01 | Phase 18 | Pending |
-| UX-02 | Phase 18 | Pending |
-| UX-03 | Phase 18 | Pending |
+| UX-01 | Phase 18 | Complete |
+| UX-02 | Phase 18 | Complete |
+| UX-03 | Phase 18 | Complete |
 | UX-04 | Phase 17 | Complete |
 | OPS-01 | Phase 19 | Pending |
 | OPS-02 | Phase 16 | Complete |
@@ -110,4 +110,4 @@ Roadmap mapping is filled during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 17 completion*
+*Last updated: 2026-05-22 after Phase 18 completion*

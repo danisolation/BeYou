@@ -43,6 +43,7 @@ export default function StudentDashboardPage() {
   const [sosNote, setSosNote] = useState("");
   const [isSendingSos, setIsSendingSos] = useState(false);
   const [sosError, setSosError] = useState<string | null>(null);
+  const [sosSuccessMessage, setSosSuccessMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export default function StudentDashboardPage() {
   async function handleSendSos() {
     setIsSendingSos(true);
     setSosError(null);
+    setSosSuccessMessage(null);
     try {
       const alert = await createStudentSosAlert({
         severity: sosSeverity,
@@ -67,6 +69,9 @@ export default function StudentDashboardPage() {
       setShowSosConfirm(false);
       setSosNote("");
       setSosSeverity("support");
+      setSosSuccessMessage(
+        "Đã gửi SOS hỗ trợ. Người lớn được liên kết sẽ thấy tín hiệu trong BeYou; nếu em đang không an toàn, hãy ở gần người lớn tin cậy hoặc nguồn hỗ trợ tại nơi em sống.",
+      );
     } catch {
       setSosError("Chưa gửi được SOS. Hãy thử lại hoặc tìm người lớn tin cậy ở gần em.");
     } finally {
@@ -160,10 +165,17 @@ export default function StudentDashboardPage() {
             <p className="mt-2 text-label">
               Nếu em đang thấy không an toàn ngay lúc này, hãy tìm một người lớn tin cậy ở gần em hoặc liên hệ nguồn hỗ trợ phù hợp tại nơi em sống.
             </p>
+            <p className="mt-2 text-label">
+              SOS là tín hiệu xin hỗ trợ, không phải bài kiểm tra hay đánh giá lỗi của em.
+            </p>
           </div>
           <button
             type="button"
-            onClick={() => setShowSosConfirm(true)}
+            onClick={() => {
+              setSosError(null);
+              setSosSuccessMessage(null);
+              setShowSosConfirm(true);
+            }}
             className="min-h-11 w-full rounded-2xl bg-red-600 px-5 font-semibold text-white hover:bg-red-700 sm:w-auto"
           >
             Gửi SOS hỗ trợ
@@ -175,6 +187,9 @@ export default function StudentDashboardPage() {
             <h3 className="text-heading">Xác nhận gửi tín hiệu hỗ trợ</h3>
             <p className="mt-3 text-body">
               Em có muốn gửi tín hiệu hỗ trợ ngay bây giờ không? Người lớn tin cậy được liên kết với em sẽ nhận thông báo trong BeYou.
+            </p>
+            <p className="mt-2 text-label">
+              Chỉ gửi phần ghi chú em nhập ở đây; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở.
             </p>
             <fieldset className="mt-4 space-y-3">
               <legend className="text-label font-semibold">Mức hỗ trợ em cần</legend>
@@ -199,7 +214,7 @@ export default function StudentDashboardPage() {
               onChange={(event) => setSosNote(event.target.value)}
               className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
             />
-            {sosError ? <p className="mt-3 text-body text-red-700">{sosError}</p> : null}
+            {sosError ? <p role="alert" className="mt-3 text-body text-red-700">{sosError}</p> : null}
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
@@ -218,6 +233,11 @@ export default function StudentDashboardPage() {
               </button>
             </div>
           </div>
+        ) : null}
+        {sosSuccessMessage ? (
+          <p role="status" className="mt-5 rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-body">
+            {sosSuccessMessage}
+          </p>
         ) : null}
       </section>
 

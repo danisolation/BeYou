@@ -192,6 +192,9 @@ function PrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "parent
       <p className="mt-3 text-body">
         BeYou không hiển thị câu trả lời tự kiểm tra chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
       </p>
+      <p className="mt-3 text-label">
+        Hãy dùng các tóm tắt này để mở lời hỗ trợ, không để giám sát, xếp hạng hoặc tạo áp lực cho học sinh.
+      </p>
     </section>
   );
 }

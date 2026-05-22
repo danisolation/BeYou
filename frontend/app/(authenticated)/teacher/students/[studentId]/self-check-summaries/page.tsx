@@ -89,7 +89,7 @@ export function AdultSummaryDetail({
         <h2 className="text-heading">Quyền riêng tư</h2>
         <p className="mt-3 text-body">Bạn đang xem phần tóm tắt được phép xem. Câu trả lời riêng tư và chi tiết điểm không hiển thị tại đây.</p>
         <p className="mt-3 text-body">BeYou không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc.</p>
-        <p className="mt-3 text-body">học sinh cần được quan tâm</p>
+        <p className="mt-3 text-body">Tóm tắt này dùng để mở lời hỗ trợ, không phải theo dõi hay xếp hạng học sinh.</p>
         <p className="mt-2 text-label">Hãy bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào.</p>
         <p className="mt-3 text-label">Bạn đang xem phần tóm tắt được phép xem, không phải toàn bộ câu trả lời riêng tư của học sinh.</p>
       </section>

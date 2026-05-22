@@ -19,7 +19,7 @@
 
 - [x] Phase 16: Guided Demo Entry & Role Onboarding
 - [x] Phase 17: Responsive Accessibility Baseline
-- [ ] Phase 18: Supportive Copy & Critical Interaction Polish
+- [x] Phase 18: Supportive Copy & Critical Interaction Polish
 - [ ] Phase 19: Demo/Pilot Operations Readiness
 - [ ] Phase 20: Frontend Quality & Regression Closure
 
@@ -69,7 +69,7 @@ Plans:
 **Depends on:** Phases 16, 17
 **Requirements:** UX-01, UX-02, UX-03
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Student-facing copy stays supportive, Vietnamese, non-clinical, and easy to understand across wellbeing, chat, SOS, mood, and support-plan flows.
@@ -77,10 +77,10 @@ Plans:
 3. SOS, disable/delete/revoke, and configuration changes provide clear confirmation and outcome states.
 4. Copy changes preserve existing privacy defaults and do not expand adult/admin access to raw sensitive data.
 
-**Plans:** 0/0 pending planning
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] To be created by `/gsd-plan-phase 18`
+- [x] 18-01-PLAN.md - Supportive copy, privacy boundary copy, and critical action outcome states
 
 ### Phase 19: Demo/Pilot Operations Readiness
 
@@ -133,9 +133,9 @@ Plans:
 | RESP-03 | Phase 17 | Complete |
 | RESP-04 | Phase 17 | Complete |
 | RESP-05 | Phase 20 | Pending |
-| UX-01 | Phase 18 | Pending |
-| UX-02 | Phase 18 | Pending |
-| UX-03 | Phase 18 | Pending |
+| UX-01 | Phase 18 | Complete |
+| UX-02 | Phase 18 | Complete |
+| UX-03 | Phase 18 | Complete |
 | UX-04 | Phase 17 | Complete |
 | OPS-01 | Phase 19 | Pending |
 | OPS-02 | Phase 16 | Complete |
@@ -148,7 +148,7 @@ Plans:
 **Coverage:**
 - v1.3 requirements: 20 total
 - Mapped to phases: 20
-- Complete: 11
+- Complete: 14
 - Unmapped: 0
 
 ## Assumptions
@@ -160,4 +160,4 @@ Plans:
 - Recent post-v1.2 UI responsive polish is treated as useful context, but v1.3 requirements still need formal GSD planning, implementation, review, and verification.
 
 ---
-*Last updated: 2026-05-22 after Phase 17 completion*
+*Last updated: 2026-05-22 after Phase 18 completion*

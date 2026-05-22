@@ -230,6 +230,8 @@ export default function AdminContentPage() {
   const [scenarioDraft, setScenarioDraft] = useState<AdminScenarioContent>(cloneScenario(emptyScenario));
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   async function refreshContent() {
@@ -368,11 +370,13 @@ export default function AdminContentPage() {
     }));
   }
 
-  async function runAction(action: () => Promise<unknown>) {
+  async function runAction(action: () => Promise<unknown>, successMessage: string) {
     try {
       setError("");
+      setNotice("");
       await action();
       await refreshContent();
+      setNotice(successMessage);
     } catch (actionError) {
       setError(errorCopy(actionError));
     }
@@ -381,12 +385,14 @@ export default function AdminContentPage() {
   async function saveSelfCheckDraft() {
     try {
       setError("");
+      setNotice("");
       const saved = selfCheckDraft.id
         ? await updateAdminSelfCheck(selfCheckDraft.id, selfCheckDraft)
         : await createAdminSelfCheck(selfCheckDraft);
       const loadedSelfChecks = await listAdminSelfChecks();
       setSelfChecks(loadedSelfChecks);
       setSelfCheckDraft(cloneSelfCheck(saved));
+      setNotice("Đã lưu bản nháp tự kiểm tra. Hãy xuất bản khi nội dung đã đủ hỗ trợ và không chẩn đoán.");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
@@ -395,31 +401,48 @@ export default function AdminContentPage() {
   async function saveScenarioDraft() {
     try {
       setError("");
+      setNotice("");
       const saved = scenarioDraft.id
         ? await updateAdminScenario(scenarioDraft.id, scenarioDraft)
         : await createAdminScenario(scenarioDraft);
       const loadedScenarios = await listAdminScenarios();
       setScenarios(loadedScenarios);
       setScenarioDraft(cloneScenario(saved));
+      setNotice("Đã lưu bản nháp tình huống. Hãy xuất bản khi phản hồi vẫn hỗ trợ và không đổ lỗi cho học sinh.");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
   }
 
   async function handleConfirm() {
-    if (confirmation?.type === "archive-self-check") {
-      await runAction(() => archiveAdminSelfCheck(confirmation.id));
+    if (confirmation === null) {
+      return;
     }
-    if (confirmation?.type === "delete-self-check") {
-      await runAction(() => deleteDraftAdminSelfCheck(confirmation.id));
+    const confirmed = confirmation;
+    setIsConfirming(true);
+    try {
+      if (confirmed.type === "archive-self-check") {
+        await runAction(
+          () => archiveAdminSelfCheck(confirmed.id),
+          "Đã lưu trữ bài tự kiểm tra. Học sinh không còn thấy nội dung này, lịch sử đã hoàn thành vẫn được giữ.",
+        );
+      }
+      if (confirmed.type === "delete-self-check") {
+        await runAction(() => deleteDraftAdminSelfCheck(confirmed.id), "Đã xóa bản nháp tự kiểm tra chưa dùng.");
+      }
+      if (confirmed.type === "archive-scenario") {
+        await runAction(
+          () => archiveAdminScenario(confirmed.id),
+          "Đã lưu trữ tình huống. Học sinh không còn thấy nội dung này, lịch sử đã hoàn thành vẫn được giữ.",
+        );
+      }
+      if (confirmed.type === "delete-scenario") {
+        await runAction(() => deleteDraftAdminScenario(confirmed.id), "Đã xóa bản nháp tình huống chưa dùng.");
+      }
+    } finally {
+      setIsConfirming(false);
+      setConfirmation(null);
     }
-    if (confirmation?.type === "archive-scenario") {
-      await runAction(() => archiveAdminScenario(confirmation.id));
-    }
-    if (confirmation?.type === "delete-scenario") {
-      await runAction(() => deleteDraftAdminScenario(confirmation.id));
-    }
-    setConfirmation(null);
   }
 
   const dialogProps =
@@ -440,9 +463,13 @@ export default function AdminContentPage() {
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
         <h1 className="text-display">Nội dung tự kiểm tra và tình huống</h1>
         <p className="mt-3 text-body">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
+        <p className="mt-2 text-label">
+          Nội dung nên dùng ngôn ngữ hỗ trợ, không chẩn đoán, không gắn nhãn học sinh và không khuyến khích giám sát.
+        </p>
       </header>
 
-      {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -696,7 +723,13 @@ export default function AdminContentPage() {
             </button>
             <button
               type="button"
-              onClick={() => selfCheckDraft.id && runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string))}
+              onClick={() =>
+                selfCheckDraft.id &&
+                runAction(
+                  () => publishAdminSelfCheck(selfCheckDraft.id as string),
+                  "Đã xuất bản bài tự kiểm tra cho học sinh.",
+                )
+              }
               className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
             >
               Xuất bản
@@ -856,7 +889,13 @@ export default function AdminContentPage() {
             </button>
             <button
               type="button"
-              onClick={() => scenarioDraft.id && runAction(() => publishAdminScenario(scenarioDraft.id as string))}
+              onClick={() =>
+                scenarioDraft.id &&
+                runAction(
+                  () => publishAdminScenario(scenarioDraft.id as string),
+                  "Đã xuất bản tình huống luyện tập cho học sinh.",
+                )
+              }
               className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
             >
               Xuất bản
@@ -884,6 +923,8 @@ export default function AdminContentPage() {
         message={dialogProps.message}
         cancelLabel={dialogProps.cancelLabel}
         confirmLabel={dialogProps.confirmLabel}
+        supportingText="Thao tác lifecycle chỉ thay đổi nội dung học sinh nhìn thấy; lịch sử đã hoàn thành vẫn được giữ đúng ranh giới riêng tư."
+        isConfirming={isConfirming}
         onCancel={() => setConfirmation(null)}
         onConfirm={handleConfirm}
       />

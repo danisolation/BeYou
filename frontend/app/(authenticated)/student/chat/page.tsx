@@ -15,6 +15,8 @@ const INTRO_COPY =
   "BeYou không thay thế chuyên gia tư vấn hay bác sĩ. Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.";
 const IMMEDIATE_SUPPORT_COPY =
   "Nếu em đang thấy không an toàn ngay lúc này, hãy tìm một người lớn tin cậy ở gần em hoặc dùng SOS trong BeYou.";
+const PRIVATE_CHAT_COPY =
+  "Em có thể viết ngắn, chưa cần hoàn hảo. Nội dung trò chuyện riêng tư không hiển thị cho người lớn theo mặc định.";
 
 export default function StudentChatPage() {
   const [threadId, setThreadId] = useState<string | null>(null);
@@ -79,6 +81,7 @@ export default function StudentChatPage() {
         <h1 className="text-display">Trò chuyện với BeYou</h1>
         <p className="mt-3 max-w-3xl text-body">{INTRO_COPY}</p>
         <p className="mt-2 max-w-3xl text-label">{IMMEDIATE_SUPPORT_COPY}</p>
+        <p className="mt-2 max-w-3xl text-label">{PRIVATE_CHAT_COPY}</p>
       </div>
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
@@ -94,7 +97,7 @@ export default function StudentChatPage() {
             <ChatBubble key={message.id} message={message} />
           ))}
         </div>
-        {error ? <p className="mt-4 text-body text-red-700">{error}</p> : null}
+        {error ? <p role="alert" className="mt-4 text-body text-red-700">{error}</p> : null}
 
         <form className="mt-6 space-y-4" onSubmit={handleSend}>
           <label className="block text-label font-semibold" htmlFor="chat-message">

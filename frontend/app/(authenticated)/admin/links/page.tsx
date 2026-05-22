@@ -18,6 +18,8 @@ export default function AdminLinksPage() {
   const [links, setLinks] = useState<AdminLink[]>([]);
   const [revokeTarget, setRevokeTarget] = useState<AdminLink | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   async function refreshData() {
@@ -33,8 +35,10 @@ export default function AdminLinksPage() {
   async function handleCreate(payload: Parameters<typeof createLink>[0]) {
     try {
       setError("");
+      setNotice("");
       await createLink(payload);
       await refreshData();
+      setNotice("Đã tạo liên kết hỗ trợ. Người lớn chỉ thấy phần tóm tắt được phép xem.");
     } catch {
       setError("Chưa lưu được liên kết. Hãy kiểm tra lại thông tin và thử lại.");
     }
@@ -46,11 +50,16 @@ export default function AdminLinksPage() {
     }
     try {
       setError("");
+      setNotice("");
+      setIsConfirming(true);
       await revokeLink(revokeTarget.id);
-      setRevokeTarget(null);
       await refreshData();
+      setNotice("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong BeYou.");
     } catch {
       setError("Chưa thu hồi được liên kết. Hãy thử lại.");
+    } finally {
+      setIsConfirming(false);
+      setRevokeTarget(null);
     }
   }
 
@@ -61,9 +70,13 @@ export default function AdminLinksPage() {
         <p className="mt-3 text-body">
           Tạo liên kết để giáo viên hoặc phụ huynh chỉ thấy học sinh được phép hỗ trợ.
         </p>
+        <p className="mt-2 text-label">
+          Liên kết không mở dữ liệu riêng tư thô; người lớn chỉ xem tóm tắt hỗ trợ và trạng thái được phép.
+        </p>
       </div>
       <LinkForm users={users} onSubmit={handleCreate} />
-      {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-heading">Danh sách liên kết</h2>
@@ -110,6 +123,8 @@ export default function AdminLinksPage() {
         message={REVOKE_LINK_COPY}
         cancelLabel={KEEP_LINK_COPY}
         confirmLabel={CONFIRM_REVOKE_LINK_COPY}
+        supportingText="Sau khi thu hồi, giáo viên/phụ huynh này không còn được xem tóm tắt hỗ trợ mới qua liên kết này."
+        isConfirming={isConfirming}
         onCancel={() => setRevokeTarget(null)}
         onConfirm={handleRevoke}
       />

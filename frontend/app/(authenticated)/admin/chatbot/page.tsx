@@ -66,6 +66,9 @@ export default function AdminChatbotPage() {
         <p className="mt-3 max-w-3xl text-body">
           Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.
         </p>
+        <p className="mt-2 max-w-3xl text-label">
+          Thay đổi copy an toàn phải giữ hướng hỗ trợ, không đưa lời khuyên lâm sàng và không tắt guardrail backend.
+        </p>
       </div>
 
       {isLoading ? <p>Đang tải thông tin...</p> : null}
@@ -111,8 +114,8 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          {notice ? <p className="text-body text-accent">{notice}</p> : null}
-          {error ? <p className="text-body text-red-700">{error}</p> : null}
+          {notice ? <p role="status" className="text-body text-accent">{notice}</p> : null}
+          {error ? <p role="alert" className="text-body text-red-700">{error}</p> : null}
 
           <button
             type="submit"
