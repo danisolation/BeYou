@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Production Hardening & Support Polish
-status: ready_for_milestone_audit
-stopped_at: Phase 11 complete; ready to audit milestone v1.1
-last_updated: "2026-05-22T10:20:00+07:00"
+status: ready_for_milestone_completion
+stopped_at: Milestone v1.1 audit passed; ready to complete milestone
+last_updated: "2026-05-22T10:45:00+07:00"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -16,8 +16,8 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing Phase 11  
-**Status:** ready for milestone audit
+**Last updated:** 2026-05-22 after passing milestone audit  
+**Status:** ready for milestone completion
 
 ## Project Reference
 
@@ -51,7 +51,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-21)
 Phase: 11 of 11 - Metadata-Only Operational Visibility  
 Plan: 3/3 complete  
 Status: Complete  
-Last activity: 2026-05-22 - Phase 11 completed
+Last activity: 2026-05-22 - Milestone audit passed
 
 ## Progress
 
@@ -89,21 +89,15 @@ Progress: 5/5 phases complete
 
 ## Session Continuity
 
-Last session: 2026-05-21  
-Stopped at: Phase 11 complete; next action is milestone audit  
+Last session: 2026-05-22  
+Stopped at: Milestone v1.1 audit passed; next action is milestone completion  
 Resume file: none
 
 ## Next Action
 
-Run:
+Run milestone completion:
 
 ```text
-/gsd-audit-milestone
-```
-
-or run milestone completion after audit passes:
-
-```text
-/gsd-complete-milestone
+/gsd-complete-milestone v1.1
 ```
 
