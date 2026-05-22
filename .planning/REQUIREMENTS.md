@@ -88,36 +88,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PLAN-01 | TBD | Pending |
-| PLAN-02 | TBD | Pending |
-| PLAN-03 | TBD | Pending |
-| PLAN-04 | TBD | Pending |
-| PLAN-05 | TBD | Pending |
-| MOOD-01 | TBD | Pending |
-| MOOD-02 | TBD | Pending |
-| MOOD-03 | TBD | Pending |
-| MOOD-04 | TBD | Pending |
-| MOOD-05 | TBD | Pending |
-| ADULT-01 | TBD | Pending |
-| ADULT-02 | TBD | Pending |
-| ADULT-03 | TBD | Pending |
-| ADULT-04 | TBD | Pending |
-| ADULT-05 | TBD | Pending |
-| ADMIN-01 | TBD | Pending |
-| ADMIN-02 | TBD | Pending |
-| ADMIN-03 | TBD | Pending |
-| ADMIN-04 | TBD | Pending |
-| ADMIN-05 | TBD | Pending |
-| SAFE-01 | TBD | Pending |
-| SAFE-02 | TBD | Pending |
-| SAFE-03 | TBD | Pending |
-| SAFE-04 | TBD | Pending |
+| PLAN-01 | Phase 12 | Pending |
+| PLAN-02 | Phase 12 | Pending |
+| PLAN-03 | Phase 12 | Pending |
+| PLAN-04 | Phase 12 | Pending |
+| PLAN-05 | Phase 12 | Pending |
+| MOOD-01 | Phase 13 | Pending |
+| MOOD-02 | Phase 13 | Pending |
+| MOOD-03 | Phase 13 | Pending |
+| MOOD-04 | Phase 13 | Pending |
+| MOOD-05 | Phase 13 | Pending |
+| ADULT-01 | Phase 14 | Pending |
+| ADULT-02 | Phase 14 | Pending |
+| ADULT-03 | Phase 14 | Pending |
+| ADULT-04 | Phase 14 | Pending |
+| ADULT-05 | Phase 14 | Pending |
+| ADMIN-01 | Phase 15 | Pending |
+| ADMIN-02 | Phase 15 | Pending |
+| ADMIN-03 | Phase 15 | Pending |
+| ADMIN-04 | Phase 15 | Pending |
+| ADMIN-05 | Phase 15 | Pending |
+| SAFE-01 | Phase 15 | Pending |
+| SAFE-02 | Phase 15 | Pending |
+| SAFE-03 | Phase 15 | Pending |
+| SAFE-04 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after v1.2 requirements definition*
+*Last updated: 2026-05-22 after v1.2 roadmap creation*
