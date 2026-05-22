@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 0/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 2/29 complete
 
 ## Completed Milestones
 
@@ -25,7 +25,7 @@
 
 ## Phase Checklist
 
-- [ ] Phase 21: Privacy Control Foundation & Policy Contracts
+- [x] Phase 21: Privacy Control Foundation & Policy Contracts
 - [ ] Phase 22: Student Reminder Preferences & In-App Mood Reminders
 - [ ] Phase 23: Selective Mood-Note Sharing & Revocation
 - [ ] Phase 24: Reason-for-Access & Adult Support Transparency
@@ -40,7 +40,7 @@
 **Depends on:** v1.3 archive, v1.4 research
 **Requirements:** NOTIF-01, NOTIF-05
 **UI hint:** no
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Database models and migration support student notification preferences, reminder state, school privacy policy defaults, and mood-note share grants with privacy-safe defaults.
@@ -48,10 +48,10 @@
 3. Authorization recognizes v1.4 resource types without granting new raw sensitive access.
 4. Audit metadata filtering rejects or strips shared-note text, student summaries, reminder bodies, free-text reasons, contact identifiers, and private content.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] 21-01-PLAN.md - v1.4 privacy data contracts, authorization resources, policy helpers, and audit safeguards
+- [x] 21-01-PLAN.md - v1.4 privacy data contracts, authorization resources, policy helpers, and audit safeguards
 
 ### Phase 22: Student Reminder Preferences & In-App Mood Reminders
 
@@ -152,11 +152,11 @@ Plans:
 
 | Requirement | Phase | Status |
 |---|---|---|
-| NOTIF-01 | Phase 21 | Pending |
+| NOTIF-01 | Phase 21 | Complete |
 | NOTIF-02 | Phase 22 | Pending |
 | NOTIF-03 | Phase 22 | Pending |
 | NOTIF-04 | Phase 22 | Pending |
-| NOTIF-05 | Phase 21 | Pending |
+| NOTIF-05 | Phase 21 | Complete |
 | REMIND-01 | Phase 22 | Pending |
 | REMIND-02 | Phase 22 | Pending |
 | REMIND-03 | Phase 22 | Pending |
@@ -185,7 +185,7 @@ Plans:
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 0
+- Complete: 2
 - Unmapped: 0
 
 ## Assumptions
@@ -197,4 +197,4 @@ Plans:
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
 
 ---
-*Last updated: 2026-05-22 after v1.4 roadmap creation*
+*Last updated: 2026-05-22 after Phase 21 completion*

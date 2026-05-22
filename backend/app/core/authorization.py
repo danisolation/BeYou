@@ -82,6 +82,8 @@ def require_permission(
             "scenario_content",
             "chatbot_safety_config",
             "mood_checkin_config",
+            "privacy_policy",
+            "v1_4_operations_visibility",
             "aggregate_report",
             "operations_readiness",
         }
@@ -134,12 +136,30 @@ def require_permission(
             and student_id == actor.id
         ):
             return
+        if (
+            resource_type
+            in {
+                "notification_preferences",
+                "mood_checkin_reminder",
+                "mood_note_share",
+            }
+            and action in {"read", "write"}
+            and purpose == "student_private_support"
+            and student_id == actor.id
+        ):
+            return
 
     if (
         actor.role in {UserRole.TEACHER.value, UserRole.PARENT.value}
         and purpose == "support_not_surveillance"
         and resource_type
-        in {"student_profile", "student_adult_link", "self_check_summary", "adult_support_summary"}
+        in {
+            "student_profile",
+            "student_adult_link",
+            "self_check_summary",
+            "adult_support_summary",
+            "shared_mood_note",
+        }
         and student_id is not None
         and has_active_student_link(db, actor, student_id)
     ):

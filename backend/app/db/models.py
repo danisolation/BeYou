@@ -85,6 +85,25 @@ class SupportPlanStatus(str, enum.Enum):
     DEACTIVATED = "deactivated"
 
 
+class ReminderCadence(str, enum.Enum):
+    NONE = "none"
+    DAILY = "daily"
+    WEEKLY = "weekly"
+
+
+class MoodNoteShareScope(str, enum.Enum):
+    PRIVATE_NOTE = "private_note"
+    STUDENT_SUMMARY = "student_summary"
+
+
+class V14Channel(str, enum.Enum):
+    IN_APP = "in_app"
+    EMAIL = "email"
+    SMS = "sms"
+    ZALO = "zalo"
+    PUSH = "push"
+
+
 class ChatMessageRole(str, enum.Enum):
     STUDENT = "student"
     ASSISTANT = "assistant"
@@ -272,6 +291,117 @@ class MoodCheckInConfig(Base):
     __table_args__ = (
         Index("ix_mood_checkin_configs_status_sort", "status", "sort_order"),
         Index("ix_mood_checkin_configs_is_demo", "is_demo"),
+    )
+
+
+class StudentNotificationPreference(Base):
+    __tablename__ = "student_notification_preferences"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    in_app_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    mood_checkin_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    reminder_cadence: Mapped[str] = mapped_column(String(32), default=ReminderCadence.WEEKLY.value, nullable=False)
+    allowed_channels: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    consent_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    consented_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    quiet_hours_start: Mapped[str | None] = mapped_column(String(5), nullable=True)
+    quiet_hours_end: Mapped[str | None] = mapped_column(String(5), nullable=True)
+    timezone: Mapped[str] = mapped_column(String(64), default="Asia/Ho_Chi_Minh", nullable=False)
+    paused_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    pause_reason_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    __table_args__ = (
+        Index("ix_student_notification_preferences_is_demo", "is_demo"),
+        Index("ix_student_notification_preferences_paused_until", "paused_until"),
+    )
+
+
+class MoodCheckinReminderState(Base):
+    __tablename__ = "mood_checkin_reminder_states"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    reminder_type: Mapped[str] = mapped_column(String(64), default="mood_check_in", nullable=False)
+    last_shown_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_dismissed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_opened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    snoozed_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    next_due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    __table_args__ = (
+        UniqueConstraint("student_id", "reminder_type", name="uq_mood_checkin_reminder_state_student_type"),
+        Index("ix_mood_checkin_reminder_states_due", "next_due_at"),
+        Index("ix_mood_checkin_reminder_states_is_demo", "is_demo"),
+    )
+
+
+class MoodNoteShare(Base):
+    __tablename__ = "mood_note_shares"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    mood_checkin_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("mood_check_ins.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    adult_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    relationship_type_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
+    share_scope: Mapped[str] = mapped_column(String(32), nullable=False)
+    student_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    revoked_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+
+    __table_args__ = (
+        Index(
+            "ix_mood_note_shares_active_unique",
+            "mood_checkin_id",
+            "adult_id",
+            unique=True,
+            postgresql_where=(revoked_at.is_(None)),
+        ),
+        Index("ix_mood_note_shares_student_created", "student_id", "created_at"),
+        Index("ix_mood_note_shares_adult_created", "adult_id", "created_at"),
+        Index("ix_mood_note_shares_is_demo", "is_demo"),
+    )
+
+
+class SchoolPrivacyPolicyDefault(Base):
+    __tablename__ = "school_privacy_policy_defaults"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    school_scope: Mapped[str] = mapped_column(String(96), default="default", nullable=False, unique=True)
+    default_in_app_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    default_quiet_hours_start: Mapped[str | None] = mapped_column(String(5), nullable=True)
+    default_quiet_hours_end: Mapped[str | None] = mapped_column(String(5), nullable=True)
+    default_timezone: Mapped[str] = mapped_column(String(64), default="Asia/Ho_Chi_Minh", nullable=False)
+    allowed_channels: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    external_channels_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    note_sharing_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    reason_required_for_adult_summaries: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    reason_required_for_shared_mood_notes: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    allowed_reason_codes: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+
+    __table_args__ = (
+        Index("ix_school_privacy_policy_defaults_is_demo", "is_demo"),
+        Index("ix_school_privacy_policy_defaults_updated", "updated_at"),
     )
 
 

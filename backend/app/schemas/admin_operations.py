@@ -129,5 +129,6 @@ class AdminOperationsDashboardResponse(BaseModel):
     production_smoke: list[ProductionSmokeChecklistItem]
     sos_email: SosEmailDeliverySummary
     v1_2_audit: list[OperationCountBucket] = Field(default_factory=list)
+    v1_4_audit: list[OperationCountBucket] = Field(default_factory=list)
     audit: AuditEventSummary
 

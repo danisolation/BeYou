@@ -9,11 +9,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Student Consent & Reminder Preferences
 
-- [ ] **NOTIF-01**: Student can view reminder preference state including enabled/disabled, paused/unpaused, quiet hours, timezone, and active channel boundaries.
+- [x] **NOTIF-01**: Student can view reminder preference state including enabled/disabled, paused/unpaused, quiet hours, timezone, and active channel boundaries.
 - [ ] **NOTIF-02**: Student can enable or disable in-app mood check-in reminders with explicit consent.
 - [ ] **NOTIF-03**: Student can configure quiet hours for reminders within school policy defaults.
 - [ ] **NOTIF-04**: Student can pause and resume reminders without penalty.
-- [ ] **NOTIF-05**: The API and UI clearly reject or mark Zalo, SMS, push, and email reminder channels as deferred in v1.4.
+- [x] **NOTIF-05**: The API and UI clearly reject or mark Zalo, SMS, push, and email reminder channels as deferred in v1.4.
 
 ### Non-Clinical In-App Mood Check-In Reminders
 
@@ -89,11 +89,11 @@ Explicit exclusions for v1.4.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NOTIF-01 | Phase 21 | Pending |
+| NOTIF-01 | Phase 21 | Complete |
 | NOTIF-02 | Phase 22 | Pending |
 | NOTIF-03 | Phase 22 | Pending |
 | NOTIF-04 | Phase 22 | Pending |
-| NOTIF-05 | Phase 21 | Pending |
+| NOTIF-05 | Phase 21 | Complete |
 | REMIND-01 | Phase 22 | Pending |
 | REMIND-02 | Phase 22 | Pending |
 | REMIND-03 | Phase 22 | Pending |
@@ -126,4 +126,4 @@ Explicit exclusions for v1.4.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after roadmap creation*
+*Last updated: 2026-05-22 after Phase 21 completion*

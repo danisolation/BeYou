@@ -71,6 +71,15 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
     "sos_note",
     "transcript",
     "message",
+    "shared_note_text",
+    "shared_mood_note_text",
+    "student_summary",
+    "student_share_summary",
+    "reason_detail",
+    "reason_details",
+    "access_reason_text",
+    "reminder_message",
+    "notification_body",
 }
 
 PRIVACY_NOTES = [
@@ -85,6 +94,16 @@ V1_2_RESOURCE_LABELS = {
     "mood_check_in": "Mood check-ins",
     "adult_support_summary": "Adult summaries",
     "mood_checkin_config": "Mood config",
+}
+
+V1_4_RESOURCE_LABELS = {
+    "notification_preferences": "Notification preferences",
+    "mood_checkin_reminder": "Mood reminders",
+    "mood_note_share": "Mood note sharing",
+    "shared_mood_note": "Shared mood note reads",
+    "privacy_policy": "Privacy policy controls",
+    "adult_support_summary": "Reason-gated support summaries",
+    "self_check_summary": "Reason-gated self-check summaries",
 }
 
 EXPECTED_DEMO_ROLES = [
@@ -258,6 +277,20 @@ def _v1_2_audit_buckets(db: OrmSession) -> list[OperationCountBucket]:
     return [
         _bucket(resource_type, counts.get(resource_type, 0), V1_2_RESOURCE_LABELS)
         for resource_type in V1_2_RESOURCE_LABELS
+    ]
+
+
+def _v1_4_audit_buckets(db: OrmSession) -> list[OperationCountBucket]:
+    rows = db.execute(
+        select(AuditEvent.resource_type, func.count())
+        .where(AuditEvent.resource_type.in_(V1_4_RESOURCE_LABELS))
+        .group_by(AuditEvent.resource_type)
+        .order_by(AuditEvent.resource_type)
+    ).all()
+    counts = {resource_type: count for resource_type, count in rows}
+    return [
+        _bucket(resource_type, counts.get(resource_type, 0), V1_4_RESOURCE_LABELS)
+        for resource_type in V1_4_RESOURCE_LABELS
     ]
 
 
@@ -443,6 +476,7 @@ def build_operations_dashboard(
         production_smoke=_production_smoke_checklist(),
         sos_email=_delivery_summary(db, limit=limit),
         v1_2_audit=_v1_2_audit_buckets(db),
+        v1_4_audit=_v1_4_audit_buckets(db),
         audit=_audit_summary(
             db,
             start_at=start_at,

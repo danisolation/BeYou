@@ -2,12 +2,16 @@ from app.db.base import Base
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    MoodCheckinReminderState,
+    MoodNoteShare,
+    SchoolPrivacyPolicyDefault,
     SosAlert,
     SosStatusEvent,
     InAppNotification,
     LinkStatus,
     PrivacyAcknowledgement,
     RelationshipType,
+    StudentNotificationPreference,
     Session,
     SosNotificationDelivery,
     StudentAdultLink,
@@ -33,6 +37,10 @@ def test_identity_tables_are_registered() -> None:
         "privacy_acknowledgements",
         "student_adult_links",
         "audit_events",
+        "student_notification_preferences",
+        "mood_checkin_reminder_states",
+        "mood_note_shares",
+        "school_privacy_policy_defaults",
     }.issubset(Base.metadata.tables.keys())
 
 
@@ -60,6 +68,10 @@ def test_all_demo_sensitive_tables_include_is_demo() -> None:
         SosStatusEvent,
         SosAlert,
         User,
+        StudentNotificationPreference,
+        MoodCheckinReminderState,
+        MoodNoteShare,
+        SchoolPrivacyPolicyDefault,
         Session,
         PrivacyAcknowledgement,
         StudentAdultLink,
