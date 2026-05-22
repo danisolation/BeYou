@@ -29,7 +29,7 @@ const authUser = {
 };
 
 function mockFetch(responses: Record<string, unknown>) {
-  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+  const fetchMock = vi.fn((url: string) => {
     const path = new URL(url).pathname;
     if (path === "/api/auth/logout") {
       return Promise.resolve(new Response(JSON.stringify({ status: "ok" }), { status: 200 }));

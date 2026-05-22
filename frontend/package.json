@@ -7,7 +7,7 @@
     "build": "next build",
     "test": "vitest run",
     "smoke:production": "node scripts/production-smoke.mjs",
-    "lint": "next lint"
+    "lint": "eslint . --max-warnings=0"
   },
   "dependencies": {
     "@tanstack/react-query": "latest",
@@ -23,6 +23,7 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@playwright/test": "latest",
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
@@ -32,6 +33,8 @@
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
     "autoprefixer": "latest",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
     "jsdom": "latest",
     "postcss": "latest",
     "tailwindcss": "^3.4.17",

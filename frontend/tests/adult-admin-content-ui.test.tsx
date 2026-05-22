@@ -23,7 +23,7 @@ import {
 import { getParentSelfCheckSummaries, getTeacherSelfCheckSummaries } from "@/lib/adult-summary-api";
 
 function mockFetch(responses: Record<string, unknown>) {
-  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+  const fetchMock = vi.fn((url: string) => {
     const path = new URL(url).pathname;
     const body = responses[path];
     if (body instanceof Response) {

@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.3 Pilot UX & Demo Readiness
-**Coverage:** 20/20 v1.3 requirements mapped; 16/20 complete
+**Coverage:** 20/20 v1.3 requirements mapped; 20/20 complete
 
 ## Phase Overview
 
@@ -21,7 +21,7 @@
 - [x] Phase 17: Responsive Accessibility Baseline
 - [x] Phase 18: Supportive Copy & Critical Interaction Polish
 - [x] Phase 19: Demo/Pilot Operations Readiness
-- [ ] Phase 20: Frontend Quality & Regression Closure
+- [x] Phase 20: Frontend Quality & Regression Closure
 
 ## Phase Details
 
@@ -107,7 +107,7 @@ Plans:
 **Depends on:** Phases 16-19
 **Requirements:** RESP-05, QUAL-01, QUAL-02, QUAL-03
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Frontend lint tooling works with the current Next.js version and runs from the existing npm script.
@@ -115,10 +115,10 @@ Plans:
 3. Automated responsive/demo readiness coverage verifies critical routes and role entry points without relying only on screenshots.
 4. Regression documentation clearly states what is covered by tests, build, lint, and production smoke checks.
 
-**Plans:** 0/0 pending planning
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] To be created by `/gsd-plan-phase 20`
+- [x] 20-01-PLAN.md - Lint tooling and responsive regression closure
 
 ## Traceability
 
@@ -132,7 +132,7 @@ Plans:
 | RESP-02 | Phase 17 | Complete |
 | RESP-03 | Phase 17 | Complete |
 | RESP-04 | Phase 17 | Complete |
-| RESP-05 | Phase 20 | Pending |
+| RESP-05 | Phase 20 | Complete |
 | UX-01 | Phase 18 | Complete |
 | UX-02 | Phase 18 | Complete |
 | UX-03 | Phase 18 | Complete |
@@ -140,15 +140,15 @@ Plans:
 | OPS-01 | Phase 19 | Complete |
 | OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Complete |
-| QUAL-01 | Phase 20 | Pending |
-| QUAL-02 | Phase 20 | Pending |
-| QUAL-03 | Phase 20 | Pending |
+| QUAL-01 | Phase 20 | Complete |
+| QUAL-02 | Phase 20 | Complete |
+| QUAL-03 | Phase 20 | Complete |
 | QUAL-04 | Phase 16 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 20 total
 - Mapped to phases: 20
-- Complete: 16
+- Complete: 20
 - Unmapped: 0
 
 ## Assumptions
@@ -160,4 +160,4 @@ Plans:
 - Recent post-v1.2 UI responsive polish is treated as useful context, but v1.3 requirements still need formal GSD planning, implementation, review, and verification.
 
 ---
-*Last updated: 2026-05-22 after Phase 19 completion*
+*Last updated: 2026-05-22 after Phase 20 completion*

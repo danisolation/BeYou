@@ -20,7 +20,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **RESP-02**: Header navigation, cards, forms, and action groups adapt to touch-friendly mobile layouts.
 - [x] **RESP-03**: Keyboard focus, tab order, labels, and control semantics are usable across key flows.
 - [x] **RESP-04**: Visual states for hover, focus, disabled, loading, empty, success, and error are consistent.
-- [ ] **RESP-05**: Responsive smoke coverage verifies critical routes and role entry points.
+- [x] **RESP-05**: Responsive smoke coverage verifies critical routes and role entry points.
 
 ### UX Copy & Interaction Polish
 
@@ -37,9 +37,9 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Quality & Regression
 
-- [ ] **QUAL-01**: Frontend lint tooling works with the current Next.js version.
-- [ ] **QUAL-02**: Existing frontend tests and production build remain passing.
-- [ ] **QUAL-03**: New responsive and demo-readiness changes include targeted automated regression coverage.
+- [x] **QUAL-01**: Frontend lint tooling works with the current Next.js version.
+- [x] **QUAL-02**: Existing frontend tests and production build remain passing.
+- [x] **QUAL-03**: New responsive and demo-readiness changes include targeted automated regression coverage.
 - [x] **QUAL-04**: Documentation reflects deployed URLs, demo accounts, and demo/pilot constraints.
 
 ## Future Requirements
@@ -90,7 +90,7 @@ Roadmap mapping is filled during roadmap creation.
 | RESP-02 | Phase 17 | Complete |
 | RESP-03 | Phase 17 | Complete |
 | RESP-04 | Phase 17 | Complete |
-| RESP-05 | Phase 20 | Pending |
+| RESP-05 | Phase 20 | Complete |
 | UX-01 | Phase 18 | Complete |
 | UX-02 | Phase 18 | Complete |
 | UX-03 | Phase 18 | Complete |
@@ -98,9 +98,9 @@ Roadmap mapping is filled during roadmap creation.
 | OPS-01 | Phase 19 | Complete |
 | OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Complete |
-| QUAL-01 | Phase 20 | Pending |
-| QUAL-02 | Phase 20 | Pending |
-| QUAL-03 | Phase 20 | Pending |
+| QUAL-01 | Phase 20 | Complete |
+| QUAL-02 | Phase 20 | Complete |
+| QUAL-03 | Phase 20 | Complete |
 | QUAL-04 | Phase 16 | Complete |
 
 **Coverage:**
@@ -110,4 +110,4 @@ Roadmap mapping is filled during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 19 completion*
+*Last updated: 2026-05-22 after Phase 20 completion*

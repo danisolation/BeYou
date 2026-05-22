@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Pilot UX & Demo Readiness
-status: phase_19_complete
-stopped_at: Phase 19 complete; ready for Phase 20
-last_updated: "2026-05-22T16:28:04+07:00"
+status: phase_20_complete
+stopped_at: Phase 20 complete; ready for milestone audit
+last_updated: "2026-05-22T16:38:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 5
-  completed_phases: 4
-  total_plans: 4
-  completed_plans: 4
-  percent: 80
+  completed_phases: 5
+  total_plans: 5
+  completed_plans: 5
+  percent: 100
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing Phase 19
-**Status:** Phase 19 complete; ready for Phase 20
+**Last updated:** 2026-05-22 after completing Phase 20
+**Status:** Phase 20 complete; ready for milestone audit
 
 ## Project Reference
 
@@ -59,16 +59,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-Phase: 20 - Frontend Quality & Regression Closure
+Phase: Milestone audit - v1.3 Pilot UX & Demo Readiness
 Plan: -  
-Status: Ready for discussion or planning
-Last activity: 2026-05-22 - Phase 19 completed
+Status: Ready for audit
+Last activity: 2026-05-22 - Phase 20 completed
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 101 total
 - v1.2 requirements archived: 24/24 complete
-- v1.3 requirements: 20 total, 20/20 mapped, 16 complete
+- v1.3 requirements: 20 total, 20/20 mapped, 20 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -86,16 +86,17 @@ Last activity: 2026-05-22 - Phase 19 completed
 | Use global responsive/accessibility guardrails before per-page polish | Phase 17 reduces overflow/focus risks across all current and future screens |
 | Make critical actions narrate consequences and outcomes | Phase 18 adds confirmation context and success/error states without expanding private data access |
 | Keep live demo smoke separate from production launch readiness | Phase 19 smoke verifies deployed demo usability while `/health/ready` can remain `not_ready` until demo seeding is disabled for real production launch |
+| Use ESLint flat config for Next 16 | Phase 20 replaces broken `next lint` with direct ESLint CLI and Next flat configs |
 
 ## Known Tech Debt
 
-- `npm run lint` currently calls invalid Next 16 `next lint`; frontend tests and production build are passing.
+- `npm --prefix frontend audit --omit=dev` reports an existing moderate Next/PostCSS advisory; `npm audit fix --force` proposes a breaking downgrade, so track until a non-breaking stable Next release resolves it.
 - Deferred future work remains: notification retry queues, Zalo/SMS/push channels, selective private-note sharing, reason-for-access prompts, counselor handoff, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: Phase 19 completed; ready to start Phase 20
+Stopped at: Phase 20 completed; ready for milestone audit
 Resume file: none
 
 ## Next Action
@@ -103,5 +104,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-discuss-phase 20
+/gsd-audit-milestone
 ```

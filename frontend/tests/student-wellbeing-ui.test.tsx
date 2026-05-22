@@ -27,7 +27,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 function mockFetch(responses: Record<string, unknown>) {
-  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+  const fetchMock = vi.fn((url: string) => {
     const path = new URL(url).pathname;
     const body = responses[path];
     return Promise.resolve(
