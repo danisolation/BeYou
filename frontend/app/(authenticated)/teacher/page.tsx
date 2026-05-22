@@ -104,14 +104,14 @@ export function RoleStudentList({
       {students.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
           {students.map((student) => (
-            <article key={student.id} className="rounded-3xl bg-white p-6 shadow-sm">
+            <article key={student.id} className="min-w-0 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-heading">{student.full_name}</h2>
                 {student.is_demo ? <DemoBadge /> : null}
               </div>
-              <p className="mt-2 text-label">{student.email}</p>
+              <p className="mt-2 break-all text-label">{student.email}</p>
               <p className="mt-3 text-body">Trường: {student.school ?? "Chưa cập nhật"}</p>
               <p className="text-body">Lớp: {student.class_name ?? "Chưa cập nhật"}</p>
               <p className="mt-3 text-label">Trạng thái liên kết: {student.link_status}</p>
@@ -123,15 +123,15 @@ export function RoleStudentList({
               <div className="mt-5 rounded-2xl bg-secondary p-4">
                 <h3 className="text-heading">{summaryTitle}</h3>
                 <p className="mt-2 text-body">BeYou chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
-                <div className="mt-3 flex flex-wrap gap-3">
+                <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link
-                    className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
                     href={`${summaryBasePath}/${student.id}/self-check-summaries`}
                   >
                     {summaryCta}
                   </Link>
                   <Link
-                    className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-white"
                     href={`${summaryBasePath}/${student.id}/support-summary`}
                   >
                     Xem kế hoạch & mood
@@ -149,7 +149,7 @@ export function RoleStudentList({
 function PrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "parent" }) {
   const isParent = roleContext === "parent";
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-heading">
         {isParent ? "Ranh giới hỗ trợ của phụ huynh" : "Ranh giới hỗ trợ của giáo viên"}
       </h2>
@@ -167,7 +167,7 @@ function PrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "parent
 
 function NotificationList({ notifications }: { notifications: InAppNotification[] }) {
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-heading">Thông báo hỗ trợ</h2>
       {notifications.length === 0 ? (
         <p className="mt-3 text-body">Chưa có thông báo SOS mới từ học sinh được liên kết.</p>
@@ -233,7 +233,7 @@ function SupportOverviewCard({
           <p className="text-label">Số SOS đang mở: {support.open_sos_count}</p>
           {sosBasePath && sosCta ? (
             <Link
-              className="mt-3 inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
+              className="mt-3 inline-flex min-h-11 items-center justify-center rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
               href={`${sosBasePath}/${support.latest_sos_alert.id}`}
             >
               {sosCta}

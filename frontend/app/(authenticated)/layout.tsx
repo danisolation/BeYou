@@ -95,38 +95,46 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const navigationItems = roleNav.filter((item) => item.role === user.role);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-dvh bg-background">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-accent focus:shadow-lg"
+      >
+        Bỏ qua điều hướng
+      </a>
       {user.is_demo ? <DemoBanner /> : null}
-      <header className="border-b border-[#D7EFE8] bg-white px-4 py-4">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-label font-semibold text-accent">BeYou</p>
-            <p className="text-body font-semibold">{user.full_name}</p>
+      <header className="sticky top-0 z-30 border-b border-[#D7EFE8] bg-white/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="min-w-0">
+            <p className="text-label font-semibold uppercase tracking-[0.2em] text-accent">BeYou</p>
+            <p className="truncate text-body font-semibold">{user.full_name}</p>
             <p className="text-label">{roleLabels[user.role]}</p>
           </div>
-          <nav className="flex flex-wrap gap-2" aria-label="Điều hướng vai trò">
-            {navigationItems.map((item) => (
-              <Link
-                key={item.role}
-                href={item.href}
-                className="flex min-h-11 items-center rounded-2xl px-4 text-label font-semibold text-[#12332E]"
-                aria-current={pathname === item.href ? "page" : undefined}
+          <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label="Điều hướng vai trò">
+            <div className="flex min-w-max gap-2">
+              {navigationItems.map((item) => (
+                <Link
+                  key={item.role}
+                  href={item.href}
+                  className="flex min-h-11 shrink-0 items-center rounded-2xl px-4 text-label font-semibold text-[#12332E] hover:bg-secondary"
+                  aria-current={pathname === item.href ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="min-h-11 shrink-0 rounded-2xl border border-[#CFE8E1] px-4 text-label font-semibold hover:border-accent hover:bg-secondary"
               >
-                {item.label}
-              </Link>
-            ))}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 text-label font-semibold"
-            >
-              Đăng xuất
-            </button>
+                Đăng xuất
+              </button>
+            </div>
           </nav>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {privacyRedirectRequired ? (
           <section className="rounded-3xl bg-white p-6 shadow-sm">
             <h1 className="text-heading">Cần xác nhận quyền riêng tư trước khi vào cổng học sinh.</h1>

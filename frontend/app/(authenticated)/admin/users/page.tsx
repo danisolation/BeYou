@@ -102,25 +102,25 @@ export default function AdminUsersPage() {
       <UserForm onSubmit={handleCreate} />
       {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
-      <section className="rounded-3xl bg-white p-5 shadow-sm">
+      <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-heading">Danh sách tài khoản</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && users.length === 0 ? <EmptyState /> : null}
         <div className="mt-5 space-y-4">
           {users.map((user) => (
             <article key={user.id} className="rounded-2xl border border-[#D7EFE8] p-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{user.full_name}</h3>
                     {user.is_demo ? <DemoBadge /> : null}
                   </div>
-                  <p className="text-label">{user.email}</p>
+                  <p className="break-all text-label">{user.email}</p>
                   <p className="text-label">Trường/lớp: {[user.school, user.class_name].filter(Boolean).join(" / ") || "Không áp dụng"}</p>
                   <p className="text-label">Trạng thái tài khoản: {user.status}</p>
                   <p className="text-label">Cập nhật lần cuối: {new Date(user.updated_at).toLocaleString("vi-VN")}</p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="grid w-full gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:flex-wrap lg:items-end lg:justify-end">
                   <label className="space-y-1 text-label font-semibold">
                     Vai trò
                     <select
@@ -131,7 +131,7 @@ export default function AdminUsersPage() {
                           [user.id]: event.target.value as AdminUser["role"],
                         }))
                       }
-                      className="min-h-11 rounded-2xl border border-[#CFE8E1] px-3"
+                      className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3 lg:w-44"
                     >
                       <option value="student">student</option>
                       <option value="teacher">teacher</option>
@@ -142,14 +142,14 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
-                    className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
+                    className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
                   >
                     Lưu thay đổi
                   </button>
                   <button
                     type="button"
                     onClick={() => setConfirmation({ type: "disable", user })}
-                    className="min-h-11 rounded-2xl border border-warning px-4"
+                    className="min-h-11 rounded-2xl border border-warning px-4 hover:bg-[#FFF8E8]"
                   >
                     Tạm khóa tài khoản
                   </button>
@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
                     <button
                       type="button"
                       onClick={() => setConfirmation({ type: "delete-demo", user })}
-                      className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white"
+                      className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white hover:bg-red-700 sm:col-span-2 lg:col-span-1"
                     >
                       Xóa tài khoản demo
                     </button>

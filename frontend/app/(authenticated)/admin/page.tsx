@@ -29,7 +29,7 @@ export default function AdminDashboardPage() {
           Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn.
         </p>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <AdminEntryCard
           href="/admin/operations"
           title="Vận hành metadata-only"
@@ -89,7 +89,10 @@ function AdminEntryCard({
   countLabel: string;
 }) {
   return (
-    <Link href={href} className="block rounded-3xl bg-white p-6 shadow-sm">
+    <Link
+      href={href}
+      className="block min-w-0 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6"
+    >
       <p className="text-label font-semibold text-accent">{countLabel}</p>
       <h2 className="mt-2 text-heading">{title}</h2>
       <p className="mt-3 text-body">{description}</p>

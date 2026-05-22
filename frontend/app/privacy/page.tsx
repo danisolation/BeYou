@@ -38,8 +38,8 @@ function PrivacyContent() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-10">
-      <section className="mx-auto max-w-3xl rounded-3xl bg-secondary p-6 shadow-sm">
+    <main className="min-h-dvh px-4 py-8 sm:px-6 sm:py-10">
+      <section className="mx-auto max-w-3xl rounded-3xl bg-secondary p-5 shadow-sm sm:p-6 lg:p-8">
         <p className="text-label font-semibold text-accent">Quyền riêng tư</p>
         <h1 className="mt-2 text-display">Ai có thể xem thông tin của em?</h1>
         <p className="mt-4 text-body">
@@ -47,7 +47,7 @@ function PrivacyContent() {
           phần tóm tắt cần thiết để hỗ trợ em, không xem mọi câu trả lời riêng tư.
         </p>
 
-        <div className="mt-6 space-y-5 rounded-2xl bg-white p-5">
+        <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 sm:p-5">
           <section>
             <h2 className="text-heading">Ai thấy gì?</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-body">
@@ -89,7 +89,7 @@ function PrivacyContent() {
           type="button"
           disabled={!checked || isSubmitting}
           onClick={handleContinue}
-          className="mt-6 min-h-11 w-full rounded-2xl bg-accent px-4 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 min-h-12 w-full rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78] disabled:cursor-not-allowed disabled:opacity-50"
         >
           Tiếp tục vào BeYou
         </button>

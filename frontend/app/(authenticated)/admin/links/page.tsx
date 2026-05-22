@@ -65,7 +65,7 @@ export default function AdminLinksPage() {
       <LinkForm users={users} onSubmit={handleCreate} />
       {error ? <p className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
 
-      <section className="rounded-3xl bg-white p-5 shadow-sm">
+      <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-heading">Danh sách liên kết</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && links.length === 0 ? (
@@ -77,14 +77,14 @@ export default function AdminLinksPage() {
         <div className="mt-5 space-y-4">
           {links.map((link) => (
             <article key={link.id} className="rounded-2xl border border-[#D7EFE8] p-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{link.student_full_name}</h3>
                     {link.is_demo ? <DemoBadge /> : null}
                   </div>
-                  <p className="text-label">Học sinh: {link.student_email}</p>
-                  <p className="text-label">Người lớn hỗ trợ: {link.adult_full_name} ({link.adult_email})</p>
+                  <p className="break-all text-label">Học sinh: {link.student_email}</p>
+                  <p className="break-all text-label">Người lớn hỗ trợ: {link.adult_full_name} ({link.adult_email})</p>
                   <p className="text-label">Loại liên kết: {link.relationship_type}</p>
                   <p className="text-label">Trường/lớp: {[link.student_school, link.student_class_name].filter(Boolean).join(" / ") || "Chưa cập nhật"}</p>
                   <p className="text-label">Trạng thái: {link.status}</p>
@@ -94,7 +94,7 @@ export default function AdminLinksPage() {
                   <button
                     type="button"
                     onClick={() => setRevokeTarget(link)}
-                    className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white"
+                    className="min-h-11 w-full rounded-2xl bg-destructive px-4 font-semibold text-white hover:bg-red-700 sm:w-auto"
                   >
                     Thu hồi liên kết
                   </button>

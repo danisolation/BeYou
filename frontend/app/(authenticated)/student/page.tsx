@@ -86,7 +86,7 @@ export default function StudentDashboardPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <div className="rounded-3xl bg-secondary p-5 shadow-sm sm:p-6">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-display">Bảng điều khiển của em</h1>
           {profile.is_demo ? <DemoBadge /> : null}
@@ -102,7 +102,7 @@ export default function StudentDashboardPage() {
         </Link>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <ChatEntryCard />
         <WellbeingEntryCard
           title="Tự kiểm tra cảm xúc"
@@ -134,7 +134,7 @@ export default function StudentDashboardPage() {
         />
       </div>
 
-      <section className="rounded-3xl border-2 border-[#F3C0C0] bg-white p-6 shadow-sm">
+      <section className="rounded-3xl border-2 border-[#F3C0C0] bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="text-label font-semibold text-red-700">SOS</p>
@@ -148,7 +148,7 @@ export default function StudentDashboardPage() {
           <button
             type="button"
             onClick={() => setShowSosConfirm(true)}
-            className="min-h-11 rounded-2xl bg-red-600 px-5 font-semibold text-white"
+            className="min-h-11 w-full rounded-2xl bg-red-600 px-5 font-semibold text-white hover:bg-red-700 sm:w-auto"
           >
             Gửi SOS hỗ trợ
           </button>
@@ -184,19 +184,19 @@ export default function StudentDashboardPage() {
               className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
             />
             {sosError ? <p className="mt-3 text-body text-red-700">{sosError}</p> : null}
-            <div className="mt-4 flex flex-wrap gap-3">
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
                 onClick={handleSendSos}
                 disabled={isSendingSos}
-                className="min-h-11 rounded-2xl bg-red-600 px-4 font-semibold text-white disabled:opacity-60"
+                className="min-h-11 rounded-2xl bg-red-600 px-4 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
               >
                 {isSendingSos ? "Đang gửi..." : "Xác nhận gửi SOS"}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSosConfirm(false)}
-                className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
               >
                 Ở lại trang này
               </button>
@@ -207,7 +207,7 @@ export default function StudentDashboardPage() {
 
       <StudentSosStatusList alerts={sosAlerts} />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         <LinkedAdultGroup title="Giáo viên hỗ trợ" adults={teachers} />
         <LinkedAdultGroup title="Phụ huynh hỗ trợ" adults={parents} />
       </div>
@@ -217,7 +217,7 @@ export default function StudentDashboardPage() {
 
 function ChatEntryCard() {
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
       <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href="/student/chat">
         Trò chuyện với BeYou
       </Link>
@@ -240,7 +240,7 @@ function StudentSosStatusList({ alerts }: { alerts: SosAlert[] }) {
     );
   }
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-heading">Tiến trình SOS của em</h2>
       <div className="mt-4 space-y-3">
         {alerts.slice(0, 5).map((alert) => (
@@ -273,7 +273,7 @@ function WellbeingEntryCard({
   historyLabel: string;
 }) {
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
       <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href={href}>
         {title}
       </Link>
@@ -290,7 +290,7 @@ function LinkedAdultGroup({ title, adults }: { title: string; adults: LinkedAdul
     return <EmptyState heading={title} body="Chưa có người lớn hỗ trợ được liên kết trong mục này." />;
   }
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
       <h2 className="text-heading">{title}</h2>
       <div className="mt-4 space-y-3">
         {adults.map((adult) => (
