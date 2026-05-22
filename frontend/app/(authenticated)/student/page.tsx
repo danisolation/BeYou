@@ -8,6 +8,13 @@ import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { apiFetch } from "@/lib/api";
 import {
+  dismissMoodCheckInReminder,
+  getMoodCheckInReminder,
+  openMoodCheckInReminder,
+  snoozeMoodCheckInReminder,
+  type MoodCheckInReminder,
+} from "@/lib/notification-preferences-api";
+import {
   createStudentSosAlert,
   listStudentSosAlerts,
   type SosAlert,
@@ -44,13 +51,20 @@ export default function StudentDashboardPage() {
   const [isSendingSos, setIsSendingSos] = useState(false);
   const [sosError, setSosError] = useState<string | null>(null);
   const [sosSuccessMessage, setSosSuccessMessage] = useState<string | null>(null);
+  const [moodReminder, setMoodReminder] = useState<MoodCheckInReminder | null>(null);
+  const [reminderActionMessage, setReminderActionMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([apiFetch<StudentProfile>("/api/student/profile"), listStudentSosAlerts().catch(() => [])])
-      .then(([studentProfile, alerts]) => {
+    Promise.all([
+      apiFetch<StudentProfile>("/api/student/profile"),
+      listStudentSosAlerts().catch(() => []),
+      getMoodCheckInReminder().catch(() => null),
+    ])
+      .then(([studentProfile, alerts, reminder]) => {
         setProfile(studentProfile);
         setSosAlerts(alerts);
+        setMoodReminder(reminder);
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -123,6 +137,27 @@ export default function StudentDashboardPage() {
         ]}
       />
 
+      {moodReminder?.due ? (
+        <MoodReminderCard
+          reminder={moodReminder}
+          actionMessage={reminderActionMessage}
+          onDismiss={async () => {
+            const result = await dismissMoodCheckInReminder();
+            setMoodReminder(result.reminder);
+            setReminderActionMessage("Đã ẩn nhắc nhở. BeYou không gửi thông báo cho người lớn và không tạo SOS.");
+          }}
+          onSnooze={async () => {
+            const result = await snoozeMoodCheckInReminder(240);
+            setMoodReminder(result.reminder);
+            setReminderActionMessage("Đã nhắc lại sau. Việc tạm hoãn không bị xem là tín hiệu nguy cơ.");
+          }}
+          onOpen={async () => {
+            await openMoodCheckInReminder();
+            window.location.href = moodReminder.href;
+          }}
+        />
+      ) : null}
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <ChatEntryCard />
         <WellbeingEntryCard
@@ -134,10 +169,12 @@ export default function StudentDashboardPage() {
         />
         <WellbeingEntryCard
           title="Check-in cảm xúc"
-          body="Ghi lại cảm xúc, năng lượng, căng thẳng và một ghi chú riêng tư nếu em muốn."
+          body="Ghi lại cảm xúc, năng lượng, căng thẳng và một ghi chú riêng tư nếu em muốn. Em có thể bật nhắc nhẹ trong BeYou."
           href="/student/mood-check-ins"
           historyHref="/student/mood-check-ins/history"
           historyLabel="Xem lịch sử check-in"
+          secondaryHref="/student/notification-preferences"
+          secondaryLabel="Cài đặt nhắc nhở"
         />
         <WellbeingEntryCard
           title="Tình huống luyện tập"
@@ -251,6 +288,64 @@ export default function StudentDashboardPage() {
   );
 }
 
+function MoodReminderCard({
+  reminder,
+  actionMessage,
+  onDismiss,
+  onSnooze,
+  onOpen,
+}: {
+  reminder: MoodCheckInReminder;
+  actionMessage: string | null;
+  onDismiss: () => Promise<void>;
+  onSnooze: () => Promise<void>;
+  onOpen: () => Promise<void>;
+}) {
+  return (
+    <section className="rounded-3xl border border-[#D7EFE8] bg-white p-5 shadow-sm sm:p-6">
+      <p className="text-label font-semibold text-accent">Nhắc nhở tùy chọn</p>
+      <h2 className="mt-2 text-heading">{reminder.title}</h2>
+      <p className="mt-3 text-body">{reminder.body}</p>
+      <p className="mt-2 text-label">
+        Em có thể bỏ qua hoặc tạm hoãn; BeYou không gửi cho người lớn và không tự tạo SOS từ nhắc nhở này.
+      </p>
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <button
+          type="button"
+          onClick={() => {
+            void onOpen();
+          }}
+          className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
+        >
+          Mở check-in
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void onSnooze();
+          }}
+          className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
+        >
+          Nhắc lại sau
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void onDismiss();
+          }}
+          className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
+        >
+          Bỏ qua hôm nay
+        </button>
+        <Link className="inline-flex min-h-11 items-center font-semibold text-accent" href="/student/notification-preferences">
+          Cài đặt nhắc nhở
+        </Link>
+      </div>
+      {actionMessage ? <p role="status" className="mt-4 text-body text-accent">{actionMessage}</p> : null}
+    </section>
+  );
+}
+
 function ChatEntryCard() {
   return (
     <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
@@ -301,12 +396,16 @@ function WellbeingEntryCard({
   href,
   historyHref,
   historyLabel,
+  secondaryHref,
+  secondaryLabel,
 }: {
   title: string;
   body: string;
   href: string;
   historyHref: string;
   historyLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
 }) {
   return (
     <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
@@ -317,6 +416,11 @@ function WellbeingEntryCard({
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={historyHref}>
         {historyLabel}
       </Link>
+      {secondaryHref && secondaryLabel ? (
+        <Link className="mt-2 inline-flex min-h-11 items-center font-semibold text-accent" href={secondaryHref}>
+          {secondaryLabel}
+        </Link>
+      ) : null}
     </article>
   );
 }

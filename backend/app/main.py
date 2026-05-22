@@ -19,6 +19,8 @@ from app.api import (
     sos,
     student,
     student_mood_checkins,
+    student_notification_preferences,
+    student_reminders,
     student_scenarios,
     student_self_checks,
     student_support_plan,
@@ -76,6 +78,12 @@ def create_app() -> FastAPI:
     app.include_router(student_scenarios.router, prefix="/api/student/scenarios", tags=["student"])
     app.include_router(student_support_plan.router, prefix="/api/student/support-plan", tags=["student"])
     app.include_router(student_mood_checkins.router, prefix="/api/student/mood-check-ins", tags=["student"])
+    app.include_router(
+        student_notification_preferences.router,
+        prefix="/api/student/notification-preferences",
+        tags=["student"],
+    )
+    app.include_router(student_reminders.router, prefix="/api/student/reminders", tags=["student"])
     app.include_router(teacher.router, prefix="/api/teacher", tags=["teacher"])
     app.include_router(parent.router, prefix="/api/parent", tags=["parent"])
     app.include_router(adult_summaries.router, prefix="/api", tags=["adult-summaries"])

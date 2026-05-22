@@ -10,18 +10,18 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 ### Student Consent & Reminder Preferences
 
 - [x] **NOTIF-01**: Student can view reminder preference state including enabled/disabled, paused/unpaused, quiet hours, timezone, and active channel boundaries.
-- [ ] **NOTIF-02**: Student can enable or disable in-app mood check-in reminders with explicit consent.
-- [ ] **NOTIF-03**: Student can configure quiet hours for reminders within school policy defaults.
-- [ ] **NOTIF-04**: Student can pause and resume reminders without penalty.
+- [x] **NOTIF-02**: Student can enable or disable in-app mood check-in reminders with explicit consent.
+- [x] **NOTIF-03**: Student can configure quiet hours for reminders within school policy defaults.
+- [x] **NOTIF-04**: Student can pause and resume reminders without penalty.
 - [x] **NOTIF-05**: The API and UI clearly reject or mark Zalo, SMS, push, and email reminder channels as deferred in v1.4.
 
 ### Non-Clinical In-App Mood Check-In Reminders
 
-- [ ] **REMIND-01**: Eligible student sees a supportive in-app mood check-in reminder only when consented, not paused, and outside quiet hours.
-- [ ] **REMIND-02**: Student can dismiss, snooze, or open the mood check-in flow from a reminder.
-- [ ] **REMIND-03**: Reminder display, dismissal, snooze, missed state, or check-in entry never creates SOS, adult notifications, risk scores, or automatic check-ins.
-- [ ] **REMIND-04**: Reminder copy is Vietnamese, supportive, optional, non-clinical, and states that reminders do not notify adults or create SOS automatically.
-- [ ] **REMIND-05**: Reminder events create metadata-only audit records without mood content or private notes.
+- [x] **REMIND-01**: Eligible student sees a supportive in-app mood check-in reminder only when consented, not paused, and outside quiet hours.
+- [x] **REMIND-02**: Student can dismiss, snooze, or open the mood check-in flow from a reminder.
+- [x] **REMIND-03**: Reminder display, dismissal, snooze, missed state, or check-in entry never creates SOS, adult notifications, risk scores, or automatic check-ins.
+- [x] **REMIND-04**: Reminder copy is Vietnamese, supportive, optional, non-clinical, and states that reminders do not notify adults or create SOS automatically.
+- [x] **REMIND-05**: Reminder events create metadata-only audit records without mood content or private notes.
 
 ### Selective Private Mood-Note Sharing
 
@@ -90,15 +90,15 @@ Explicit exclusions for v1.4.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | NOTIF-01 | Phase 21 | Complete |
-| NOTIF-02 | Phase 22 | Pending |
-| NOTIF-03 | Phase 22 | Pending |
-| NOTIF-04 | Phase 22 | Pending |
+| NOTIF-02 | Phase 22 | Complete |
+| NOTIF-03 | Phase 22 | Complete |
+| NOTIF-04 | Phase 22 | Complete |
 | NOTIF-05 | Phase 21 | Complete |
-| REMIND-01 | Phase 22 | Pending |
-| REMIND-02 | Phase 22 | Pending |
-| REMIND-03 | Phase 22 | Pending |
-| REMIND-04 | Phase 22 | Pending |
-| REMIND-05 | Phase 22 | Pending |
+| REMIND-01 | Phase 22 | Complete |
+| REMIND-02 | Phase 22 | Complete |
+| REMIND-03 | Phase 22 | Complete |
+| REMIND-04 | Phase 22 | Complete |
+| REMIND-05 | Phase 22 | Complete |
 | SHARE-01 | Phase 23 | Pending |
 | SHARE-02 | Phase 23 | Pending |
 | SHARE-03 | Phase 23 | Pending |
@@ -126,4 +126,4 @@ Explicit exclusions for v1.4.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 21 completion*
+*Last updated: 2026-05-22 after Phase 22 completion*

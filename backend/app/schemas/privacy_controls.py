@@ -33,6 +33,20 @@ def normalize_reason_codes(value: list[str]) -> list[str]:
     return normalized or sorted(ALLOWED_REASON_CODES)
 
 
+def normalize_quiet_hour(value: str | None) -> str | None:
+    if value is None:
+        return None
+    try:
+        hour, minute = value.split(":")
+        hour_int = int(hour)
+        minute_int = int(minute)
+    except ValueError as exc:
+        raise ValueError("Khung giờ yên lặng phải có định dạng HH:MM hợp lệ.") from exc
+    if not 0 <= hour_int <= 23 or not 0 <= minute_int <= 59:
+        raise ValueError("Khung giờ yên lặng phải có định dạng HH:MM hợp lệ.")
+    return f"{hour_int:02d}:{minute_int:02d}"
+
+
 class ChannelBoundary(BaseModel):
     key: str
     label: str
@@ -82,10 +96,54 @@ class StudentNotificationPreferenceResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class StudentNotificationPreferenceUpdate(BaseModel):
+    in_app_reminders_enabled: bool
+    mood_checkin_reminders_enabled: bool
+    reminder_cadence: Literal["none", "daily", "weekly"] = "weekly"
+    allowed_channels: list[str] = Field(default_factory=lambda: [IN_APP_CHANNEL])
+    quiet_hours_start: str | None = None
+    quiet_hours_end: str | None = None
+    timezone: str = "Asia/Ho_Chi_Minh"
+    paused_until: datetime | None = None
+    pause_reason_code: str | None = Field(default=None, max_length=64)
+
+    @field_validator("allowed_channels")
+    @classmethod
+    def validate_allowed_channels(cls, value: list[str]) -> list[str]:
+        return normalize_channels(value)
+
+    @field_validator("quiet_hours_start", "quiet_hours_end")
+    @classmethod
+    def validate_quiet_hour(cls, value: str | None) -> str | None:
+        return normalize_quiet_hour(value)
+
+
+class MoodCheckInReminderResponse(BaseModel):
+    due: bool
+    status_reason: str
+    title: str
+    body: str
+    href: str
+    generated_at: datetime
+    last_checkin_at: datetime | None = None
+    next_due_at: datetime | None = None
+    snoozed_until: datetime | None = None
+    preference: StudentNotificationPreferenceResponse
+
+
+class MoodReminderSnoozeRequest(BaseModel):
+    minutes: int = Field(default=240, ge=15, le=1440)
+
+
+class MoodReminderActionResponse(BaseModel):
+    status: str
+    reminder: MoodCheckInReminderResponse
+
+
 class SchoolPrivacyPolicyDefaultsUpdate(BaseModel):
     default_in_app_reminders_enabled: bool = False
-    default_quiet_hours_start: str | None = Field(default=None, pattern=r"^\d{2}:\d{2}$")
-    default_quiet_hours_end: str | None = Field(default=None, pattern=r"^\d{2}:\d{2}$")
+    default_quiet_hours_start: str | None = None
+    default_quiet_hours_end: str | None = None
     default_timezone: str = "Asia/Ho_Chi_Minh"
     allowed_channels: list[str] = Field(default_factory=lambda: [IN_APP_CHANNEL])
     external_channels_enabled: bool = False
@@ -98,6 +156,11 @@ class SchoolPrivacyPolicyDefaultsUpdate(BaseModel):
     @classmethod
     def validate_allowed_channels(cls, value: list[str]) -> list[str]:
         return normalize_channels(value)
+
+    @field_validator("default_quiet_hours_start", "default_quiet_hours_end")
+    @classmethod
+    def validate_quiet_hour(cls, value: str | None) -> str | None:
+        return normalize_quiet_hour(value)
 
     @field_validator("allowed_reason_codes")
     @classmethod

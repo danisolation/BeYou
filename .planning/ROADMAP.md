@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 2/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 10/29 complete
 
 ## Completed Milestones
 
@@ -26,7 +26,7 @@
 ## Phase Checklist
 
 - [x] Phase 21: Privacy Control Foundation & Policy Contracts
-- [ ] Phase 22: Student Reminder Preferences & In-App Mood Reminders
+- [x] Phase 22: Student Reminder Preferences & In-App Mood Reminders
 - [ ] Phase 23: Selective Mood-Note Sharing & Revocation
 - [ ] Phase 24: Reason-for-Access & Adult Support Transparency
 - [ ] Phase 25: Admin Privacy Policy & Operations Visibility
@@ -59,7 +59,7 @@ Plans:
 **Depends on:** Phase 21
 **Requirements:** NOTIF-02, NOTIF-03, NOTIF-04, REMIND-01, REMIND-02, REMIND-03, REMIND-04, REMIND-05
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Student settings UI and API let students enable/disable in-app reminders, set quiet hours, pause/resume reminders, and see external channels as unavailable/deferred.
@@ -67,10 +67,10 @@ Plans:
 3. Reminder actions dismiss, snooze, or open the existing mood check-in flow without creating SOS alerts, adult notifications, risk scores, or automatic check-ins.
 4. Reminder copy is Vietnamese, supportive, optional, non-clinical, and metadata-only audit records safe reminder statuses only.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] 22-01-PLAN.md - Student reminder preferences, in-app reminder card, and no-auto-SOS regression coverage
+- [x] 22-01-PLAN.md - Student reminder preferences, in-app reminder card, and no-auto-SOS regression coverage
 
 ### Phase 23: Selective Mood-Note Sharing & Revocation
 
@@ -153,15 +153,15 @@ Plans:
 | Requirement | Phase | Status |
 |---|---|---|
 | NOTIF-01 | Phase 21 | Complete |
-| NOTIF-02 | Phase 22 | Pending |
-| NOTIF-03 | Phase 22 | Pending |
-| NOTIF-04 | Phase 22 | Pending |
+| NOTIF-02 | Phase 22 | Complete |
+| NOTIF-03 | Phase 22 | Complete |
+| NOTIF-04 | Phase 22 | Complete |
 | NOTIF-05 | Phase 21 | Complete |
-| REMIND-01 | Phase 22 | Pending |
-| REMIND-02 | Phase 22 | Pending |
-| REMIND-03 | Phase 22 | Pending |
-| REMIND-04 | Phase 22 | Pending |
-| REMIND-05 | Phase 22 | Pending |
+| REMIND-01 | Phase 22 | Complete |
+| REMIND-02 | Phase 22 | Complete |
+| REMIND-03 | Phase 22 | Complete |
+| REMIND-04 | Phase 22 | Complete |
+| REMIND-05 | Phase 22 | Complete |
 | SHARE-01 | Phase 23 | Pending |
 | SHARE-02 | Phase 23 | Pending |
 | SHARE-03 | Phase 23 | Pending |
@@ -185,7 +185,7 @@ Plans:
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 2
+- Complete: 10
 - Unmapped: 0
 
 ## Assumptions
@@ -197,4 +197,4 @@ Plans:
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
 
 ---
-*Last updated: 2026-05-22 after Phase 21 completion*
+*Last updated: 2026-05-22 after Phase 22 completion*
