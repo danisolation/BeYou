@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { DemoBadge } from "@/components/demo-badge";
+import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { apiFetch } from "@/lib/api";
 import {
@@ -101,6 +102,21 @@ export default function StudentDashboardPage() {
           Ai có thể xem thông tin của em?
         </Link>
       </div>
+
+      <DemoGuideCard
+        title="Đi theo luồng học sinh trong 5 phút"
+        body="Bắt đầu bằng quyền riêng tư, sau đó thử một check-in hoặc tự kiểm tra, mở kế hoạch người lớn tin cậy, trò chuyện với BeYou và xem cách SOS cần xác nhận rõ ràng."
+        steps={[
+          "Xem ranh giới quyền riêng tư để biết ai thấy gì.",
+          "Ghi một check-in hoặc mở tự kiểm tra cảm xúc.",
+          "Mở kế hoạch hỗ trợ, chatbot hoặc SOS để thấy cách BeYou ưu tiên an toàn.",
+        ]}
+        actions={[
+          { href: "/privacy?review=true", label: "Xem quyền riêng tư" },
+          { href: "/student/mood-check-ins", label: "Thử check-in", primary: true },
+          { href: "/student/support-plan", label: "Kế hoạch hỗ trợ" },
+        ]}
+      />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <ChatEntryCard />

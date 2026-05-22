@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Pilot UX & Demo Readiness
-status: ready_for_phase_planning
-stopped_at: v1.3 roadmap created; ready to discuss or plan Phase 16
-last_updated: "2026-05-22T15:20:00+07:00"
+status: phase_16_complete
+stopped_at: Phase 16 complete; ready for Phase 17
+last_updated: "2026-05-22T15:25:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
+  percent: 20
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after creating v1.3 roadmap
-**Status:** Ready for Phase 16 planning
+**Last updated:** 2026-05-22 after completing Phase 16
+**Status:** Phase 16 complete; ready for Phase 17
 
 ## Project Reference
 
@@ -59,16 +59,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-Phase: 16 - Guided Demo Entry & Role Onboarding
+Phase: 17 - Responsive Accessibility Baseline
 Plan: -  
 Status: Ready for discussion or planning
-Last activity: 2026-05-22 - Milestone v1.3 roadmap created
+Last activity: 2026-05-22 - Phase 16 completed
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 101 total
 - v1.2 requirements archived: 24/24 complete
-- v1.3 requirements: 20 total, 20/20 mapped, 0 complete
+- v1.3 requirements: 20 total, 20/20 mapped, 6 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -82,6 +82,7 @@ Last activity: 2026-05-22 - Milestone v1.3 roadmap created
 | Preserve metadata-only operations | Operations views use safe counts/statuses only |
 | Continue phase numbering from v1.2 | v1.3 uses Phases 16-20 |
 | Prioritize pilot UX before new sensitive sharing features | v1.3 improves live demo readiness without expanding adult/admin access to raw private data |
+| Use public landing plus one-step demo role entry | Phase 16 preserves manual login while making evaluator entry faster |
 
 ## Known Tech Debt
 
@@ -99,5 +100,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-discuss-phase 16
+/gsd-discuss-phase 17
 ```

@@ -9,10 +9,10 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Demo Entry & Onboarding
 
-- [ ] **DEMO-01**: A first-time evaluator can open a public BeYou entry page that explains the product purpose, roles, privacy boundary, non-clinical limits, and SOS boundary.
-- [ ] **DEMO-02**: A first-time evaluator can enter each seeded demo role from the UI without manually copying demo credentials.
-- [ ] **DEMO-03**: A user in each role dashboard can follow a concise guided next-step path for the live demo.
-- [ ] **DEMO-04**: Demo and live environment indicators clearly distinguish seeded demo data from real student data.
+- [x] **DEMO-01**: A first-time evaluator can open a public BeYou entry page that explains the product purpose, roles, privacy boundary, non-clinical limits, and SOS boundary.
+- [x] **DEMO-02**: A first-time evaluator can enter each seeded demo role from the UI without manually copying demo credentials.
+- [x] **DEMO-03**: A user in each role dashboard can follow a concise guided next-step path for the live demo.
+- [x] **DEMO-04**: Demo and live environment indicators clearly distinguish seeded demo data from real student data.
 
 ### Responsive & Accessibility
 
@@ -32,7 +32,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 ### Demo/Pilot Operations
 
 - [ ] **OPS-01**: Operators and admins can verify demo seed state, backend/frontend connectivity, and readiness without exposing secrets or private student data.
-- [ ] **OPS-02**: Demo runbook or in-app guidance explains live URLs, demo accounts, roles, and the expected walkthrough path.
+- [x] **OPS-02**: Demo runbook or in-app guidance explains live URLs, demo accounts, roles, and the expected walkthrough path.
 - [ ] **OPS-03**: Production smoke checks cover login, session cookie behavior, CORS, and role dashboards.
 
 ### Quality & Regression
@@ -40,7 +40,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [ ] **QUAL-01**: Frontend lint tooling works with the current Next.js version.
 - [ ] **QUAL-02**: Existing frontend tests and production build remain passing.
 - [ ] **QUAL-03**: New responsive and demo-readiness changes include targeted automated regression coverage.
-- [ ] **QUAL-04**: Documentation reflects deployed URLs, demo accounts, and demo/pilot constraints.
+- [x] **QUAL-04**: Documentation reflects deployed URLs, demo accounts, and demo/pilot constraints.
 
 ## Future Requirements
 
@@ -82,10 +82,10 @@ Roadmap mapping is filled during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DEMO-01 | Phase 16 | Pending |
-| DEMO-02 | Phase 16 | Pending |
-| DEMO-03 | Phase 16 | Pending |
-| DEMO-04 | Phase 16 | Pending |
+| DEMO-01 | Phase 16 | Complete |
+| DEMO-02 | Phase 16 | Complete |
+| DEMO-03 | Phase 16 | Complete |
+| DEMO-04 | Phase 16 | Complete |
 | RESP-01 | Phase 17 | Pending |
 | RESP-02 | Phase 17 | Pending |
 | RESP-03 | Phase 17 | Pending |
@@ -96,12 +96,12 @@ Roadmap mapping is filled during roadmap creation.
 | UX-03 | Phase 18 | Pending |
 | UX-04 | Phase 17 | Pending |
 | OPS-01 | Phase 19 | Pending |
-| OPS-02 | Phase 16 | Pending |
+| OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Pending |
 | QUAL-01 | Phase 20 | Pending |
 | QUAL-02 | Phase 20 | Pending |
 | QUAL-03 | Phase 20 | Pending |
-| QUAL-04 | Phase 16 | Pending |
+| QUAL-04 | Phase 16 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 20 total
@@ -110,4 +110,4 @@ Roadmap mapping is filled during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after v1.3 roadmap creation*
+*Last updated: 2026-05-22 after Phase 16 completion*

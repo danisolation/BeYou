@@ -5,14 +5,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { login, loginErrorCopy } from "@/lib/auth";
-
-const DEMO_PASSWORD = "BeYouDemo!2026";
-const demoAccounts = [
-  { label: "Học sinh", email: "student.demo@beyou.local" },
-  { label: "Giáo viên", email: "teacher.demo@beyou.local" },
-  { label: "Phụ huynh", email: "parent.demo@beyou.local" },
-  { label: "Quản trị", email: "admin.demo@beyou.local" },
-];
+import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 
 export default function LoginPage() {
   const router = useRouter();

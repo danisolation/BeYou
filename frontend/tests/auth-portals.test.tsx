@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import HomePage from "@/app/page";
 import LoginPage from "@/app/login/page";
 import PrivacyPage from "@/app/privacy/page";
 import { DemoBadge } from "@/components/demo-badge";
@@ -77,6 +78,18 @@ describe("Phase 2 frontend auth foundation", () => {
     expect(submit).toBeEnabled();
     await userEvent.type(screen.getByLabelText("Mật khẩu"), "BeYouDemo!2026");
     expect(submit).toBeEnabled();
+  });
+
+  it("renders public demo entry with one-step role options", () => {
+    render(<HomePage />);
+
+    expect(screen.getByText("BeYou demo live")).toBeInTheDocument();
+    expect(screen.getByText("Không gian hỗ trợ học sinh THPT trước khi căng thẳng leo thang.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Vào vai Học sinh/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Vào vai Giáo viên/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Vào vai Phụ huynh/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Vào vai Quản trị/ })).toBeInTheDocument();
+    expect(screen.getByText(/Không nhập dữ liệu học sinh thật trong bản giới thiệu\./)).toBeInTheDocument();
   });
 
   it("fills demo credentials from role shortcuts", async () => {

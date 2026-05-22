@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { DemoBadge } from "@/components/demo-badge";
+import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { apiFetch } from "@/lib/api";
 import {
@@ -93,6 +94,8 @@ export function RoleStudentList({
 }) {
   const supportByStudent = new Map(supportOverview.map((item) => [item.student.id, item]));
   const roleContext = summaryBasePath === "/parent/students" ? "parent" : "teacher";
+  const firstStudent = students[0];
+  const isParent = roleContext === "parent";
   return (
     <section className="space-y-5">
       <div>
@@ -100,6 +103,34 @@ export function RoleStudentList({
         <p className="mt-3 max-w-2xl text-body">{subtitle}</p>
       </div>
       <PrivacyBoundaryCard roleContext={roleContext} />
+      <DemoGuideCard
+        title={isParent ? "Đi theo luồng phụ huynh" : "Đi theo luồng giáo viên"}
+        body={
+          isParent
+            ? "Phụ huynh xem tóm tắt hỗ trợ và trạng thái SOS trong phạm vi được liên kết, không xem dữ liệu riêng tư thô của học sinh."
+            : "Giáo viên xem tóm tắt hỗ trợ, kế hoạch/mood được phép chia sẻ và có thể cập nhật trạng thái SOS khi đang hỗ trợ."
+        }
+        steps={[
+          "Kiểm tra ranh giới hỗ trợ và thông báo SOS.",
+          "Mở tóm tắt tự kiểm tra hoặc kế hoạch & mood của học sinh demo.",
+          isParent ? "Xem trạng thái SOS ở chế độ hỗ trợ/read-only." : "Mở trạng thái SOS và cập nhật tiến trình hỗ trợ nếu có.",
+        ]}
+        actions={
+          firstStudent
+            ? [
+                {
+                  href: `${summaryBasePath}/${firstStudent.id}/support-summary`,
+                  label: "Mở demo kế hoạch & mood",
+                  primary: true,
+                },
+                {
+                  href: `${summaryBasePath}/${firstStudent.id}/self-check-summaries`,
+                  label: "Xem tóm tắt tự kiểm tra",
+                },
+              ]
+            : []
+        }
+      />
       <NotificationList notifications={notifications} />
       {students.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />

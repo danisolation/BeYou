@@ -17,7 +17,7 @@
 
 ## Phase Checklist
 
-- [ ] Phase 16: Guided Demo Entry & Role Onboarding
+- [x] Phase 16: Guided Demo Entry & Role Onboarding
 - [ ] Phase 17: Responsive Accessibility Baseline
 - [ ] Phase 18: Supportive Copy & Critical Interaction Polish
 - [ ] Phase 19: Demo/Pilot Operations Readiness
@@ -31,7 +31,7 @@
 **Depends on:** v1.2 archive, deployed UI polish
 **Requirements:** DEMO-01, DEMO-02, DEMO-03, DEMO-04, OPS-02, QUAL-04
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Public entry explains BeYou's purpose, roles, privacy boundaries, non-clinical positioning, and SOS boundaries in evaluator-friendly Vietnamese.
@@ -39,10 +39,10 @@
 3. Student, teacher, parent, and admin dashboards expose concise guided demo next steps.
 4. Demo/live indicators and docs make seeded demo data, live URLs, accounts, and pilot constraints clear.
 
-**Plans:** 0/0 pending planning
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] To be created by `/gsd-plan-phase 16`
+- [x] 16-01-PLAN.md - Guided demo entry, role onboarding, dashboard guide cards, and docs
 
 ### Phase 17: Responsive Accessibility Baseline
 
@@ -124,10 +124,10 @@ Plans:
 
 | Requirement | Phase | Status |
 |---|---|---|
-| DEMO-01 | Phase 16 | Pending |
-| DEMO-02 | Phase 16 | Pending |
-| DEMO-03 | Phase 16 | Pending |
-| DEMO-04 | Phase 16 | Pending |
+| DEMO-01 | Phase 16 | Complete |
+| DEMO-02 | Phase 16 | Complete |
+| DEMO-03 | Phase 16 | Complete |
+| DEMO-04 | Phase 16 | Complete |
 | RESP-01 | Phase 17 | Pending |
 | RESP-02 | Phase 17 | Pending |
 | RESP-03 | Phase 17 | Pending |
@@ -138,17 +138,17 @@ Plans:
 | UX-03 | Phase 18 | Pending |
 | UX-04 | Phase 17 | Pending |
 | OPS-01 | Phase 19 | Pending |
-| OPS-02 | Phase 16 | Pending |
+| OPS-02 | Phase 16 | Complete |
 | OPS-03 | Phase 19 | Pending |
 | QUAL-01 | Phase 20 | Pending |
 | QUAL-02 | Phase 20 | Pending |
 | QUAL-03 | Phase 20 | Pending |
-| QUAL-04 | Phase 16 | Pending |
+| QUAL-04 | Phase 16 | Complete |
 
 **Coverage:**
 - v1.3 requirements: 20 total
 - Mapped to phases: 20
-- Complete: 0
+- Complete: 6
 - Unmapped: 0
 
 ## Assumptions
@@ -160,4 +160,4 @@ Plans:
 - Recent post-v1.2 UI responsive polish is treated as useful context, but v1.3 requirements still need formal GSD planning, implementation, review, and verification.
 
 ---
-*Last updated: 2026-05-22 after v1.3 roadmap creation*
+*Last updated: 2026-05-22 after Phase 16 completion*

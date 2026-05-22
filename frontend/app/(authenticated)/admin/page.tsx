@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { DemoGuideCard } from "@/components/demo-guide-card";
 import { apiFetch } from "@/lib/api";
 
 type AdminUser = { id: string };
@@ -29,6 +30,20 @@ export default function AdminDashboardPage() {
           Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn.
         </p>
       </div>
+      <DemoGuideCard
+        title="Đi theo luồng quản trị demo"
+        body="Dùng cổng quản trị để chứng minh BeYou quản lý nội dung và vận hành bằng metadata, không mở dữ liệu riêng tư thô của học sinh."
+        steps={[
+          "Kiểm tra operations/readiness và báo cáo tổng hợp riêng tư.",
+          "Mở cấu hình chatbot hoặc mood check-in để thấy guardrails.",
+          "Xem tài khoản/liên kết demo để hiểu phân quyền học sinh-người lớn.",
+        ]}
+        actions={[
+          { href: "/admin/operations", label: "Mở operations", primary: true },
+          { href: "/admin/reports", label: "Báo cáo tổng hợp" },
+          { href: "/admin/users", label: "Tài khoản demo" },
+        ]}
+      />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <AdminEntryCard
           href="/admin/operations"
