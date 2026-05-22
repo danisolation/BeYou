@@ -1,104 +1,57 @@
-# Pitfalls Research: BeYou v1.1
+# Domain Pitfalls: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
 
-**Milestone:** v1.1 Production Hardening & Support Polish  
-**Researched:** 2026-05-21  
-**Confidence:** High
+**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Researched:** 2026-05-22
 
-## Critical Pitfalls
+## Summary
 
-### 1. Readiness Checks That Create False Confidence
+The main risk is turning proactive support into monitoring. v1.2 must keep support plans student-owned, check-in notes private by default, adult views summary-only, and admin/operations visibility metadata-only.
 
-**What goes wrong:** Checks only verify that env vars exist, not whether values are safe for production.
+## Pitfalls Table
 
-**Prevention:**
+| Pitfall | Impact | Prevention | Phase implication |
+|---|---|---|---|
+| Raw mood notes exposed to adults/admins | Breaks student trust and privacy guarantees | Separate raw note fields from derived summaries; test response shapes | Mood and adult summary phases |
+| Mood trends become risk leaderboards | Product shifts from support to surveillance | Use supportive trend language, no rankings, no exports/drilldowns | Adult/admin phases |
+| Support plan ignores linked-adult relationship | Unauthorized disclosure | Validate selected adults against existing links and role permissions | Support plan phase |
+| High concern check-in auto-sends SOS | Unsafe escalation and consent violation | Suggest SOS/trusted adult contact only; require explicit SOS confirmation | Mood phase |
+| Admin config enables punitive/clinical copy | Harmful UX and scope drift | Validation, preview, and non-clinical copy guidelines | Admin config phase |
+| Audit metadata leaks private text | Sensitive data in operations logs | Reuse sanitizer and assert forbidden keys/text are absent | Every phase |
+| Student cannot understand sharing boundaries | Consent failure | Add clear Vietnamese privacy copy before plan/check-in flows | Student UI phases |
+| Multiple check-ins create confusing history | Poor UX and noisy summaries | Define same-day update/add behavior and show timestamps clearly | Mood phase |
 
-- Validate unsafe values such as wildcard credentialed origins, insecure production cookies, placeholder secrets, demo seed enabled, and missing migration head.
-- Return remediation hints, not just green/red booleans.
-- Keep `/health/live` separate from full readiness.
+## Privacy and Safety Risks
 
-**Phase:** 7
+- Optional notes are the highest-risk data. Keep them student-only unless a future explicit sharing model is designed.
+- Adult summaries should show trend direction, recency, and support suggestions, not raw details.
+- Admins should configure prompts/guidance but not browse individual submissions.
+- Audit events must remain metadata-only and sanitized recursively.
 
-### 2. Treating SOS Email as Source of Truth
+## UX Risks
 
-**What goes wrong:** Email success/failure starts driving SOS status or replaces in-app notifications.
+- If check-ins feel like homework or surveillance, students may avoid them.
+- If support plans are too long, students will not complete them.
+- If adult copy sounds disciplinary, the feature undermines trust.
+- If high-concern copy is too alarming, it may discourage honest check-ins.
 
-**Prevention:**
+## Architecture and Data Risks
 
-- Persist SOS and in-app notifications first.
-- Treat email as best-effort delivery metadata.
-- Never advance SOS status based on email delivery alone.
+- Support plan and mood models need explicit lifecycle/status fields to avoid hard deletes breaking history.
+- Adult summaries should be generated through a service boundary, not by returning raw model fields.
+- Existing privacy acknowledgement and authenticated role layout must cover new student pages.
+- Future reminder/notification work should not be smuggled into v1.2.
 
-**Phase:** 8
+## Testing Gaps to Avoid
 
-### 3. Silent Email Failure
+- Missing negative authorization tests for unlinked teacher/parent access.
+- Missing assertions that adult/admin/operations responses exclude raw notes.
+- Missing frontend tests for role-specific adult copy.
+- Missing regression for privacy-blocked student direct navigation to new pages.
 
-**What goes wrong:** SMTP/provider failure is swallowed or logged only in server logs.
+## Prevention Strategy
 
-**Prevention:**
-
-- Record delivery attempts with status and error category.
-- Show metadata-only delivery state to admins.
-- Do not roll back SOS on email failure.
-
-**Phase:** 8 and 11
-
-### 4. Credential or Sensitive Content Leakage
-
-**What goes wrong:** Email settings, provider errors, SOS notes, self-check answers, or chatbot text appear in frontend responses, audit metadata, emails, or logs.
-
-**Prevention:**
-
-- Mask secrets in readiness and admin operations.
-- Keep email content minimal.
-- Maintain forbidden audit metadata tests.
-- Avoid raw exports.
-
-**Phase:** 7, 8, and 11
-
-### 5. UX Polish Only Hides Problems Visually
-
-**What goes wrong:** Navigation is cleaned up, but wrong-role routes or privacy acknowledgement bypasses remain accessible.
-
-**Prevention:**
-
-- Keep backend gates authoritative.
-- Add frontend tests for role nav and privacy redirect.
-- Add regression tests for wrong-role and unacknowledged student access.
-
-**Phase:** 9
-
-### 6. Nested Content Editors Publish Broken Structures
-
-**What goes wrong:** Admin can save incomplete questions, choices, thresholds, scenario feedback, or lifecycle states that break student flows.
-
-**Prevention:**
-
-- Validate nested structures before publish.
-- Show actionable errors beside fields.
-- Add preview before publish.
-- Preserve snapshots/version-safe history.
-
-**Phase:** 10
-
-### 7. Operations UI Becomes Surveillance
-
-**What goes wrong:** Admin operations dashboards expose raw sensitive student content, risk ranking, or per-student drilldowns under "support" or "debug" labels.
-
-**Prevention:**
-
-- Filter audit views to metadata-only fields.
-- Suppress raw sensitive exports.
-- Keep report and operations UI support-oriented.
-- Test that forbidden strings/fields are absent.
-
-**Phase:** 11
-
-## Cross-Phase Guardrails
-
-- Preserve privacy-by-default.
-- Use role, relationship, and purpose authorization for sensitive resources.
-- Keep provider secrets backend-only.
-- Keep audit metadata minimal and purposeful.
-- Keep student-facing copy supportive and non-clinical.
-- Prefer additive changes over broad rewrites.
-
+- Make privacy boundaries explicit requirements.
+- Build student-owned domain first, then derive adult summaries.
+- Add tests before or alongside every adult/admin response surface.
+- Keep high-concern escalation advisory until explicit SOS confirmation.
+- Close with a cross-surface privacy audit.

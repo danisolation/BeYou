@@ -1,94 +1,81 @@
-# Stack Research: BeYou v1.1
+# Technology Stack Research: BeYou v1.2 Trusted Adult Plan & Mood Check-ins
 
-**Milestone:** v1.1 Production Hardening & Support Polish  
-**Researched:** 2026-05-21  
-**Confidence:** High for repository-verified stack; medium for ecosystem choices that should be rechecked before production procurement.
+**Milestone:** v1.2 Trusted Adult Plan & Mood Check-ins  
+**Researched:** 2026-05-22
 
-## Current Stack
+## Summary
 
-### Backend
+v1.2 should reuse the existing FastAPI, PostgreSQL, SQLAlchemy/Alembic, Next.js, TypeScript, Vitest, and pytest stack. Trusted adult plans and mood check-ins are mostly domain/model/API/UI work; no new infrastructure or third-party dependency is needed for the planned scope.
 
-- Python 3.12+
-- FastAPI
-- SQLAlchemy 2.x
-- Alembic
-- Pydantic and pydantic-settings
-- psycopg/PostgreSQL
-- pytest and ruff
+## Recommended Stack
 
-The backend already has cookie sessions, role/relationship authorization, metadata-only audit events, Alembic migrations, canonical SOS workflow, in-app notifications, and nested content API support.
+| Area | Recommendation | Why |
+|---|---|---|
+| Backend runtime/API | Keep FastAPI + Pydantic schemas | Existing role routers, services, schemas, and tests already fit the feature shape |
+| Persistence | Keep PostgreSQL + SQLAlchemy + Alembic | Support plans, check-ins, summaries, and audit events are relational |
+| Frontend | Keep Next.js + TypeScript + existing authenticated layout | Student/adult/admin pages already share role gating and cookie-authenticated API helpers |
+| Testing | Keep pytest, Ruff, Vitest, and production build | Current regressions cover privacy, role, and UI behavior without adding tooling |
+| Background jobs | Do not add Celery/Redis yet | v1.2 is not sending external notifications or scheduled reminders |
+| Analytics/AI scoring | Do not add AI/sentiment scoring | Mood check-ins should stay low-friction and non-clinical, not become surveillance |
 
-### Frontend
+## No-New-Dependency Decision
 
-- Next.js 16 App Router
-- React 19
-- TypeScript
-- React Hook Form
-- Zod
-- TanStack Query
-- Vitest and Playwright
+No new dependency is required for:
 
-The frontend already uses cookie-authenticated API calls and does not store browser tokens.
+- Student support-plan CRUD.
+- Mood check-in submission and history.
+- Simple trend aggregation.
+- Teacher/parent summary views.
+- Admin prompt/guidance configuration.
+- Metadata-only audit and operations visibility.
 
-## Required Additions
+Avoid adding charting, notification, analytics, or AI classification packages unless a later milestone explicitly scopes them.
 
-### Production Readiness
+## Backend Impact
 
-No new dependency is required. Add a backend readiness service using existing FastAPI, SQLAlchemy, Alembic, and Pydantic settings.
+- Add tables for student support plans, shareable support preferences, mood check-in prompts/options, mood check-in submissions, and optional derived summary metadata.
+- Add Alembic migration with conservative nullable/backfill behavior.
+- Add student APIs for support plan and check-in submission/history.
+- Add teacher/parent APIs for linked-student summaries only.
+- Add admin APIs for prompt/guidance configuration and lifecycle status.
+- Reuse `AuditEvent` for metadata-only support plan, check-in, adult summary, and admin config activity.
 
-Required checks:
+## Frontend Impact
 
-- Database connectivity with a cheap query.
-- Alembic current revision vs migration head.
-- Production config hygiene, including secure cookies, explicit credentialed CORS origins, no placeholder secrets, demo seed disabled, and required provider secrets present only when enabled.
-- Safe response shaping that masks all secret values.
+- Add student pages or dashboard cards for:
+  - trusted adult plan;
+  - mood check-in submission;
+  - mood history/trends.
+- Extend teacher/parent support pages with privacy-preserving check-in/support-plan summary cards.
+- Extend admin content/config area for check-in prompts and supportive guidance.
+- Add API helpers in `frontend/lib` following existing cookie-authenticated patterns.
 
-Recommended endpoints:
+## Data and Privacy Controls
 
-- `/health/live` for cheap liveness.
-- `/health/ready` for non-sensitive readiness status.
-- `/api/admin/operations/readiness` for admin-only detailed readiness metadata.
+- Raw optional mood notes remain student-only by default.
+- Adult summaries expose trend labels, recency, student-shareable preferences, and suggested supportive actions only.
+- Admin and operations views must not expose raw notes, raw check-in answers, risk leaderboards, or per-student drilldowns.
+- Public/student copy should remain non-clinical and should not diagnose mood states.
+- High-concern check-ins can suggest SOS/trusted adult contact, but must not automatically trigger SOS.
 
-### SOS Email Readiness
+## Testing Impact
 
-Use a backend-owned SMTP abstraction first. Do not add a frontend email SDK or expose SMTP/API credentials.
+- Backend tests should cover:
+  - student CRUD/submission;
+  - role/relationship authorization;
+  - adult summary privacy boundaries;
+  - admin validation and audit metadata;
+  - no raw notes in adult/admin/operations responses.
+- Frontend tests should cover:
+  - student support-plan/check-in flows;
+  - privacy copy and history/trend display;
+  - teacher/parent summary-only UI;
+  - admin config validation;
+  - no blocked child rendering in protected routes.
 
-Recommended settings:
+## Risks and Non-Goals
 
-- `SOS_EMAIL_PROVIDER=disabled|local_outbox|smtp`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_FROM`
-- TLS/STARTTLS flags
-
-Use Python standard library `smtplib` and `email.message` for v1.1 unless a production email provider is selected later. Add a database-backed delivery/outbox table for metadata-only tracking.
-
-### Role and Privacy UX
-
-No stack addition is needed. Reuse existing auth/session helpers and route metadata. Fix role-specific navigation and student privacy acknowledgement redirect in the authenticated layout and related route guards.
-
-### Nested Admin Content Editing
-
-No new frontend dependency is needed. Reuse React Hook Form, Zod, and `useFieldArray` for nested self-check questions, choices, thresholds, and scenario choices.
-
-Avoid rich text or MDX editors in v1.1. Plain text is safer for school wellbeing content and easier to validate.
-
-### Operational Visibility
-
-No observability vendor is required for v1.1. Reuse `audit_events` and add admin operations endpoints with filtering and pagination. Keep all visibility metadata-only.
-
-## Important Hardening Note
-
-Replace loose or `latest` dependency declarations with pinned compatible ranges or a controlled update policy. Lockfiles help reproducibility, but production hardening should avoid broad version drift in declared dependencies.
-
-## Do Not Add in v1.1
-
-- Frontend email SDKs or exposed provider credentials.
-- Redis/Celery unless guaranteed high-volume async delivery becomes a real requirement.
-- SMS, Zalo, or push notification providers.
-- Session replay or analytics tools that may capture student-sensitive content.
-- Raw audit export, raw chatbot transcript browsing, or risk leaderboard features.
-- OAuth/SSO.
-
+- Do not turn check-ins into diagnosis, monitoring, or discipline workflows.
+- Do not introduce external notification delivery in v1.2.
+- Do not expose raw private notes to adults/admins.
+- Do not add dashboards that rank students by mood/risk.
