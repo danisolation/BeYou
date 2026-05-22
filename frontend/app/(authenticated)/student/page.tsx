@@ -112,6 +112,13 @@ export default function StudentDashboardPage() {
           historyLabel="Xem lịch sử tự kiểm tra"
         />
         <WellbeingEntryCard
+          title="Check-in cảm xúc"
+          body="Ghi lại cảm xúc, năng lượng, căng thẳng và một ghi chú riêng tư nếu em muốn."
+          href="/student/mood-check-ins"
+          historyHref="/student/mood-check-ins/history"
+          historyLabel="Xem lịch sử check-in"
+        />
+        <WellbeingEntryCard
           title="Tình huống luyện tập"
           body="Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."
           href="/student/scenarios"

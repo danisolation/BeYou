@@ -226,6 +226,31 @@ class StudentSupportPlanAdult(Base):
     )
 
 
+class MoodCheckIn(Base):
+    __tablename__ = "mood_check_ins"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    mood_label: Mapped[str] = mapped_column(String(64), nullable=False)
+    energy_level: Mapped[int] = mapped_column(Integer, nullable=False)
+    stress_level: Mapped[int] = mapped_column(Integer, nullable=False)
+    context_tags: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
+    private_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    trend_label: Mapped[str] = mapped_column(String(64), nullable=False)
+    supportive_message: Mapped[str] = mapped_column(Text, nullable=False)
+    suggested_next_action: Mapped[str] = mapped_column(Text, nullable=False)
+    suggest_support_plan: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    suggest_sos: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+
+    __table_args__ = (
+        Index("ix_mood_check_ins_student_created", "student_id", "created_at"),
+        Index("ix_mood_check_ins_trend_label", "trend_label"),
+        Index("ix_mood_check_ins_is_demo", "is_demo"),
+    )
+
+
 class AuditEvent(Base):
     __tablename__ = "audit_events"
 
