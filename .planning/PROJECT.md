@@ -47,17 +47,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Next Milestone Goals
+## Current Milestone: v1.4 Consent-Based Notifications & Access Transparency
 
-No active milestone is currently defined. Use `/gsd-new-milestone` to gather requirements and create the next roadmap.
+**Goal:** Add student-controlled reminder consent, selective mood-note sharing, reason-for-access transparency, and school policy controls without weakening BeYou's privacy-by-default boundaries.
 
-Likely candidates:
+**Target features:**
 
-- Reminder/notification consent flows with quiet hours and opt-in boundaries.
-- Selective private mood-note sharing controlled by students.
-- Reason-for-access controls for sensitive adult/admin access.
-- School/tenant policy customization and operational launch readiness.
-- Production identity/OAuth readiness with a selected school identity provider.
+- Consent-first notification/reminder preferences with quiet hours, pause controls, and clear channel boundaries.
+- Non-clinical in-app mood check-in reminders that never create SOS alerts automatically.
+- Student-controlled selective private mood-note sharing with chosen linked adults.
+- Reason-for-access prompts and metadata-only audit for sensitive adult/admin support access.
+- Admin school policy defaults and metadata-only operations visibility for the new privacy controls.
 
 ## Requirements
 
@@ -96,7 +96,11 @@ Likely candidates:
 
 ### Active
 
-- [ ] Define the next milestone through `/gsd-new-milestone`.
+- [ ] Students can manage notification/reminder consent, quiet hours, pause state, and channel boundaries.
+- [ ] Students can receive supportive in-app mood check-in reminders without diagnosis, pressure, or automatic SOS side effects.
+- [ ] Students can selectively share specific private mood notes or note summaries with chosen linked adults and revoke sharing later.
+- [ ] Teachers, parents, and admins must provide a support-oriented reason before accessing sensitive support summaries where required by policy.
+- [ ] Admins can configure school-level privacy/notification policy defaults and inspect metadata-only operations readiness for v1.4 controls.
 
 ### Out of Scope
 
@@ -141,6 +145,8 @@ Roles:
 - **Authentication**: The current product uses email/password plus seeded demo users; OAuth/SSO is deferred.
 - **Operations visibility**: Admin operations views must stay metadata-only and must not add raw exports, risk leaderboards, or per-student risk drilldowns.
 - **Support-plan and mood privacy**: Adults see only selected support preferences and trend summaries; optional private mood notes remain student-only by default.
+- **Notification consent**: Reminder work must start with explicit consent, quiet hours, and pause controls; external Zalo/SMS/push delivery remains deferred until provider governance, retries, and dead-letter handling are designed.
+- **Sensitive access transparency**: Reason-for-access metadata can explain why support data was viewed, but must not become a raw-content export or punitive surveillance workflow.
 - **UI/UX**: Student-facing screens must feel supportive, calm, mobile-friendly, and avoid medicalized language.
 
 ## Key Decisions
@@ -174,6 +180,7 @@ Roles:
 | Make critical actions narrate consequences and outcomes | SOS, destructive, and config changes should be understandable and accessible without expanding private data access | Validated in Phase 18 |
 | Keep live demo smoke separate from production launch readiness | Public demo usability can pass while production `/health/ready` remains `not_ready` until demo seeding is disabled for real launch | Validated in Phase 19 |
 | Use ESLint flat config for Next 16 | Direct ESLint CLI replaces deprecated/broken `next lint` while preserving strict frontend quality gates | Validated in Phase 20 |
+| Start v1.4 with consent and transparency before external channels | Notification and sensitive-access features need student control, school policy, and audit boundaries before adding Zalo/SMS/push or broader adult access | Active in v1.4 |
 
 ## Known Tech Debt
 
@@ -183,7 +190,7 @@ Roles:
 
 ## Next Milestone Goals
 
-The next milestone is not yet defined. Deferred candidates remain reminder/notification consent flows, selective private-note sharing, reason-for-access controls, school/tenant policy customization, and production identity/OAuth readiness.
+v1.4 is active. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -203,4 +210,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after v1.3 milestone*
+*Last updated: 2026-05-22 after starting v1.4 milestone*

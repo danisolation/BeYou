@@ -1,31 +1,31 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Pilot UX & Demo Readiness
-status: completed
-stopped_at: v1.3 archived; ready for next milestone definition
-last_updated: "2026-05-22T16:50:00+07:00"
+milestone: v1.4
+milestone_name: Consent-Based Notifications & Access Transparency
+status: defining_requirements
+stopped_at: v1.4 started; defining requirements
+last_updated: "2026-05-22T17:10:00+07:00"
 last_activity: 2026-05-22
 progress:
-  total_phases: 5
-  completed_phases: 5
-  total_plans: 5
-  completed_plans: 5
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after archiving v1.3
-**Status:** v1.3 milestone complete; ready for next milestone definition
+**Last updated:** 2026-05-22 after starting v1.4
+**Status:** v1.4 milestone started; defining requirements and roadmap
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** Planning next milestone
+**Current focus:** Consent-based notifications and access transparency
 
 ## Planning Artifacts
 
@@ -34,8 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Roadmap summary | `.planning/ROADMAP.md` | Completed milestones summary; next milestone not started |
-| Active requirements | `.planning/REQUIREMENTS.md` | Not present until next milestone is defined |
+| Roadmap summary | `.planning/ROADMAP.md` | Completed milestones summary; v1.4 roadmap pending |
+| Active requirements | `.planning/REQUIREMENTS.md` | Pending v1.4 definition |
 | v1.3 roadmap archive | `.planning/milestones/v1.3-ROADMAP.md` | Archived |
 | v1.3 requirements archive | `.planning/milestones/v1.3-REQUIREMENTS.md` | Archived |
 | v1.3 audit archive | `.planning/milestones/v1.3-MILESTONE-AUDIT.md` | Passed |
@@ -64,16 +64,17 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-Phase: Next milestone definition
+Phase: Not started (defining requirements)
 Plan: -  
-Status: Ready for `/gsd-new-milestone`
-Last activity: 2026-05-22 - v1.3 archived
+Status: Defining requirements
+Last activity: 2026-05-22 - v1.4 milestone started
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 121 total
 - v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
+- v1.4 requirements: pending definition
 - blocker gaps: 0
 
 ## Key Decisions
@@ -92,6 +93,7 @@ Last activity: 2026-05-22 - v1.3 archived
 | Make critical actions narrate consequences and outcomes | Phase 18 adds confirmation context and success/error states without expanding private data access |
 | Keep live demo smoke separate from production launch readiness | Phase 19 smoke verifies deployed demo usability while `/health/ready` can remain `not_ready` until demo seeding is disabled for real production launch |
 | Use ESLint flat config for Next 16 | Phase 20 replaces broken `next lint` with direct ESLint CLI and Next flat configs |
+| Start v1.4 with consent and transparency before external notification channels | Reminder and access-transparency features need student control, policy defaults, and audit boundaries before adding Zalo/SMS/push |
 
 ## Known Tech Debt
 
@@ -101,7 +103,7 @@ Last activity: 2026-05-22 - v1.3 archived
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: v1.3 archived; ready for next milestone definition
+Stopped at: v1.4 started; requirements and roadmap in progress
 Resume file: none
 
 ## Next Action
