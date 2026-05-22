@@ -39,7 +39,7 @@ def set_session_cookie(response: Response, token: str, settings: Settings) -> No
         max_age=settings.session_max_age_seconds,
         httponly=True,
         secure=settings.session_cookie_secure,
-        samesite="lax",
+        samesite=settings.session_cookie_samesite,
         path="/",
     )
 
@@ -49,7 +49,7 @@ def clear_session_cookie(response: Response, settings: Settings) -> None:
         key=settings.session_cookie_name,
         httponly=True,
         secure=settings.session_cookie_secure,
-        samesite="lax",
+        samesite=settings.session_cookie_samesite,
         path="/",
     )
 
@@ -123,8 +123,11 @@ def require_same_site_mutation(request: Request, settings: Settings) -> None:
     origin = request.headers.get("origin")
     fetch_site = request.headers.get("sec-fetch-site")
     origin_allowed = origin in settings.allowed_frontend_origins
+    if origin is not None:
+        if not origin_allowed:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
+        return
+
     fetch_site_allowed = fetch_site in {"same-origin", "same-site"}
-    if not origin_allowed and not fetch_site_allowed:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
-    if fetch_site in {"cross-site", "none"}:
+    if not fetch_site_allowed:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")

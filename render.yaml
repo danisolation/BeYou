@@ -1,0 +1,42 @@
+databases:
+  - name: beyou-db
+    plan: free
+    databaseName: beyou
+    user: beyou
+
+services:
+  - type: web
+    name: beyou-backend
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -e .
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health/live
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        fromDatabase:
+          name: beyou-db
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: SESSION_COOKIE_NAME
+        value: __Secure-beyou_session
+      - key: SESSION_COOKIE_SECURE
+        value: true
+      - key: SESSION_COOKIE_SAMESITE
+        value: none
+      - key: SESSION_MAX_AGE_SECONDS
+        value: 86400
+      - key: FRONTEND_ORIGIN
+        value: https://beyou.vercel.app
+      - key: FRONTEND_ORIGINS
+        value: https://beyou-frontend.vercel.app
+      - key: ALLOW_DEMO_SEED
+        value: true
+      - key: CHAT_PROVIDER
+        value: fallback
+      - key: SOS_EMAIL_PROVIDER
+        value: disabled

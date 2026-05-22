@@ -216,7 +216,7 @@ def test_admin_user_management(db: OrmSession) -> None:
             "role": "teacher",
             "full_name": "CSRF User",
         },
-        headers={"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "cross-site"},
+        headers={"Origin": "http://evil.example", "Sec-Fetch-Site": "cross-site"},
     )
     after_count = db.scalar(select(func.count()).select_from(User))
     assert cross_site_response.status_code == 403
@@ -312,7 +312,7 @@ def test_admin_link_management(db: OrmSession) -> None:
             "adult_id": str(parent.id),
             "relationship_type": "parent",
         },
-        headers={"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "cross-site"},
+        headers={"Origin": "http://evil.example", "Sec-Fetch-Site": "cross-site"},
     )
     after_count = db.scalar(select(func.count()).select_from(StudentAdultLink))
     assert cross_site_response.status_code == 403

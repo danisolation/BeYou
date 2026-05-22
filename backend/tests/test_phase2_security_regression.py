@@ -198,7 +198,7 @@ def test_cross_site_mutation_rejected(db: OrmSession, client: TestClient) -> Non
             "role": "teacher",
             "full_name": "CSRF User",
         },
-        headers={"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "cross-site"},
+        headers={"Origin": "http://evil.example", "Sec-Fetch-Site": "cross-site"},
     )
     non_admin_response = student_client.post(
         "/api/admin/users",

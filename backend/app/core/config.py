@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", validation_alias="ENVIRONMENT")
     session_cookie_name: str = Field(default="beyou_session", validation_alias="SESSION_COOKIE_NAME")
     session_cookie_secure: bool = Field(default=False, validation_alias="SESSION_COOKIE_SECURE")
+    session_cookie_samesite: str = Field(default="lax", validation_alias="SESSION_COOKIE_SAMESITE")
     session_max_age_seconds: int = Field(default=86400, validation_alias="SESSION_MAX_AGE_SECONDS")
     frontend_origin: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN")
     frontend_origins: str = Field(default="", validation_alias="FRONTEND_ORIGINS")
@@ -41,6 +42,23 @@ class Settings(BaseSettings):
         if not value:
             raise ValueError("SESSION_COOKIE_NAME cannot be empty")
         return value
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        if value.startswith("postgres://"):
+            return f"postgresql+psycopg://{value.removeprefix('postgres://')}"
+        if value.startswith("postgresql://"):
+            return f"postgresql+psycopg://{value.removeprefix('postgresql://')}"
+        return value
+
+    @field_validator("session_cookie_samesite")
+    @classmethod
+    def validate_session_cookie_samesite(cls, value: str) -> str:
+        normalized = value.strip().lower()
+        if normalized not in {"lax", "strict", "none"}:
+            raise ValueError("SESSION_COOKIE_SAMESITE must be lax, strict, or none")
+        return normalized
 
     @field_validator("frontend_origin")
     @classmethod
@@ -90,6 +108,8 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SESSION_COOKIE_NAME values starting with __Host- require SESSION_COOKIE_SECURE=true"
             )
+        if self.session_cookie_samesite == "none" and not self.session_cookie_secure:
+            raise ValueError("SESSION_COOKIE_SAMESITE=none requires SESSION_COOKIE_SECURE=true")
 
 
 @lru_cache

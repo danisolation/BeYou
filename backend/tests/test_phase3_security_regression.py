@@ -174,7 +174,7 @@ def test_admin_content_mutations_require_csrf_and_write_sanitized_audit(
     csrf_response = admin_client.post(
         "/api/admin/content/scenarios",
         json=payload,
-        headers={"Origin": "http://localhost:3000", "Sec-Fetch-Site": "cross-site"},
+        headers={"Origin": "http://evil.example", "Sec-Fetch-Site": "cross-site"},
     )
     create_response = admin_client.post("/api/admin/content/scenarios", json=payload, headers=ORIGIN_HEADERS)
 

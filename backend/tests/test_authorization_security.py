@@ -165,6 +165,41 @@ def test_host_prefix_cookie_response_has_required_attributes(monkeypatch: pytest
     get_settings.cache_clear()
 
 
+def test_cross_site_cookie_configuration_requires_secure_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    get_settings.cache_clear()
+    monkeypatch.setenv("SESSION_COOKIE_NAME", "__Secure-beyou_session")
+    monkeypatch.setenv("SESSION_COOKIE_SECURE", "true")
+    monkeypatch.setenv("SESSION_COOKIE_SAMESITE", "none")
+    settings = get_settings()
+    response = Response()
+
+    set_session_cookie(response, "opaque-token", settings)
+
+    cookie = response.headers["set-cookie"].lower()
+    assert "__secure-beyou_session=" in cookie
+    assert "secure" in cookie
+    assert "httponly" in cookie
+    assert "samesite=none" in cookie
+
+    get_settings.cache_clear()
+    monkeypatch.setenv("SESSION_COOKIE_SECURE", "false")
+    with pytest.raises(ValueError):
+        get_settings()
+    get_settings.cache_clear()
+
+
+def test_render_postgres_url_uses_psycopg_driver(monkeypatch: pytest.MonkeyPatch) -> None:
+    get_settings.cache_clear()
+    monkeypatch.setenv("DATABASE_URL", "postgresql://user:pass@host:5432/db")
+
+    settings = get_settings()
+
+    assert settings.database_url == "postgresql+psycopg://user:pass@host:5432/db"
+    get_settings.cache_clear()
+
+
 def test_csrf_helper_rejects_invalid_origin() -> None:
     request = Request(
         {
@@ -191,6 +226,27 @@ def test_csrf_helper_accepts_configured_extra_frontend_origin(monkeypatch: pytes
             "method": "POST",
             "path": "/api/auth/login",
             "headers": [(b"origin", b"http://127.0.0.1:3003")],
+        }
+    )
+
+    require_same_site_mutation(request, get_settings())
+    get_settings.cache_clear()
+
+
+def test_csrf_helper_accepts_allowed_cross_site_frontend_origin(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    get_settings.cache_clear()
+    monkeypatch.setenv("FRONTEND_ORIGIN", "https://beyou.vercel.app")
+    request = Request(
+        {
+            "type": "http",
+            "method": "POST",
+            "path": "/api/auth/login",
+            "headers": [
+                (b"origin", b"https://beyou.vercel.app"),
+                (b"sec-fetch-site", b"cross-site"),
+            ],
         }
     )
 
