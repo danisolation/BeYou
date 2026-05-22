@@ -19,6 +19,46 @@ export type OperationReadinessSummary = {
   }>;
 };
 
+export type DemoSeedRoleStatus = {
+  role: string;
+  email: string;
+  present: boolean;
+  active: boolean;
+  is_demo: boolean;
+};
+
+export type DemoSeedSummary = {
+  status: "pass" | "warn" | "fail";
+  summary: string;
+  remediation: string | null;
+  allow_demo_seed: boolean;
+  roles: DemoSeedRoleStatus[];
+  active_link_count: number;
+  published_self_check_count: number;
+  published_scenario_count: number;
+  published_mood_config_count: number;
+};
+
+export type ConnectivitySummary = {
+  frontend_origin: string;
+  allowed_origin_count: number;
+  health_live_path: string;
+  health_ready_path: string;
+  session_cookie_name: string;
+  session_cookie_secure: boolean;
+  session_cookie_samesite: string;
+  credentialed_cors_methods: string[];
+};
+
+export type ProductionSmokeChecklistItem = {
+  key: string;
+  label: string;
+  status: string;
+  command: string | null;
+  evidence: string;
+  remediation: string | null;
+};
+
 export type SosEmailDeliveryItem = {
   id: string;
   alert_id: string;
@@ -51,6 +91,9 @@ export type AdminOperationsDashboard = {
   generated_at: string;
   privacy_notes: string[];
   readiness: OperationReadinessSummary;
+  demo_seed: DemoSeedSummary;
+  connectivity: ConnectivitySummary;
+  production_smoke: ProductionSmokeChecklistItem[];
   sos_email: {
     total: number;
     by_status: OperationCountBucket[];

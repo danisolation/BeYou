@@ -7,15 +7,39 @@ from typing import Any
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.db.models import AuditEvent, SosNotificationDelivery, User, utc_now
+from app.core.config import Settings
+from app.db.models import (
+    AccountStatus,
+    AuditEvent,
+    ContentStatus,
+    LinkStatus,
+    MoodCheckInConfig,
+    Scenario,
+    SelfCheckTest,
+    SosNotificationDelivery,
+    StudentAdultLink,
+    User,
+    UserRole,
+    utc_now,
+)
+from app.seeds.demo_seed import (
+    DEMO_ADMIN_EMAIL,
+    DEMO_PARENT_EMAIL,
+    DEMO_STUDENT_EMAIL,
+    DEMO_TEACHER_EMAIL,
+)
 from app.schemas.admin_operations import (
     AdminOperationsDashboardResponse,
     AuditEventItem,
     AuditEventSummary,
     AuditFilterSummary,
+    ConnectivitySummary,
+    DemoSeedRoleStatus,
+    DemoSeedSummary,
     OperationCountBucket,
     OperationReadinessAttentionCheck,
     OperationReadinessSummary,
+    ProductionSmokeChecklistItem,
     SosEmailDeliveryItem,
     SosEmailDeliverySummary,
 )
@@ -62,6 +86,15 @@ V1_2_RESOURCE_LABELS = {
     "adult_support_summary": "Adult summaries",
     "mood_checkin_config": "Mood config",
 }
+
+EXPECTED_DEMO_ROLES = [
+    (UserRole.STUDENT.value, DEMO_STUDENT_EMAIL),
+    (UserRole.TEACHER.value, DEMO_TEACHER_EMAIL),
+    (UserRole.PARENT.value, DEMO_PARENT_EMAIL),
+    (UserRole.ADMIN.value, DEMO_ADMIN_EMAIL),
+]
+
+PRODUCTION_SMOKE_COMMAND = "npm --prefix frontend run smoke:production"
 
 
 def _bucket(key: str, count: int, label_map: Mapping[str, str] | None = None) -> OperationCountBucket:
@@ -228,6 +261,142 @@ def _v1_2_audit_buckets(db: OrmSession) -> list[OperationCountBucket]:
     ]
 
 
+def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
+    roles: list[DemoSeedRoleStatus] = []
+    for role, email in EXPECTED_DEMO_ROLES:
+        user = db.scalar(select(User).where(User.email == email))
+        roles.append(
+            DemoSeedRoleStatus(
+                role=role,
+                email=email,
+                present=user is not None,
+                active=user is not None and user.status == AccountStatus.ACTIVE.value,
+                is_demo=user is not None and user.is_demo,
+            )
+        )
+
+    active_link_count = db.scalar(
+        select(func.count())
+        .select_from(StudentAdultLink)
+        .where(
+            StudentAdultLink.is_demo.is_(True),
+            StudentAdultLink.status == LinkStatus.ACTIVE.value,
+        )
+    ) or 0
+    published_self_check_count = db.scalar(
+        select(func.count())
+        .select_from(SelfCheckTest)
+        .where(
+            SelfCheckTest.is_demo.is_(True),
+            SelfCheckTest.status == ContentStatus.PUBLISHED.value,
+            SelfCheckTest.is_active.is_(True),
+        )
+    ) or 0
+    published_scenario_count = db.scalar(
+        select(func.count())
+        .select_from(Scenario)
+        .where(Scenario.is_demo.is_(True), Scenario.status == ContentStatus.PUBLISHED.value)
+    ) or 0
+    published_mood_config_count = db.scalar(
+        select(func.count())
+        .select_from(MoodCheckInConfig)
+        .where(
+            MoodCheckInConfig.is_demo.is_(True),
+            MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
+        )
+    ) or 0
+
+    missing_roles = [role.role for role in roles if not role.present or not role.active or not role.is_demo]
+    content_ready = (
+        active_link_count >= 2
+        and published_self_check_count > 0
+        and published_scenario_count > 0
+        and published_mood_config_count > 0
+    )
+    if missing_roles:
+        return DemoSeedSummary(
+            status="fail",
+            summary="Seeded demo accounts are missing, inactive, or not marked as demo.",
+            remediation="Run the demo seed command and verify the four public demo roles before a live walkthrough.",
+            allow_demo_seed=settings.allow_demo_seed,
+            roles=roles,
+            active_link_count=active_link_count,
+            published_self_check_count=published_self_check_count,
+            published_scenario_count=published_scenario_count,
+            published_mood_config_count=published_mood_config_count,
+        )
+    if not content_ready:
+        return DemoSeedSummary(
+            status="warn",
+            summary="Demo accounts are ready, but some seeded support content or links are missing.",
+            remediation="Re-run the demo seed command and check content/link metadata before the pilot demo.",
+            allow_demo_seed=settings.allow_demo_seed,
+            roles=roles,
+            active_link_count=active_link_count,
+            published_self_check_count=published_self_check_count,
+            published_scenario_count=published_scenario_count,
+            published_mood_config_count=published_mood_config_count,
+        )
+    return DemoSeedSummary(
+        status="pass",
+        summary="Seeded demo roles, links, and walkthrough content are present as safe metadata.",
+        remediation=None,
+        allow_demo_seed=settings.allow_demo_seed,
+        roles=roles,
+        active_link_count=active_link_count,
+        published_self_check_count=published_self_check_count,
+        published_scenario_count=published_scenario_count,
+        published_mood_config_count=published_mood_config_count,
+    )
+
+
+def _connectivity_summary(settings: Settings) -> ConnectivitySummary:
+    return ConnectivitySummary(
+        frontend_origin=settings.frontend_origin,
+        allowed_origin_count=len(settings.allowed_frontend_origins),
+        health_live_path="/health/live",
+        health_ready_path="/health/ready",
+        session_cookie_name=settings.session_cookie_name,
+        session_cookie_secure=settings.session_cookie_secure,
+        session_cookie_samesite=settings.session_cookie_samesite,
+        credentialed_cors_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    )
+
+
+def _production_smoke_checklist() -> list[ProductionSmokeChecklistItem]:
+    return [
+        ProductionSmokeChecklistItem(
+            key="backend_health",
+            label="Backend live and readiness endpoints",
+            status="covered",
+            command=PRODUCTION_SMOKE_COMMAND,
+            evidence="Smoke script checks /health/live and /health/ready without secrets.",
+        ),
+        ProductionSmokeChecklistItem(
+            key="cors_preflight",
+            label="Credentialed CORS preflight",
+            status="covered",
+            command=PRODUCTION_SMOKE_COMMAND,
+            evidence="Smoke script checks allowed Origin and credentials headers for login preflight.",
+            remediation="Verify FRONTEND_ORIGIN/FRONTEND_ORIGINS exactly match the deployed frontend URL.",
+        ),
+        ProductionSmokeChecklistItem(
+            key="login_session_cookie",
+            label="Demo login and session cookie",
+            status="covered",
+            command=PRODUCTION_SMOKE_COMMAND,
+            evidence="Smoke script logs in with seeded demo roles and verifies a session cookie is issued.",
+        ),
+        ProductionSmokeChecklistItem(
+            key="role_dashboards",
+            label="Role dashboard reachability",
+            status="covered",
+            command=PRODUCTION_SMOKE_COMMAND,
+            evidence="Smoke script checks student, teacher, parent, and admin dashboard routes exist.",
+        ),
+    ]
+
+
 def record_readiness_audit(db: OrmSession, *, actor: User, report: ReadinessReport, resource_type: str) -> None:
     fail_count = sum(1 for check in report.checks if check.status == "fail")
     warn_count = sum(1 for check in report.checks if check.status == "warn")
@@ -256,6 +425,7 @@ def build_operations_dashboard(
     db: OrmSession,
     *,
     readiness_report: ReadinessReport,
+    settings: Settings,
     start_at: datetime | None = None,
     end_at: datetime | None = None,
     actor_role: str | None = None,
@@ -268,6 +438,9 @@ def build_operations_dashboard(
         generated_at=utc_now(),
         privacy_notes=PRIVACY_NOTES,
         readiness=_readiness_summary(readiness_report),
+        demo_seed=_demo_seed_summary(db, settings),
+        connectivity=_connectivity_summary(settings),
+        production_smoke=_production_smoke_checklist(),
         sos_email=_delivery_summary(db, limit=limit),
         v1_2_audit=_v1_2_audit_buckets(db),
         audit=_audit_summary(

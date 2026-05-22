@@ -30,6 +30,50 @@ const operationsDashboard = {
       },
     ],
   },
+  demo_seed: {
+    status: "pass",
+    summary: "Seeded demo roles, links, and walkthrough content are present as safe metadata.",
+    remediation: null,
+    allow_demo_seed: true,
+    roles: [
+      { role: "student", email: "student.demo@beyou.local", present: true, active: true, is_demo: true },
+      { role: "teacher", email: "teacher.demo@beyou.local", present: true, active: true, is_demo: true },
+      { role: "parent", email: "parent.demo@beyou.local", present: true, active: true, is_demo: true },
+      { role: "admin", email: "admin.demo@beyou.local", present: true, active: true, is_demo: true },
+    ],
+    active_link_count: 2,
+    published_self_check_count: 2,
+    published_scenario_count: 2,
+    published_mood_config_count: 1,
+  },
+  connectivity: {
+    frontend_origin: "https://beyou-frontend.vercel.app",
+    allowed_origin_count: 2,
+    health_live_path: "/health/live",
+    health_ready_path: "/health/ready",
+    session_cookie_name: "__Host-beyou_session",
+    session_cookie_secure: true,
+    session_cookie_samesite: "none",
+    credentialed_cors_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  },
+  production_smoke: [
+    {
+      key: "backend_health",
+      label: "Backend live and readiness endpoints",
+      status: "covered",
+      command: "npm --prefix frontend run smoke:production",
+      evidence: "Smoke script checks /health/live and /health/ready without secrets.",
+      remediation: null,
+    },
+    {
+      key: "cors_preflight",
+      label: "Credentialed CORS preflight",
+      status: "covered",
+      command: "npm --prefix frontend run smoke:production",
+      evidence: "Smoke script checks allowed Origin and credentials headers for login preflight.",
+      remediation: "Verify deployed origins.",
+    },
+  ],
   sos_email: {
     total: 1,
     by_status: [{ key: "queued", label: "Đang chờ", count: 1 }],
@@ -52,6 +96,10 @@ const operationsDashboard = {
       },
     ],
   },
+  v1_2_audit: [
+    { key: "support_plan", label: "Support plans", count: 1 },
+    { key: "mood_check_in", label: "Mood check-ins", count: 2 },
+  ],
   audit: {
     total_matching: 1,
     filters: {
@@ -148,6 +196,11 @@ describe("Phase 11 operations visibility UI", () => {
 
     expect(await screen.findByText("Vận hành metadata-only")).toBeInTheDocument();
     expect(screen.getByText("Readiness")).toBeInTheDocument();
+    expect(screen.getByText("Demo seed readiness")).toBeInTheDocument();
+    expect(screen.getByText("Connectivity & session contract")).toBeInTheDocument();
+    expect(screen.getByText("Production smoke checklist")).toBeInTheDocument();
+    expect(screen.getAllByText("npm --prefix frontend run smoke:production")).toHaveLength(2);
+    expect(screen.getByText(/Không hiển thị cookie value hoặc secret/)).toBeInTheDocument();
     expect(screen.getByText("SOS email attempts")).toBeInTheDocument();
     expect(screen.getByText("Audit events")).toBeInTheDocument();
     expect(screen.getByText("local_outbox · queued · teacher")).toBeInTheDocument();

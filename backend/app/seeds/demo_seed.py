@@ -11,6 +11,7 @@ from app.db.models import (
     AccountStatus,
     ContentStatus,
     LinkStatus,
+    MoodCheckInConfig,
     RiskStateLabel,
     Scenario,
     ScenarioAttempt,
@@ -31,6 +32,7 @@ from app.db.models import (
 )
 from app.db.session import SessionLocal
 from app.services.links import create_link
+from app.services.mood_checkins import CONTEXT_TAG_OPTIONS, MOOD_OPTIONS
 from app.services.self_checks import submit_self_check_attempt
 from app.services.sos import create_sos_alert
 from app.schemas.sos import SosAlertCreate
@@ -332,6 +334,24 @@ def _upsert_scenario_content(db: OrmSession, seed: dict) -> Scenario:
     return scenario
 
 
+def _upsert_mood_checkin_config(db: OrmSession) -> MoodCheckInConfig:
+    config = db.scalar(select(MoodCheckInConfig).where(MoodCheckInConfig.name == "Demo supportive check-in"))
+    if config is None:
+        config = MoodCheckInConfig(name="Demo supportive check-in")
+        db.add(config)
+    config.status = ContentStatus.PUBLISHED.value
+    config.student_prompt = "Dành một phút gọi tên cảm xúc hiện tại để chọn một bước chăm sóc nhỏ."
+    config.adult_guidance = "Nếu học sinh chọn chia sẻ, bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào."
+    config.mood_options = [option.model_dump() for option in MOOD_OPTIONS]
+    config.context_tags = [tag.model_dump() for tag in CONTEXT_TAG_OPTIONS]
+    config.sort_order = 0
+    config.updated_by_id = None
+    config.is_demo = True
+    db.commit()
+    db.refresh(config)
+    return config
+
+
 def _choice_answers_for_score(test: SelfCheckTest, target_score: int) -> list[dict]:
     questions = sorted(test.questions, key=lambda question: question.sort_order)
     answers = []
@@ -435,6 +455,7 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     tests = [_upsert_self_check_content(db, seed) for seed in SELF_CHECK_SEEDS]
     for seed in SCENARIO_SEEDS:
         _upsert_scenario_content(db, seed)
+    _upsert_mood_checkin_config(db)
     _seed_self_check_attempts(db, student=student, tests=tests)
     _seed_sos_workflow(db, student=student, settings=settings)
     return True

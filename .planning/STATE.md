@@ -2,23 +2,23 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Pilot UX & Demo Readiness
-status: phase_18_complete
-stopped_at: Phase 18 complete; ready for Phase 19
-last_updated: "2026-05-22T16:05:00+07:00"
+status: phase_19_complete
+stopped_at: Phase 19 complete; ready for Phase 20
+last_updated: "2026-05-22T16:28:04+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 5
-  completed_phases: 3
-  total_plans: 3
-  completed_plans: 3
-  percent: 60
+  completed_phases: 4
+  total_plans: 4
+  completed_plans: 4
+  percent: 80
 ---
 
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing Phase 18
-**Status:** Phase 18 complete; ready for Phase 19
+**Last updated:** 2026-05-22 after completing Phase 19
+**Status:** Phase 19 complete; ready for Phase 20
 
 ## Project Reference
 
@@ -59,16 +59,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-Phase: 19 - Demo/Pilot Operations Readiness
+Phase: 20 - Frontend Quality & Regression Closure
 Plan: -  
 Status: Ready for discussion or planning
-Last activity: 2026-05-22 - Phase 18 completed
+Last activity: 2026-05-22 - Phase 19 completed
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 101 total
 - v1.2 requirements archived: 24/24 complete
-- v1.3 requirements: 20 total, 20/20 mapped, 14 complete
+- v1.3 requirements: 20 total, 20/20 mapped, 16 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -85,6 +85,7 @@ Last activity: 2026-05-22 - Phase 18 completed
 | Use public landing plus one-step demo role entry | Phase 16 preserves manual login while making evaluator entry faster |
 | Use global responsive/accessibility guardrails before per-page polish | Phase 17 reduces overflow/focus risks across all current and future screens |
 | Make critical actions narrate consequences and outcomes | Phase 18 adds confirmation context and success/error states without expanding private data access |
+| Keep live demo smoke separate from production launch readiness | Phase 19 smoke verifies deployed demo usability while `/health/ready` can remain `not_ready` until demo seeding is disabled for real production launch |
 
 ## Known Tech Debt
 
@@ -94,7 +95,7 @@ Last activity: 2026-05-22 - Phase 18 completed
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: v1.2 archived and tagged; ready to start the next milestone
+Stopped at: Phase 19 completed; ready to start Phase 20
 Resume file: none
 
 ## Next Action
@@ -102,5 +103,5 @@ Resume file: none
 Run:
 
 ```text
-/gsd-discuss-phase 19
+/gsd-discuss-phase 20
 ```

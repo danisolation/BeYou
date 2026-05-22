@@ -31,9 +31,9 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Demo/Pilot Operations
 
-- [ ] **OPS-01**: Operators and admins can verify demo seed state, backend/frontend connectivity, and readiness without exposing secrets or private student data.
+- [x] **OPS-01**: Operators and admins can verify demo seed state, backend/frontend connectivity, and readiness without exposing secrets or private student data.
 - [x] **OPS-02**: Demo runbook or in-app guidance explains live URLs, demo accounts, roles, and the expected walkthrough path.
-- [ ] **OPS-03**: Production smoke checks cover login, session cookie behavior, CORS, and role dashboards.
+- [x] **OPS-03**: Production smoke checks cover login, session cookie behavior, CORS, and role dashboards.
 
 ### Quality & Regression
 
@@ -95,9 +95,9 @@ Roadmap mapping is filled during roadmap creation.
 | UX-02 | Phase 18 | Complete |
 | UX-03 | Phase 18 | Complete |
 | UX-04 | Phase 17 | Complete |
-| OPS-01 | Phase 19 | Pending |
+| OPS-01 | Phase 19 | Complete |
 | OPS-02 | Phase 16 | Complete |
-| OPS-03 | Phase 19 | Pending |
+| OPS-03 | Phase 19 | Complete |
 | QUAL-01 | Phase 20 | Pending |
 | QUAL-02 | Phase 20 | Pending |
 | QUAL-03 | Phase 20 | Pending |
@@ -110,4 +110,4 @@ Roadmap mapping is filled during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 18 completion*
+*Last updated: 2026-05-22 after Phase 19 completion*

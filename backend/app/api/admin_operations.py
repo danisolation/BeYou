@@ -59,6 +59,7 @@ def get_admin_operations_dashboard(
     dashboard = build_operations_dashboard(
         db,
         readiness_report=report,
+        settings=settings,
         start_at=start_at,
         end_at=end_at,
         actor_role=actor_role,

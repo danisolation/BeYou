@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 import pytest
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session as OrmSession
@@ -5,10 +7,12 @@ from sqlalchemy.orm import Session as OrmSession
 from app.core.config import get_settings
 from app.db.models import (
     AuditEvent,
+    ContentStatus,
     SosAlert,
     SosStatusEvent,
     InAppNotification,
     LinkStatus,
+    MoodCheckInConfig,
     PrivacyAcknowledgement,
     Scenario,
     ScenarioAttempt,
@@ -35,6 +39,8 @@ from app.seeds.demo_seed import (
     DEMO_TEACHER_EMAIL,
     seed_demo_data,
 )
+from app.schemas.readiness import ReadinessReport
+from app.services.admin_operations import build_operations_dashboard
 
 
 def _clean_database() -> None:
@@ -44,6 +50,7 @@ def _clean_database() -> None:
             ChatMessage,
             ChatThread,
             ChatbotSafetyConfig,
+            MoodCheckInConfig,
             InAppNotification,
             SosStatusEvent,
             SosAlert,
@@ -120,4 +127,28 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
     assert len(links) == 2
     assert {link.relationship_type for link in links} == {"teacher", "parent"}
     assert all(link.is_demo is True for link in links)
+
+    mood_config = db.scalar(select(MoodCheckInConfig).where(MoodCheckInConfig.is_demo.is_(True)))
+    assert mood_config is not None
+    assert mood_config.status == ContentStatus.PUBLISHED.value
+    assert len(mood_config.mood_options) == 6
+    assert len(mood_config.context_tags) == 7
+
+    dashboard = build_operations_dashboard(
+        db,
+        readiness_report=ReadinessReport(
+            status="ready",
+            generated_at=datetime.now(timezone.utc),
+            checks=[],
+        ),
+        settings=settings,
+    )
+    assert dashboard.demo_seed.status == "pass"
+    assert dashboard.demo_seed.active_link_count == 2
+    assert dashboard.demo_seed.published_self_check_count > 0
+    assert dashboard.demo_seed.published_scenario_count > 0
+    assert dashboard.demo_seed.published_mood_config_count == 1
+    assert dashboard.connectivity.health_live_path == "/health/live"
+    assert dashboard.connectivity.session_cookie_name == settings.session_cookie_name
+    assert all(item.command == "npm --prefix frontend run smoke:production" for item in dashboard.production_smoke)
     get_settings.cache_clear()

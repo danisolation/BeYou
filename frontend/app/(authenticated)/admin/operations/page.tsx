@@ -6,8 +6,11 @@ import {
   type AdminOperationsDashboard,
   type AdminOperationsFilters,
   type AuditEventItem,
+  type ConnectivitySummary,
+  type DemoSeedSummary,
   getAdminOperationsDashboard,
   type OperationCountBucket,
+  type ProductionSmokeChecklistItem,
   type SosEmailDeliveryItem,
 } from "@/lib/admin-operations-api";
 
@@ -204,9 +207,21 @@ export default function AdminOperationsPage() {
         <>
           <div className="grid gap-4 md:grid-cols-3">
             <MetricCard title="Readiness" value={dashboard.readiness.status} description="Trạng thái vận hành tổng thể." />
+            <MetricCard title="Demo seed" value={dashboard.demo_seed.status} description="Vai trò demo, liên kết và nội dung walkthrough." />
             <MetricCard title="SOS email attempts" value={dashboard.sos_email.total} description="Tổng attempt email SOS metadata." />
             <MetricCard title="Audit matching" value={dashboard.audit.total_matching} description="Số audit event khớp bộ lọc." />
           </div>
+          <section className="grid gap-4 lg:grid-cols-2">
+            <Panel title="Demo seed readiness" description="Kiểm tra tài khoản demo, liên kết hỗ trợ và nội dung seed bằng metadata an toàn.">
+              <DemoSeedPanel demoSeed={dashboard.demo_seed} />
+            </Panel>
+            <Panel title="Connectivity & session contract" description="Xác nhận frontend/backend, CORS credentialed và cookie session theo cấu hình đã mask.">
+              <ConnectivityPanel connectivity={dashboard.connectivity} />
+            </Panel>
+          </section>
+          <Panel title="Production smoke checklist" description="Các bước smoke production có thể chạy mà không xuất secret hoặc dữ liệu riêng tư.">
+            <SmokeChecklist items={dashboard.production_smoke} />
+          </Panel>
           <Panel title="v1.2 support metadata" description="Support plan, mood check-in, adult summary và admin config theo count metadata an toàn.">
             <BucketList buckets={dashboard.v1_2_audit ?? []} emptyCopy="Chưa có audit v1.2." />
           </Panel>
@@ -253,6 +268,105 @@ export default function AdminOperationsPage() {
         </>
       ) : null}
     </section>
+  );
+}
+
+function statusClass(status: string) {
+  if (status === "pass" || status === "covered") {
+    return "border-accent bg-secondary text-accent-dark";
+  }
+  if (status === "warn") {
+    return "border-warning bg-[#FFF8E8] text-[#6B4A00]";
+  }
+  return "border-[#F3C0C0] bg-white text-red-700";
+}
+
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <span className={`inline-flex rounded-full border px-3 py-1 text-label font-semibold ${statusClass(status)}`}>
+      {status}
+    </span>
+  );
+}
+
+function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl bg-secondary p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={demoSeed.status} />
+          <p className="text-body">{demoSeed.summary}</p>
+        </div>
+        {demoSeed.remediation ? <p className="mt-2 text-label">{demoSeed.remediation}</p> : null}
+        <p className="mt-3 text-label">
+          ALLOW_DEMO_SEED: {demoSeed.allow_demo_seed ? "enabled" : "disabled"} · Active demo links:{" "}
+          {demoSeed.active_link_count}
+        </p>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {demoSeed.roles.map((role) => (
+          <article key={role.role} className="rounded-2xl border border-[#D7EFE8] p-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-semibold">{role.role}</h3>
+              <StatusBadge status={role.present && role.active && role.is_demo ? "pass" : "fail"} />
+            </div>
+            <p className="mt-2 break-all text-label">{role.email}</p>
+            <p className="mt-2 text-label">
+              Present: {role.present ? "yes" : "no"} · Active: {role.active ? "yes" : "no"} · Demo:{" "}
+              {role.is_demo ? "yes" : "no"}
+            </p>
+          </article>
+        ))}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <MetricCard title="Self-checks" value={demoSeed.published_self_check_count} description="Published demo tests." />
+        <MetricCard title="Scenarios" value={demoSeed.published_scenario_count} description="Published demo scenarios." />
+        <MetricCard title="Mood configs" value={demoSeed.published_mood_config_count} description="Published demo config." />
+      </div>
+    </div>
+  );
+}
+
+function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary }) {
+  return (
+    <div className="space-y-3 rounded-2xl bg-secondary p-4 text-body">
+      <p>
+        <span className="font-semibold">Frontend origin:</span> {connectivity.frontend_origin}
+      </p>
+      <p>
+        <span className="font-semibold">Allowed origins:</span> {connectivity.allowed_origin_count}
+      </p>
+      <p>
+        <span className="font-semibold">Health paths:</span> {connectivity.health_live_path} ·{" "}
+        {connectivity.health_ready_path}
+      </p>
+      <p>
+        <span className="font-semibold">Session cookie:</span> {connectivity.session_cookie_name} · Secure{" "}
+        {connectivity.session_cookie_secure ? "on" : "off"} · SameSite {connectivity.session_cookie_samesite}
+      </p>
+      <p className="text-label">
+        Credentialed methods: {connectivity.credentialed_cors_methods.join(", ")}. Không hiển thị cookie value hoặc
+        secret.
+      </p>
+    </div>
+  );
+}
+
+function SmokeChecklist({ items }: { items: ProductionSmokeChecklistItem[] }) {
+  return (
+    <div className="space-y-3">
+      {items.map((item) => (
+        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-semibold">{item.label}</h3>
+            <StatusBadge status={item.status} />
+          </div>
+          <p className="mt-2 text-body">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+        </article>
+      ))}
+    </div>
   );
 }
 
