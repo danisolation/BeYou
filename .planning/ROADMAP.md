@@ -1,8 +1,8 @@
 # Roadmap: BeYou - Tu Tin La Minh
 
-**Created:** 2026-05-22  
-**Granularity:** Coarse  
-**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
+**Created:** 2026-05-22
+**Granularity:** Coarse
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency
 **Coverage:** 29/29 v1.4 requirements mapped; 0/29 complete
 
 ## Completed Milestones

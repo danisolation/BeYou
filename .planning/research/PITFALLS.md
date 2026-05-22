@@ -1,6 +1,6 @@
 # Pitfalls Research: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency
 **Researched:** 2026-05-22
 
 ## Summary

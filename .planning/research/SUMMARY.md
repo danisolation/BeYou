@@ -1,6 +1,6 @@
 # Research Summary: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Milestone:** v1.4 Consent-Based Notifications & Access Transparency  
+**Milestone:** v1.4 Consent-Based Notifications & Access Transparency
 **Synthesized:** 2026-05-22
 
 ## Stack Additions

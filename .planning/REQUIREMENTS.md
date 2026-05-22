@@ -1,6 +1,6 @@
 # Requirements: BeYou v1.4 Consent-Based Notifications & Access Transparency
 
-**Defined:** 2026-05-22  
+**Defined:** 2026-05-22
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 
 ## v1.4 Requirements
