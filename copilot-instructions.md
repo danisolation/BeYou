@@ -5,18 +5,40 @@
 
 BeYou is a web app for Vietnamese high-school students to recognize peer pressure, check mental well-being through short assessments, practice handling school situations, chat with a basic supportive counseling bot, and send SOS alerts when they feel unsafe or at risk.
 
-The product serves students first, with teacher, parent, and admin portals for support, monitoring, content management, and safe escalation. v1 is an MVP demo with complete core flows, but the system must be designed with production-grade privacy and authorization because it may handle real student mental-health data.
+The product serves students first. Teacher, parent, and admin portals support escalation, content management, aggregate reporting, and operational visibility without turning sensitive student data into surveillance. v1.1 is shipped, audited, archived, and ready for the next milestone.
 
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 
+### User Preferences
+
+- Communicate in Vietnamese.
+- Run autonomously by default; the user delegates design and implementation decisions to the agent.
+- Never end after a GSD deliverable without asking for the next action via `ask_user`.
+- Preserve GSD workflow state, atomic commits, audit/verification artifacts, and next-step prompts.
+
+### Current State
+
+- **Latest shipped milestone:** v1.1 Production Hardening & Support Polish (2026-05-22)
+- **Cumulative scope:** 11 phases, 41 plans, 77/77 requirements satisfied.
+- **Latest audit:** `.planning/milestones/v1.1-MILESTONE-AUDIT.md` passed with 30/30 requirements, 5/5 phases, and 4/4 integration flows.
+- **Current planning status:** no active milestone; next milestone should start with `/gsd-new-milestone` and continue from Phase 12.
+
+### Shipped Capabilities
+
+- Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, and demo-data separation.
+- Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
+- Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, and confirmed SOS alerts.
+- Adult support flows: linked teacher/parent views, summary-only wellbeing support, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
+- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, privacy-limited aggregate reports, readiness, and metadata-only operations dashboard.
+
 ### Constraints
 
-- **Backend stack**: Python backend is required by the user.
-- **Scope**: v1 is an MVP demo with complete core flows, not every production extension.
-- **Data sensitivity**: Real student psychological data may be entered, so privacy, role authorization, and secure defaults are required from the start.
+- **Backend stack**: Python backend is required.
+- **Data sensitivity**: Real student psychological data may be entered, so privacy, role authorization, and secure defaults are required.
 - **Chatbot safety**: The chatbot must not claim to be a therapist or professional diagnosis tool. High-risk messages must trigger escalation guidance and SOS suggestions.
-- **SOS delivery**: v1 SOS is in-app notification and status handling, not external email/Zalo/SMS.
-- **Authentication**: v1 uses email/password plus seeded demo users; OAuth/SSO is deferred.
+- **SOS delivery**: In-app SOS is canonical. Email delivery is optional, backend-owned, best-effort, and must not expose raw student content or provider credentials.
+- **Operations visibility**: Admin operations views must stay metadata-only and must not add raw exports, risk leaderboards, or per-student risk drilldowns.
+- **Authentication**: Current product uses email/password plus seeded demo users; OAuth/SSO is deferred.
 - **UI/UX**: Student-facing screens must feel supportive, calm, mobile-friendly, and avoid heavy medicalized language.
 <!-- GSD:project-end -->
 
@@ -138,13 +160,19 @@ The product serves students first, with teacher, parent, and admin portals for s
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+- Public health/readiness exposes only non-sensitive overall status; admin readiness carries remediation details.
+- External notification work must be backend-owned, failure-isolated, and metadata-only by default.
+- Protected layouts should block child rendering before redirecting privacy-blocked or wrong-role users.
+- Operations surfaces must use explicit sanitizers and frame themselves as support metadata, not student monitoring.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
-Architecture not yet mapped. Follow existing patterns found in the codebase.
+- Backend: FastAPI routers are mounted under `/api`; router paths should not double-prefix `/api`.
+- Database: PostgreSQL via SQLAlchemy/Alembic; historical wellbeing attempts must remain interpretable after content edits via snapshots/version-safe behavior.
+- Auth: cookie-authenticated frontend calls; no browser token storage.
+- Privacy boundary: raw self-check answers and chatbot transcripts remain student-owned by default; adults see summaries and SOS workflow state only.
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->
