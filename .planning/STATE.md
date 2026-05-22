@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: none
-milestone_name: none
-status: ready_for_next_milestone
-stopped_at: v1.2 archived and tagged; ready to start a new milestone
-last_updated: "2026-05-22T13:30:00+07:00"
+milestone: v1.3
+milestone_name: Pilot UX & Demo Readiness
+status: defining_requirements
+stopped_at: v1.3 milestone started; defining requirements and roadmap
+last_updated: "2026-05-22T15:10:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 0
@@ -17,15 +17,15 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after archiving v1.2
-**Status:** Ready for next milestone
+**Last updated:** 2026-05-22 after starting v1.3
+**Status:** Defining requirements
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** Planning next milestone
+**Current focus:** v1.3 Pilot UX & Demo Readiness
 
 ## Planning Artifacts
 
@@ -34,7 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Current roadmap | `.planning/ROADMAP.md` | Collapsed archive index |
+| Current roadmap | `.planning/ROADMAP.md` | Being defined for v1.3 |
+| Active requirements | `.planning/REQUIREMENTS.md` | Being defined for v1.3 |
 | v1.2 roadmap archive | `.planning/milestones/v1.2-ROADMAP.md` | Archived |
 | v1.2 requirements archive | `.planning/milestones/v1.2-REQUIREMENTS.md` | Archived |
 | v1.2 audit archive | `.planning/milestones/v1.2-MILESTONE-AUDIT.md` | Passed |
@@ -58,13 +59,16 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 ## Current Position
 
-No active milestone. The next action is to define a new milestone with fresh requirements and a roadmap.
+Phase: Not started (defining requirements)  
+Plan: -  
+Status: Defining requirements  
+Last activity: 2026-05-22 - Milestone v1.3 started
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 101 total
 - v1.2 requirements archived: 24/24 complete
-- active requirements file: none
+- active requirements file: being defined for v1.3
 - blocker gaps: 0
 
 ## Key Decisions

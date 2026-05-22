@@ -40,6 +40,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
+## Current Milestone: v1.3 Pilot UX & Demo Readiness
+
+**Goal:** Make the live BeYou deployment feel polished, trustworthy, and easy to evaluate on mobile, tablet, and desktop for students, adults, admins, and school pilot stakeholders.
+
+**Target features:**
+- Guided public/demo entry that explains BeYou and helps evaluators enter the correct role quickly.
+- Responsive and accessibility baseline across the production student, adult, admin, and auth flows.
+- Friendlier UX copy and interaction polish while preserving privacy, SOS, and non-clinical boundaries.
+- Demo/pilot operations improvements that make demo seed, deploy state, and live walkthroughs more reliable.
+- Frontend developer quality improvements, including the Next 16 lint script issue and lightweight responsive smoke coverage.
+
 ## Requirements
 
 ### Validated in v1.0
@@ -69,7 +80,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Active
 
-- [ ] Define the next milestone with `/gsd-new-milestone`.
+- [ ] Make the live demo/pilot entry point understandable and role-guided for first-time evaluators.
+- [ ] Bring key production flows to a tested responsive and accessibility baseline on mobile, tablet, and desktop.
+- [ ] Polish user-facing copy and interaction states without weakening student privacy boundaries.
+- [ ] Improve demo/pilot operations feedback so live walkthroughs are more reliable.
+- [ ] Repair frontend quality tooling and add lightweight regression coverage for responsive UX.
 
 ### Out of Scope
 
@@ -150,7 +165,7 @@ Roles:
 
 ## Next Milestone Goals
 
-No next milestone is active. Likely candidates are reminder/notification consent flows, selective private-note sharing, reason-for-access controls, school/tenant policy customization, or production identity/OAuth readiness. Start with `/gsd-new-milestone` to choose and validate the next scope.
+v1.3 is active and focuses on pilot UX and demo readiness. Deferred candidates remain reminder/notification consent flows, selective private-note sharing, reason-for-access controls, school/tenant policy customization, and production identity/OAuth readiness.
 
 ## Evolution
 
@@ -170,4 +185,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after v1.2 milestone completion*
+*Last updated: 2026-05-22 after starting v1.3 milestone*
