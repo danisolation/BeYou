@@ -137,7 +137,8 @@ def require_permission(
     if (
         actor.role in {UserRole.TEACHER.value, UserRole.PARENT.value}
         and purpose == "support_not_surveillance"
-        and resource_type in {"student_profile", "student_adult_link", "self_check_summary"}
+        and resource_type
+        in {"student_profile", "student_adult_link", "self_check_summary", "adult_support_summary"}
         and student_id is not None
         and has_active_student_link(db, actor, student_id)
     ):

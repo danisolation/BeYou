@@ -38,3 +38,32 @@ class AdultSelfCheckSummaryResponse(BaseModel):
     latest_summary: AdultSelfCheckSummaryItem | None = None
     recent_summaries: list[AdultSelfCheckSummaryItem]
     is_demo: bool = False
+
+
+class AdultSupportPlanSummary(BaseModel):
+    status: str | None = None
+    shared_with_viewer: bool
+    selected_adult_count: int
+    what_helps: str | None = None
+    what_does_not_help: str | None = None
+    preferred_contact_method: str | None = None
+    safe_contact_times: str | None = None
+    shareable_note: str | None = None
+    updated_at: datetime | None = None
+
+
+class AdultMoodTrendSummary(BaseModel):
+    latest_checkin_at: datetime | None = None
+    latest_trend_label: str | None = None
+    recent_checkin_count: int
+    high_concern_count: int
+    recent_trend_labels: list[str]
+    suggested_supportive_action: str
+
+
+class AdultSupportSummaryResponse(BaseModel):
+    student: AdultStudentContext
+    support_plan: AdultSupportPlanSummary
+    mood_summary: AdultMoodTrendSummary
+    privacy_notes: list[str]
+    is_demo: bool = False

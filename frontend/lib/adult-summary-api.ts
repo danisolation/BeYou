@@ -24,10 +24,47 @@ export type AdultSelfCheckSummaryResponse = {
   is_demo: boolean;
 };
 
+export type AdultSupportPlanSummary = {
+  status: string | null;
+  shared_with_viewer: boolean;
+  selected_adult_count: number;
+  what_helps: string | null;
+  what_does_not_help: string | null;
+  preferred_contact_method: string | null;
+  safe_contact_times: string | null;
+  shareable_note: string | null;
+  updated_at: string | null;
+};
+
+export type AdultMoodTrendSummary = {
+  latest_checkin_at: string | null;
+  latest_trend_label: string | null;
+  recent_checkin_count: number;
+  high_concern_count: number;
+  recent_trend_labels: string[];
+  suggested_supportive_action: string;
+};
+
+export type AdultSupportSummaryResponse = {
+  student: AdultSummaryStudent;
+  support_plan: AdultSupportPlanSummary;
+  mood_summary: AdultMoodTrendSummary;
+  privacy_notes: string[];
+  is_demo: boolean;
+};
+
 export function getTeacherSelfCheckSummaries(studentId: string) {
   return apiFetch<AdultSelfCheckSummaryResponse>(`/api/teacher/students/${studentId}/self-check-summaries`);
 }
 
 export function getParentSelfCheckSummaries(studentId: string) {
   return apiFetch<AdultSelfCheckSummaryResponse>(`/api/parent/students/${studentId}/self-check-summaries`);
+}
+
+export function getTeacherSupportSummary(studentId: string) {
+  return apiFetch<AdultSupportSummaryResponse>(`/api/teacher/students/${studentId}/support-summary`);
+}
+
+export function getParentSupportSummary(studentId: string) {
+  return apiFetch<AdultSupportSummaryResponse>(`/api/parent/students/${studentId}/support-summary`);
 }

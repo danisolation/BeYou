@@ -123,12 +123,20 @@ export function RoleStudentList({
               <div className="mt-5 rounded-2xl bg-secondary p-4">
                 <h3 className="text-heading">{summaryTitle}</h3>
                 <p className="mt-2 text-body">BeYou chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
-                <Link
-                  className="mt-3 inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
-                  href={`${summaryBasePath}/${student.id}/self-check-summaries`}
-                >
-                  {summaryCta}
-                </Link>
+                <div className="mt-3 flex flex-wrap gap-3">
+                  <Link
+                    className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
+                    href={`${summaryBasePath}/${student.id}/self-check-summaries`}
+                  >
+                    {summaryCta}
+                  </Link>
+                  <Link
+                    className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                    href={`${summaryBasePath}/${student.id}/support-summary`}
+                  >
+                    Xem kế hoạch & mood
+                  </Link>
+                </div>
               </div>
             </article>
           ))}
