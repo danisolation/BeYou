@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Trusted Adult Plan & Mood Check-ins
-status: phase_15_complete
-stopped_at: Phase 15 complete; ready for v1.2 milestone audit
-last_updated: "2026-05-22T12:55:00+07:00"
+status: milestone_audit_passed
+stopped_at: v1.2 milestone audit passed; ready to complete milestone
+last_updated: "2026-05-22T13:10:00+07:00"
 last_activity: 2026-05-22
 progress:
   total_phases: 4
@@ -17,8 +17,8 @@ progress:
 # State: BeYou - Tu Tin La Minh
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-22 after completing Phase 15  
-**Status:** Phase 15 complete
+**Last updated:** 2026-05-22 after passing v1.2 milestone audit  
+**Status:** Milestone audit passed
 
 ## Project Reference
 
@@ -36,6 +36,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 | Milestone summary | `.planning/MILESTONES.md` | Current |
 | Current requirements | `.planning/REQUIREMENTS.md` | Current |
 | Current roadmap | `.planning/ROADMAP.md` | Current |
+| v1.2 milestone audit | `.planning/v1.2-MILESTONE-AUDIT.md` | Passed |
 | v1.2 research | `.planning/research/` | Current |
 | v1.1 roadmap archive | `.planning/milestones/v1.1-ROADMAP.md` | Archived |
 | v1.1 requirements archive | `.planning/milestones/v1.1-REQUIREMENTS.md` | Archived |
@@ -57,8 +58,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-22)
 
 Phase: 15 of 15 - Admin Configuration & Metadata Operations Closure  
 Plan: 3/3 complete  
-Status: Complete  
-Last activity: 2026-05-22 - completed Phase 15 admin configuration and metadata operations closure
+Status: Audit passed  
+Last activity: 2026-05-22 - completed v1.2 milestone audit
 
 ## Progress
 
@@ -97,7 +98,7 @@ Progress: 4/4 phases complete
 ## Session Continuity
 
 Last session: 2026-05-22  
-Stopped at: Phase 15 complete; next action is v1.2 milestone audit  
+Stopped at: v1.2 milestone audit passed; next action is milestone completion  
 Resume file: none
 
 ## Next Action
@@ -105,7 +106,7 @@ Resume file: none
 Run:
 
 ```text
-/gsd-audit-milestone
+/gsd-complete-milestone v1.2
 ```
 
-Milestone audit should run before completing and archiving v1.2.
+Milestone completion should archive and tag v1.2.

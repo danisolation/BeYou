@@ -46,6 +46,7 @@ No high-signal issues found.
 - Operations buckets expose safe counts/statuses only and do not add raw-note, raw-answer, export, leaderboard, or drilldown paths.
 - Student privacy-gated routes, adult summaries, and admin/operations schemas continue excluding optional private notes and raw check-in details by construction.
 - High-concern mood check-ins continue suggesting support/SOS without automatically creating SOS alerts.
+- CORS allows v1.2 browser `PUT` mutations for support-plan save and admin config update flows.
 
 ## Review result
 

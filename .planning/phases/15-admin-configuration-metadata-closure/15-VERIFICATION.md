@@ -13,9 +13,9 @@ PASSED.
 
 | Check | Command | Result |
 |---|---|---|
-| Backend targeted metadata closure | `cd backend && pytest tests\test_phase15_metadata_closure.py -q` | 3 passed |
+| Backend targeted metadata closure | `cd backend && pytest tests\test_phase15_metadata_closure.py -q` | 4 passed |
 | Backend lint | `cd backend && ruff check app\db\models.py app\schemas\admin_mood_checkins.py app\services\admin_mood_checkins.py app\api\admin_mood_checkins.py app\services\mood_checkins.py app\schemas\mood_checkins.py app\api\student_mood_checkins.py app\schemas\admin_operations.py app\services\admin_operations.py app\core\authorization.py tests\test_phase15_metadata_closure.py` | Passed |
-| Backend full regression | `cd backend && pytest -q` | 100 passed |
+| Backend full regression | `cd backend && pytest -q` | 101 passed |
 | Frontend targeted metadata closure | `cd frontend && npm test -- phase15-admin-metadata-closure-ui.test.tsx` | 3 passed |
 | Frontend full regression | `cd frontend && npm test` | 68 passed |
 | Frontend production build | `cd frontend && npm run build` | Passed |
@@ -36,6 +36,7 @@ PASSED.
 ## Privacy and Security Checks
 
 - Admin config mutations use existing admin permission checks and same-site request validation.
+- Browser CORS preflight allows `PUT` for v1.2 support-plan and admin-config mutation flows.
 - Unsafe terms such as diagnosis, treatment, leaderboard, and discipline are blocked from publishable config copy.
 - Operations audit buckets aggregate event metadata only.
 - Student optional mood notes remain student-only in backend responses and UI.
