@@ -12,17 +12,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.3 Pilot UX & Demo Readiness on 2026-05-22
-**Milestone status:** Complete, audited, archived, and tagged for release
-**Scope shipped:** 20 total phases, 58 total plans, 121/121 cumulative requirements satisfied
-**Latest audit:** `.planning/milestones/v1.3-MILESTONE-AUDIT.md` passed with 20/20 v1.3 requirements, 5/5 phases, and 5/5 integration flows
+**Shipped version:** v1.4 in progress; Phases 21-23 complete as of 2026-05-25
+**Milestone status:** Active; Phase 24 is next
+**Scope shipped:** 23 total phases, 61 total plans, 136 cumulative requirements satisfied; v1.4 is 15/29 requirements complete
+**Latest verification:** `.planning/phases/23-selective-mood-note-sharing-revocation/23-VERIFICATION.md` passed with 5/5 Phase 23 must-haves verified
 
 ### Built Product
 
 - Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, and demo-data separation.
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
-- Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, confirmed SOS alerts, trusted adult support plans, and mood check-ins/history.
-- Adult support flows: linked teacher/parent views, summary-only wellbeing support, selected support-plan visibility, mood trend summaries without raw private notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
+- Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
+- Adult support flows: linked teacher/parent views, summary-only wellbeing support, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, privacy-limited aggregate reports, and metadata-only operations dashboard.
 - Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, metadata-only demo readiness, production smoke command, and Next 16-compatible lint/test/build gates.
 
@@ -94,11 +94,14 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Demo/pilot operations expose safe readiness feedback for seed state, connectivity, CORS/session behavior, and live walkthrough smoke checks.
 - [x] Frontend quality tooling works on Next 16 with lightweight responsive/demo regression coverage.
 
+### Validated in v1.4
+
+- [x] Students can manage notification/reminder consent, quiet hours, pause state, and channel boundaries.
+- [x] Students can receive supportive in-app mood check-in reminders without diagnosis, pressure, or automatic SOS side effects.
+- [x] Students can selectively share specific private mood notes or note summaries with chosen linked adults and revoke sharing later.
+
 ### Active
 
-- [ ] Students can manage notification/reminder consent, quiet hours, pause state, and channel boundaries.
-- [ ] Students can receive supportive in-app mood check-in reminders without diagnosis, pressure, or automatic SOS side effects.
-- [ ] Students can selectively share specific private mood notes or note summaries with chosen linked adults and revoke sharing later.
 - [ ] Teachers, parents, and admins must provide a support-oriented reason before accessing sensitive support summaries where required by policy.
 - [ ] Admins can configure school-level privacy/notification policy defaults and inspect metadata-only operations readiness for v1.4 controls.
 
@@ -181,6 +184,7 @@ Roles:
 | Keep live demo smoke separate from production launch readiness | Public demo usability can pass while production `/health/ready` remains `not_ready` until demo seeding is disabled for real launch | Validated in Phase 19 |
 | Use ESLint flat config for Next 16 | Direct ESLint CLI replaces deprecated/broken `next lint` while preserving strict frontend quality gates | Validated in Phase 20 |
 | Start v1.4 with consent and transparency before external channels | Notification and sensitive-access features need student control, school policy, and audit boundaries before adding Zalo/SMS/push or broader adult access | Active in v1.4 |
+| Make selective mood-note sharing student-granted and revocable | Raw mood notes stay private by default; adults only see notes or student summaries through active relationship plus active unrevoked student grant | Validated in Phase 23 |
 
 ## Known Tech Debt
 
@@ -210,4 +214,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after starting v1.4 milestone*
+*Last updated: 2026-05-25 after completing Phase 23*
