@@ -130,10 +130,27 @@ test("validateRenderEnvExpectations passes public demo env expectations", () => 
 });
 
 test("validateRenderEnvExpectations fails unsafe production pilot env expectations", () => {
-  const unsafePilotYaml = renderYaml
-    .replace("value: public_demo", "value: public_demo")
-    .replace("value: true", "value: true")
-    .replace("value: https://beyou-frontend.vercel.app", "value: *");
+  const unsafePilotYaml = `
+services:
+  - type: web
+    name: beyou-backend
+    rootDir: backend
+    envVars:
+      - key: RUNTIME_MODE
+        value: public_demo
+      - key: ALLOW_DEMO_SEED
+        value: true
+      - key: ALLOW_DEMO_LOGIN
+        value: true
+      - key: FRONTEND_ORIGIN
+        value: "*"
+      - key: FRONTEND_ORIGINS
+        value: http://localhost:3000
+      - key: SESSION_COOKIE_SECURE
+        value: false
+      - key: SESSION_COOKIE_SAMESITE
+        value: lax
+`;
 
   const results = validateRenderEnvExpectations({
     profile: "production_pilot",

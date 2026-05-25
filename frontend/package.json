@@ -6,6 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "test": "vitest run",
+    "guard:deploy": "node scripts/deployment-guardrails.mjs",
+    "test:deploy-guardrails": "node --test scripts/deployment-guardrails.test.mjs",
     "smoke:production": "node scripts/production-smoke.mjs",
     "lint": "eslint . --max-warnings=0"
   },
@@ -39,6 +41,7 @@
     "postcss": "latest",
     "tailwindcss": "^3.4.17",
     "typescript": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "yaml": "^2.9.0"
   }
 }
