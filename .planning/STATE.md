@@ -2,30 +2,30 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Production Pilot Readiness & Identity
-status: ready_to_execute
-stopped_at: Phase 28 planned
-last_updated: "2026-05-25T07:48:11.248Z"
-last_activity: 2026-05-25 -- Phase 28 planning complete
+status: executing
+stopped_at: Completed 28-01-PLAN.md
+last_updated: "2026-05-25T07:59:19.320Z"
+last_activity: 2026-05-25 -- Completed Phase 28 Plan 01 runtime/readiness metadata
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 3
-  completed_plans: 0
-  percent: 0
+  completed_plans: 1
+  percent: 33
 ---
 
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-25 after Phase 28 planning
-**Status:** Ready to execute
+**Last updated:** 2026-05-25 after Phase 28 Plan 01 completion
+**Status:** Executing Phase 28 — ready for Plan 28-02
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** execute Phase 28
+**Current focus:** Phase 28 — Runtime Mode & Production Readiness Foundation
 
 ## Planning Artifacts
 
@@ -35,11 +35,11 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
 | Active roadmap | `.planning/ROADMAP.md` | v1.5 Phases 28-32 pending |
-| Active requirements | `.planning/REQUIREMENTS.md` | 28 v1.5 requirements mapped, 0 complete |
+| Active requirements | `.planning/REQUIREMENTS.md` | 28 v1.5 requirements mapped, 4 complete |
 | v1.5 research | `.planning/research/` | Current |
 | Phase 28 context | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-CONTEXT.md` | Complete |
 | Phase 28 research | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-RESEARCH.md` | Complete |
-| Phase 28 plans | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-01-PLAN.md` through `28-03-PLAN.md` | Verified, ready to execute |
+| Phase 28 plans | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-01-PLAN.md` through `28-03-PLAN.md` | 1/3 complete, ready for 28-02 |
 | v1.4 roadmap archive | `.planning/milestones/v1.4-ROADMAP.md` | Archived |
 | v1.4 requirements archive | `.planning/milestones/v1.4-REQUIREMENTS.md` | Archived |
 | v1.4 audit archive | `.planning/milestones/v1.4-MILESTONE-AUDIT.md` | Passed |
@@ -74,15 +74,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 ## Current Position
 
-Phase: 28
-Plan: 3 plans ready
-Status: Ready to execute
-Last activity: 2026-05-25 -- Phase 28 planning complete
+Phase: 28 (Runtime Mode & Production Readiness Foundation) — EXECUTING
+Plan: 2 of 3
+Status: Ready for Plan 28-02
+Last activity: 2026-05-25 -- completed 28-01 runtime/readiness metadata
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 157 total
-- v1.5 requirements: 28 total, 28 mapped, 0 complete
+- v1.5 requirements: 28 total, 28 mapped, 4 complete
 - v1.4 requirements archived: 36/36 complete
 - v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
@@ -115,6 +115,7 @@ Last activity: 2026-05-25 -- Phase 28 planning complete
 | Make production pilot readiness separate from public demo readiness | v1.5 will let real pilot readiness pass only when demo seed/login and unsafe deploy config are disabled |
 | Use explicit runtime modes for Phase 28 | Phase 28 context locks `local_demo`, `public_demo`, and `production_pilot` as runtime mode names |
 | Keep readiness public-safe and admin-masked | Phase 28 keeps public readiness status-only and admin readiness metadata-only with no secret or raw student data exposure |
+| Keep frontend operations contract aligned with backend metadata | Phase 28 Plan 01 removes raw origin and cookie-name exposure from both backend response schema and frontend admin operations UI/types |
 | Prepare identity contracts before full SSO | v1.5 adds OAuth/SSO-ready backend contracts while deferring provider-specific login until a school IdP is selected |
 | Keep identity claims out of authorization | v1.5 keeps app-owned role, relationship, and SOS checks as the source of truth |
 
@@ -125,9 +126,9 @@ Last activity: 2026-05-25 -- Phase 28 planning complete
 
 ## Session Continuity
 
-Last session: 2026-05-25T07:48:11.248Z
-Stopped at: Phase 28 planned
-Resume file: .planning/phases/28-runtime-mode-production-readiness-foundation/28-01-PLAN.md
+Last session: 2026-05-25T07:59:19.313Z
+Stopped at: Completed 28-01-PLAN.md
+Resume file: None
 
 ## Next Action
 
