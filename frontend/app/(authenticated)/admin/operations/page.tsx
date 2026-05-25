@@ -212,13 +212,13 @@ export default function AdminOperationsPage() {
             title="Deployment guardrails"
             description="Kiểm tra Render, Vercel, API target, CORS và cookie bằng metadata an toàn."
           >
-            <DeploymentGuardrailsPanel items={dashboard.deployment_guardrails} />
+            <DeploymentGuardrailsPanel items={dashboard.deployment_guardrails ?? []} />
           </Panel>
           <Panel
             title="Smoke profiles"
             description="Tách smoke public demo khỏi production pilot để không tạo tự tin sai từ tài khoản demo."
           >
-            <SmokeProfilesPanel profiles={dashboard.smoke_profiles} />
+            <SmokeProfilesPanel profiles={dashboard.smoke_profiles ?? []} />
           </Panel>
 
           <div className="grid gap-4 md:grid-cols-3">

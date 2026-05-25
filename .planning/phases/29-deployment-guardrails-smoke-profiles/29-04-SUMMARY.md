@@ -105,7 +105,9 @@ _Note: TDD tasks used separate RED and GREEN commits._
 
 **[Rule 1 - Bug] Forbidden evidence label looked like raw-value exposure** — Found during UI regression tests. The backend safe evidence label `backend_raw_value_exposed=no` tripped the forbidden `/RAW_/i` privacy assertion despite being safe evidence. Fixed by changing it to `backend_value_exposed=no` in backend service output and frontend fixtures. Verification: backend targeted tests, frontend operations UI tests, lint, and build passed. Commit: `aacf973`.
 
-**Total deviations:** 1 auto-fixed bug. **Impact:** safer wording with no behavior or privacy-boundary expansion.
+**[Rule 1 - Bug] New operations metadata arrays crashed older operations fixtures** — Found during Phase 28 regression gate. Older operations dashboard fixtures did not include Phase 29 `deployment_guardrails` or `smoke_profiles`, causing `DeploymentGuardrailsPanel` to read `.length` on `undefined`. Fixed the page to pass empty arrays when these fields are absent, preserving backward-compatible rendering for partial/older metadata payloads. Verification: Phase 11, Phase 15, and Phase 25 operations UI tests passed together, then frontend lint and build passed. Commit: pending.
+
+**Total deviations:** 2 auto-fixed bugs. **Impact:** safer wording and backward-compatible UI rendering with no privacy-boundary expansion.
 
 ## Issues Encountered
 
