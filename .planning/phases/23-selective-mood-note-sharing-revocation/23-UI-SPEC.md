@@ -92,8 +92,8 @@ Do not use destructive color for mood states, student distress labels, trend lab
 | Student revoke CTA | `Thu hồi quyền xem` |
 | Adult section heading | `Ghi chú được học sinh đồng ý chia sẻ` |
 | Adult aggregate section heading | `Xu hướng check-in cảm xúc` |
-| Empty state heading | `Chưa có ghi chú riêng tư để chia sẻ` |
-| Empty state body | `Khi em lưu một check-in có ghi chú riêng tư, em có thể tự chọn có chia sẻ với người lớn tin cậy hay không. Không bắt buộc phải chia sẻ.` |
+| Empty state heading | `Chưa có check-in nào để chia sẻ` |
+| Empty state body | `Khi em có check-in cảm xúc, em có thể tự chọn chia sẻ ghi chú riêng tư hoặc phần tóm tắt em tự viết với người lớn tin cậy. Không bắt buộc phải chia sẻ.` |
 | Error state | `Chưa cập nhật được quyền chia sẻ. Hãy kiểm tra lại lựa chọn rồi thử lại.` |
 | Destructive confirmation | `Thu hồi quyền xem: Người lớn này sẽ không còn xem được nội dung đã chia sẻ. Lịch sử kiểm tra chỉ lưu thông tin thao tác, không lưu nội dung ghi chú.` |
 
@@ -125,10 +125,10 @@ Page structure:
 2. Existing mood check-in cards remain `rounded-3xl bg-white p-6 shadow-sm`.
 3. Share controls appear only inside cards where:
    - Check-in belongs to current student.
-   - `private_note` exists, or a student-authored summary field exists.
+   - `private_note` exists, or the student can write a summary in the share flow.
    - The check-in is not merely aggregate/trend data.
-4. Cards without shareable content show no share CTA. They may show text-label helper:
-   - `Check-in này không có ghi chú riêng tư để chia sẻ.`
+4. Cards without `private_note` still allow summary-only sharing, but the private-note scope is disabled with text-label helper:
+   - `Check-in này không có ghi chú riêng tư; em vẫn có thể tự viết tóm tắt nếu muốn chia sẻ.`
 
 Per-card layout:
 - Header row: trend label, DemoBadge if demo, active-share badge if applicable.
@@ -136,6 +136,7 @@ Per-card layout:
 - Mood details grid remains unchanged.
 - Private note panel remains inside `bg-secondary`.
 - New share panel appears below private note with `mt-4 rounded-2xl border border-[#D7EFE8] bg-white p-4` or nested `bg-secondary` when confirming.
+- When active, the share panel and consent preview are the visual anchor of the check-in card; supporting history details remain visually quieter.
 
 Share panel states:
 1. No active shares:
@@ -146,6 +147,7 @@ Share panel states:
    - Each adult row must show display name and relationship label.
    - No email/contact identifiers.
    - Disabled state for stale relationships must not appear if backend filters correctly; if returned, show disabled with `Liên kết này không còn hoạt động`.
+   - On cards without `private_note`, default scope is `student_summary` and the private-note option is disabled.
 3. Preview:
    - Show selected adult names.
    - Show content scope.
@@ -173,7 +175,7 @@ Student summary scope:
 - Scope choices:
   - `Chia sẻ ghi chú riêng tư`
   - `Chia sẻ phần tóm tắt em tự viết`
-- Default selected scope: private note, per Phase 23 context.
+- Default selected scope: private note when `private_note` exists; otherwise student-authored summary.
 
 ## Adult Support Summary Layout Contract
 
@@ -279,7 +281,7 @@ Max width:
 ## Privacy and Safety Invariants
 
 Must hold in UI:
-- Share controls appear only for own check-ins with private note or student-authored summary.
+- Share controls appear only for own check-ins; private-note scope appears only when private note exists, while summary scope requires student-authored text before preview.
 - Adult names are shown to the student before save.
 - Content scope is shown before save.
 - What remains private is shown before save.

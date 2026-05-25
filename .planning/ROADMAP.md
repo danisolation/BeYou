@@ -78,10 +78,10 @@ Plans:
 **Depends on:** Phase 21, Phase 22 mood history context
 **Requirements:** SHARE-01, SHARE-02, SHARE-03, SHARE-04, SHARE-05
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Planned
 
 **Success criteria:**
-1. Student mood history offers share controls only for own check-ins with private notes.
+1. Student mood history offers share controls for own check-ins, with private-note sharing when a note exists and summary-only sharing via student-authored text.
 2. Student preview/confirmation names the selected adult(s), content scope, revocation path, and what remains private.
 3. Adult reads require active relationship plus active share grant and lose access after revocation.
 4. Share/read/revoke audit stays metadata-only and never includes private note or student summary text.
