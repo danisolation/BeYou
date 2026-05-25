@@ -428,19 +428,22 @@ Recommended Phase 29 validation gates:
 | V5 Input Validation | yes | Use Pydantic backend schemas and zod/script validation for env inputs. [VERIFIED: schemas + npm registry] |
 | V6 Cryptography | limited | Do not handle crypto in Phase 29; do not expose credentials or cookies. [VERIFIED: scope] |
 
-## Open Questions with Recommended Defaults
+## Open Questions (RESOLVED)
 
 1. **Should `smoke:production` remain?**  
    - What we know: Existing docs and UI reference it. [VERIFIED: grep]  
    - Default: Keep it as a compatibility alias to `smoke:demo` and update docs to prefer explicit `smoke:demo` / `smoke:pilot`. [ASSUMED]
+   - **RESOLVED:** Keep `smoke:production` as a compatibility alias to `smoke:demo`, and make the script print that pilot readiness must use `smoke:pilot`.
 
 2. **How to validate Vercel root directory if it is only in Vercel project settings?**  
    - What we know: `frontend/vercel.json` does not encode root directory. [VERIFIED: vercel.json]  
    - Default: Guardrail should warn unless operator passes `BEYOU_VERCEL_ROOT=frontend`; docs should state the manual Vercel setting. [ASSUMED]
+   - **RESOLVED:** Treat `BEYOU_VERCEL_ROOT=frontend` as the guardrail input for the Vercel project setting; missing input is a warning, a non-`frontend` value is a failure.
 
 3. **Should guardrail call deployed endpoints or only inspect config?**  
    - What we know: DEPLOY-01 allows before or after deploy; smoke scripts already call deployed endpoints. [VERIFIED: REQUIREMENTS.md + production-smoke.mjs]  
    - Default: Guardrail should support config-only checks by default and optional live checks when `BEYOU_GUARDRAIL_LIVE=true`. [ASSUMED]
+   - **RESOLVED:** Guardrail remains deterministic/config-only by default; live endpoint checks belong to `smoke:demo` and `smoke:pilot`, with optional live guardrail checks deferred unless execution adds them safely.
 
 ## Assumptions Log
 

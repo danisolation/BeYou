@@ -56,7 +56,7 @@
 **Depends on:** Phase 28
 **Requirements:** DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05
 **UI hint:** yes
-**Status:** Pending
+**Status:** Ready to Execute
 
 **Success criteria:**
 1. Operator can run a guardrail command that validates Render backend and Vercel frontend deployment expectations.
@@ -65,7 +65,7 @@
 4. Demo smoke and pilot smoke are separate; pilot smoke requires readiness `ready` and has no demo-user dependency.
 5. Deployment docs explain root directories, env vars, smoke commands, demo-vs-pilot readiness, and safe rollback.
 
-**Plans:** 0/1 pending
+**Plans:** 4/4 plans ready
 
 ### Phase 30: Identity Foundation & Auth Contracts
 
