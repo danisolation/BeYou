@@ -457,11 +457,11 @@ function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
   return (
     <div className="space-y-3">
       {deliveries.map((delivery) => (
-        <article key={delivery.id} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={delivery.delivery_key} className="rounded-2xl border border-[#D7EFE8] p-4">
           <p className="font-semibold">
             {delivery.provider} · {delivery.status} · {delivery.recipient_role}
           </p>
-          <p className="mt-2 text-label">Alert: {delivery.alert_id}</p>
+          <p className="mt-2 text-label">Alert: {delivery.alert_key}</p>
           <p className="text-label">Attempts: {delivery.attempt_count}</p>
           {delivery.error_code ? <p className="text-label">Error: {delivery.error_code}</p> : null}
           <p className="text-label">Tạo lúc: {formatDate(delivery.created_at)}</p>

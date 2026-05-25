@@ -25,6 +25,7 @@ DISABLED_LOGIN_DETAIL = (
     "Tài khoản này đang bị tạm khóa. Hãy liên hệ quản trị viên hoặc người phụ trách demo."
 )
 DEMO_LOGIN_DISABLED_DETAIL = "Demo accounts are disabled in production pilot mode."
+PRODUCTION_PILOT_AUTH_UNSAFE_DETAIL = "Production pilot authentication is not safely configured."
 
 
 def _client_ip(request: Request) -> str | None:
@@ -43,6 +44,11 @@ def _login_response(db: OrmSession, user: User) -> LoginResponse:
         dashboard_route=dashboard_route_for_role(user.role),
         notice_version=NOTICE_VERSION,
     )
+
+
+def _origin_unsafe_for_production_pilot(origin: str) -> bool:
+    normalized = origin.strip().lower()
+    return "*" in normalized or "localhost" in normalized or "127.0.0.1" in normalized or not normalized.startswith("https://")
 
 
 @router.post("/login", response_model=LoginResponse)
@@ -69,6 +75,13 @@ def login(
     if user.is_demo and (settings.is_production_pilot or not settings.allow_demo_login):
         record_login_failure(payload.email, client_ip)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=DEMO_LOGIN_DISABLED_DETAIL)
+
+    if settings.is_production_pilot and (
+        not settings.session_cookie_secure
+        or any(_origin_unsafe_for_production_pilot(origin) for origin in settings.allowed_frontend_origins)
+    ):
+        record_login_failure(payload.email, client_ip)
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=PRODUCTION_PILOT_AUTH_UNSAFE_DETAIL)
 
     reset_login_failures(payload.email, client_ip)
     create_session(db, user, response, settings)

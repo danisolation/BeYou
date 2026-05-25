@@ -135,7 +135,7 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
         or "127.0.0.1" in database_url_lower
         or "beyou_dev_password" in database_url_lower
     )
-    if is_production and database_looks_development and not is_production_pilot:
+    if (is_production or is_production_pilot) and database_looks_development:
         checks.append(
             _safe_check(
                 key="config_database_url",
@@ -352,15 +352,20 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
         )
 
     if settings.sos_email_provider == "smtp":
-        missing_smtp_config = not settings.smtp_host.strip() or not settings.smtp_from.strip()
+        missing_smtp_config = (
+            not settings.smtp_host.strip()
+            or not settings.smtp_from.strip()
+            or _has_placeholder_value(settings.smtp_username)
+            or _has_placeholder_value(settings.smtp_password)
+        )
         if missing_smtp_config:
             checks.append(
                 _safe_check(
                     key="sos_email_readiness",
                     category="configuration",
                     status="fail" if is_production or is_production_pilot else "warn",
-                    summary="SOS email SMTP mode is missing required backend sender configuration.",
-                    remediation="Configure backend SMTP host and sender before enabling production email delivery.",
+                    summary="SOS email SMTP mode is missing usable backend sender credentials.",
+                    remediation="Configure backend SMTP host, sender, username, and password before enabling production email delivery.",
                 )
             )
         else:

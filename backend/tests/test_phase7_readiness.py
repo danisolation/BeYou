@@ -20,6 +20,7 @@ from app.services.readiness import evaluate_static_readiness_checks
 FRONTEND_ORIGIN = "http://localhost:3000"
 ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN}
 PASSWORD = "secret123"
+SAFE_DATABASE_URL = "postgresql+psycopg://pilot:secret@db.example.com:5432/peerlight"
 
 
 def _cleanup_readiness_users() -> None:
@@ -218,6 +219,7 @@ def test_production_pilot_readiness_flags_cookie_and_origin_drift() -> None:
 
     assert by_key["origin_security"].status == "fail"
     assert by_key["cookie_security"].status == "fail"
+    assert by_key["config_database_url"].status == "fail"
 
 
 def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
@@ -228,6 +230,7 @@ def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
         SESSION_COOKIE_SAMESITE="none",
         FRONTEND_ORIGIN="https://pilot.example",
         FRONTEND_ORIGINS="",
+        DATABASE_URL=SAFE_DATABASE_URL,
         ALLOW_DEMO_SEED=False,
         ALLOW_DEMO_LOGIN=False,
         CHAT_PROVIDER="fallback",
@@ -237,6 +240,31 @@ def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
     checks = evaluate_static_readiness_checks(settings)
 
     assert {check.status for check in checks} == {"pass"}
+
+
+def test_production_pilot_readiness_flags_smtp_placeholder_credentials() -> None:
+    settings = Settings(
+        RUNTIME_MODE="production_pilot",
+        ENVIRONMENT="production",
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_SAMESITE="none",
+        FRONTEND_ORIGIN="https://pilot.example",
+        FRONTEND_ORIGINS="",
+        DATABASE_URL=SAFE_DATABASE_URL,
+        ALLOW_DEMO_SEED=False,
+        ALLOW_DEMO_LOGIN=False,
+        CHAT_PROVIDER="fallback",
+        SOS_EMAIL_PROVIDER="smtp",
+        SMTP_HOST="smtp.example.com",
+        SMTP_FROM="alerts@example.com",
+        SMTP_USERNAME="",
+        SMTP_PASSWORD="",
+    )
+
+    checks = evaluate_static_readiness_checks(settings)
+    by_key = {check.key: check for check in checks}
+
+    assert by_key["sos_email_readiness"].status == "fail"
 
 
 def test_public_ready_response_remains_minimal_with_runtime_mode() -> None:
@@ -259,6 +287,7 @@ def test_admin_operations_exposes_runtime_mode_without_sensitive_values() -> Non
         SESSION_COOKIE_SAMESITE="none",
         FRONTEND_ORIGIN="https://pilot.example",
         FRONTEND_ORIGINS="",
+        DATABASE_URL=SAFE_DATABASE_URL,
         ALLOW_DEMO_SEED=False,
         ALLOW_DEMO_LOGIN=False,
         CHAT_PROVIDER="fallback",

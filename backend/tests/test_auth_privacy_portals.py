@@ -127,11 +127,16 @@ def _link(db: OrmSession, student: User, adult: User, relationship_type: str) ->
     db.commit()
 
 
-def _login(client: TestClient, email: str, password: str = "secret123"):
+def _login(
+    client: TestClient,
+    email: str,
+    password: str = "secret123",
+    headers: dict[str, str] | None = None,
+):
     return client.post(
         "/api/auth/login",
         json={"email": email, "password": password},
-        headers=ORIGIN_HEADERS,
+        headers=headers or ORIGIN_HEADERS,
     )
 
 
@@ -231,6 +236,10 @@ def test_production_pilot_allows_non_demo_login_session(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    monkeypatch.setenv("SESSION_COOKIE_SECURE", "true")
+    monkeypatch.setenv("SESSION_COOKIE_SAMESITE", "none")
+    monkeypatch.setenv("FRONTEND_ORIGIN", "https://pilot.example")
+    monkeypatch.setenv("FRONTEND_ORIGINS", "")
     get_settings.cache_clear()
     pilot_user = _user(
         db,
@@ -241,13 +250,37 @@ def test_production_pilot_allows_non_demo_login_session(
     )
 
     with TestClient(create_app()) as pilot_client:
-        response = _login(pilot_client, pilot_user.email)
+        response = _login(pilot_client, pilot_user.email, headers={"Origin": "https://pilot.example"})
 
     assert response.status_code == 200
     assert "set-cookie" in response.headers
     sessions = db.scalars(select(UserSession).where(UserSession.user_id == pilot_user.id)).all()
     assert len(sessions) == 1
     assert sessions[0].is_demo is False
+    get_settings.cache_clear()
+
+
+def test_production_pilot_blocks_login_when_cookie_config_is_unsafe(
+    db: OrmSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    get_settings.cache_clear()
+    pilot_user = _user(
+        db,
+        email="pilot-unsafe-login@example.test",
+        role=UserRole.ADMIN.value,
+        full_name="Unsafe Pilot",
+        is_demo=False,
+    )
+
+    with TestClient(create_app()) as pilot_client:
+        response = _login(pilot_client, pilot_user.email)
+
+    assert response.status_code == 503
+    assert response.json()["detail"] == "Production pilot authentication is not safely configured."
+    assert "set-cookie" not in response.headers
+    assert db.scalar(select(UserSession).where(UserSession.user_id == pilot_user.id)) is None
     get_settings.cache_clear()
 
 

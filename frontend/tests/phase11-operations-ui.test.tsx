@@ -93,8 +93,8 @@ const operationsDashboard = {
     by_error_code: [{ key: "smtp_error", label: "smtp_error", count: 1 }],
     recent: [
       {
-        id: "delivery-1",
-        alert_id: "alert-1",
+        delivery_key: "delivery-1",
+        alert_key: "alert-present",
         channel: "email",
         provider: "local_outbox",
         recipient_role: "teacher",

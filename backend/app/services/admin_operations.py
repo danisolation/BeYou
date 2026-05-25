@@ -167,10 +167,10 @@ def _readiness_summary(report: ReadinessReport) -> OperationReadinessSummary:
     )
 
 
-def _delivery_item(delivery: SosNotificationDelivery) -> SosEmailDeliveryItem:
+def _delivery_item(delivery: SosNotificationDelivery, position: int) -> SosEmailDeliveryItem:
     return SosEmailDeliveryItem(
-        id=str(delivery.id),
-        alert_id=str(delivery.alert_id),
+        delivery_key=f"delivery-{position}",
+        alert_key="alert-present",
         channel=delivery.channel,
         provider=delivery.provider,
         recipient_role=delivery.recipient_role_snapshot,
@@ -198,7 +198,7 @@ def _delivery_summary(db: OrmSession, *, limit: int) -> SosEmailDeliverySummary:
         by_status=_count_buckets(db, SosNotificationDelivery.status, label_map=DELIVERY_STATUS_LABELS),
         by_provider=_count_buckets(db, SosNotificationDelivery.provider),
         by_error_code=_count_buckets(db, SosNotificationDelivery.error_code, include_null=False),
-        recent=[_delivery_item(delivery) for delivery in recent],
+        recent=[_delivery_item(delivery, position) for position, delivery in enumerate(recent, start=1)],
     )
 
 

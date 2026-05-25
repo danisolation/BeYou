@@ -83,8 +83,8 @@ class ProductionSmokeChecklistItem(BaseModel):
 
 
 class SosEmailDeliveryItem(BaseModel):
-    id: str
-    alert_id: str
+    delivery_key: str
+    alert_key: str
     channel: str
     provider: str
     recipient_role: str

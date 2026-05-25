@@ -73,8 +73,8 @@ export type ProductionSmokeChecklistItem = {
 };
 
 export type SosEmailDeliveryItem = {
-  id: string;
-  alert_id: string;
+  delivery_key: string;
+  alert_key: string;
   channel: string;
   provider: string;
   recipient_role: string;
