@@ -98,7 +98,6 @@ const operationsDashboard = {
         actor_role: "admin",
         action: "mood_checkin_config_created",
         resource_type: "mood_checkin_config",
-        resource_id: "config-1",
         status: "success",
         timestamp: "2026-05-22T00:00:00Z",
         reason: "admin_content_safety",

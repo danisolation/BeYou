@@ -115,7 +115,6 @@ const operationsDashboard = {
         actor_role: "admin",
         action: "privacy_policy_updated",
         resource_type: "privacy_policy",
-        resource_id: "policy-1",
         status: "success",
         timestamp: "2026-05-25T00:00:00Z",
         reason: null,

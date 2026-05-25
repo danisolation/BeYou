@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Phases 21-27 complete locally as of 2026-05-25
-**Milestone status:** Gap closure complete; ready for live demo, commit, and milestone re-audit/archive
+**Milestone status:** Audit passed; ready for milestone completion/archive
 **Scope shipped:** 27 total phases, 65 total plans, 157 cumulative requirements satisfied; v1.4 is 36/36 requirements complete
 **Latest verification:** Phase 27 full local verification passed after Peerlight AI refresh and audit gap closure
-**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` gaps closed by Phase 27: NOTIF-03, POLICY-01, and OPS-02
+**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
 
@@ -36,6 +36,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Frontend production build: passed
 - Production smoke: `SMOKE_PASS 16/16` before Phase 27
 - Phase 27 copy/privacy grep gates: passed for frontend app/components and backend app, allowing the legacy demo password only
+- v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
 
@@ -202,7 +203,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 phase work and gap closure are complete locally. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
+v1.4 phase work, gap closure, live demo, and milestone audit are complete locally. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -222,4 +223,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after Phase 27 gap closure and Peerlight AI refresh*
+*Last updated: 2026-05-25 after v1.4 milestone audit passed*

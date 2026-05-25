@@ -116,7 +116,6 @@ const operationsDashboard = {
         actor_role: "admin",
         action: "account_status_changed",
         resource_type: "account_profile",
-        resource_id: "user-1",
         status: "success",
         timestamp: "2026-05-22T00:00:00Z",
         reason: "admin_operations",
