@@ -65,7 +65,7 @@
 4. Demo smoke and pilot smoke are separate; pilot smoke requires readiness `ready` and has no demo-user dependency.
 5. Deployment docs explain root directories, env vars, smoke commands, demo-vs-pilot readiness, and safe rollback.
 
-**Plans:** 2/4 plans executed
+**Plans:** 3/4 plans executed
 
 ### Phase 30: Identity Foundation & Auth Contracts
 
