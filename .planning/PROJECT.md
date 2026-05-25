@@ -13,9 +13,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phase 28 complete
-**Scope shipped:** 28 total phases, 68 total plans, 162 cumulative requirements satisfied; v1.5 is 5/28 requirements complete
-**Latest verification:** Phase 28 verification passed with runtime mode, production readiness, demo seed/login safety, and metadata masking validated
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-29 complete
+**Scope shipped:** 29 total phases; v1.5 Phases 28-29 have 7/7 plans executed and 10/28 requirements complete
+**Latest verification:** Phase 29 verification passed with deployment guardrails, safe frontend/backend validation, split demo/pilot smoke profiles, operations metadata, docs, and regression gates validated
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -25,7 +25,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Student wellbeing flows: privacy notice, Test tâm lý results/history with three Vietnamese visible labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
 - Adult support flows: linked teacher/parent views only for students who have sent SOS, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard.
-- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, production smoke command, and Next 16-compatible lint/test/build gates.
+- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, and Next 16-compatible lint/test/build gates.
 
 ### Latest Verification Snapshot
 
@@ -37,6 +37,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Production smoke: `SMOKE_PASS 16/16` before Phase 27
 - Phase 27 copy/privacy grep gates: passed for frontend app/components and backend app, allowing the legacy demo password only
 - Phase 28 verification: passed, including backend runtime/readiness/auth/seed regressions, frontend operations contract regressions, code review, and schema drift check
+- Phase 29 verification: passed, including guardrail/smoke Node tests, backend operations metadata tests, operations UI regressions, frontend lint/build, schema drift check, and clean code review/re-review
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -131,10 +132,12 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Production and demo runtime modes are explicit, validated, and safe to deploy independently.
 - [x] Real production readiness can pass when demo seeding is disabled and required secrets/configuration are present.
 - [x] Production pilot boot blocks demo seeding, production-pilot auth blocks demo-user sessions, and public/admin readiness remains status-only or metadata-masked.
+- [x] Frontend/backend deployment configuration is protected against root-directory, origin, cookie, and environment drift.
+- [x] Demo smoke and production-pilot smoke are separate, with pilot smoke requiring readiness `ready` and no demo-user dependency.
+- [x] Deployment guardrail/smoke metadata and README guidance are metadata-only and prevent public demo smoke from being mistaken for production-pilot proof.
 
 ### Active in v1.5
 
-- [ ] Frontend/backend deployment configuration is protected against root-directory, origin, cookie, and environment drift.
 - [ ] Identity contracts support production OAuth/SSO readiness without removing current demo login flows.
 - [ ] School pilot operations expose safe launch, monitoring, rollback, and handoff metadata without raw student surveillance.
 
@@ -227,6 +230,8 @@ Roles:
 | Separate runtime intent from deployment environment | `RUNTIME_MODE` captures product intent (`local_demo`, `public_demo`, `production_pilot`) while `ENVIRONMENT` remains platform/deployment semantics | Validated in Phase 28 |
 | Block demo seed/login before production-pilot side effects | Real pilots must not create walkthrough data or issue demo-user cookies even when legacy demo flags are accidentally enabled | Validated in Phase 28 |
 | Keep production readiness metadata-only | Public readiness stays status-only and admin operations expose masked runtime/connectivity metadata without secrets, cookie names, raw identifiers, or student content | Validated in Phase 28 |
+| Separate deployment guardrails from live smoke checks | Config-only guardrails validate Render/Vercel/API/CORS/cookie expectations, while smoke scripts own live health/readiness/CORS checks | Validated in Phase 29 |
+| Keep demo smoke and pilot smoke distinct | `smoke:demo` can use seeded public-demo accounts; `smoke:pilot` requires readiness `ready` and no demo-user dependency | Validated in Phase 29 |
 
 ## Known Tech Debt
 
@@ -256,4 +261,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after Phase 28 verification*
+*Last updated: 2026-05-25 after Phase 29 verification*

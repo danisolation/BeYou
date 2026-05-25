@@ -26,7 +26,7 @@
 ## Phase Checklist
 
 - [x] Phase 28: Runtime Mode & Production Readiness Foundation (completed 2026-05-25)
-- [ ] Phase 29: Deployment Guardrails & Smoke Profiles
+- [x] Phase 29: Deployment Guardrails & Smoke Profiles (completed 2026-05-25)
 - [ ] Phase 30: Identity Foundation & Auth Contracts
 - [ ] Phase 31: School Pilot Operations & Safe Launch
 - [ ] Phase 32: Privacy, Security & Release Gates
@@ -39,7 +39,7 @@
 **Depends on:** v1.4 archive, v1.5 research
 **Requirements:** RUNTIME-01, RUNTIME-02, RUNTIME-03, RUNTIME-04, RUNTIME-05
 **UI hint:** no
-**Status:** Execution Complete; Verification Pending
+**Status:** Complete
 
 **Success criteria:**
 1. Operator can identify local/development, public demo, or production pilot mode through safe readiness or operations metadata.
@@ -168,4 +168,4 @@
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-25 after Phase 29 Plan 04 execution*
+*Last updated: 2026-05-25 after Phase 29 verification*
