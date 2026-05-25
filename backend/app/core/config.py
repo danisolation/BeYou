@@ -1,7 +1,10 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+RuntimeMode = Literal["local_demo", "public_demo", "production_pilot"]
 
 
 class Settings(BaseSettings):
@@ -18,7 +21,9 @@ class Settings(BaseSettings):
     session_max_age_seconds: int = Field(default=86400, validation_alias="SESSION_MAX_AGE_SECONDS")
     frontend_origin: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN")
     frontend_origins: str = Field(default="", validation_alias="FRONTEND_ORIGINS")
+    runtime_mode: RuntimeMode = Field(default="local_demo", validation_alias="RUNTIME_MODE")
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
+    allow_demo_login: bool = Field(default=True, validation_alias="ALLOW_DEMO_LOGIN")
     chat_provider: str = Field(default="fallback", validation_alias="CHAT_PROVIDER")
     freemodel_api_key: str = Field(default="", validation_alias="FREEMODEL_API_KEY")
     freemodel_base_url: str = Field(
@@ -102,6 +107,22 @@ class Settings(BaseSettings):
         origins = [self.frontend_origin]
         origins.extend(origin for origin in self.frontend_origins.split(",") if origin)
         return list(dict.fromkeys(origins))
+
+    @property
+    def is_local_demo(self) -> bool:
+        return self.runtime_mode == "local_demo"
+
+    @property
+    def is_public_demo(self) -> bool:
+        return self.runtime_mode == "public_demo"
+
+    @property
+    def is_production_pilot(self) -> bool:
+        return self.runtime_mode == "production_pilot"
+
+    @property
+    def is_demo_runtime(self) -> bool:
+        return self.runtime_mode in {"local_demo", "public_demo"}
 
     def validate_cookie_prefix_rules(self) -> None:
         if self.session_cookie_name.startswith("__Host-") and not self.session_cookie_secure:
