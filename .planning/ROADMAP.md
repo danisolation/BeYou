@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 5/28 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 8/28 complete
 
 ## Completed Milestones
 
@@ -56,7 +56,7 @@
 **Depends on:** Phase 28
 **Requirements:** DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05
 **UI hint:** yes
-**Status:** Ready to Execute
+**Status:** In Progress
 
 **Success criteria:**
 1. Operator can run a guardrail command that validates Render backend and Vercel frontend deployment expectations.
@@ -65,7 +65,7 @@
 4. Demo smoke and pilot smoke are separate; pilot smoke requires readiness `ready` and has no demo-user dependency.
 5. Deployment docs explain root directories, env vars, smoke commands, demo-vs-pilot readiness, and safe rollback.
 
-**Plans:** 4/4 plans ready
+**Plans:** 1/4 plans executed
 
 ### Phase 30: Identity Foundation & Auth Contracts
 
@@ -130,9 +130,9 @@
 | RUNTIME-03 | Phase 28 | Complete |
 | RUNTIME-04 | Phase 28 | Complete |
 | RUNTIME-05 | Phase 28 | Complete |
-| DEPLOY-01 | Phase 29 | Pending |
-| DEPLOY-02 | Phase 29 | Pending |
-| DEPLOY-03 | Phase 29 | Pending |
+| DEPLOY-01 | Phase 29 | Complete |
+| DEPLOY-02 | Phase 29 | Complete |
+| DEPLOY-03 | Phase 29 | Complete |
 | DEPLOY-04 | Phase 29 | Pending |
 | DEPLOY-05 | Phase 29 | Pending |
 | IDENT-01 | Phase 30 | Pending |
@@ -157,7 +157,7 @@
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 0
+- Complete: 8
 - Unmapped: 0
 
 ## Assumptions
@@ -168,4 +168,4 @@
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-25 after v1.5 roadmap creation*
+*Last updated: 2026-05-25 after Phase 29 Plan 01 execution*
