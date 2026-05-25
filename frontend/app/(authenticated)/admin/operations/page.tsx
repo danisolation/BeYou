@@ -8,10 +8,12 @@ import {
   type AuditEventItem,
   type ConnectivitySummary,
   type DemoSeedSummary,
+  type DeploymentGuardrailItem,
   getAdminOperationsDashboard,
   type OperationCountBucket,
   type ProductionSmokeChecklistItem,
   type RuntimeModeSummary,
+  type SmokeProfileItem,
   type SosEmailDeliveryItem,
 } from "@/lib/admin-operations-api";
 
@@ -206,6 +208,19 @@ export default function AdminOperationsPage() {
 
       {dashboard ? (
         <>
+          <Panel
+            title="Deployment guardrails"
+            description="Kiểm tra Render, Vercel, API target, CORS và cookie bằng metadata an toàn."
+          >
+            <DeploymentGuardrailsPanel items={dashboard.deployment_guardrails} />
+          </Panel>
+          <Panel
+            title="Smoke profiles"
+            description="Tách smoke public demo khỏi production pilot để không tạo tự tin sai từ tài khoản demo."
+          >
+            <SmokeProfilesPanel profiles={dashboard.smoke_profiles} />
+          </Panel>
+
           <div className="grid gap-4 md:grid-cols-3">
             <MetricCard title="Readiness" value={dashboard.readiness.status} description="Trạng thái vận hành tổng thể." />
             <MetricCard title="Demo seed" value={dashboard.demo_seed.status} description="Vai trò demo, liên kết và nội dung walkthrough." />
@@ -394,6 +409,74 @@ function SmokeChecklist({ items }: { items: ProductionSmokeChecklistItem[] }) {
           <p className="mt-2 text-body">{item.evidence}</p>
           {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
           {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function DeploymentGuardrailsPanel({ items }: { items: DeploymentGuardrailItem[] }) {
+  if (items.length === 0) {
+    return (
+      <div className="rounded-2xl bg-secondary p-4">
+        <h3 className="text-label font-semibold">Chưa có kết quả guardrail.</h3>
+        <p className="mt-2 text-body">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3 md:grid-cols-2">
+      {items.map((item) => (
+        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-semibold">{item.key}</h3>
+            <StatusBadge status={item.status} />
+          </div>
+          <p className="mt-2 text-label">{item.category}</p>
+          <p className="mt-2 text-body">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
+  if (profiles.length === 0) {
+    return (
+      <div className="rounded-2xl bg-secondary p-4">
+        <h3 className="text-label font-semibold">Chưa có kết quả guardrail.</h3>
+        <p className="mt-2 text-body">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-3 md:grid-cols-2">
+      {profiles.map((profile) => (
+        <article key={profile.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-semibold">{profile.label}</h3>
+            <StatusBadge status={profile.status} />
+          </div>
+          {profile.key === "pilot_smoke" ? (
+            <p className="mt-2 text-body">
+              Production pilot smoke yêu cầu readiness ready và không phụ thuộc tài khoản demo hoặc dữ liệu walkthrough.
+            </p>
+          ) : (
+            <p className="mt-2 text-body">
+              Dùng tài khoản demo đã seed để kiểm tra landing, đăng nhập theo vai trò và dashboard public demo.
+            </p>
+          )}
+          <p className="mt-2 text-label">
+            Uses demo accounts: {profile.uses_demo_accounts ? "yes" : "no"} · Requires readiness ready:{" "}
+            {profile.requires_readiness_ready ? "yes" : "no"}
+          </p>
+          <p className="mt-2 text-body">{profile.evidence}</p>
+          <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{profile.command}</p>
+          {profile.remediation ? <p className="mt-2 text-label">{profile.remediation}</p> : null}
         </article>
       ))}
     </div>

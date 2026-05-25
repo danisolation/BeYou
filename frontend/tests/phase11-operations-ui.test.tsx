@@ -91,7 +91,7 @@ const operationsDashboard = {
       key: "frontend_api_target",
       category: "vercel_frontend",
       status: "warn",
-      evidence: "frontend_api_target_checked_by_guard=yes; backend_raw_value_exposed=no",
+      evidence: "frontend_api_target_checked_by_guard=yes; backend_value_exposed=no",
       remediation: "Run guard:deploy with NEXT_PUBLIC_API_BASE_URL and BEYOU_EXPECTED_BACKEND_URL.",
       command: "npm --prefix frontend run guard:deploy",
     },
@@ -258,7 +258,7 @@ describe("Phase 11 operations visibility UI", () => {
     expect(screen.getByText("Demo smoke")).toBeInTheDocument();
     expect(screen.getByText("Production pilot smoke")).toBeInTheDocument();
     expect(screen.getByText(/không phụ thuộc tài khoản demo/)).toBeInTheDocument();
-    expect(screen.getByText("npm --prefix frontend run guard:deploy")).toBeInTheDocument();
+    expect(screen.getAllByText("npm --prefix frontend run guard:deploy")).toHaveLength(2);
     expect(screen.getByText("npm --prefix frontend run smoke:demo")).toBeInTheDocument();
     expect(screen.getByText("npm --prefix frontend run smoke:pilot")).toBeInTheDocument();
     expect(screen.getByText(/Không hiển thị cookie value hoặc secret/)).toBeInTheDocument();
