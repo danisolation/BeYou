@@ -225,6 +225,12 @@ export default function AdminOperationsPage() {
           <Panel title="v1.2 support metadata" description="Support plan, mood check-in, adult summary và admin config theo count metadata an toàn.">
             <BucketList buckets={dashboard.v1_2_audit ?? []} emptyCopy="Chưa có audit v1.2." />
           </Panel>
+          <Panel
+            title="v1.4 privacy controls"
+            description="Consent, reminders, note sharing, reason-gated reads và policy updates theo count metadata an toàn."
+          >
+            <BucketList buckets={dashboard.v1_4_audit ?? []} emptyCopy="Chưa có audit v1.4." />
+          </Panel>
 
           <section className="grid gap-4 lg:grid-cols-2">
             <Panel title="Readiness checks" description="Chỉ hiển thị key, trạng thái và hướng xử lý đã được masking.">
@@ -310,7 +316,7 @@ function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
               <h3 className="font-semibold">{role.role}</h3>
               <StatusBadge status={role.present && role.active && role.is_demo ? "pass" : "fail"} />
             </div>
-            <p className="mt-2 break-all text-label">{role.email}</p>
+            <p className="mt-2 break-all text-label">{role.account_key}</p>
             <p className="mt-2 text-label">
               Present: {role.present ? "yes" : "no"} · Active: {role.active ? "yes" : "no"} · Demo:{" "}
               {role.is_demo ? "yes" : "no"}
@@ -322,6 +328,10 @@ function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
         <MetricCard title="Self-checks" value={demoSeed.published_self_check_count} description="Published demo tests." />
         <MetricCard title="Scenarios" value={demoSeed.published_scenario_count} description="Published demo scenarios." />
         <MetricCard title="Mood configs" value={demoSeed.published_mood_config_count} description="Published demo config." />
+        <MetricCard title="v1.4 policy" value={demoSeed.v1_4_policy_count} description="Demo policy defaults." />
+        <MetricCard title="v1.4 consent" value={demoSeed.v1_4_preference_count} description="Demo reminder preference state." />
+        <MetricCard title="v1.4 reminders" value={demoSeed.v1_4_reminder_state_count} description="Demo reminder state." />
+        <MetricCard title="v1.4 shares" value={demoSeed.v1_4_share_count} description="Demo share metadata." />
       </div>
     </div>
   );

@@ -76,6 +76,12 @@ export default function AdminDashboardPage() {
           countLabel="Quản lý nội dung"
         />
         <AdminEntryCard
+          href="/admin/privacy-policy"
+          title="Chính sách riêng tư v1.4"
+          description="Cấu hình nhắc nhở, chia sẻ và lý do truy cập bằng mặc định an toàn, không mở dữ liệu thô."
+          countLabel="Privacy policy"
+        />
+        <AdminEntryCard
           href="/admin/users"
           title="Quản lý tài khoản"
           description="Tạo, cập nhật, tạm khóa hoặc xóa tài khoản theo đúng phạm vi demo."

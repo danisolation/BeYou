@@ -21,7 +21,7 @@ export type OperationReadinessSummary = {
 
 export type DemoSeedRoleStatus = {
   role: string;
-  email: string;
+  account_key: string;
   present: boolean;
   active: boolean;
   is_demo: boolean;
@@ -37,6 +37,10 @@ export type DemoSeedSummary = {
   published_self_check_count: number;
   published_scenario_count: number;
   published_mood_config_count: number;
+  v1_4_policy_count: number;
+  v1_4_preference_count: number;
+  v1_4_reminder_state_count: number;
+  v1_4_share_count: number;
 };
 
 export type ConnectivitySummary = {
@@ -102,6 +106,7 @@ export type AdminOperationsDashboard = {
     recent: SosEmailDeliveryItem[];
   };
   v1_2_audit?: OperationCountBucket[];
+  v1_4_audit?: OperationCountBucket[];
   audit: {
     total_matching: number;
     filters: {
