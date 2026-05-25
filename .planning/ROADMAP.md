@@ -84,7 +84,14 @@
 6. External identity claims, school/class metadata, or provider groups never grant adult student visibility; active relationship plus student-sent SOS remains mandatory.
 7. Unknown, unlinked, disabled, or deprovisioned identities receive safe denial or pending-review behavior without privileged auto-creation.
 
-**Plans:** 0/1 pending
+**Plans:** 0/5 pending
+
+Plans:
+- [ ] 30-01-PLAN.md — Backend identity/session schema and safe session metadata.
+- [ ] 30-02-PLAN.md — External identity resolver contract and authorization boundary regressions.
+- [ ] 30-03-PLAN.md — Backend provider readiness and admin operations identity metadata.
+- [ ] 30-04-PLAN.md — Public-safe auth capabilities and production-pilot demo entry gating.
+- [ ] 30-05-PLAN.md — Admin operations UI panels for provider, mapping, and session auth metadata.
 
 ### Phase 31: School Pilot Operations & Safe Launch
 
