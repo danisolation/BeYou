@@ -18,6 +18,12 @@ Seeded demo roles are available from the public entry page without manually copy
 
 Demo data is fictional and marked in the UI. Do not enter real student data into the demo deployment.
 
+## Runtime modes and readiness
+
+Peerlight AI uses explicit runtime modes: `local_demo`, `public_demo`, and `production_pilot`. The hosted public demo is configured as `public_demo`, so `/health/ready` may report `degraded` or `not_ready` while demo seeding is intentionally enabled.
+
+A real `production_pilot` must use `ALLOW_DEMO_SEED=false`, `ALLOW_DEMO_LOGIN=false`, secure cookies, exact HTTPS frontend origins, a reachable database, current migrations, and no placeholder secrets. Public `/health/ready` remains status/time only; admin readiness and operations details are authorization-gated and metadata-only.
+
 ## v1.4 privacy boundaries
 
 Peerlight AI v1.4 adds consent-based reminders, SOS-only adult visibility, and access transparency without expanding raw student data access:

@@ -22,6 +22,8 @@ services:
           property: connectionString
       - key: ENVIRONMENT
         value: production
+      - key: RUNTIME_MODE
+        value: public_demo
       - key: SESSION_COOKIE_NAME
         value: __Secure-beyou_session
       - key: SESSION_COOKIE_SECURE
@@ -35,6 +37,8 @@ services:
       - key: FRONTEND_ORIGINS
         value: https://beyou-frontend.vercel.app
       - key: ALLOW_DEMO_SEED
+        value: true
+      - key: ALLOW_DEMO_LOGIN
         value: true
       - key: CHAT_PROVIDER
         value: fallback
