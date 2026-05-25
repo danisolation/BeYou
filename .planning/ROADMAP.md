@@ -25,7 +25,7 @@
 
 ## Phase Checklist
 
-- [ ] Phase 28: Runtime Mode & Production Readiness Foundation
+- [x] Phase 28: Runtime Mode & Production Readiness Foundation (completed 2026-05-25)
 - [ ] Phase 29: Deployment Guardrails & Smoke Profiles
 - [ ] Phase 30: Identity Foundation & Auth Contracts
 - [ ] Phase 31: School Pilot Operations & Safe Launch
@@ -39,7 +39,7 @@
 **Depends on:** v1.4 archive, v1.5 research
 **Requirements:** RUNTIME-01, RUNTIME-02, RUNTIME-03, RUNTIME-04, RUNTIME-05
 **UI hint:** no
-**Status:** Ready for Verification
+**Status:** Complete
 
 **Success criteria:**
 1. Operator can identify local/development, public demo, or production pilot mode through safe readiness or operations metadata.
