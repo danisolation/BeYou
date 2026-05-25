@@ -15,6 +15,13 @@ ALLOWED_REASON_CODES = {
     "sos_follow_up",
     "routine_care_conversation",
 }
+ACCESS_REASON_LABELS = {
+    "student_requested_support": "Học sinh đã nhờ hỗ trợ",
+    "follow_up_after_checkin": "Theo dõi sau một check-in gần đây",
+    "support_plan_context": "Xem bối cảnh kế hoạch hỗ trợ",
+    "sos_follow_up": "Theo dõi sau một tình huống SOS",
+    "routine_care_conversation": "Chuẩn bị cho cuộc trò chuyện chăm sóc định kỳ",
+}
 
 
 def normalize_channels(value: list[str]) -> list[str]:
@@ -31,6 +38,18 @@ def normalize_reason_codes(value: list[str]) -> list[str]:
     if invalid:
         raise ValueError("Lý do truy cập không hợp lệ.")
     return normalized or sorted(ALLOWED_REASON_CODES)
+
+
+class AccessReasonOption(BaseModel):
+    code: str
+    label: str
+
+
+def access_reason_options(reason_codes: list[str]) -> list[AccessReasonOption]:
+    return [
+        AccessReasonOption(code=reason_code, label=ACCESS_REASON_LABELS[reason_code])
+        for reason_code in normalize_reason_codes(reason_codes)
+    ]
 
 
 def normalize_quiet_hour(value: str | None) -> str | None:

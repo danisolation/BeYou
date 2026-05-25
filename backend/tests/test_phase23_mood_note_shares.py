@@ -314,7 +314,7 @@ def test_student_summary_scope_requires_student_written_summary_without_private_
     assert payload["active_shares"][0]["has_student_summary"] is True
 
     _login(client, teacher.email)
-    adult_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    adult_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert adult_response.status_code == 200
     adult_payload = adult_response.json()
     assert adult_payload["shared_mood_notes"][0]["content"] == (
@@ -427,24 +427,28 @@ def test_adult_support_summary_requires_relationship_and_active_grant(
     assert share_response.status_code == 200
 
     _login(client, teacher.email)
-    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert teacher_response.status_code == 200
     assert teacher_response.json()["shared_mood_notes"][0]["content"].endswith(PRIVATE_MARKER)
 
     _login(client, relationship_only_teacher.email)
-    relationship_only_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    relationship_only_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert relationship_only_response.status_code == 200
     assert relationship_only_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in relationship_only_response.text
 
     _login(client, parent.email)
-    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary")
+    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert parent_response.status_code == 200
     assert parent_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in parent_response.text
 
     _login(client, outsider.email)
-    outsider_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    outsider_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert outsider_response.status_code == 403
     assert PRIVATE_MARKER not in outsider_response.text
 
@@ -480,7 +484,7 @@ def test_adult_shared_note_read_rejects_inconsistent_cross_student_share(
     db.commit()
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
 
     assert response.status_code == 200
     assert response.json()["shared_mood_notes"] == []
@@ -509,7 +513,7 @@ def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient
     assert {share["adult_id"] for share in revoke_one_response.json()["active_shares"]} == {str(parent.id)}
 
     _login(client, teacher.email)
-    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert teacher_response.status_code == 200
     assert teacher_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in teacher_response.text
@@ -529,7 +533,7 @@ def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient
     assert all(share.revoked_by_id == student.id for share in revoked_shares)
 
     _login(client, parent.email)
-    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary")
+    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert parent_response.status_code == 200
     assert parent_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in parent_response.text
@@ -549,7 +553,7 @@ def test_phase23_audit_and_side_effect_invariants(db: OrmSession, client: TestCl
     assert share_response.status_code == 200
 
     _login(client, teacher.email)
-    read_response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    read_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
     assert read_response.status_code == 200
     assert PRIVATE_MARKER in read_response.text
 

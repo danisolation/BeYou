@@ -170,7 +170,7 @@ def test_selected_teacher_gets_support_plan_and_mood_summary_without_private_not
     student, teacher, _, _ = _seed_summary_data(db)
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
 
     assert response.status_code == 200
     payload = response.json()
@@ -184,7 +184,12 @@ def test_selected_teacher_gets_support_plan_and_mood_summary_without_private_not
     assert "đúng phạm vi học sinh đã chọn" in " ".join(payload["privacy_notes"])
     assert PRIVATE_MOOD_NOTE not in response.text
 
-    audit_event = db.scalar(select(AuditEvent).where(AuditEvent.resource_type == "adult_support_summary"))
+    audit_event = db.scalar(
+        select(AuditEvent).where(
+            AuditEvent.resource_type == "adult_support_summary",
+            AuditEvent.action == "sensitive_resource_read",
+        )
+    )
     assert audit_event is not None
     assert audit_event.metadata_summary["support_plan_shared"] is True
     assert audit_event.metadata_summary["recent_mood_checkin_count"] == 1
@@ -198,7 +203,7 @@ def test_linked_parent_gets_mood_summary_but_not_unselected_support_plan(
     student, _, parent, _ = _seed_summary_data(db)
 
     _login(client, parent.email)
-    response = client.get(f"/api/parent/students/{student.id}/support-summary")
+    response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
 
     assert response.status_code == 200
     payload = response.json()
@@ -215,7 +220,7 @@ def test_unlinked_adult_is_denied_without_sensitive_content(
     student, _, _, outsider = _seed_summary_data(db)
 
     _login(client, outsider.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
 
     assert response.status_code == 403
     assert PRIVATE_MOOD_NOTE not in response.text

@@ -419,6 +419,7 @@ def list_active_shared_notes_for_adult(
     adult: User,
     student_id: uuid.UUID,
     relationship_type: str,
+    access_reason_code: str | None = None,
 ) -> list[AdultSharedMoodNote]:
     require_permission(
         db,
@@ -494,6 +495,7 @@ def list_active_shared_notes_for_adult(
             "shared_note_count": len(shared_notes),
             "share_scopes": sorted(set(share_scopes)),
             "relationship_type": relationship_type,
+            "access_reason_code": access_reason_code,
             "decision": "active_relationship_and_active_share_required",
         },
         is_demo=adult.is_demo,

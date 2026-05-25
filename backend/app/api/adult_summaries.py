@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_role
@@ -57,6 +57,7 @@ def get_parent_student_self_check_summaries(
 )
 def get_teacher_student_support_summary(
     student_id: uuid.UUID,
+    reason_code: str | None = Query(default=None, max_length=64),
     current_user: User = Depends(get_current_user),
     db: OrmSession = Depends(get_db),
 ) -> AdultSupportSummaryResponse:
@@ -66,6 +67,7 @@ def get_teacher_student_support_summary(
         current_user,
         student_id,
         relationship_type=UserRole.TEACHER.value,
+        access_reason_code=reason_code,
     )
 
 
@@ -75,6 +77,7 @@ def get_teacher_student_support_summary(
 )
 def get_parent_student_support_summary(
     student_id: uuid.UUID,
+    reason_code: str | None = Query(default=None, max_length=64),
     current_user: User = Depends(get_current_user),
     db: OrmSession = Depends(get_db),
 ) -> AdultSupportSummaryResponse:
@@ -84,4 +87,5 @@ def get_parent_student_support_summary(
         current_user,
         student_id,
         relationship_type=UserRole.PARENT.value,
+        access_reason_code=reason_code,
     )

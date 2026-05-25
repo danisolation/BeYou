@@ -6,6 +6,7 @@ from datetime import datetime
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.schemas.mood_note_shares import AdultSharedMoodNote
+from app.schemas.privacy_controls import AccessReasonOption
 from app.schemas.self_checks import _validate_state_label
 
 
@@ -62,10 +63,18 @@ class AdultMoodTrendSummary(BaseModel):
     suggested_supportive_action: str
 
 
+class AdultAccessReasonStatus(BaseModel):
+    required: bool
+    reason_code: str | None = None
+    reason_label: str | None = None
+    allowed_reasons: list[AccessReasonOption] = Field(default_factory=list)
+
+
 class AdultSupportSummaryResponse(BaseModel):
     student: AdultStudentContext
     support_plan: AdultSupportPlanSummary
     mood_summary: AdultMoodTrendSummary
     shared_mood_notes: list[AdultSharedMoodNote] = Field(default_factory=list)
+    access_reason: AdultAccessReasonStatus
     privacy_notes: list[str]
     is_demo: bool = False
