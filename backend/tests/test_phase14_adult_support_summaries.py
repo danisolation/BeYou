@@ -181,7 +181,7 @@ def test_selected_teacher_gets_support_plan_and_mood_summary_without_private_not
     assert payload["mood_summary"]["latest_trend_label"] == "Cần hỗ trợ sớm"
     assert payload["mood_summary"]["recent_checkin_count"] == 1
     assert payload["mood_summary"]["high_concern_count"] == 1
-    assert "không giám sát" in " ".join(payload["privacy_notes"])
+    assert "đúng phạm vi học sinh đã chọn" in " ".join(payload["privacy_notes"])
     assert PRIVATE_MOOD_NOTE not in response.text
 
     audit_event = db.scalar(select(AuditEvent).where(AuditEvent.resource_type == "adult_support_summary"))

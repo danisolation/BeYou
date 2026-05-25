@@ -14,6 +14,7 @@ from app.schemas.mood_checkins import (
     MoodOption,
 )
 from app.services.audit import record_audit_event
+from app.services.mood_note_shares import list_active_shares_for_student_checkins
 
 MOOD_OPTIONS = [
     MoodOption(key="steady", label="Khá ổn", helper="Em thấy tương đối cân bằng."),
@@ -36,8 +37,8 @@ CONTEXT_TAG_OPTIONS = [
 
 MOOD_PRIVACY_NOTES = [
     "Check-in giúp em tự nhìn lại cảm xúc, không phải chẩn đoán.",
-    "Ghi chú riêng tư chỉ hiển thị cho em trong Phase 13.",
-    "BeYou không tự động gửi SOS hoặc thông báo người lớn từ check-in này.",
+    "Ghi chú riêng tư vẫn do em kiểm soát; chia sẻ chọn lọc là tùy chọn.",
+    "BeYou không tự động gửi SOS; mọi chia sẻ là do em chủ động chọn.",
 ]
 
 
@@ -105,8 +106,17 @@ def _derive_guidance(payload: MoodCheckInCreate) -> tuple[str, str, str, bool, b
     )
 
 
-def _response(checkin: MoodCheckIn) -> MoodCheckInResponse:
-    return MoodCheckInResponse.model_validate(checkin)
+def _response(
+    checkin: MoodCheckIn,
+    active_shares: list | None = None,
+) -> MoodCheckInResponse:
+    return MoodCheckInResponse.model_validate(checkin).model_copy(
+        update={
+            "shareable": True,
+            "can_share_private_note": checkin.private_note is not None,
+            "active_shares": active_shares or [],
+        }
+    )
 
 
 def create_mood_checkin(
@@ -189,4 +199,7 @@ def list_student_mood_checkins(
             .limit(limit)
         )
     )
-    return MoodCheckInHistoryResponse(items=[_response(item) for item in items])
+    shares_by_checkin = list_active_shares_for_student_checkins(db, student.id, [item.id for item in items])
+    return MoodCheckInHistoryResponse(
+        items=[_response(item, shares_by_checkin.get(item.id, [])) for item in items]
+    )

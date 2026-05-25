@@ -5,6 +5,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.schemas.mood_note_shares import MoodNoteActiveShare
+
 MOOD_LABELS = {"steady", "okay", "tired", "sad", "anxious", "overwhelmed"}
 CONTEXT_TAGS = {"school", "family", "friends", "body", "sleep", "future", "other"}
 
@@ -76,6 +78,9 @@ class MoodCheckInResponse(BaseModel):
     suggest_sos: bool
     created_at: datetime
     is_demo: bool
+    shareable: bool = False
+    can_share_private_note: bool = False
+    active_shares: list[MoodNoteActiveShare] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 

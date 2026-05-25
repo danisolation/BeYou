@@ -3,8 +3,9 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from app.schemas.mood_note_shares import AdultSharedMoodNote
 from app.schemas.self_checks import _validate_state_label
 
 
@@ -65,5 +66,6 @@ class AdultSupportSummaryResponse(BaseModel):
     student: AdultStudentContext
     support_plan: AdultSupportPlanSummary
     mood_summary: AdultMoodTrendSummary
+    shared_mood_notes: list[AdultSharedMoodNote] = Field(default_factory=list)
     privacy_notes: list[str]
     is_demo: bool = False

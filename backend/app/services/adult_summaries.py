@@ -27,14 +27,15 @@ from app.schemas.adult_summaries import (
     AdultSupportSummaryResponse,
 )
 from app.services.audit import record_audit_event
+from app.services.mood_note_shares import list_active_shared_notes_for_adult
 
 RECENT_SUMMARY_LIMIT = 5
 RECENT_SUMMARY_DAYS = 30
 RECENT_MOOD_DAYS = 14
 ADULT_SUPPORT_PRIVACY_NOTES = [
     "Bạn đang xem tóm tắt hỗ trợ được phép xem, không phải toàn bộ dữ liệu riêng tư của học sinh.",
-    "Ghi chú mood riêng tư, câu trả lời tự kiểm tra và nội dung trò chuyện không hiển thị tại đây.",
-    "Mục tiêu là lắng nghe và hỗ trợ, không giám sát, chẩn đoán, kỷ luật hoặc xếp hạng rủi ro.",
+    "Ghi chú cảm xúc chỉ hiển thị khi học sinh đã chủ động đồng ý chia sẻ.",
+    "Mục tiêu là lắng nghe và hỗ trợ trong đúng phạm vi học sinh đã chọn.",
 ]
 
 
@@ -241,6 +242,12 @@ def get_adult_support_summary(
 
     support_plan = _support_plan_summary(db, student_id=student_id, adult_id=adult.id)
     mood_summary = _mood_summary(db, student_id)
+    shared_mood_notes = list_active_shared_notes_for_adult(
+        db,
+        adult,
+        student_id,
+        relationship_type,
+    )
     record_audit_event(
         db,
         actor=adult,
@@ -257,7 +264,8 @@ def get_adult_support_summary(
             "support_plan_shared": support_plan.shared_with_viewer,
             "recent_mood_checkin_count": mood_summary.recent_checkin_count,
             "high_concern_count": mood_summary.high_concern_count,
-            "decision": "summary_only",
+            "shared_mood_note_count": len(shared_mood_notes),
+            "decision": "summary_with_student_consented_shared_notes",
         },
         is_demo=student.is_demo,
     )
@@ -267,6 +275,7 @@ def get_adult_support_summary(
         student=_adult_student_context(student),
         support_plan=support_plan,
         mood_summary=mood_summary,
+        shared_mood_notes=shared_mood_notes,
         privacy_notes=ADULT_SUPPORT_PRIVACY_NOTES,
         is_demo=student.is_demo,
     )
