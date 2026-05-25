@@ -56,13 +56,33 @@ export type AdultSharedMoodNote = {
   is_demo: boolean;
 };
 
+export type AdultAccessReasonOption = {
+  code: string;
+  label: string;
+};
+
+export type AdultAccessReasonStatus = {
+  required: boolean;
+  reason_code: string | null;
+  reason_label: string | null;
+  allowed_reasons: AdultAccessReasonOption[];
+};
+
 export type AdultSupportSummaryResponse = {
   student: AdultSummaryStudent;
   support_plan: AdultSupportPlanSummary;
   mood_summary: AdultMoodTrendSummary;
   shared_mood_notes: AdultSharedMoodNote[];
+  access_reason: AdultAccessReasonStatus;
   privacy_notes: string[];
   is_demo: boolean;
+};
+
+export type AdultAccessReasonRequiredDetail = {
+  code: "access_reason_required";
+  message: string;
+  allowed_reasons: AdultAccessReasonOption[];
+  copy?: string[];
 };
 
 export function getTeacherSelfCheckSummaries(studentId: string) {
@@ -73,10 +93,15 @@ export function getParentSelfCheckSummaries(studentId: string) {
   return apiFetch<AdultSelfCheckSummaryResponse>(`/api/parent/students/${studentId}/self-check-summaries`);
 }
 
-export function getTeacherSupportSummary(studentId: string) {
-  return apiFetch<AdultSupportSummaryResponse>(`/api/teacher/students/${studentId}/support-summary`);
+function supportSummaryPath(role: "teacher" | "parent", studentId: string, reasonCode?: string) {
+  const query = reasonCode ? `?reason_code=${encodeURIComponent(reasonCode)}` : "";
+  return `/api/${role}/students/${studentId}/support-summary${query}`;
 }
 
-export function getParentSupportSummary(studentId: string) {
-  return apiFetch<AdultSupportSummaryResponse>(`/api/parent/students/${studentId}/support-summary`);
+export function getTeacherSupportSummary(studentId: string, reasonCode?: string) {
+  return apiFetch<AdultSupportSummaryResponse>(supportSummaryPath("teacher", studentId, reasonCode));
+}
+
+export function getParentSupportSummary(studentId: string, reasonCode?: string) {
+  return apiFetch<AdultSupportSummaryResponse>(supportSummaryPath("parent", studentId, reasonCode));
 }

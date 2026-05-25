@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
+import { ApiError } from "@/lib/api";
 import {
   getTeacherSupportSummary,
+  type AdultAccessReasonRequiredDetail,
   type AdultSupportSummaryResponse,
 } from "@/lib/adult-summary-api";
 
@@ -18,26 +20,98 @@ export function AdultSupportSummaryDetail({
   loadSummary,
   sectionTitle,
 }: PageProps & {
-  loadSummary: (studentId: string) => Promise<AdultSupportSummaryResponse>;
+  loadSummary: (studentId: string, reasonCode?: string) => Promise<AdultSupportSummaryResponse>;
   sectionTitle: string;
 }) {
+  const [studentId, setStudentId] = useState<string | null>(null);
   const [summary, setSummary] = useState<AdultSupportSummaryResponse | null>(null);
+  const [reasonRequired, setReasonRequired] = useState<AdultAccessReasonRequiredDetail | null>(null);
+  const [selectedReason, setSelectedReason] = useState("");
+  const [reasonError, setReasonError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmittingReason, setIsSubmittingReason] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    let isActive = true;
+    setIsLoading(true);
     Promise.resolve(params)
-      .then(({ studentId }) => loadSummary(studentId))
+      .then(({ studentId: resolvedStudentId }) => {
+        if (!isActive) {
+          return null;
+        }
+        setStudentId(resolvedStudentId);
+        return loadSummary(resolvedStudentId);
+      })
       .then((response) => {
+        if (!isActive || response === null) {
+          return;
+        }
         setSummary(response);
+        setReasonRequired(null);
         setHasError(false);
       })
-      .catch(() => setHasError(true))
-      .finally(() => setIsLoading(false));
+      .catch((error: unknown) => {
+        if (!isActive) {
+          return;
+        }
+        const accessReasonDetail = getAccessReasonRequiredDetail(error);
+        if (accessReasonDetail !== null) {
+          setReasonRequired(accessReasonDetail);
+          setSummary(null);
+          setHasError(false);
+          return;
+        }
+        setHasError(true);
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      });
+    return () => {
+      isActive = false;
+    };
   }, [loadSummary, params]);
+
+  async function submitReason() {
+    if (studentId === null || selectedReason === "") {
+      return;
+    }
+    setIsSubmittingReason(true);
+    setReasonError(null);
+    try {
+      const response = await loadSummary(studentId, selectedReason);
+      setSummary(response);
+      setReasonRequired(null);
+      setHasError(false);
+    } catch (error) {
+      setReasonError("Chưa xác nhận được lý do hỗ trợ. Vui lòng chọn lại hoặc thử mở lại trang.");
+      if (getAccessReasonRequiredDetail(error) === null) {
+        setHasError(true);
+      }
+    } finally {
+      setIsSubmittingReason(false);
+    }
+  }
 
   if (isLoading) {
     return <p>Đang tải tóm tắt hỗ trợ...</p>;
+  }
+
+  if (reasonRequired !== null) {
+    return (
+      <main className="mx-auto max-w-[760px] space-y-6">
+        <AccessReasonPrompt
+          detail={reasonRequired}
+          selectedReason={selectedReason}
+          isSubmitting={isSubmittingReason}
+          errorMessage={reasonError}
+          onReasonChange={setSelectedReason}
+          onSubmit={submitReason}
+        />
+      </main>
+    );
   }
 
   if (hasError || summary === null) {
@@ -72,10 +146,98 @@ export function AdultSupportSummaryDetail({
         </ul>
       </section>
 
+      {summary.access_reason?.required ? <AccessReasonAcceptedCard summary={summary} /> : null}
       <SupportPlanCard summary={summary} />
       <AdultSharedMoodNotesCard summary={summary} />
       <MoodTrendCard summary={summary} />
     </main>
+  );
+}
+
+function getAccessReasonRequiredDetail(error: unknown): AdultAccessReasonRequiredDetail | null {
+  if (!(error instanceof ApiError) || error.status !== 428) {
+    return null;
+  }
+  const detailWrapper = error.detail;
+  if (typeof detailWrapper !== "object" || detailWrapper === null) {
+    return null;
+  }
+  const maybeDetail = "detail" in detailWrapper ? (detailWrapper as { detail: unknown }).detail : detailWrapper;
+  if (typeof maybeDetail !== "object" || maybeDetail === null) {
+    return null;
+  }
+  if ((maybeDetail as { code?: unknown }).code !== "access_reason_required") {
+    return null;
+  }
+  return maybeDetail as AdultAccessReasonRequiredDetail;
+}
+
+function AccessReasonPrompt({
+  detail,
+  selectedReason,
+  isSubmitting,
+  errorMessage,
+  onReasonChange,
+  onSubmit,
+}: {
+  detail: AdultAccessReasonRequiredDetail;
+  selectedReason: string;
+  isSubmitting: boolean;
+  errorMessage: string | null;
+  onReasonChange: (reason: string) => void;
+  onSubmit: () => void;
+}) {
+  return (
+    <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <h1 className="text-display">Cho biết lý do hỗ trợ trước khi xem</h1>
+      <p className="mt-3 text-body">{detail.message}</p>
+      <div className="mt-4 rounded-2xl bg-secondary p-4 text-body">
+        {(detail.copy ?? [
+          "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
+          "Lý do không cấp thêm quyền; BeYou vẫn kiểm tra vai trò và liên kết đang hoạt động.",
+        ]).map((copy) => (
+          <p key={copy}>{copy}</p>
+        ))}
+      </div>
+      <fieldset className="mt-5 space-y-3">
+        <legend className="text-heading">Chọn lý do phù hợp</legend>
+        {detail.allowed_reasons.map((reason) => (
+          <label key={reason.code} className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-3 text-body">
+            <input
+              className="mt-1"
+              type="radio"
+              name="access-reason"
+              value={reason.code}
+              checked={selectedReason === reason.code}
+              onChange={() => onReasonChange(reason.code)}
+            />
+            <span>{reason.label}</span>
+          </label>
+        ))}
+      </fieldset>
+      {errorMessage ? <p className="mt-3 text-label text-red-700">{errorMessage}</p> : null}
+      <button
+        className="mt-5 rounded-full bg-primary px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+        type="button"
+        disabled={selectedReason === "" || isSubmitting}
+        onClick={onSubmit}
+      >
+        {isSubmitting ? "Đang xác nhận..." : "Tiếp tục xem tóm tắt"}
+      </button>
+    </section>
+  );
+}
+
+function AccessReasonAcceptedCard({ summary }: { summary: AdultSupportSummaryResponse }) {
+  return (
+    <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <h2 className="text-heading">Lý do truy cập đã ghi nhận</h2>
+      <p className="mt-3 text-body">
+        {summary.access_reason.reason_label ?? "Lý do hỗ trợ đã được ghi nhận"} — chỉ lưu dưới dạng mã metadata để minh bạch
+        thao tác xem.
+      </p>
+      <p className="mt-2 text-label">Lý do này không mở rộng quyền xem ngoài liên kết đang hoạt động.</p>
+    </section>
   );
 }
 
