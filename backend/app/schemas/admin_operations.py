@@ -82,6 +82,26 @@ class ProductionSmokeChecklistItem(BaseModel):
     remediation: str | None = None
 
 
+class DeploymentGuardrailItem(BaseModel):
+    key: str
+    category: str
+    status: ReadinessCheckStatus
+    evidence: str
+    remediation: str | None = None
+    command: str | None = None
+
+
+class SmokeProfileItem(BaseModel):
+    key: str
+    label: str
+    status: ReadinessCheckStatus
+    command: str
+    uses_demo_accounts: bool
+    requires_readiness_ready: bool
+    evidence: str
+    remediation: str | None = None
+
+
 class SosEmailDeliveryItem(BaseModel):
     delivery_key: str
     alert_key: str
@@ -140,6 +160,8 @@ class AdminOperationsDashboardResponse(BaseModel):
     demo_seed: DemoSeedSummary
     connectivity: ConnectivitySummary
     production_smoke: list[ProductionSmokeChecklistItem]
+    deployment_guardrails: list[DeploymentGuardrailItem]
+    smoke_profiles: list[SmokeProfileItem]
     sos_email: SosEmailDeliverySummary
     v1_2_audit: list[OperationCountBucket] = Field(default_factory=list)
     v1_4_audit: list[OperationCountBucket] = Field(default_factory=list)

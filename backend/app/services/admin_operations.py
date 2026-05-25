@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from datetime import datetime
 from typing import Any
+from urllib.parse import urlsplit
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
@@ -40,11 +41,13 @@ from app.schemas.admin_operations import (
     ConnectivitySummary,
     DemoSeedRoleStatus,
     DemoSeedSummary,
+    DeploymentGuardrailItem,
     OperationCountBucket,
     OperationReadinessAttentionCheck,
     OperationReadinessSummary,
     ProductionSmokeChecklistItem,
     RuntimeModeSummary,
+    SmokeProfileItem,
     SosEmailDeliveryItem,
     SosEmailDeliverySummary,
 )
@@ -121,6 +124,9 @@ EXPECTED_DEMO_ROLES = [
     (UserRole.ADMIN.value, DEMO_ADMIN_EMAIL),
 ]
 
+DEPLOY_GUARD_COMMAND = "npm --prefix frontend run guard:deploy"
+DEMO_SMOKE_COMMAND = "npm --prefix frontend run smoke:demo"
+PILOT_SMOKE_COMMAND = "npm --prefix frontend run smoke:pilot"
 PRODUCTION_SMOKE_COMMAND = "npm --prefix frontend run smoke:production"
 
 
@@ -423,6 +429,58 @@ def _origin_kind(origin: str) -> str:
     return "other"
 
 
+def _yes_no(value: bool) -> str:
+    return "yes" if value else "no"
+
+
+def _normalize_origin_for_match(value: str) -> str:
+    stripped = value.strip().rstrip("/")
+    if not stripped:
+        return ""
+    parsed = urlsplit(stripped)
+    if parsed.scheme and parsed.netloc:
+        return f"{parsed.scheme.lower()}://{parsed.netloc.lower()}"
+    return stripped.lower()
+
+
+def _configured_allowed_origins(settings: Settings) -> list[str]:
+    configured = [origin.strip() for origin in str(settings.frontend_origins).split(",") if origin.strip()]
+    return configured or [settings.frontend_origin]
+
+
+def _exact_credentialed_origin_match(settings: Settings) -> dict[str, bool | int]:
+    expected_origin = _normalize_origin_for_match(settings.frontend_origin)
+    allowed_origins = _configured_allowed_origins(settings)
+    normalized_allowed = list(dict.fromkeys(_normalize_origin_for_match(origin) for origin in allowed_origins if origin.strip()))
+    has_wildcard_origin = any("*" in origin for origin in allowed_origins)
+    has_local_origin = any(_origin_kind(origin) == "local" for origin in allowed_origins)
+    all_origins_https = bool(normalized_allowed) and all(origin.startswith("https://") for origin in normalized_allowed)
+
+    return {
+        "expected_frontend_origin_configured": bool(expected_origin),
+        "exact_allowed_origin_match": bool(expected_origin and expected_origin in normalized_allowed),
+        "allowed_origin_count": len(normalized_allowed),
+        "has_wildcard_origin": has_wildcard_origin,
+        "has_local_origin": has_local_origin,
+        "all_origins_https": all_origins_https,
+        "credentialed_cors": settings.session_cookie_secure and settings.session_cookie_samesite.lower() == "none",
+    }
+
+
+def _origin_contract_evidence(contract: dict[str, bool | int]) -> str:
+    return "; ".join(
+        [
+            f"expected_frontend_origin_configured={_yes_no(bool(contract['expected_frontend_origin_configured']))}",
+            f"exact_allowed_origin_match={_yes_no(bool(contract['exact_allowed_origin_match']))}",
+            f"allowed_origin_count={contract['allowed_origin_count']}",
+            f"has_wildcard_origin={_yes_no(bool(contract['has_wildcard_origin']))}",
+            f"has_local_origin={_yes_no(bool(contract['has_local_origin']))}",
+            f"all_origins_https={_yes_no(bool(contract['all_origins_https']))}",
+            f"credentialed_cors={_yes_no(bool(contract['credentialed_cors']))}",
+        ]
+    )
+
+
 def _runtime_mode_summary(settings: Settings) -> RuntimeModeSummary:
     return RuntimeModeSummary(
         mode=settings.runtime_mode,
@@ -455,29 +513,141 @@ def _production_smoke_checklist() -> list[ProductionSmokeChecklistItem]:
             label="Backend live and readiness endpoints",
             status="covered",
             command=PRODUCTION_SMOKE_COMMAND,
-            evidence="Smoke script checks /health/live and /health/ready without secrets.",
+            evidence="Compatibility smoke delegates to demo smoke; pilot readiness uses the explicit pilot smoke command.",
+            remediation=f"Use {PILOT_SMOKE_COMMAND} for production pilot readiness.",
         ),
         ProductionSmokeChecklistItem(
             key="cors_preflight",
             label="Credentialed CORS preflight",
             status="covered",
             command=PRODUCTION_SMOKE_COMMAND,
-            evidence="Smoke script checks allowed Origin and credentials headers for login preflight.",
+            evidence="Demo compatibility smoke checks credentialed CORS; pilot smoke checks the same contract without demo login.",
             remediation="Verify FRONTEND_ORIGIN/FRONTEND_ORIGINS exactly match the deployed frontend URL.",
         ),
         ProductionSmokeChecklistItem(
             key="login_session_cookie",
             label="Demo login and session cookie",
             status="covered",
-            command=PRODUCTION_SMOKE_COMMAND,
-            evidence="Smoke script logs in with seeded demo roles and verifies a session cookie is issued.",
+            command=DEMO_SMOKE_COMMAND,
+            evidence="Demo smoke logs in with seeded roles and verifies a session cookie is issued.",
         ),
         ProductionSmokeChecklistItem(
             key="role_dashboards",
             label="Role dashboard reachability",
             status="covered",
-            command=PRODUCTION_SMOKE_COMMAND,
-            evidence="Smoke script checks student, teacher, parent, and admin dashboard routes exist.",
+            command=DEMO_SMOKE_COMMAND,
+            evidence="Demo smoke checks student, teacher, parent, and admin dashboard routes exist.",
+        ),
+    ]
+
+
+def _deployment_guardrails(settings: Settings) -> list[DeploymentGuardrailItem]:
+    demo_flags_safe = not settings.is_production_pilot or (not settings.allow_demo_seed and not settings.allow_demo_login)
+    render_status = "pass" if demo_flags_safe else "fail"
+
+    contract = _exact_credentialed_origin_match(settings)
+    contract_pass = (
+        bool(contract["expected_frontend_origin_configured"])
+        and bool(contract["exact_allowed_origin_match"])
+        and contract["allowed_origin_count"] == 1
+        and not bool(contract["has_wildcard_origin"])
+        and not bool(contract["has_local_origin"])
+        and bool(contract["all_origins_https"])
+        and bool(contract["credentialed_cors"])
+    )
+    cors_status = "pass" if contract_pass else "fail" if settings.is_production_pilot else "warn"
+
+    return [
+        DeploymentGuardrailItem(
+            key="vercel_frontend",
+            category="vercel_frontend",
+            status="pass",
+            evidence="vercel_framework=nextjs; vercel_root_required=frontend; guard_command_available=yes",
+            remediation=None,
+            command=DEPLOY_GUARD_COMMAND,
+        ),
+        DeploymentGuardrailItem(
+            key="render_backend",
+            category="render_backend",
+            status=render_status,
+            evidence=(
+                f"runtime_mode={settings.runtime_mode}; "
+                f"demo_seed_allowed={_yes_no(settings.allow_demo_seed)}; "
+                f"demo_login_allowed={_yes_no(settings.allow_demo_login)}"
+            ),
+            remediation=(
+                "Set ALLOW_DEMO_SEED=false and ALLOW_DEMO_LOGIN=false before production pilot."
+                if render_status == "fail"
+                else None
+            ),
+            command=DEPLOY_GUARD_COMMAND,
+        ),
+        DeploymentGuardrailItem(
+            key="frontend_api_target",
+            category="vercel_frontend",
+            status="warn",
+            evidence="frontend_api_target_checked_by_guard=yes; backend_raw_value_exposed=no",
+            remediation="Run the deploy guard command with NEXT_PUBLIC_API_BASE_URL and BEYOU_EXPECTED_BACKEND_URL.",
+            command=DEPLOY_GUARD_COMMAND,
+        ),
+        DeploymentGuardrailItem(
+            key="cors_cookie_contract",
+            category="render_backend",
+            status=cors_status,
+            evidence=_origin_contract_evidence(contract),
+            remediation=(
+                "Set one HTTPS frontend origin, remove wildcard/local origins, and use Secure SameSite=None cookies."
+                if cors_status != "pass"
+                else None
+            ),
+            command=DEPLOY_GUARD_COMMAND,
+        ),
+    ]
+
+
+def _smoke_profiles(settings: Settings, readiness_report: ReadinessReport) -> list[SmokeProfileItem]:
+    demo_status = "pass" if settings.is_demo_runtime else "warn"
+
+    pilot_blocked = readiness_report.status != "ready" or (
+        settings.is_production_pilot and (settings.allow_demo_seed or settings.allow_demo_login)
+    )
+    if settings.is_production_pilot:
+        pilot_status = "fail" if pilot_blocked else "pass"
+        pilot_evidence = (
+            f"readiness_status={readiness_report.status}; "
+            f"demo_seed_allowed={_yes_no(settings.allow_demo_seed)}; "
+            f"demo_login_allowed={_yes_no(settings.allow_demo_login)}"
+        )
+        pilot_remediation = (
+            "Resolve readiness blockers and disable demo seed/login before running production pilot smoke."
+            if pilot_status == "fail"
+            else None
+        )
+    else:
+        pilot_status = "warn"
+        pilot_evidence = f"readiness_status={readiness_report.status}; production_pilot_runtime=no"
+        pilot_remediation = "Switch to production_pilot runtime and require readiness ready before pilot smoke."
+
+    return [
+        SmokeProfileItem(
+            key="demo_smoke",
+            label="Demo smoke",
+            status=demo_status,
+            command=DEMO_SMOKE_COMMAND,
+            uses_demo_accounts=True,
+            requires_readiness_ready=False,
+            evidence="uses_demo_accounts=yes; requires_readiness_ready=no; public_demo_seeded_flow=yes",
+            remediation=None if demo_status == "pass" else "Demo smoke is intended for local_demo or public_demo runtime.",
+        ),
+        SmokeProfileItem(
+            key="pilot_smoke",
+            label="Production pilot smoke",
+            status=pilot_status,
+            command=PILOT_SMOKE_COMMAND,
+            uses_demo_accounts=False,
+            requires_readiness_ready=True,
+            evidence=pilot_evidence,
+            remediation=pilot_remediation,
         ),
     ]
 
@@ -527,6 +697,8 @@ def build_operations_dashboard(
         demo_seed=_demo_seed_summary(db, settings),
         connectivity=_connectivity_summary(settings),
         production_smoke=_production_smoke_checklist(),
+        deployment_guardrails=_deployment_guardrails(settings),
+        smoke_profiles=_smoke_profiles(settings, readiness_report),
         sos_email=_delivery_summary(db, limit=limit),
         v1_2_audit=_v1_2_audit_buckets(db),
         v1_4_audit=_v1_4_audit_buckets(db),
