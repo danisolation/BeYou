@@ -106,7 +106,7 @@ def test_demo_seed_refuses_when_disabled(
     get_settings.cache_clear()
 
 
-def test_production_pilot_demo_seed_noops_before_writes(
+def test_demo_seed_refuses_in_production_pilot_even_if_allow_demo_seed_true(
     db: OrmSession,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -126,6 +126,7 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
     db: OrmSession,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "public_demo")
     monkeypatch.setenv("ALLOW_DEMO_SEED", "true")
     get_settings.cache_clear()
     settings = get_settings()

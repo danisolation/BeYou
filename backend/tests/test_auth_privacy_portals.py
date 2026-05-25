@@ -187,11 +187,12 @@ def test_invalid_and_disabled_login_responses_are_generic_or_safe(
     assert "tạm khóa" in disabled_response.json()["detail"]
 
 
-def test_production_pilot_denies_demo_login_before_session(
+def test_production_pilot_blocks_demo_user_login_without_session(
     db: OrmSession,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    monkeypatch.setenv("ALLOW_DEMO_LOGIN", "false")
     get_settings.cache_clear()
     demo_user = _user(db, email="pilot-demo-login@example.test", role=UserRole.ADMIN.value, full_name="Pilot Demo")
     reset_login_failures(demo_user.email, "testclient")
@@ -202,7 +203,7 @@ def test_production_pilot_denies_demo_login_before_session(
     assert response.status_code == 403
     assert response.json()["detail"] == "Demo accounts are disabled in production pilot mode."
     assert "set-cookie" not in response.headers
-    assert db.scalars(select(UserSession).where(UserSession.user_id == demo_user.id)).all() == []
+    assert db.scalar(select(UserSession).where(UserSession.user_id == demo_user.id)) is None
     get_settings.cache_clear()
 
 
