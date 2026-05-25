@@ -49,10 +49,10 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Privacy Regression & Demo Readiness
 
-- [ ] **QA-01**: Backend tests verify reminder consent, quiet hours, pause, external-channel rejection, no automatic SOS/adult alerts, share authorization, revocation, reason gating, and metadata-only audit.
-- [ ] **QA-02**: Frontend tests verify student reminder controls, reminder card copy/actions, mood-note share/revoke UI, adult reason prompts, admin policy controls, and operations metadata-only display.
-- [ ] **QA-03**: Existing backend tests, frontend tests, lint, production build, and production smoke remain passing after v1.4 changes.
-- [ ] **QA-04**: Documentation and planning artifacts explain v1.4 privacy boundaries, demo data, and deferred external channel delivery.
+- [x] **QA-01**: Backend tests verify reminder consent, quiet hours, pause, external-channel rejection, no automatic SOS/adult alerts, share authorization, revocation, reason gating, and metadata-only audit.
+- [x] **QA-02**: Frontend tests verify student reminder controls, reminder card copy/actions, mood-note share/revoke UI, adult reason prompts, admin policy controls, and operations metadata-only display.
+- [x] **QA-03**: Existing backend tests, frontend tests, lint, production build, and production smoke remain passing after v1.4 changes.
+- [x] **QA-04**: Documentation and planning artifacts explain v1.4 privacy boundaries, demo data, and deferred external channel delivery.
 
 ## Future Requirements
 
@@ -114,10 +114,10 @@ Explicit exclusions for v1.4.
 | OPS-01 | Phase 25 | Complete |
 | OPS-02 | Phase 25 | Complete |
 | OPS-03 | Phase 25 | Complete |
-| QA-01 | Phase 26 | Pending |
-| QA-02 | Phase 26 | Pending |
-| QA-03 | Phase 26 | Pending |
-| QA-04 | Phase 26 | Pending |
+| QA-01 | Phase 26 | Complete |
+| QA-02 | Phase 26 | Complete |
+| QA-03 | Phase 26 | Complete |
+| QA-04 | Phase 26 | Complete |
 
 **Coverage:**
 - v1.4 requirements: 29 total
@@ -126,4 +126,4 @@ Explicit exclusions for v1.4.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-25 after Phase 25 completion*
+*Last updated: 2026-05-25 after Phase 26 completion*

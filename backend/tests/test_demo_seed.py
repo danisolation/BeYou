@@ -12,7 +12,10 @@ from app.db.models import (
     SosStatusEvent,
     InAppNotification,
     LinkStatus,
+    MoodCheckIn,
     MoodCheckInConfig,
+    MoodCheckinReminderState,
+    MoodNoteShare,
     PrivacyAcknowledgement,
     Scenario,
     ScenarioAttempt,
@@ -27,8 +30,10 @@ from app.db.models import (
     ChatMessage,
     ChatThread,
     ChatbotSafetyConfig,
+    SchoolPrivacyPolicyDefault,
     Session as UserSession,
     StudentAdultLink,
+    StudentNotificationPreference,
     User,
 )
 from app.db.session import SessionLocal
@@ -50,6 +55,11 @@ def _clean_database() -> None:
             ChatMessage,
             ChatThread,
             ChatbotSafetyConfig,
+            MoodNoteShare,
+            MoodCheckIn,
+            MoodCheckinReminderState,
+            StudentNotificationPreference,
+            SchoolPrivacyPolicyDefault,
             MoodCheckInConfig,
             InAppNotification,
             SosStatusEvent,
@@ -148,6 +158,10 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
     assert dashboard.demo_seed.published_self_check_count > 0
     assert dashboard.demo_seed.published_scenario_count > 0
     assert dashboard.demo_seed.published_mood_config_count == 1
+    assert dashboard.demo_seed.v1_4_policy_count == 1
+    assert dashboard.demo_seed.v1_4_preference_count == 1
+    assert dashboard.demo_seed.v1_4_reminder_state_count == 1
+    assert dashboard.demo_seed.v1_4_share_count == 1
     assert dashboard.connectivity.health_live_path == "/health/live"
     assert dashboard.connectivity.session_cookie_name == settings.session_cookie_name
     assert all(item.command == "npm --prefix frontend run smoke:production" for item in dashboard.production_smoke)

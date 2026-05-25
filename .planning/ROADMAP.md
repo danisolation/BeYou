@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 25/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 29/29 complete
 
 ## Completed Milestones
 
@@ -30,7 +30,7 @@
 - [x] Phase 23: Selective Mood-Note Sharing & Revocation (completed 2026-05-25)
 - [x] Phase 24: Reason-for-Access & Adult Support Transparency (completed 2026-05-25)
 - [x] Phase 25: Admin Privacy Policy & Operations Visibility (completed 2026-05-25)
-- [ ] Phase 26: Cross-Role Privacy Regression & Demo Readiness
+- [x] Phase 26: Cross-Role Privacy Regression & Demo Readiness (completed 2026-05-25)
 
 ## Phase Details
 
@@ -135,7 +135,7 @@ Plans:
 **Depends on:** Phases 21-25
 **Requirements:** QA-01, QA-02, QA-03, QA-04
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Backend regression verifies consent/quiet/pause/external-channel rejection, no auto-SOS/adult-alerts, share authorization, revocation, reason gating, and metadata-only audit.
@@ -143,10 +143,10 @@ Plans:
 3. Full backend tests, frontend tests, lint, build, and production smoke pass or document accepted external constraints.
 4. Docs and planning artifacts explain v1.4 boundaries, demo data, and deferred external delivery.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] 26-01-PLAN.md - Cross-role privacy regression, docs, and demo readiness closure
+- [x] 26-01-PLAN.md - Cross-role privacy regression, docs, and demo readiness closure
 
 ## Traceability
 
@@ -177,15 +177,15 @@ Plans:
 | OPS-01 | Phase 25 | Complete |
 | OPS-02 | Phase 25 | Complete |
 | OPS-03 | Phase 25 | Complete |
-| QA-01 | Phase 26 | Pending |
-| QA-02 | Phase 26 | Pending |
-| QA-03 | Phase 26 | Pending |
-| QA-04 | Phase 26 | Pending |
+| QA-01 | Phase 26 | Complete |
+| QA-02 | Phase 26 | Complete |
+| QA-03 | Phase 26 | Complete |
+| QA-04 | Phase 26 | Complete |
 
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 25
+- Complete: 29
 - Unmapped: 0
 
 ## Assumptions
@@ -197,4 +197,4 @@ Plans:
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
 
 ---
-*Last updated: 2026-05-25 after Phase 25 completion*
+*Last updated: 2026-05-25 after Phase 26 completion*

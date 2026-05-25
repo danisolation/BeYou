@@ -12,10 +12,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 in progress; Phases 21-25 complete as of 2026-05-25
-**Milestone status:** Active; Phase 26 is next
-**Scope shipped:** 25 total phases, 63 total plans, 146 cumulative requirements satisfied; v1.4 is 25/29 requirements complete
-**Latest verification:** `.planning/phases/25-admin-privacy-policy-operations-visibility/25-VERIFICATION.md` passed with 5/5 Phase 25 must-haves verified
+**Shipped version:** v1.4 complete; Phases 21-26 complete as of 2026-05-25
+**Milestone status:** Ready for milestone audit
+**Scope shipped:** 26 total phases, 64 total plans, 150 cumulative requirements satisfied; v1.4 is 29/29 requirements complete
+**Latest verification:** `.planning/phases/26-cross-role-privacy-regression-demo-readiness/26-VERIFICATION.md` passed with 4/4 Phase 26 must-haves verified
 
 ### Built Product
 
@@ -28,12 +28,13 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Latest Verification Snapshot
 
-- Phase 25 backend targeted/regression pytest: `27 passed`
+- Backend full pytest: `129 passed`
 - Backend ruff: passed
-- Phase 25 frontend targeted/regression Vitest: `11 passed`
+- Frontend full Vitest: `20 test files passed`, `94 tests passed`
 - Frontend lint: passed
 - Frontend production build: passed
-- Phase 25 code review and privacy grep gates: passed
+- Production smoke: `SMOKE_PASS 16/16`
+- Phase 26 code review and privacy grep gates: passed
 
 ### Planning Archives
 
@@ -101,10 +102,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Students can selectively share specific private mood notes or note summaries with chosen linked adults and revoke sharing later.
 - [x] Teachers and parents provide controlled support-oriented reasons before protected support-summary/shared-note access when policy requires it.
 - [x] Admins can configure school-level v1.4 privacy/notification defaults and inspect metadata-only operations readiness for v1.4 controls.
-
-### Active
-
-- [ ] Cross-role v1.4 privacy regressions, documentation, demo readiness, and production smoke are complete.
+- [x] Cross-role v1.4 privacy regressions, documentation, demo readiness, and production smoke are complete.
 
 ### Out of Scope
 
@@ -188,6 +186,7 @@ Roles:
 | Make selective mood-note sharing student-granted and revocable | Raw mood notes stay private by default; adults only see notes or student summaries through active relationship plus active unrevoked student grant | Validated in Phase 23 |
 | Require controlled reasons for protected adult support access | Reason prompts add transparency but cannot bypass relationship authorization or become free-text surveillance records | Validated in Phase 24 |
 | Keep admin policy controls metadata-only and in-app-only | Admins can configure safe defaults and inspect v1.4 readiness without external channels, raw exports, student drilldowns, or raw reason text | Validated in Phase 25 |
+| Close v1.4 with regression evidence before archiving | Full backend/frontend gates, production smoke, docs, and code review provide milestone closure confidence | Validated in Phase 26 |
 
 ## Known Tech Debt
 
@@ -197,7 +196,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 is active. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
+v1.4 is complete and ready for milestone audit. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -217,4 +216,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after completing Phase 25*
+*Last updated: 2026-05-25 after completing Phase 26*
