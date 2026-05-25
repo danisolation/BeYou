@@ -14,10 +14,14 @@ from app.db.models import (
     ContentStatus,
     LinkStatus,
     MoodCheckInConfig,
+    MoodCheckinReminderState,
+    MoodNoteShare,
     Scenario,
+    SchoolPrivacyPolicyDefault,
     SelfCheckTest,
     SosNotificationDelivery,
     StudentAdultLink,
+    StudentNotificationPreference,
     User,
     UserRole,
     utc_now,
@@ -77,6 +81,9 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
     "student_share_summary",
     "reason_detail",
     "reason_details",
+    "reason_text",
+    "raw_reason",
+    "raw_reason_text",
     "access_reason_text",
     "reminder_message",
     "notification_body",
@@ -219,7 +226,7 @@ def _audit_event_item(event: AuditEvent) -> AuditEventItem:
         resource_id=event.resource_id,
         status=event.status,
         timestamp=event.timestamp,
-        reason=event.reason,
+        reason=None,
         metadata_summary=_safe_metadata(event.metadata_summary),
         is_demo=event.is_demo,
     )
@@ -301,7 +308,7 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
         roles.append(
             DemoSeedRoleStatus(
                 role=role,
-                email=email,
+                account_key=f"{role}_demo",
                 present=user is not None,
                 active=user is not None and user.status == AccountStatus.ACTIVE.value,
                 is_demo=user is not None and user.is_demo,
@@ -338,6 +345,18 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
             MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
         )
     ) or 0
+    v1_4_policy_count = db.scalar(
+        select(func.count()).select_from(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.is_demo.is_(True))
+    ) or 0
+    v1_4_preference_count = db.scalar(
+        select(func.count()).select_from(StudentNotificationPreference).where(StudentNotificationPreference.is_demo.is_(True))
+    ) or 0
+    v1_4_reminder_state_count = db.scalar(
+        select(func.count()).select_from(MoodCheckinReminderState).where(MoodCheckinReminderState.is_demo.is_(True))
+    ) or 0
+    v1_4_share_count = db.scalar(
+        select(func.count()).select_from(MoodNoteShare).where(MoodNoteShare.is_demo.is_(True))
+    ) or 0
 
     missing_roles = [role.role for role in roles if not role.present or not role.active or not role.is_demo]
     content_ready = (
@@ -357,6 +376,10 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
             published_self_check_count=published_self_check_count,
             published_scenario_count=published_scenario_count,
             published_mood_config_count=published_mood_config_count,
+            v1_4_policy_count=v1_4_policy_count,
+            v1_4_preference_count=v1_4_preference_count,
+            v1_4_reminder_state_count=v1_4_reminder_state_count,
+            v1_4_share_count=v1_4_share_count,
         )
     if not content_ready:
         return DemoSeedSummary(
@@ -369,6 +392,10 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
             published_self_check_count=published_self_check_count,
             published_scenario_count=published_scenario_count,
             published_mood_config_count=published_mood_config_count,
+            v1_4_policy_count=v1_4_policy_count,
+            v1_4_preference_count=v1_4_preference_count,
+            v1_4_reminder_state_count=v1_4_reminder_state_count,
+            v1_4_share_count=v1_4_share_count,
         )
     return DemoSeedSummary(
         status="pass",
@@ -380,6 +407,10 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
         published_self_check_count=published_self_check_count,
         published_scenario_count=published_scenario_count,
         published_mood_config_count=published_mood_config_count,
+        v1_4_policy_count=v1_4_policy_count,
+        v1_4_preference_count=v1_4_preference_count,
+        v1_4_reminder_state_count=v1_4_reminder_state_count,
+        v1_4_share_count=v1_4_share_count,
     )
 
 

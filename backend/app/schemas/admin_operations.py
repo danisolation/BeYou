@@ -31,7 +31,7 @@ class OperationReadinessSummary(BaseModel):
 
 class DemoSeedRoleStatus(BaseModel):
     role: str
-    email: str
+    account_key: str
     present: bool
     active: bool
     is_demo: bool
@@ -47,6 +47,10 @@ class DemoSeedSummary(BaseModel):
     published_self_check_count: int
     published_scenario_count: int
     published_mood_config_count: int
+    v1_4_policy_count: int = 0
+    v1_4_preference_count: int = 0
+    v1_4_reminder_state_count: int = 0
+    v1_4_share_count: int = 0
 
 
 class ConnectivitySummary(BaseModel):

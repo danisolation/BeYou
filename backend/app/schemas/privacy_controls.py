@@ -160,6 +160,8 @@ class MoodReminderActionResponse(BaseModel):
 
 
 class SchoolPrivacyPolicyDefaultsUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     default_in_app_reminders_enabled: bool = False
     default_quiet_hours_start: str | None = None
     default_quiet_hours_end: str | None = None

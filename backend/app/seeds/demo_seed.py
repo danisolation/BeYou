@@ -11,7 +11,10 @@ from app.db.models import (
     AccountStatus,
     ContentStatus,
     LinkStatus,
+    MoodCheckIn,
     MoodCheckInConfig,
+    MoodCheckinReminderState,
+    MoodNoteShare,
     RiskStateLabel,
     Scenario,
     ScenarioAttempt,
@@ -25,7 +28,9 @@ from app.db.models import (
     SelfCheckThreshold,
     SosAlert,
     SosSource,
+    SchoolPrivacyPolicyDefault,
     StudentAdultLink,
+    StudentNotificationPreference,
     User,
     UserRole,
     utc_now,
@@ -420,6 +425,96 @@ def _seed_sos_workflow(db: OrmSession, *, student: User, settings: Settings) -> 
     )
 
 
+def _seed_v1_4_demo_state(db: OrmSession, *, admin: User, student: User, teacher: User) -> None:
+    policy = db.scalar(select(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+    if policy is None:
+        policy = SchoolPrivacyPolicyDefault(school_scope="default")
+        db.add(policy)
+    policy.default_in_app_reminders_enabled = False
+    policy.default_quiet_hours_start = "21:30"
+    policy.default_quiet_hours_end = "06:30"
+    policy.default_timezone = "Asia/Ho_Chi_Minh"
+    policy.allowed_channels = ["in_app"]
+    policy.external_channels_enabled = False
+    policy.note_sharing_enabled = True
+    policy.reason_required_for_adult_summaries = True
+    policy.reason_required_for_shared_mood_notes = True
+    policy.allowed_reason_codes = ["follow_up_after_checkin", "routine_care_conversation", "support_plan_context"]
+    policy.updated_by_id = admin.id
+    policy.is_demo = True
+
+    preference = db.scalar(
+        select(StudentNotificationPreference).where(StudentNotificationPreference.student_id == student.id)
+    )
+    if preference is None:
+        preference = StudentNotificationPreference(student_id=student.id)
+        db.add(preference)
+    preference.in_app_reminders_enabled = False
+    preference.mood_checkin_reminders_enabled = False
+    preference.reminder_cadence = "weekly"
+    preference.allowed_channels = ["in_app"]
+    preference.quiet_hours_start = "21:30"
+    preference.quiet_hours_end = "06:30"
+    preference.timezone = "Asia/Ho_Chi_Minh"
+    preference.is_demo = True
+
+    reminder_state = db.scalar(
+        select(MoodCheckinReminderState).where(
+            MoodCheckinReminderState.student_id == student.id,
+            MoodCheckinReminderState.reminder_type == "mood_check_in",
+        )
+    )
+    if reminder_state is None:
+        reminder_state = MoodCheckinReminderState(student_id=student.id, reminder_type="mood_check_in")
+        db.add(reminder_state)
+    reminder_state.is_demo = True
+
+    checkin = db.scalar(
+        select(MoodCheckIn).where(
+            MoodCheckIn.student_id == student.id,
+            MoodCheckIn.is_demo.is_(True),
+            MoodCheckIn.supportive_message == "Dữ liệu demo v1.4 cho chia sẻ tóm tắt an toàn.",
+        )
+    )
+    if checkin is None:
+        checkin = MoodCheckIn(
+            student_id=student.id,
+            mood_label="steady",
+            energy_level=4,
+            stress_level=2,
+            context_tags=["school"],
+            private_note=None,
+            trend_label="Ổn định",
+            supportive_message="Dữ liệu demo v1.4 cho chia sẻ tóm tắt an toàn.",
+            suggested_next_action="Tiếp tục trò chuyện chăm sóc.",
+            suggest_support_plan=False,
+            suggest_sos=False,
+            is_demo=True,
+        )
+        db.add(checkin)
+        db.flush()
+
+    share = db.scalar(
+        select(MoodNoteShare).where(
+            MoodNoteShare.mood_checkin_id == checkin.id,
+            MoodNoteShare.adult_id == teacher.id,
+            MoodNoteShare.revoked_at.is_(None),
+        )
+    )
+    if share is None:
+        share = MoodNoteShare(
+            mood_checkin_id=checkin.id,
+            student_id=student.id,
+            adult_id=teacher.id,
+            relationship_type_snapshot=UserRole.TEACHER.value,
+            share_scope="student_summary",
+        )
+        db.add(share)
+    share.student_summary = "Dữ liệu demo: em muốn được hỏi thăm nhẹ nhàng."
+    share.is_demo = True
+    db.commit()
+
+
 def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     if not settings.allow_demo_seed:
         return False
@@ -458,6 +553,7 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
     _upsert_mood_checkin_config(db)
     _seed_self_check_attempts(db, student=student, tests=tests)
     _seed_sos_workflow(db, student=student, settings=settings)
+    _seed_v1_4_demo_state(db, admin=admin, student=student, teacher=teacher)
     return True
 
 

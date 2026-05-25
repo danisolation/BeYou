@@ -9,6 +9,7 @@ from app.api import (
     admin_reports,
     admin_links,
     admin_operations,
+    admin_privacy_policy,
     admin_users,
     adult_summaries,
     auth,
@@ -95,6 +96,7 @@ def create_app() -> FastAPI:
     app.include_router(admin_mood_checkins.router, prefix="/api/admin/mood-checkins", tags=["admin"])
     app.include_router(admin_reports.router, prefix="/api/admin/reports", tags=["admin"])
     app.include_router(admin_operations.router, prefix="/api/admin/operations", tags=["admin"])
+    app.include_router(admin_privacy_policy.router, prefix="/api/admin/privacy-policy", tags=["admin"])
 
     return app
 

@@ -26,6 +26,7 @@ from app.schemas.privacy_controls import (
     MoodReminderActionResponse,
     MoodReminderSnoozeRequest,
     SchoolPrivacyPolicyDefaultsResponse,
+    SchoolPrivacyPolicyDefaultsUpdate,
     StudentNotificationPreferenceUpdate,
     StudentNotificationPreferenceResponse,
     normalize_channels,
@@ -197,6 +198,75 @@ def school_policy_response(policy: SchoolPrivacyPolicyDefault) -> SchoolPrivacyP
         updated_at=policy.updated_at,
         is_demo=policy.is_demo,
     )
+
+
+def read_admin_school_privacy_policy(
+    db: OrmSession,
+    *,
+    actor: User,
+) -> SchoolPrivacyPolicyDefaultsResponse:
+    assert_admin_can_manage_privacy_policy(db, actor)
+    policy = get_or_create_school_privacy_policy(db, actor=actor, is_demo=actor.is_demo)
+    db.commit()
+    db.refresh(policy)
+    return school_policy_response(policy)
+
+
+def update_admin_school_privacy_policy(
+    db: OrmSession,
+    *,
+    actor: User,
+    payload: SchoolPrivacyPolicyDefaultsUpdate,
+) -> SchoolPrivacyPolicyDefaultsResponse:
+    assert_admin_can_manage_privacy_policy(db, actor)
+    policy = get_or_create_school_privacy_policy(db, actor=actor, is_demo=actor.is_demo)
+    allowed_channels = validate_v14_channels(
+        payload.allowed_channels,
+        external_channels_enabled=payload.external_channels_enabled,
+    )
+    allowed_reason_codes = normalize_reason_codes(payload.allowed_reason_codes)
+
+    policy.default_in_app_reminders_enabled = payload.default_in_app_reminders_enabled
+    policy.default_quiet_hours_start = payload.default_quiet_hours_start
+    policy.default_quiet_hours_end = payload.default_quiet_hours_end
+    policy.default_timezone = payload.default_timezone
+    policy.allowed_channels = allowed_channels
+    policy.external_channels_enabled = False
+    policy.note_sharing_enabled = payload.note_sharing_enabled
+    policy.reason_required_for_adult_summaries = payload.reason_required_for_adult_summaries
+    policy.reason_required_for_shared_mood_notes = payload.reason_required_for_shared_mood_notes
+    policy.allowed_reason_codes = allowed_reason_codes
+    policy.updated_by_id = actor.id
+    policy.is_demo = policy.is_demo or actor.is_demo
+    policy.updated_at = utc_now()
+    db.flush()
+
+    record_audit_event(
+        db,
+        actor=actor,
+        actor_role=actor.role,
+        action="privacy_policy_updated",
+        resource_type="privacy_policy",
+        resource_id=str(policy.id),
+        status_value="success",
+        reason="admin_policy_defaults",
+        metadata_summary={
+            "school_scope": policy.school_scope,
+            "default_in_app_reminders_enabled": policy.default_in_app_reminders_enabled,
+            "has_default_quiet_hours": bool(policy.default_quiet_hours_start and policy.default_quiet_hours_end),
+            "allowed_channel_count": len(allowed_channels),
+            "external_channels_enabled": False,
+            "note_sharing_enabled": policy.note_sharing_enabled,
+            "reason_required_for_adult_summaries": policy.reason_required_for_adult_summaries,
+            "reason_required_for_shared_mood_notes": policy.reason_required_for_shared_mood_notes,
+            "allowed_reason_count": len(allowed_reason_codes),
+            "decision": "v1_4_safe_defaults",
+        },
+        is_demo=actor.is_demo,
+    )
+    db.commit()
+    db.refresh(policy)
+    return school_policy_response(policy)
 
 
 def preference_response(preference: StudentNotificationPreference) -> StudentNotificationPreferenceResponse:
