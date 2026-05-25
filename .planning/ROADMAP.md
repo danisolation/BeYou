@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 9/28 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 10/28 complete
 
 ## Completed Milestones
 
@@ -39,7 +39,7 @@
 **Depends on:** v1.4 archive, v1.5 research
 **Requirements:** RUNTIME-01, RUNTIME-02, RUNTIME-03, RUNTIME-04, RUNTIME-05
 **UI hint:** no
-**Status:** Complete
+**Status:** Execution Complete; Verification Pending
 
 **Success criteria:**
 1. Operator can identify local/development, public demo, or production pilot mode through safe readiness or operations metadata.
@@ -56,7 +56,7 @@
 **Depends on:** Phase 28
 **Requirements:** DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05
 **UI hint:** yes
-**Status:** In Progress
+**Status:** Complete
 
 **Success criteria:**
 1. Operator can run a guardrail command that validates Render backend and Vercel frontend deployment expectations.
@@ -65,7 +65,7 @@
 4. Demo smoke and pilot smoke are separate; pilot smoke requires readiness `ready` and has no demo-user dependency.
 5. Deployment docs explain root directories, env vars, smoke commands, demo-vs-pilot readiness, and safe rollback.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 ### Phase 30: Identity Foundation & Auth Contracts
 
@@ -134,7 +134,7 @@
 | DEPLOY-02 | Phase 29 | Complete |
 | DEPLOY-03 | Phase 29 | Complete |
 | DEPLOY-04 | Phase 29 | Complete |
-| DEPLOY-05 | Phase 29 | Pending |
+| DEPLOY-05 | Phase 29 | Complete |
 | IDENT-01 | Phase 30 | Pending |
 | IDENT-02 | Phase 30 | Pending |
 | IDENT-03 | Phase 30 | Pending |
@@ -157,7 +157,7 @@
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 9
+- Complete: 10
 - Unmapped: 0
 
 ## Assumptions
@@ -168,4 +168,4 @@
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-25 after Phase 29 Plan 02 execution*
+*Last updated: 2026-05-25 after Phase 29 Plan 04 execution*

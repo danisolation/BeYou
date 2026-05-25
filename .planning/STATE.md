@@ -3,29 +3,29 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Production Pilot Readiness & Identity
 status: executing
-stopped_at: Completed 29-03-PLAN.md
-last_updated: "2026-05-25T09:44:47.558Z"
+stopped_at: Completed 29-04-PLAN.md
+last_updated: "2026-05-25T10:02:30.000Z"
 last_activity: 2026-05-25
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 7
-  completed_plans: 6
-  percent: 86
+  completed_plans: 7
+  percent: 100
 ---
 
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-25 after Phase 29 Plan 03
-**Status:** Executing Phase 29
+**Last updated:** 2026-05-25 after Phase 29 Plan 04
+**Status:** Phase 29 execution complete; verification pending
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** Phase 29 — Deployment Guardrails & Smoke Profiles
+**Current focus:** Phase 29 verification — Deployment Guardrails & Smoke Profiles
 
 ## Planning Artifacts
 
@@ -34,8 +34,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Active roadmap | `.planning/ROADMAP.md` | v1.5 Phase 28 complete, Phase 29 in progress |
-| Active requirements | `.planning/REQUIREMENTS.md` | 28 v1.5 requirements mapped, 9 complete |
+| Active roadmap | `.planning/ROADMAP.md` | v1.5 Phase 28 complete, Phase 29 execution complete pending verification |
+| Active requirements | `.planning/REQUIREMENTS.md` | 28 v1.5 requirements mapped, 10 complete |
 | v1.5 research | `.planning/research/` | Current |
 | Phase 28 context | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-CONTEXT.md` | Complete |
 | Phase 28 research | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-RESEARCH.md` | Complete |
@@ -43,7 +43,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Phase 28 verification | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-VERIFICATION.md` | Passed |
 | Phase 29 UI spec | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-UI-SPEC.md` | Approved |
 | Phase 29 research | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-RESEARCH.md` | Complete |
-| Phase 29 plans | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-01-PLAN.md` through `29-04-PLAN.md` | 4/4 planned and verified |
+| Phase 29 plans | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-01-PLAN.md` through `29-04-PLAN.md` | 4/4 executed |
+| Phase 29 summaries | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-01-SUMMARY.md` through `29-04-SUMMARY.md` | Complete |
 | v1.4 roadmap archive | `.planning/milestones/v1.4-ROADMAP.md` | Archived |
 | v1.4 requirements archive | `.planning/milestones/v1.4-REQUIREMENTS.md` | Archived |
 | v1.4 audit archive | `.planning/milestones/v1.4-MILESTONE-AUDIT.md` | Passed |
@@ -78,15 +79,15 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 ## Current Position
 
-Phase: 29 (Deployment Guardrails & Smoke Profiles) — EXECUTING
+Phase: 29 (Deployment Guardrails & Smoke Profiles) — EXECUTION COMPLETE
 Plan: 4 of 4
-Status: Executing Phase 29
-Last activity: 2026-05-25 -- Phase 29 Plan 03 complete; Plan 04 ready
+Status: Phase verification pending
+Last activity: 2026-05-25 -- Phase 29 Plan 04 complete; code review and verifier ready
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 166 total
-- v1.5 requirements: 28 total, 28 mapped, 9 complete
+- v1.5 requirements: 28 total, 28 mapped, 10 complete
 - v1.4 requirements archived: 36/36 complete
 - v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
@@ -122,6 +123,7 @@ Last activity: 2026-05-25 -- Phase 29 Plan 03 complete; Plan 04 ready
 | Keep frontend operations contract aligned with backend metadata | Phase 28 Plan 01 removes raw origin and cookie-name exposure from both backend response schema and frontend admin operations UI/types |
 | No-op seed and block demo login in production pilot | Phase 28 Plan 02 prevents production-pilot demo writes and denies demo-account sessions before cookies are issued |
 | Use operations dashboard as Phase 29 UI anchor | Phase 29 UI-SPEC keeps deployment guardrails and smoke profiles inside metadata-only admin operations patterns |
+| Keep demo and production-pilot smoke evidence separate | Phase 29 adds `smoke:demo` for seeded public demo coverage and `smoke:pilot` for readiness-`ready` production pilot checks without demo users |
 | Prepare identity contracts before full SSO | v1.5 adds OAuth/SSO-ready backend contracts while deferring provider-specific login until a school IdP is selected |
 | Keep identity claims out of authorization | v1.5 keeps app-owned role, relationship, and SOS checks as the source of truth |
 
@@ -132,8 +134,8 @@ Last activity: 2026-05-25 -- Phase 29 Plan 03 complete; Plan 04 ready
 
 ## Session Continuity
 
-Last session: 2026-05-25T09:44:47.548Z
-Stopped at: Completed 29-03-PLAN.md
+Last session: 2026-05-25T10:02:30.000Z
+Stopped at: Completed 29-04-PLAN.md
 Resume file: None
 
 ## Next Action
@@ -141,5 +143,5 @@ Resume file: None
 Run:
 
 ```text
-/gsd-execute-phase 29
+/gsd-code-review 29
 ```

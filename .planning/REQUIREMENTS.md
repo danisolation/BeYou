@@ -21,7 +21,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **DEPLOY-02**: Frontend validation rejects unsafe production API configuration, including missing `NEXT_PUBLIC_API_BASE_URL`, localhost production targets, non-HTTPS pilot targets, or mismatch with expected backend smoke URL.
 - [x] **DEPLOY-03**: Backend validation verifies exact credentialed CORS origins and production cookie settings for the deployed Vercel/Render topology.
 - [x] **DEPLOY-04**: Demo smoke and production-pilot smoke are separate commands or modes; demo smoke may use seeded role accounts, while pilot smoke requires readiness `ready` and does not require demo users.
-- [ ] **DEPLOY-05**: Deployment documentation explains Vercel root directory, Render backend profile, environment variables, smoke commands, known demo-vs-pilot readiness behavior, and safe rollback steps.
+- [x] **DEPLOY-05**: Deployment documentation explains Vercel root directory, Render backend profile, environment variables, smoke commands, known demo-vs-pilot readiness behavior, and safe rollback steps.
 
 ### Identity Foundation & Auth Contracts
 
@@ -98,7 +98,7 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | DEPLOY-02 | Phase 29 | Complete |
 | DEPLOY-03 | Phase 29 | Complete |
 | DEPLOY-04 | Phase 29 | Complete |
-| DEPLOY-05 | Phase 29 | Pending |
+| DEPLOY-05 | Phase 29 | Complete |
 | IDENT-01 | Phase 30 | Pending |
 | IDENT-02 | Phase 30 | Pending |
 | IDENT-03 | Phase 30 | Pending |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 9
+- Complete: 10
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-25 after Phase 29 Plan 02 execution*
+*Last updated: 2026-05-25 after Phase 29 Plan 04 execution*
