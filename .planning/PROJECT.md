@@ -12,10 +12,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 complete; Phases 21-26 complete as of 2026-05-25
-**Milestone status:** Ready for milestone audit
+**Shipped version:** v1.4 phases complete; milestone audit found closure gaps as of 2026-05-25
+**Milestone status:** Gap closure needed before archive
 **Scope shipped:** 26 total phases, 64 total plans, 150 cumulative requirements satisfied; v1.4 is 29/29 requirements complete
 **Latest verification:** `.planning/phases/26-cross-role-privacy-regression-demo-readiness/26-VERIFICATION.md` passed with 4/4 Phase 26 must-haves verified
+**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` found 3 requirement-level partial gaps: NOTIF-03, POLICY-01, and OPS-02
 
 ### Built Product
 
@@ -196,7 +197,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 is complete and ready for milestone audit. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
+v1.4 phase work is complete, but milestone audit found gap-closure work before archive. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -216,4 +217,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after completing Phase 26*
+*Last updated: 2026-05-25 after v1.4 milestone audit*

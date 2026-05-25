@@ -1,7 +1,13 @@
 ---
 status: passed
 phase: 21
+phase_name: privacy-control-foundation-policy-contracts
 verified_at: 2026-05-22
+requirements_verified:
+  - NOTIF-01
+  - NOTIF-05
+must_haves_verified: 2
+must_haves_total: 2
 ---
 
 # Phase 21 Verification
@@ -34,6 +40,13 @@ python -m pytest tests\test_schema_models.py tests\test_phase21_privacy_controls
 ## Results
 
 - Targeted backend tests: `11 passed`.
+
+## Requirement Evidence
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| NOTIF-01 | VERIFIED | `StudentNotificationPreference` and policy/preference helpers expose enabled/disabled, pause, quiet hours, timezone, and in-app channel boundary state. |
+| NOTIF-05 | VERIFIED | Privacy control schemas/services reject external reminder channels and keep v1.4 contracts in-app-only by default. |
 
 ## Human Verification
 
