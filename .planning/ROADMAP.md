@@ -39,7 +39,7 @@
 **Depends on:** v1.4 archive, v1.5 research
 **Requirements:** RUNTIME-01, RUNTIME-02, RUNTIME-03, RUNTIME-04, RUNTIME-05
 **UI hint:** no
-**Status:** In Progress
+**Status:** Ready for Verification
 
 **Success criteria:**
 1. Operator can identify local/development, public demo, or production pilot mode through safe readiness or operations metadata.
@@ -48,7 +48,7 @@
 4. Production pilot boot does not create demo users or walkthrough data, while public demo mode can still seed intentionally.
 5. Public and admin readiness responses remain minimal or masked and never expose secrets, cookies, credentials, connection strings, or sensitive values.
 
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 ### Phase 29: Deployment Guardrails & Smoke Profiles
 
