@@ -12,11 +12,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 Phases 21-27 complete locally as of 2026-05-25
-**Milestone status:** Audit passed; ready for milestone completion/archive
+**Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
+**Milestone status:** Complete; next milestone not started
 **Scope shipped:** 27 total phases, 65 total plans, 157 cumulative requirements satisfied; v1.4 is 36/36 requirements complete
 **Latest verification:** Phase 27 full local verification passed after Peerlight AI refresh and audit gap closure
-**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
+**Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
 
@@ -40,6 +40,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Planning Archives
 
+- v1.4 roadmap archive: `.planning/milestones/v1.4-ROADMAP.md`
+- v1.4 requirements archive: `.planning/milestones/v1.4-REQUIREMENTS.md`
+- v1.4 audit archive: `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
+- v1.4 phase artifacts: `.planning/milestones/v1.4-phases/`
+- v1.4 research archive: `.planning/milestones/v1.4-research/`
 - v1.3 roadmap archive: `.planning/milestones/v1.3-ROADMAP.md`
 - v1.3 requirements archive: `.planning/milestones/v1.3-REQUIREMENTS.md`
 - v1.3 audit archive: `.planning/milestones/v1.3-MILESTONE-AUDIT.md`
@@ -50,7 +55,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.4 Consent-Based Notifications & Access Transparency
+## Completed Milestone: v1.4 Consent-Based Notifications & Access Transparency
 
 **Goal:** Add student-controlled reminder consent, selective mood-note sharing, reason-for-access transparency, school policy controls, Peerlight AI demo polish, and SOS-only adult visibility without weakening privacy-by-default boundaries.
 
@@ -186,7 +191,7 @@ Roles:
 | Make critical actions narrate consequences and outcomes | SOS, destructive, and config changes should be understandable and accessible without expanding private data access | Validated in Phase 18 |
 | Keep live demo smoke separate from production launch readiness | Public demo usability can pass while production `/health/ready` remains `not_ready` until demo seeding is disabled for real launch | Validated in Phase 19 |
 | Use ESLint flat config for Next 16 | Direct ESLint CLI replaces deprecated/broken `next lint` while preserving strict frontend quality gates | Validated in Phase 20 |
-| Start v1.4 with consent and transparency before external channels | Notification and sensitive-access features need student control, school policy, and audit boundaries before adding Zalo/SMS/push or broader adult access | Active in v1.4 |
+| Start v1.4 with consent and transparency before external channels | Notification and sensitive-access features need student control, school policy, and audit boundaries before adding Zalo/SMS/push or broader adult access | Validated in v1.4 |
 | Make selective mood-note sharing student-granted and revocable | Raw mood notes stay private by default; adults only see notes or student summaries through active relationship plus active unrevoked student grant | Validated in Phase 23 |
 | Require controlled reasons for protected adult support access | Reason prompts add transparency but cannot bypass relationship authorization or become free-text surveillance records | Validated in Phase 24 |
 | Keep admin policy controls metadata-only and in-app-only | Admins can configure safe defaults and inspect v1.4 readiness without external channels, raw exports, student drilldowns, or raw reason text | Validated in Phase 25 |
@@ -203,7 +208,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 phase work, gap closure, live demo, and milestone audit are complete locally. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
+v1.4 is archived. Deferred candidates for v1.5 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels with provider governance/retries, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -223,4 +228,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after v1.4 milestone audit passed*
+*Last updated: 2026-05-25 after v1.4 milestone archive*

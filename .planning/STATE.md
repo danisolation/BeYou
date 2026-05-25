@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.4
-milestone_name: consent-based notifications and access transparency
-status: milestone-audit-passed
-stopped_at: v1.4 audit passed; ready for milestone completion/archive
-last_updated: "2026-05-25T14:35:00.000Z"
+milestone_name: Consent-Based Notifications & Access Transparency
+status: completed
+stopped_at: v1.4 milestone archived
+last_updated: "2026-05-25T05:50:00.000Z"
 last_activity: 2026-05-25
 progress:
   total_phases: 7
@@ -17,15 +17,15 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-25 after v1.4 milestone audit passed
-**Status:** v1.4 audit passed; milestone completion/archive ready
+**Last updated:** 2026-05-25 after v1.4 milestone archive
+**Status:** v1.4 milestone complete
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** complete and archive v1.4
+**Current focus:** define the next milestone
 
 ## Planning Artifacts
 
@@ -34,9 +34,13 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Active roadmap | `.planning/ROADMAP.md` | v1.4 phases 21-27 complete |
-| Active requirements | `.planning/REQUIREMENTS.md` | 36 v1.4 requirements mapped, 36 complete |
-| v1.4 milestone audit | `.planning/v1.4-MILESTONE-AUDIT.md` | Passed |
+| Roadmap index | `.planning/ROADMAP.md` | v1.4 archived; no active milestone |
+| Active requirements | `.planning/REQUIREMENTS.md` | Not created; run `/gsd-new-milestone` |
+| v1.4 roadmap archive | `.planning/milestones/v1.4-ROADMAP.md` | Archived |
+| v1.4 requirements archive | `.planning/milestones/v1.4-REQUIREMENTS.md` | Archived |
+| v1.4 audit archive | `.planning/milestones/v1.4-MILESTONE-AUDIT.md` | Passed |
+| v1.4 phase artifacts | `.planning/milestones/v1.4-phases/` | Archived |
+| v1.4 research archive | `.planning/milestones/v1.4-research/` | Archived |
 | v1.3 roadmap archive | `.planning/milestones/v1.3-ROADMAP.md` | Archived |
 | v1.3 requirements archive | `.planning/milestones/v1.3-REQUIREMENTS.md` | Archived |
 | v1.3 audit archive | `.planning/milestones/v1.3-MILESTONE-AUDIT.md` | Passed |
@@ -58,6 +62,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 | Milestone | Status | Scope |
 |---|---|---|
+| v1.4 Consent-Based Notifications & Access Transparency | Complete | 7 phases, 7 plans, 36/36 requirements |
 | v1.3 Pilot UX & Demo Readiness | Complete | 5 phases, 5 plans, 20/20 requirements |
 | v1.2 Trusted Adult Plan & Mood Check-ins | Complete | 4 phases, 12 plans, 24/24 requirements |
 | v1.1 Production Hardening & Support Polish | Complete | 5 phases, 15 plans, 30/30 requirements |
@@ -65,17 +70,17 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 ## Current Position
 
-Phase: 27
-Plan: 01 complete
-Status: v1.4 milestone audit passed
+Phase: none active
+Plan: none active
+Status: v1.4 milestone archived
 Last activity: 2026-05-25
 
 ## Requirements Coverage
 
 - cumulative shipped requirements: 157 total
+- v1.4 requirements archived: 36/36 complete
 - v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
-- v1.4 requirements: 36 total, 36 mapped, 36 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -110,14 +115,14 @@ Last activity: 2026-05-25
 
 ## Session Continuity
 
-Last session: 2026-05-25T14:35:00.000Z
-Stopped at: v1.4 milestone audit passed
-Resume file: .planning/ROADMAP.md
+Last session: 2026-05-25T14:50:00.000Z
+Stopped at: v1.4 milestone archived
+Resume file: .planning/MILESTONES.md
 
 ## Next Action
 
 Run:
 
 ```text
-/gsd-complete-milestone v1.4
+/gsd-new-milestone
 ```

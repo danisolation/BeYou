@@ -200,13 +200,62 @@
 - Autonomous execution remained effective because the milestone had narrow phase boundaries and strict privacy constraints.
 - The largest manual overhead remained archival/document normalization and audit synthesis.
 
+## Milestone: v1.4 - Consent-Based Notifications & Access Transparency
+
+**Shipped:** 2026-05-25
+**Phases:** 7
+**Plans:** 7
+**Requirements:** 36/36 satisfied
+
+### What Was Built
+
+- Student-controlled in-app reminder preferences with consent, quiet hours, pause/resume, deferred external channels, and no automatic SOS side effects.
+- Selective private mood-note or student-summary sharing with chosen linked adults, preview/confirmation, revocation, relationship checks, and metadata-only audit.
+- Reason-for-access transparency for protected teacher/parent support summaries and shared notes.
+- Admin privacy policy defaults plus metadata-only operations/readiness coverage for v1.4 consent, sharing, reason-gate, and policy activity.
+- Peerlight AI Vietnamese-first student UX refresh, expanded non-proprietary psychological self-check demo content, and SOS-only adult student visibility.
+
+### What Worked
+
+- Starting with policy contracts made reminder, sharing, reason-gate, and operations surfaces easier to wire without expanding raw-data access.
+- Cross-role privacy regression in Phase 26 gave the audit enough evidence to isolate real runtime gaps instead of rechecking every feature manually.
+- Phase 27's gap-closure pass converted audit findings into focused product improvements and validated them with full backend/frontend gates plus a live demo.
+- Keeping external notification channels deferred prevented provider/retry scope creep while still delivering consent and transparency foundations.
+
+### What Was Inefficient
+
+- Automatic milestone accomplishment extraction again returned none and required manual MILESTONES enrichment.
+- `gsd-tools milestone complete` archived core files but left ROADMAP/REQUIREMENTS/PROJECT/STATE normalization and phase-directory movement to manual follow-up.
+- Some legacy frontend test fixtures still carried old operations identifiers after the API contract changed and needed cleanup during audit.
+- Local live-demo debugging was slowed by stale listeners and localhost vs 127.0.0.1 cookie/CORS mismatches.
+
+### Patterns Established
+
+- Admin policy toggles must be consumed by runtime feature code, not only saved as configuration.
+- Adult support visibility now requires both active relationship and an explicit student SOS signal before student lists/support summaries reveal the student.
+- Operations APIs should omit raw object identifiers when metadata categories/statuses are enough for support readiness.
+- Product rebrands should include copy/privacy grep gates so old names and unsafe content do not leak into sensitive student surfaces.
+
+### Key Lessons
+
+- Milestone audits should include 3-source requirements checks: requirements table, phase summaries, and verification artifacts.
+- Privacy-sensitive UI refreshes need API-contract validation; visible Vietnamese labels can change while backend enum contracts stay stable.
+- Live demos are most reliable when frontend/backend ports, API base URL, and cookie host are aligned before walkthrough.
+- Archive automation is still a first pass; final milestone closure needs deliberate living-doc review.
+
+### Cost Observations
+
+- Model mix and token cost were not tracked in this session.
+- Autonomous execution remained effective for tightly scoped privacy phases and a final gap-closure phase.
+- Most manual effort was archive normalization, live-demo environment debugging, and audit evidence synthesis.
+
 ## Cross-Milestone Trends
 
 | Theme | v1.0 Observation | Follow-up |
 |---|---|---|
-| Privacy defaults | Effective when decided before feature work | v1.3 confirmed demo entry, copy polish, and operations readiness can improve UX without expanding raw access |
-| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.3; audit and archive artifacts before completion, then manually enrich living docs |
-| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.3 turned UX into first-class milestone scope with responsive/accessibility and critical-action regression coverage |
-| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.1 closed nested editing; v1.2 added safe configuration for mood prompts/guidance |
-| Operations visibility | v1.0 avoided raw sensitive reports | v1.3 extends metadata-only visibility to demo seed, connectivity/session contract, and production smoke readiness |
-| Integration audit | Phase tests catch local behavior | v1.3 showed audit should distinguish demo usability from stricter production launch readiness |
+| Privacy defaults | Effective when decided before feature work | v1.4 showed saved policy defaults must be enforced by runtime consumers and audited with integration flows |
+| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.4; archive automation should be followed by manual living-doc normalization |
+| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.4 turned rebrand, Vietnamese labels, psychological demo content, and SOS-only adult visibility into verified product scope |
+| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.4 adds school privacy policy controls and metadata-only operations without raw content or raw identifiers |
+| Operations visibility | v1.0 avoided raw sensitive reports | v1.4 tightened metadata-only visibility further by removing raw `resource_id` from operations responses |
+| Integration audit | Phase tests catch local behavior | v1.4 confirmed cross-phase checks catch runtime policy wiring gaps after phase-level tests pass |

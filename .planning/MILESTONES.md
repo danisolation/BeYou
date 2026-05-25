@@ -1,4 +1,47 @@
-# Project Milestones: BeYou - Tu Tin La Minh
+# Project Milestones: Peerlight AI
+
+## v1.4 Consent-Based Notifications & Access Transparency (Shipped: 2026-05-25)
+
+**Delivered:** Consent-first in-app reminders, student-controlled mood-note sharing, reason-gated adult access, admin privacy policy controls, full Peerlight AI Vietnamese demo refresh, and SOS-only adult visibility.
+
+**Phases completed:** 21-27 (7 plans total)
+
+**Key accomplishments:**
+
+- Added student notification/reminder preferences with explicit consent, quiet hours, pause/resume, deferred external channels, and no automatic SOS/adult-alert side effects.
+- Added selective mood-note and student-summary sharing with chosen linked adults, confirmation copy, revocation, relationship checks, and metadata-only audit.
+- Added reason-for-access transparency for protected teacher/parent support summaries and shared notes without bypassing role/relationship authorization.
+- Added admin v1.4 privacy policy defaults and metadata-only operations/readiness for reminder, sharing, reason-gate, and policy activity.
+- Closed milestone audit gaps by enforcing runtime policy defaults, blocking note sharing when disabled, and removing raw `resource_id` exposure from operations responses.
+- Rebranded the product to Peerlight AI with Vietnamese-first student UX, expanded psychological self-check demo content, and teacher/parent visibility limited to SOS-signaled linked students.
+
+**Stats:**
+
+- 151 tracked files changed from v1.4 start through milestone audit
+- 11,657 insertions and 737 deletions during the v1.4 implementation/audit range
+- 31,340 backend/frontend tracked code lines after v1.4 (`18,259` Python, `13,081` TypeScript/TSX)
+- 7 phases, 7 plans, 36 requirements
+- 33 commits from v1.4 start through milestone audit
+- 3 calendar days from first v1.4 milestone commit to audit
+
+**Git range:** `af32726` -> `6eab51c` before final archive commit
+
+**Verification:**
+
+- Milestone audit: 36/36 requirements satisfied, 7/7 phases passed, 7/7 integration flows passed.
+- Latest Phase 27 regression: backend pytest `129 passed`, backend ruff passed, frontend Vitest `94 passed`, frontend lint passed, frontend build passed.
+- Local live demo: landing, student dashboard, Test tam ly, scenarios, chat, support plan, teacher, parent, and admin walkthrough passed on localhost.
+
+**Known non-blocking tech debt:**
+
+- Student history UI can make the disabled-policy reason clearer when admin disables note sharing.
+- Standalone `/api/admin/operations/readiness` is available but not directly called because readiness is embedded in the operations dashboard.
+- Public `/health/ready` can remain `not_ready` while demo seeding is enabled; real production launch should disable demo seed state.
+- Existing moderate Next/PostCSS advisory remains until a non-breaking stable Next release resolves it.
+
+**What's next:** Define v1.5 with `/gsd-new-milestone`; likely candidates include production identity/OAuth readiness, counselor handoff, external notification delivery governance, multi-school tenancy, or richer launch automation.
+
+---
 
 ## v1.3 Pilot UX & Demo Readiness (Shipped: 2026-05-22)
 
