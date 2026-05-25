@@ -294,12 +294,12 @@ Known threat patterns:
 | A2 | Provider subject should be hash-only, ideally with a server-side secret. | Schema/model changes | Medium; if no suitable secret exists, planner must choose stable hashing. |
 | A3 | Resolver status names such as `pending_review` and `deprovisioned_identity` are recommended. | Backend design | Low; names can change if tests lock semantics. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. Should Phase 30 expose a public `/api/auth/capabilities` endpoint for login UI demo visibility, or include it in existing readiness/operations only?
-   - Recommendation: add minimal public-safe auth capabilities only if frontend needs to hide demo entry in production pilot.
+   - RESOLVED: include a minimal public-safe `/api/auth/capabilities` endpoint because the login UI needs to hide demo entry in production pilot. The endpoint returns only safe booleans/labels/modes and never exposes provider keys, client IDs, issuer/callback URLs, raw domains, secrets, tokens, cookies, or password hashes.
 2. Should `UserSessionResponse` include auth method/provider?
-   - Recommendation: only include safe `auth_method`/`auth_provider_label` if UI needs it; otherwise keep auth metadata operations-only.
+   - RESOLVED: do not include auth method/provider in `UserSessionResponse` unless a future UI task explicitly needs it. Auth method/provider metadata remains operations-only by default; `/api/auth/me` and `LoginResponse` keep the shared account status, privacy acknowledgement, notice version, and dashboard route contract.
 
 ## Sources
 
