@@ -45,6 +45,18 @@ No real bugs, security/privacy vulnerabilities, or maintainability defects were 
 
 All reviewed files meet quality standards. No issues found.
 
+## Re-review Note — Phase 29 Regression Fix
+
+**Re-reviewed:** 2026-05-25T10:10:00Z  
+**Scope:** `frontend/app/(authenticated)/admin/operations/page.tsx` regression fix for legacy/partial operations dashboard payloads.
+
+Re-reviewed the new nullish fallbacks passed into the Phase 29 panels:
+
+- `dashboard.deployment_guardrails ?? []`
+- `dashboard.smoke_profiles ?? []`
+
+Result: clean. The fallbacks correctly preserve rendering for older fixtures/payloads that omit the Phase 29 arrays, preventing `.length` access on `undefined`, while still rendering guardrail and smoke profile metadata when present. No privacy/security regression, data exposure, or maintainability defect was found.
+
 ---
 
 _Reviewed: 2026-05-25T10:05:00Z_  
