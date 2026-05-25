@@ -447,6 +447,7 @@ def list_active_shared_notes_for_adult(
                 MoodNoteShare.student_id == student_id,
                 MoodNoteShare.adult_id == adult.id,
                 MoodNoteShare.revoked_at.is_(None),
+                MoodCheckIn.student_id == student_id,
             )
             .order_by(MoodCheckIn.created_at.desc(), MoodNoteShare.created_at.desc())
         ).all()

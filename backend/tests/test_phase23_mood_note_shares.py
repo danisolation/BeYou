@@ -449,6 +449,44 @@ def test_adult_support_summary_requires_relationship_and_active_grant(
     assert PRIVATE_MARKER not in outsider_response.text
 
 
+def test_adult_shared_note_read_rejects_inconsistent_cross_student_share(
+    db: OrmSession,
+    client: TestClient,
+) -> None:
+    student = _user(db, email="student-consistency-phase23-share@example.test", role=UserRole.STUDENT.value)
+    other_student = _user(
+        db,
+        email="other-student-consistency-phase23-share@example.test",
+        role=UserRole.STUDENT.value,
+    )
+    teacher = _user(db, email="teacher-consistency-phase23-share@example.test", role=UserRole.TEACHER.value)
+    _ack(db, student)
+    _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
+    other_checkin = _checkin(
+        db,
+        student=other_student,
+        private_note=f"Không thuộc học sinh được mở. {PRIVATE_MARKER}",
+    )
+    db.add(
+        MoodNoteShare(
+            mood_checkin_id=other_checkin.id,
+            student_id=student.id,
+            adult_id=teacher.id,
+            relationship_type_snapshot=UserRole.TEACHER.value,
+            share_scope="private_note",
+            is_demo=True,
+        )
+    )
+    db.commit()
+
+    _login(client, teacher.email)
+    response = client.get(f"/api/teacher/students/{student.id}/support-summary")
+
+    assert response.status_code == 200
+    assert response.json()["shared_mood_notes"] == []
+    assert PRIVATE_MARKER not in response.text
+
+
 def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient) -> None:
     student = _user(db, email="student-revoke-phase23-share@example.test", role=UserRole.STUDENT.value)
     teacher = _user(db, email="teacher-revoke-phase23-share@example.test", role=UserRole.TEACHER.value)
