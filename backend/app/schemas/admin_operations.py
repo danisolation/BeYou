@@ -53,12 +53,21 @@ class DemoSeedSummary(BaseModel):
     v1_4_share_count: int = 0
 
 
+class RuntimeModeSummary(BaseModel):
+    mode: str
+    is_demo_runtime: bool
+    production_pilot: bool
+    demo_seed_allowed: bool
+    demo_login_allowed: bool
+
+
 class ConnectivitySummary(BaseModel):
-    frontend_origin: str
+    frontend_origin_kind: str
     allowed_origin_count: int
+    has_local_origin: bool
+    all_origins_https: bool
     health_live_path: str
     health_ready_path: str
-    session_cookie_name: str
     session_cookie_secure: bool
     session_cookie_samesite: str
     credentialed_cors_methods: list[str]
@@ -127,6 +136,7 @@ class AdminOperationsDashboardResponse(BaseModel):
     generated_at: datetime
     privacy_notes: list[str]
     readiness: OperationReadinessSummary
+    runtime: RuntimeModeSummary
     demo_seed: DemoSeedSummary
     connectivity: ConnectivitySummary
     production_smoke: list[ProductionSmokeChecklistItem]

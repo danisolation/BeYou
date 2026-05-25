@@ -163,6 +163,12 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
     assert dashboard.demo_seed.v1_4_reminder_state_count == 1
     assert dashboard.demo_seed.v1_4_share_count == 1
     assert dashboard.connectivity.health_live_path == "/health/live"
-    assert dashboard.connectivity.session_cookie_name == settings.session_cookie_name
+    assert dashboard.connectivity.frontend_origin_kind in {"local", "https", "other"}
+    assert dashboard.connectivity.allowed_origin_count == len(settings.allowed_frontend_origins)
+    assert dashboard.connectivity.session_cookie_secure == settings.session_cookie_secure
+    assert dashboard.connectivity.session_cookie_samesite == settings.session_cookie_samesite
+    rendered_dashboard = dashboard.model_dump_json()
+    assert "session_cookie_name" not in rendered_dashboard
+    assert "beyou_session" not in rendered_dashboard
     assert all(item.command == "npm --prefix frontend run smoke:production" for item in dashboard.production_smoke)
     get_settings.cache_clear()

@@ -67,7 +67,47 @@ def _origin_is_https(origin: str) -> bool:
 
 def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]:
     is_production = _is_production(settings)
+    is_production_pilot = settings.is_production_pilot
     checks: list[ReadinessCheck] = []
+
+    checks.append(
+        _safe_check(
+            key="runtime_mode",
+            category="configuration",
+            status="pass",
+            summary=f"Runtime mode is {settings.runtime_mode}.",
+        )
+    )
+
+    if settings.is_production_pilot and not is_production:
+        checks.append(
+            _safe_check(
+                key="runtime_environment_compatibility",
+                category="configuration",
+                status="fail",
+                summary="Production pilot runtime is not paired with a production platform environment.",
+                remediation="Use production platform environment settings before a real pilot launch.",
+            )
+        )
+    elif settings.is_local_demo and is_production:
+        checks.append(
+            _safe_check(
+                key="runtime_environment_compatibility",
+                category="configuration",
+                status="fail",
+                summary="Local demo runtime is paired with a production platform environment.",
+                remediation="Set runtime mode to public_demo for the hosted demo or production_pilot for a real pilot.",
+            )
+        )
+    else:
+        checks.append(
+            _safe_check(
+                key="runtime_environment_compatibility",
+                category="configuration",
+                status="pass",
+                summary="Runtime mode and platform environment are compatible.",
+            )
+        )
 
     if is_production:
         checks.append(
@@ -95,7 +135,7 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
         or "127.0.0.1" in database_url_lower
         or "beyou_dev_password" in database_url_lower
     )
-    if is_production and database_looks_development:
+    if is_production and database_looks_development and not is_production_pilot:
         checks.append(
             _safe_check(
                 key="config_database_url",
@@ -115,23 +155,63 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
-    if is_production and settings.allow_demo_seed:
+    if settings.is_production_pilot and settings.allow_demo_seed:
         checks.append(
             _safe_check(
-                key="config_demo_seed",
+                key="demo_seed_policy",
                 category="configuration",
                 status="fail",
-                summary="Demo seeding is enabled in production.",
-                remediation="Disable demo seeding before production launch.",
+                summary="Demo seeding is enabled in production pilot mode.",
+                remediation="Disable demo seeding before production pilot launch.",
+            )
+        )
+    elif is_production and settings.allow_demo_seed and not settings.is_public_demo:
+        checks.append(
+            _safe_check(
+                key="demo_seed_policy",
+                category="configuration",
+                status="fail",
+                summary="Demo seeding is enabled for a non-demo production runtime.",
+                remediation="Disable demo seeding or set the runtime mode explicitly for the public demo.",
+            )
+        )
+    elif settings.is_public_demo and settings.allow_demo_seed:
+        checks.append(
+            _safe_check(
+                key="demo_seed_policy",
+                category="configuration",
+                status="warn",
+                summary="Public demo seeding is intentionally enabled.",
+                remediation="Disable demo seeding before switching to production pilot mode.",
             )
         )
     else:
         checks.append(
             _safe_check(
-                key="config_demo_seed",
+                key="demo_seed_policy",
                 category="configuration",
                 status="pass",
                 summary="Demo seeding is not enabled unsafely for this environment.",
+            )
+        )
+
+    if settings.is_production_pilot and settings.allow_demo_login:
+        checks.append(
+            _safe_check(
+                key="demo_login_policy",
+                category="authentication",
+                status="fail",
+                summary="Demo login is enabled in production pilot mode.",
+                remediation="Disable demo login before production pilot launch.",
+            )
+        )
+    else:
+        checks.append(
+            _safe_check(
+                key="demo_login_policy",
+                category="authentication",
+                status="pass",
+                summary="Demo login policy is safe for this runtime mode.",
             )
         )
 
@@ -149,14 +229,16 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
                 remediation="Use exact frontend origins only when credentials are enabled.",
             )
         )
-    elif is_production and (local_origins or non_https_origins):
+    elif (is_production_pilot or (is_production and not settings.is_public_demo)) and (
+        local_origins or non_https_origins
+    ):
         checks.append(
             _safe_check(
                 key="origin_security",
                 category="security",
                 status="fail",
-                summary="Production frontend origins include local or non-HTTPS values.",
-                remediation="Configure explicit HTTPS production frontend origins.",
+                summary="Runtime frontend origins include local or non-HTTPS values.",
+                remediation="Configure exact HTTPS frontend origins before production pilot launch.",
             )
         )
     else:
@@ -189,14 +271,14 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
-    if is_production and not settings.session_cookie_secure:
+    if (is_production_pilot or (is_production and not settings.is_public_demo)) and not settings.session_cookie_secure:
         checks.append(
             _safe_check(
                 key="cookie_security",
                 category="security",
                 status="fail",
-                summary="Production session cookies are not marked Secure.",
-                remediation="Enable Secure on production session cookies behind HTTPS.",
+                summary="Runtime session cookies are not marked Secure.",
+                remediation="Enable Secure session cookies for deployed HTTPS.",
             )
         )
     elif not is_production and not settings.session_cookie_secure:
@@ -224,12 +306,12 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             _safe_check(
                 key="provider_secrets",
                 category="configuration",
-                status="fail" if is_production else "warn",
+                status="fail" if is_production or is_production_pilot else "warn",
                 summary="Configured chatbot provider is missing a usable backend API key.",
                 remediation="Configure the backend provider API key and never expose it in frontend code.",
             )
         )
-    elif is_production and settings.chat_provider == "fallback":
+    elif is_production and settings.chat_provider == "fallback" and not is_production_pilot:
         checks.append(
             _safe_check(
                 key="provider_secrets",
@@ -249,6 +331,26 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
+    if settings.is_production_pilot and settings.allow_demo_login:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="fail",
+                summary="Production pilot identity configuration still permits demo login.",
+                remediation="Use non-demo login configuration before production pilot launch.",
+            )
+        )
+    else:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="pass",
+                summary="Identity configuration is safe for the selected runtime mode.",
+            )
+        )
+
     if settings.sos_email_provider == "smtp":
         missing_smtp_config = not settings.smtp_host.strip() or not settings.smtp_from.strip()
         if missing_smtp_config:
@@ -256,7 +358,7 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
                 _safe_check(
                     key="sos_email_readiness",
                     category="configuration",
-                    status="fail" if is_production else "warn",
+                    status="fail" if is_production or is_production_pilot else "warn",
                     summary="SOS email SMTP mode is missing required backend sender configuration.",
                     remediation="Configure backend SMTP host and sender before enabling production email delivery.",
                 )
@@ -270,7 +372,7 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
                     summary="SOS email SMTP configuration has required backend sender fields.",
                 )
             )
-    elif settings.sos_email_provider == "local_outbox" and is_production:
+    elif settings.sos_email_provider == "local_outbox" and (is_production or is_production_pilot):
         checks.append(
             _safe_check(
                 key="sos_email_readiness",
@@ -302,7 +404,7 @@ def _database_connectivity_check(db: OrmSession) -> ReadinessCheck:
             category="database",
             status="fail",
             summary="Database connectivity check failed.",
-            remediation="Verify DATABASE_URL, network access, credentials, and database availability.",
+            remediation="Verify database network access, credentials, and availability.",
         )
 
     return _safe_check(

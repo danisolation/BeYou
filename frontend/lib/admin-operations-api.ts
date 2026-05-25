@@ -43,12 +43,21 @@ export type DemoSeedSummary = {
   v1_4_share_count: number;
 };
 
+export type RuntimeModeSummary = {
+  mode: string;
+  is_demo_runtime: boolean;
+  production_pilot: boolean;
+  demo_seed_allowed: boolean;
+  demo_login_allowed: boolean;
+};
+
 export type ConnectivitySummary = {
-  frontend_origin: string;
+  frontend_origin_kind: "local" | "https" | "other";
   allowed_origin_count: number;
+  has_local_origin: boolean;
+  all_origins_https: boolean;
   health_live_path: string;
   health_ready_path: string;
-  session_cookie_name: string;
   session_cookie_secure: boolean;
   session_cookie_samesite: string;
   credentialed_cors_methods: string[];
@@ -94,6 +103,7 @@ export type AdminOperationsDashboard = {
   generated_at: string;
   privacy_notes: string[];
   readiness: OperationReadinessSummary;
+  runtime: RuntimeModeSummary;
   demo_seed: DemoSeedSummary;
   connectivity: ConnectivitySummary;
   production_smoke: ProductionSmokeChecklistItem[];

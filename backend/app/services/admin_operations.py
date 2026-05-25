@@ -44,6 +44,7 @@ from app.schemas.admin_operations import (
     OperationReadinessAttentionCheck,
     OperationReadinessSummary,
     ProductionSmokeChecklistItem,
+    RuntimeModeSummary,
     SosEmailDeliveryItem,
     SosEmailDeliverySummary,
 )
@@ -413,13 +414,34 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
     )
 
 
+def _origin_kind(origin: str) -> str:
+    normalized = origin.strip().lower()
+    if normalized.startswith(("http://localhost", "https://localhost", "http://127.0.0.1", "https://127.0.0.1")):
+        return "local"
+    if normalized.startswith("https://"):
+        return "https"
+    return "other"
+
+
+def _runtime_mode_summary(settings: Settings) -> RuntimeModeSummary:
+    return RuntimeModeSummary(
+        mode=settings.runtime_mode,
+        is_demo_runtime=settings.is_demo_runtime,
+        production_pilot=settings.is_production_pilot,
+        demo_seed_allowed=settings.allow_demo_seed,
+        demo_login_allowed=settings.allow_demo_login,
+    )
+
+
 def _connectivity_summary(settings: Settings) -> ConnectivitySummary:
+    allowed_origins = settings.allowed_frontend_origins
     return ConnectivitySummary(
-        frontend_origin=settings.frontend_origin,
-        allowed_origin_count=len(settings.allowed_frontend_origins),
+        frontend_origin_kind=_origin_kind(settings.frontend_origin),
+        allowed_origin_count=len(allowed_origins),
+        has_local_origin=any(_origin_kind(origin) == "local" for origin in allowed_origins),
+        all_origins_https=all(origin.strip().lower().startswith("https://") for origin in allowed_origins),
         health_live_path="/health/live",
         health_ready_path="/health/ready",
-        session_cookie_name=settings.session_cookie_name,
         session_cookie_secure=settings.session_cookie_secure,
         session_cookie_samesite=settings.session_cookie_samesite,
         credentialed_cors_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
@@ -501,6 +523,7 @@ def build_operations_dashboard(
         generated_at=utc_now(),
         privacy_notes=PRIVACY_NOTES,
         readiness=_readiness_summary(readiness_report),
+        runtime=_runtime_mode_summary(settings),
         demo_seed=_demo_seed_summary(db, settings),
         connectivity=_connectivity_summary(settings),
         production_smoke=_production_smoke_checklist(),

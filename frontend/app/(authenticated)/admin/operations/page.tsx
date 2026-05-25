@@ -11,6 +11,7 @@ import {
   getAdminOperationsDashboard,
   type OperationCountBucket,
   type ProductionSmokeChecklistItem,
+  type RuntimeModeSummary,
   type SosEmailDeliveryItem,
 } from "@/lib/admin-operations-api";
 
@@ -212,6 +213,9 @@ export default function AdminOperationsPage() {
             <MetricCard title="Audit matching" value={dashboard.audit.total_matching} description="Số audit event khớp bộ lọc." />
           </div>
           <section className="grid gap-4 lg:grid-cols-2">
+            <Panel title="Runtime mode" description="Tóm tắt mode vận hành và chính sách demo/pilot bằng metadata an toàn.">
+              <RuntimeModePanel runtime={dashboard.runtime} />
+            </Panel>
             <Panel title="Demo seed readiness" description="Kiểm tra tài khoản demo, liên kết hỗ trợ và nội dung seed bằng metadata an toàn.">
               <DemoSeedPanel demoSeed={dashboard.demo_seed} />
             </Panel>
@@ -337,21 +341,37 @@ function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
   );
 }
 
+function RuntimeModePanel({ runtime }: { runtime: RuntimeModeSummary }) {
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      <MetricCard title="Runtime" value={runtime.mode} description="Mode sản phẩm đang cấu hình." />
+      <MetricCard title="Demo runtime" value={runtime.is_demo_runtime ? "yes" : "no"} description="Cho phép hành vi demo." />
+      <MetricCard title="Production pilot" value={runtime.production_pilot ? "yes" : "no"} description="Yêu cầu cấu hình pilot an toàn." />
+      <MetricCard
+        title="Demo gates"
+        value={runtime.demo_seed_allowed || runtime.demo_login_allowed ? "enabled" : "disabled"}
+        description="Demo seed/login policy metadata."
+      />
+    </div>
+  );
+}
+
 function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary }) {
   return (
     <div className="space-y-3 rounded-2xl bg-secondary p-4 text-body">
       <p>
-        <span className="font-semibold">Frontend origin:</span> {connectivity.frontend_origin}
+        <span className="font-semibold">Frontend origin kind:</span> {connectivity.frontend_origin_kind}
       </p>
       <p>
-        <span className="font-semibold">Allowed origins:</span> {connectivity.allowed_origin_count}
+        <span className="font-semibold">Allowed origins:</span> {connectivity.allowed_origin_count} · Local{" "}
+        {connectivity.has_local_origin ? "yes" : "no"} · HTTPS only {connectivity.all_origins_https ? "yes" : "no"}
       </p>
       <p>
         <span className="font-semibold">Health paths:</span> {connectivity.health_live_path} ·{" "}
         {connectivity.health_ready_path}
       </p>
       <p>
-        <span className="font-semibold">Session cookie:</span> {connectivity.session_cookie_name} · Secure{" "}
+        <span className="font-semibold">Session cookie metadata:</span> Secure{" "}
         {connectivity.session_cookie_secure ? "on" : "off"} · SameSite {connectivity.session_cookie_samesite}
       </p>
       <p className="text-label">

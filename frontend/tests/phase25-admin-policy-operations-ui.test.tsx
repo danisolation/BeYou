@@ -52,6 +52,13 @@ const operationsDashboard = {
     ],
     attention_checks: [],
   },
+  runtime: {
+    mode: "public_demo",
+    is_demo_runtime: true,
+    production_pilot: false,
+    demo_seed_allowed: true,
+    demo_login_allowed: true,
+  },
   demo_seed: {
     status: "pass",
     summary: "Seeded demo roles, links, and walkthrough content are present as safe metadata.",
@@ -73,11 +80,12 @@ const operationsDashboard = {
     v1_4_share_count: 1,
   },
   connectivity: {
-    frontend_origin: "https://beyou-frontend.vercel.app",
+    frontend_origin_kind: "https",
     allowed_origin_count: 2,
+    has_local_origin: false,
+    all_origins_https: true,
     health_live_path: "/health/live",
     health_ready_path: "/health/ready",
-    session_cookie_name: "__Host-beyou_session",
     session_cookie_secure: true,
     session_cookie_samesite: "none",
     credentialed_cors_methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
