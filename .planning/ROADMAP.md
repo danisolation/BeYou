@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 4/28 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 5/28 complete
 
 ## Completed Milestones
 
@@ -48,7 +48,7 @@
 4. Production pilot boot does not create demo users or walkthrough data, while public demo mode can still seed intentionally.
 5. Public and admin readiness responses remain minimal or masked and never expose secrets, cookies, credentials, connection strings, or sensitive values.
 
-**Plans:** 1/3 plans executed
+**Plans:** 2/3 plans executed
 
 ### Phase 29: Deployment Guardrails & Smoke Profiles
 
@@ -128,7 +128,7 @@
 | RUNTIME-01 | Phase 28 | Complete |
 | RUNTIME-02 | Phase 28 | Complete |
 | RUNTIME-03 | Phase 28 | Complete |
-| RUNTIME-04 | Phase 28 | Pending |
+| RUNTIME-04 | Phase 28 | Complete |
 | RUNTIME-05 | Phase 28 | Complete |
 | DEPLOY-01 | Phase 29 | Pending |
 | DEPLOY-02 | Phase 29 | Pending |

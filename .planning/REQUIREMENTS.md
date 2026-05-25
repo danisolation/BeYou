@@ -12,7 +12,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **RUNTIME-01**: Admin or operator can distinguish `public_demo`, `production_pilot`, and local/development runtime modes through safe readiness or operations metadata.
 - [x] **RUNTIME-02**: Production pilot readiness fails with clear safe remediation when demo seeding, demo login, insecure cookies, unsafe origins, missing database/migration state, or placeholder secrets are detected.
 - [x] **RUNTIME-03**: Production pilot readiness can return `ready` when demo seeding is disabled and required database, migration, origin, cookie, frontend API, and identity configuration checks pass.
-- [ ] **RUNTIME-04**: Production pilot boot does not run demo seeding, while public demo mode can still seed demo users and walkthrough data intentionally.
+- [x] **RUNTIME-04**: Production pilot boot does not run demo seeding, while public demo mode can still seed demo users and walkthrough data intentionally.
 - [x] **RUNTIME-05**: Public readiness remains minimal and admin readiness masks secrets, cookie values, connection strings, provider credentials, and other sensitive configuration values.
 
 ### Deployment Guardrails & Smoke Profiles
@@ -92,7 +92,7 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | RUNTIME-01 | Phase 28 | Complete |
 | RUNTIME-02 | Phase 28 | Complete |
 | RUNTIME-03 | Phase 28 | Complete |
-| RUNTIME-04 | Phase 28 | Pending |
+| RUNTIME-04 | Phase 28 | Complete |
 | RUNTIME-05 | Phase 28 | Complete |
 | DEPLOY-01 | Phase 29 | Pending |
 | DEPLOY-02 | Phase 29 | Pending |
