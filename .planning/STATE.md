@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Production Pilot Readiness & Identity
 status: planning
-stopped_at: Completed 28-03-PLAN.md
-last_updated: "2026-05-25T08:18:47.628Z"
-last_activity: 2026-05-25 -- Phase 28 verified complete
+stopped_at: Phase 29 UI-SPEC approved
+last_updated: "2026-05-25T08:29:44.677Z"
+last_activity: 2026-05-25 -- Phase 29 UI-SPEC approved
 progress:
   total_phases: 5
   completed_phases: 1
@@ -17,8 +17,8 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-25 after Phase 28 verification
-**Status:** Ready to plan Phase 29
+**Last updated:** 2026-05-25 after Phase 29 UI-SPEC approval
+**Status:** UI-SPEC approved; ready to plan Phase 29
 
 ## Project Reference
 
@@ -34,13 +34,14 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Active roadmap | `.planning/ROADMAP.md` | v1.5 Phases 28-32 pending |
+| Active roadmap | `.planning/ROADMAP.md` | v1.5 Phase 28 complete, Phases 29-32 pending |
 | Active requirements | `.planning/REQUIREMENTS.md` | 28 v1.5 requirements mapped, 5 complete |
 | v1.5 research | `.planning/research/` | Current |
 | Phase 28 context | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-CONTEXT.md` | Complete |
 | Phase 28 research | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-RESEARCH.md` | Complete |
 | Phase 28 plans | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-01-PLAN.md` through `28-03-PLAN.md` | Complete and verified |
 | Phase 28 verification | `.planning/phases/28-runtime-mode-production-readiness-foundation/28-VERIFICATION.md` | Passed |
+| Phase 29 UI spec | `.planning/phases/29-deployment-guardrails-smoke-profiles/29-UI-SPEC.md` | Approved |
 | v1.4 roadmap archive | `.planning/milestones/v1.4-ROADMAP.md` | Archived |
 | v1.4 requirements archive | `.planning/milestones/v1.4-REQUIREMENTS.md` | Archived |
 | v1.4 audit archive | `.planning/milestones/v1.4-MILESTONE-AUDIT.md` | Passed |
@@ -77,12 +78,12 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 Phase: 29
 Plan: Not started
-Status: Ready to plan Phase 29
-Last activity: 2026-05-25 -- Phase 28 verified complete
+Status: UI-SPEC approved; ready to plan Phase 29
+Last activity: 2026-05-25 -- Phase 29 UI-SPEC approved
 
 ## Requirements Coverage
 
-- cumulative shipped requirements: 157 total
+- cumulative shipped requirements: 162 total
 - v1.5 requirements: 28 total, 28 mapped, 5 complete
 - v1.4 requirements archived: 36/36 complete
 - v1.3 requirements archived: 20/20 complete
@@ -118,6 +119,7 @@ Last activity: 2026-05-25 -- Phase 28 verified complete
 | Keep readiness public-safe and admin-masked | Phase 28 keeps public readiness status-only and admin readiness metadata-only with no secret or raw student data exposure |
 | Keep frontend operations contract aligned with backend metadata | Phase 28 Plan 01 removes raw origin and cookie-name exposure from both backend response schema and frontend admin operations UI/types |
 | No-op seed and block demo login in production pilot | Phase 28 Plan 02 prevents production-pilot demo writes and denies demo-account sessions before cookies are issued |
+| Use operations dashboard as Phase 29 UI anchor | Phase 29 UI-SPEC keeps deployment guardrails and smoke profiles inside metadata-only admin operations patterns |
 | Prepare identity contracts before full SSO | v1.5 adds OAuth/SSO-ready backend contracts while deferring provider-specific login until a school IdP is selected |
 | Keep identity claims out of authorization | v1.5 keeps app-owned role, relationship, and SOS checks as the source of truth |
 
@@ -128,9 +130,9 @@ Last activity: 2026-05-25 -- Phase 28 verified complete
 
 ## Session Continuity
 
-Last session: 2026-05-25T08:06:42.101Z
-Stopped at: Completed 28-03-PLAN.md
-Resume file: None
+Last session: 2026-05-25T08:29:44.671Z
+Stopped at: Phase 29 UI-SPEC approved
+Resume file: .planning/phases/29-deployment-guardrails-smoke-profiles/29-UI-SPEC.md
 
 ## Next Action
 
