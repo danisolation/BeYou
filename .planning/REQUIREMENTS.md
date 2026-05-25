@@ -85,44 +85,44 @@ Deferred to future milestones, not in v1.5 scope.
 
 ## Traceability
 
-Traceability is filled during roadmap creation. Each v1.5 requirement must map to exactly one phase.
+Each v1.5 requirement maps to exactly one roadmap phase.
 
 | Requirement | Phase | Status |
 |---|---|---|
-| RUNTIME-01 | TBD | Pending |
-| RUNTIME-02 | TBD | Pending |
-| RUNTIME-03 | TBD | Pending |
-| RUNTIME-04 | TBD | Pending |
-| RUNTIME-05 | TBD | Pending |
-| DEPLOY-01 | TBD | Pending |
-| DEPLOY-02 | TBD | Pending |
-| DEPLOY-03 | TBD | Pending |
-| DEPLOY-04 | TBD | Pending |
-| DEPLOY-05 | TBD | Pending |
-| IDENT-01 | TBD | Pending |
-| IDENT-02 | TBD | Pending |
-| IDENT-03 | TBD | Pending |
-| IDENT-04 | TBD | Pending |
-| IDENT-05 | TBD | Pending |
-| IDENT-06 | TBD | Pending |
-| IDENT-07 | TBD | Pending |
-| PILOT-01 | TBD | Pending |
-| PILOT-02 | TBD | Pending |
-| PILOT-03 | TBD | Pending |
-| PILOT-04 | TBD | Pending |
-| PILOT-05 | TBD | Pending |
-| QA-01 | TBD | Pending |
-| QA-02 | TBD | Pending |
-| QA-03 | TBD | Pending |
-| QA-04 | TBD | Pending |
-| QA-05 | TBD | Pending |
-| QA-06 | TBD | Pending |
+| RUNTIME-01 | Phase 28 | Pending |
+| RUNTIME-02 | Phase 28 | Pending |
+| RUNTIME-03 | Phase 28 | Pending |
+| RUNTIME-04 | Phase 28 | Pending |
+| RUNTIME-05 | Phase 28 | Pending |
+| DEPLOY-01 | Phase 29 | Pending |
+| DEPLOY-02 | Phase 29 | Pending |
+| DEPLOY-03 | Phase 29 | Pending |
+| DEPLOY-04 | Phase 29 | Pending |
+| DEPLOY-05 | Phase 29 | Pending |
+| IDENT-01 | Phase 30 | Pending |
+| IDENT-02 | Phase 30 | Pending |
+| IDENT-03 | Phase 30 | Pending |
+| IDENT-04 | Phase 30 | Pending |
+| IDENT-05 | Phase 30 | Pending |
+| IDENT-06 | Phase 30 | Pending |
+| IDENT-07 | Phase 30 | Pending |
+| PILOT-01 | Phase 31 | Pending |
+| PILOT-02 | Phase 31 | Pending |
+| PILOT-03 | Phase 31 | Pending |
+| PILOT-04 | Phase 31 | Pending |
+| PILOT-05 | Phase 31 | Pending |
+| QA-01 | Phase 32 | Pending |
+| QA-02 | Phase 32 | Pending |
+| QA-03 | Phase 32 | Pending |
+| QA-04 | Phase 32 | Pending |
+| QA-05 | Phase 32 | Pending |
+| QA-06 | Phase 32 | Pending |
 
 **Coverage:**
 - v1.5 requirements: 28 total
-- Mapped to phases: 0
-- Unmapped: 28
+- Mapped to phases: 28
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-25 after v1.5 research synthesis*
+*Last updated: 2026-05-25 after v1.5 roadmap creation*
