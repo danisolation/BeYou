@@ -187,5 +187,7 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
     rendered_dashboard = dashboard.model_dump_json()
     assert "session_cookie_name" not in rendered_dashboard
     assert "beyou_session" not in rendered_dashboard
-    assert all(item.command == "npm --prefix frontend run smoke:production" for item in dashboard.production_smoke)
+    smoke_profile_commands = {item.command for item in dashboard.smoke_profiles}
+    assert "npm --prefix frontend run smoke:demo" in smoke_profile_commands
+    assert "npm --prefix frontend run smoke:pilot" in smoke_profile_commands
     get_settings.cache_clear()

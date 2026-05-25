@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, func, select
@@ -23,6 +25,8 @@ from app.db.models import (
 )
 from app.db.session import SessionLocal
 from app.main import app
+from app.schemas.readiness import ReadinessReport
+from app.services.admin_operations import build_operations_dashboard
 from app.schemas.sos import SosAlertCreate
 from app.services.sos import create_sos_alert
 
@@ -178,12 +182,29 @@ def test_operations_dashboard_requires_admin_filters_audit_and_excludes_sensitiv
     assert payload["audit"]["filters"]["status"] == "success"
     assert payload["audit"]["total_matching"] == 1
     assert payload["audit"]["recent"][0]["metadata_summary"] == {"safe_count": 1}
+    assert "deployment_guardrails" in payload
+    assert "smoke_profiles" in payload
+    assert {item["key"] for item in payload["smoke_profiles"]} == {"demo_smoke", "pilot_smoke"}
+    smoke_profiles = {item["key"]: item for item in payload["smoke_profiles"]}
+    assert smoke_profiles["demo_smoke"]["command"] == "npm --prefix frontend run smoke:demo"
+    assert smoke_profiles["demo_smoke"]["uses_demo_accounts"] is True
+    assert smoke_profiles["demo_smoke"]["requires_readiness_ready"] is False
+    assert smoke_profiles["pilot_smoke"]["command"] == "npm --prefix frontend run smoke:pilot"
+    assert smoke_profiles["pilot_smoke"]["uses_demo_accounts"] is False
+    assert smoke_profiles["pilot_smoke"]["requires_readiness_ready"] is True
 
     rendered = response.text
     assert PRIVATE_NOTE not in rendered
     assert student.email not in rendered
     assert teacher.email not in rendered
     assert "recipient_id" not in rendered
+    assert "resource_id" not in rendered
+    assert "DATABASE_URL" not in rendered
+    assert "SESSION_COOKIE_NAME" not in rendered
+    assert "SMTP_PASSWORD" not in rendered
+    assert "FREEMODEL_API_KEY" not in rendered
+    assert "student.demo@beyou.local" not in rendered
+    assert "beyou_session" not in rendered
     assert "raw_answers" not in rendered.lower()
     assert "chatbot transcript" not in rendered.lower()
 
@@ -208,4 +229,83 @@ def test_readiness_endpoint_records_minimal_operations_audit(db: OrmSession, cli
     assert set(event.metadata_summary) == {"overall_status", "check_count", "fail_count", "warn_count", "is_demo"}
     assert "DATABASE_URL" not in str(event.metadata_summary)
     assert "secret" not in str(event.metadata_summary).lower()
+
+
+def _readiness(status: str = "ready") -> ReadinessReport:
+    return ReadinessReport(status=status, generated_at=datetime.now(timezone.utc), checks=[])
+
+
+def _production_pilot_settings(**updates: object) -> Settings:
+    settings = Settings(
+        RUNTIME_MODE="production_pilot",
+        ALLOW_DEMO_SEED=False,
+        ALLOW_DEMO_LOGIN=False,
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_SAMESITE="none",
+        FRONTEND_ORIGIN="https://pilot.example",
+        FRONTEND_ORIGINS="",
+    )
+    return settings.model_copy(update=updates) if updates else settings
+
+
+def _guardrail_by_key(db: OrmSession, settings: Settings, key: str):
+    dashboard = build_operations_dashboard(db, readiness_report=_readiness(), settings=settings)
+    return {item.key: item for item in dashboard.deployment_guardrails}[key]
+
+
+def test_deployment_guardrails_use_safe_exact_cors_cookie_metadata(db: OrmSession) -> None:
+    item = _guardrail_by_key(db, _production_pilot_settings(), "cors_cookie_contract")
+
+    assert item.status == "pass"
+    assert "exact_allowed_origin_match=yes" in item.evidence
+    assert "allowed_origin_count=1" in item.evidence
+    assert "all_origins_https=yes" in item.evidence
+    assert "credentialed_cors=yes" in item.evidence
+    assert "https://pilot.example" not in item.evidence
+
+
+@pytest.mark.parametrize(
+    ("updates", "expected_evidence"),
+    [
+        ({"frontend_origins": "https://other.example"}, "exact_allowed_origin_match=no"),
+        ({"frontend_origins": "*"}, "has_wildcard_origin=yes"),
+        ({"frontend_origins": "http://localhost:3000"}, "has_local_origin=yes"),
+        ({"frontend_origins": "http://pilot.example"}, "all_origins_https=no"),
+    ],
+)
+def test_production_pilot_cors_cookie_contract_fails_for_unsafe_origin_metadata(
+    db: OrmSession,
+    updates: dict[str, object],
+    expected_evidence: str,
+) -> None:
+    item = _guardrail_by_key(db, _production_pilot_settings(**updates), "cors_cookie_contract")
+
+    assert item.status == "fail"
+    assert expected_evidence in item.evidence
+    assert "https://pilot.example" not in item.evidence
+    assert "http://localhost:3000" not in item.evidence
+    assert "wildcard" in item.evidence
+
+
+def test_operations_dashboard_json_excludes_forbidden_deployment_metadata(db: OrmSession) -> None:
+    dashboard = build_operations_dashboard(
+        db,
+        readiness_report=_readiness(),
+        settings=_production_pilot_settings(),
+    )
+    rendered = dashboard.model_dump_json()
+
+    assert "deployment_guardrails" in rendered
+    assert "smoke_profiles" in rendered
+    for forbidden in (
+        "DATABASE_URL",
+        "SESSION_COOKIE_NAME",
+        "SMTP_PASSWORD",
+        "FREEMODEL_API_KEY",
+        "student.demo@beyou.local",
+        "resource_id",
+        "beyou_session",
+        PRIVATE_NOTE,
+    ):
+        assert forbidden not in rendered
 
