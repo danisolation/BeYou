@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 10/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 15/29 complete
 
 ## Completed Milestones
 
@@ -27,7 +27,7 @@
 
 - [x] Phase 21: Privacy Control Foundation & Policy Contracts
 - [x] Phase 22: Student Reminder Preferences & In-App Mood Reminders
-- [ ] Phase 23: Selective Mood-Note Sharing & Revocation
+- [x] Phase 23: Selective Mood-Note Sharing & Revocation (completed 2026-05-25)
 - [ ] Phase 24: Reason-for-Access & Adult Support Transparency
 - [ ] Phase 25: Admin Privacy Policy & Operations Visibility
 - [ ] Phase 26: Cross-Role Privacy Regression & Demo Readiness
@@ -78,7 +78,7 @@ Plans:
 **Depends on:** Phase 21, Phase 22 mood history context
 **Requirements:** SHARE-01, SHARE-02, SHARE-03, SHARE-04, SHARE-05
 **UI hint:** yes
-**Status:** Planned
+**Status:** Complete
 
 **Success criteria:**
 1. Student mood history offers share controls for own check-ins, with private-note sharing when a note exists and summary-only sharing via student-authored text.
@@ -86,10 +86,10 @@ Plans:
 3. Adult reads require active relationship plus active share grant and lose access after revocation.
 4. Share/read/revoke audit stays metadata-only and never includes private note or student summary text.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 23-01-PLAN.md - Selective mood-note sharing, revocation, adult reads, and audit privacy
+- [x] 23-01-PLAN.md - Selective mood-note sharing, revocation, adult reads, and audit privacy
 
 ### Phase 24: Reason-for-Access & Adult Support Transparency
 
@@ -162,11 +162,11 @@ Plans:
 | REMIND-03 | Phase 22 | Complete |
 | REMIND-04 | Phase 22 | Complete |
 | REMIND-05 | Phase 22 | Complete |
-| SHARE-01 | Phase 23 | Pending |
-| SHARE-02 | Phase 23 | Pending |
-| SHARE-03 | Phase 23 | Pending |
-| SHARE-04 | Phase 23 | Pending |
-| SHARE-05 | Phase 23 | Pending |
+| SHARE-01 | Phase 23 | Complete |
+| SHARE-02 | Phase 23 | Complete |
+| SHARE-03 | Phase 23 | Complete |
+| SHARE-04 | Phase 23 | Complete |
+| SHARE-05 | Phase 23 | Complete |
 | ACCESS-01 | Phase 24 | Pending |
 | ACCESS-02 | Phase 24 | Pending |
 | ACCESS-03 | Phase 24 | Pending |
@@ -185,7 +185,7 @@ Plans:
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 10
+- Complete: 15
 - Unmapped: 0
 
 ## Assumptions

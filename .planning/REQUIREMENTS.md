@@ -25,11 +25,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Selective Private Mood-Note Sharing
 
-- [ ] **SHARE-01**: Student can share a specific existing private mood note or student-authored summary with selected currently linked adults.
-- [ ] **SHARE-02**: Student must preview and confirm exactly what will be shared, who will see it, and what remains private.
-- [ ] **SHARE-03**: Student can revoke a shared mood note per adult or for all selected adults.
-- [ ] **SHARE-04**: Teacher or parent can see only active mood-note shares explicitly granted to them by the student.
-- [ ] **SHARE-05**: Share, read, and revoke audit metadata excludes raw private note text and student-authored summary text.
+- [x] **SHARE-01**: Student can share a specific existing private mood note or student-authored summary with selected currently linked adults.
+- [x] **SHARE-02**: Student must preview and confirm exactly what will be shared, who will see it, and what remains private.
+- [x] **SHARE-03**: Student can revoke a shared mood note per adult or for all selected adults.
+- [x] **SHARE-04**: Teacher or parent can see only active mood-note shares explicitly granted to them by the student.
+- [x] **SHARE-05**: Share, read, and revoke audit metadata excludes raw private note text and student-authored summary text.
 
 ### Reason-for-Access Transparency
 
@@ -99,11 +99,11 @@ Explicit exclusions for v1.4.
 | REMIND-03 | Phase 22 | Complete |
 | REMIND-04 | Phase 22 | Complete |
 | REMIND-05 | Phase 22 | Complete |
-| SHARE-01 | Phase 23 | Pending |
-| SHARE-02 | Phase 23 | Pending |
-| SHARE-03 | Phase 23 | Pending |
-| SHARE-04 | Phase 23 | Pending |
-| SHARE-05 | Phase 23 | Pending |
+| SHARE-01 | Phase 23 | Complete |
+| SHARE-02 | Phase 23 | Complete |
+| SHARE-03 | Phase 23 | Complete |
+| SHARE-04 | Phase 23 | Complete |
+| SHARE-05 | Phase 23 | Complete |
 | ACCESS-01 | Phase 24 | Pending |
 | ACCESS-02 | Phase 24 | Pending |
 | ACCESS-03 | Phase 24 | Pending |
