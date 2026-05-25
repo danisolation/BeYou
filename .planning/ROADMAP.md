@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 8/28 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 9/28 complete
 
 ## Completed Milestones
 
@@ -65,7 +65,7 @@
 4. Demo smoke and pilot smoke are separate; pilot smoke requires readiness `ready` and has no demo-user dependency.
 5. Deployment docs explain root directories, env vars, smoke commands, demo-vs-pilot readiness, and safe rollback.
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 ### Phase 30: Identity Foundation & Auth Contracts
 
@@ -133,7 +133,7 @@
 | DEPLOY-01 | Phase 29 | Complete |
 | DEPLOY-02 | Phase 29 | Complete |
 | DEPLOY-03 | Phase 29 | Complete |
-| DEPLOY-04 | Phase 29 | Pending |
+| DEPLOY-04 | Phase 29 | Complete |
 | DEPLOY-05 | Phase 29 | Pending |
 | IDENT-01 | Phase 30 | Pending |
 | IDENT-02 | Phase 30 | Pending |
@@ -157,7 +157,7 @@
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 8
+- Complete: 9
 - Unmapped: 0
 
 ## Assumptions
@@ -168,4 +168,4 @@
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-25 after Phase 29 Plan 01 execution*
+*Last updated: 2026-05-25 after Phase 29 Plan 02 execution*

@@ -20,7 +20,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **DEPLOY-01**: Operator can run a deployment guardrail command that validates Render backend root/start/env expectations and Vercel frontend root/build expectations before or after deploy.
 - [x] **DEPLOY-02**: Frontend validation rejects unsafe production API configuration, including missing `NEXT_PUBLIC_API_BASE_URL`, localhost production targets, non-HTTPS pilot targets, or mismatch with expected backend smoke URL.
 - [x] **DEPLOY-03**: Backend validation verifies exact credentialed CORS origins and production cookie settings for the deployed Vercel/Render topology.
-- [ ] **DEPLOY-04**: Demo smoke and production-pilot smoke are separate commands or modes; demo smoke may use seeded role accounts, while pilot smoke requires readiness `ready` and does not require demo users.
+- [x] **DEPLOY-04**: Demo smoke and production-pilot smoke are separate commands or modes; demo smoke may use seeded role accounts, while pilot smoke requires readiness `ready` and does not require demo users.
 - [ ] **DEPLOY-05**: Deployment documentation explains Vercel root directory, Render backend profile, environment variables, smoke commands, known demo-vs-pilot readiness behavior, and safe rollback steps.
 
 ### Identity Foundation & Auth Contracts
@@ -97,7 +97,7 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | DEPLOY-01 | Phase 29 | Complete |
 | DEPLOY-02 | Phase 29 | Complete |
 | DEPLOY-03 | Phase 29 | Complete |
-| DEPLOY-04 | Phase 29 | Pending |
+| DEPLOY-04 | Phase 29 | Complete |
 | DEPLOY-05 | Phase 29 | Pending |
 | IDENT-01 | Phase 30 | Pending |
 | IDENT-02 | Phase 30 | Pending |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 8
+- Complete: 9
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-25 after Phase 29 Plan 01 execution*
+*Last updated: 2026-05-25 after Phase 29 Plan 02 execution*
