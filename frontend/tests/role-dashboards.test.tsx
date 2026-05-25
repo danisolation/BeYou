@@ -65,12 +65,12 @@ describe("role dashboards", () => {
 
     expect(screen.getByText("Đang tải thông tin...")).toBeInTheDocument();
     expect(await screen.findByText("Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.")).toBeInTheDocument();
-    const nav = screen.getByRole("navigation", { name: "Điều hướng vai trò" });
-    expect(within(nav).getByRole("link", { name: "Học sinh" })).toHaveAttribute("href", "/student");
+    const nav = screen.getAllByRole("navigation", { name: "Điều hướng học sinh" })[0];
+    expect(within(nav).getByRole("link", { name: "Bảng điều khiển" })).toHaveAttribute("href", "/student");
     expect(within(nav).queryByRole("link", { name: "Giáo viên" })).not.toBeInTheDocument();
     expect(within(nav).queryByRole("link", { name: "Phụ huynh" })).not.toBeInTheDocument();
     expect(within(nav).queryByRole("link", { name: "Quản trị" })).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Đăng xuất" }));
+    await userEvent.click(screen.getAllByRole("button", { name: "Đăng xuất" })[0]);
 
     await waitFor(() => expect(push).toHaveBeenCalledWith("/login"));
     expect(fetchMock).toHaveBeenCalledWith(
@@ -93,7 +93,7 @@ describe("role dashboards", () => {
     expect(await screen.findByText("Không thể mở cổng này với vai trò hiện tại.")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "BeYou chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng của bạn để tiếp tục hỗ trợ an toàn.",
+        "Peerlight AI chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng của bạn để tiếp tục hỗ trợ an toàn.",
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Đi tới cổng phù hợp" })).toHaveAttribute("href", "/student");
@@ -151,7 +151,7 @@ describe("role dashboards", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Bảng điều khiển của em")).toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, Nguyễn")).toBeInTheDocument();
     expect(screen.getByText(/Trường THPT BeYou Demo/)).toBeInTheDocument();
     expect(screen.getByText(/10A1/)).toBeInTheDocument();
     expect(screen.getByText("Cô Bình Demo")).toBeInTheDocument();
@@ -187,7 +187,7 @@ describe("role dashboards", () => {
     expect(screen.getByText("Ranh giới hỗ trợ của phụ huynh")).toBeInTheDocument();
     expect(
       screen.getAllByText(
-        "BeYou không hiển thị câu trả lời tự kiểm tra chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.",
+        "Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.",
       ),
     ).toHaveLength(2);
     expect(screen.getAllByText("Nguyễn An Demo")).toHaveLength(2);

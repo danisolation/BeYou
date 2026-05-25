@@ -725,7 +725,7 @@ class ChatThread(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), default="Cuộc trò chuyện với BeYou", nullable=False)
+    title: Mapped[str] = mapped_column(String(255), default="Cuộc trò chuyện với Peerlight AI", nullable=False)
     safety_state: Mapped[str] = mapped_column(String(32), default="supportive", nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)

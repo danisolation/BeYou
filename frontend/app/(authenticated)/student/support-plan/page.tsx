@@ -131,11 +131,11 @@ export default function StudentSupportPlanPage() {
     <section className="space-y-6">
       <div className="rounded-3xl bg-secondary p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-display">Kế hoạch người lớn tin cậy</h1>
+          <h1 className="text-display">Người lớn tin tưởng</h1>
           {data.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-4 text-body">
-          Em có thể chuẩn bị trước cách người lớn tin cậy nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
+          Em có thể chuẩn bị trước cách người lớn tin tưởng nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
         </p>
         <p className="mt-3 text-label">
           Kế hoạch này giúp em nói trước điều mình cần; em vẫn quyết định người lớn nào được chọn để xem phần chia sẻ.
@@ -152,7 +152,7 @@ export default function StudentSupportPlanPage() {
 
       <form className="space-y-6" onSubmit={handleSubmit}>
         <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <h2 className="text-heading">Chọn người lớn tin cậy</h2>
+          <h2 className="text-heading">Chọn người lớn tin tưởng</h2>
           <p className="mt-3 text-body">
             Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
           </p>
@@ -182,7 +182,7 @@ export default function StudentSupportPlanPage() {
             />
           )}
           {activeWithoutAdult ? (
-            <p className="mt-3 text-body text-red-700">Kế hoạch đang chia sẻ cần ít nhất một người lớn tin cậy.</p>
+            <p className="mt-3 text-body text-red-700">Kế hoạch đang chia sẻ cần ít nhất một người lớn tin tưởng.</p>
           ) : null}
         </section>
 

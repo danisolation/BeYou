@@ -194,7 +194,7 @@ function AccessReasonPrompt({
       <div className="mt-4 rounded-2xl bg-secondary p-4 text-body">
         {(detail.copy ?? [
           "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
-          "Lý do không cấp thêm quyền; BeYou vẫn kiểm tra vai trò và liên kết đang hoạt động.",
+          "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
         ]).map((copy) => (
           <p key={copy}>{copy}</p>
         ))}
@@ -246,7 +246,7 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
   if (!plan.shared_with_viewer) {
     return (
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">Kế hoạch người lớn tin cậy</h2>
+        <h2 className="text-heading">Người lớn tin tưởng</h2>
         <p className="mt-3 text-body">
           Học sinh chưa chia sẻ kế hoạch này với bạn, hoặc kế hoạch đang tạm dừng/ngừng chia sẻ.
         </p>
@@ -256,8 +256,8 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
   }
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="text-heading">Kế hoạch người lớn tin cậy</h2>
-      <p className="mt-3 text-label">Được chia sẻ với {plan.selected_adult_count} người lớn tin cậy.</p>
+      <h2 className="text-heading">Người lớn tin tưởng</h2>
+      <p className="mt-3 text-label">Được chia sẻ với {plan.selected_adult_count} người lớn tin tưởng.</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <SummaryField title="Điều thường giúp em" value={plan.what_helps} />
         <SummaryField title="Điều nên tránh" value={plan.what_does_not_help} />

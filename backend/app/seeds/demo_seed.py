@@ -90,7 +90,7 @@ def _ensure_active_demo_link(db: OrmSession, *, admin: User, student: User, adul
 SELF_CHECK_SEEDS = [
     {
         "title": "Sức khỏe cảm xúc",
-        "description": "Bài tự kiểm tra ngắn giúp em lắng nghe cảm xúc hiện tại. Kết quả không phải chẩn đoán.",
+        "description": "Test tâm lý ngắn giúp em lắng nghe cảm xúc hiện tại. Nội dung giáo dục tham khảo khuyến nghị sức khỏe tâm thần công khai và không phải chẩn đoán.",
         "questions": [
             (
                 "Trong vài ngày gần đây, em cảm thấy tâm trạng của mình thế nào?",
@@ -104,7 +104,7 @@ SELF_CHECK_SEEDS = [
     },
     {
         "title": "Áp lực bạn bè",
-        "description": "Bài ngắn giúp em nhận ra áp lực từ bạn bè và chọn cách giữ ranh giới an toàn.",
+        "description": "Test ngắn giúp em nhận ra áp lực từ bạn bè và chọn cách giữ ranh giới an toàn.",
         "questions": [
             (
                 "Khi bạn rủ làm điều em không thoải mái, em thường cảm thấy thế nào?",
@@ -113,6 +113,62 @@ SELF_CHECK_SEEDS = [
             (
                 "Sau các tình huống với nhóm bạn, em có còn thấy an toàn với lựa chọn của mình không?",
                 [("Có, em thấy ổn", 0), ("Có lúc em phân vân", 1), ("Em thường lo lắng hoặc hối tiếc", 2)],
+            ),
+        ],
+    },
+    {
+        "title": "Lo âu học đường",
+        "description": "Test tâm lý tham khảo cách sàng lọc lo âu thường dùng trong chăm sóc ban đầu. Không phải chẩn đoán.",
+        "questions": [
+            (
+                "Gần đây em có thấy lo lắng hoặc căng thẳng khó dừng lại không?",
+                [("Hiếm khi hoặc em vẫn kiểm soát được", 0), ("Có vài lúc làm em mệt", 1), ("Thường xuyên và khó tự dịu lại", 2)],
+            ),
+            (
+                "Sự lo lắng có làm em né tránh lớp học, bạn bè hoặc hoạt động thường ngày không?",
+                [("Không đáng kể", 0), ("Có lúc em muốn né tránh", 1), ("Có, ảnh hưởng rõ đến sinh hoạt của em", 2)],
+            ),
+        ],
+    },
+    {
+        "title": "Dấu hiệu trầm cảm",
+        "description": "Test tâm lý tham khảo hướng dẫn sàng lọc trầm cảm vị thành niên. Kết quả chỉ để gợi ý bước hỗ trợ.",
+        "questions": [
+            (
+                "Trong hai tuần gần đây, em có mất hứng thú với những việc thường làm em thấy vui không?",
+                [("Không hoặc chỉ thoáng qua", 0), ("Có vài ngày", 1), ("Nhiều ngày và em thấy khó bắt đầu lại", 2)],
+            ),
+            (
+                "Em có thấy buồn, trống rỗng hoặc tự trách mình kéo dài không?",
+                [("Hiếm khi", 0), ("Có lúc khiến em nặng lòng", 1), ("Thường xuyên và em khó chia sẻ", 2)],
+            ),
+        ],
+    },
+    {
+        "title": "Tập trung và ADHD",
+        "description": "Test tâm lý giáo dục tham khảo khuyến nghị đánh giá chú ý - tăng động. Không thay thế đánh giá chuyên môn.",
+        "questions": [
+            (
+                "Em có thường khó duy trì tập trung dù đã cố gắng bắt đầu việc học không?",
+                [("Hiếm khi", 0), ("Có lúc, nhất là khi mệt", 1), ("Thường xuyên và ảnh hưởng kết quả học", 2)],
+            ),
+            (
+                "Em có hay bồn chồn, hấp tấp hoặc khó chờ đến lượt đến mức bị nhắc nhở không?",
+                [("Không đáng kể", 0), ("Thỉnh thoảng", 1), ("Thường xuyên", 2)],
+            ),
+        ],
+    },
+    {
+        "title": "Tự kỷ và giao tiếp xã hội",
+        "description": "Test tâm lý giáo dục tham khảo khuyến nghị quan sát giao tiếp xã hội. Không dùng để chẩn đoán tự kỷ.",
+        "questions": [
+            (
+                "Em có thấy khó hiểu tín hiệu xã hội như nét mặt, ẩn ý hoặc khi nào nên tham gia câu chuyện không?",
+                [("Hiếm khi", 0), ("Có lúc làm em bối rối", 1), ("Thường xuyên khiến em mệt hoặc né tránh", 2)],
+            ),
+            (
+                "Sự thay đổi lịch trình, âm thanh, ánh sáng hoặc môi trường đông người có làm em quá tải không?",
+                [("Không đáng kể", 0), ("Có lúc", 1), ("Thường xuyên và em cần rút lui", 2)],
             ),
         ],
     },
@@ -127,7 +183,7 @@ THRESHOLD_COPY = [
         "Em đang có nhiều dấu hiệu ổn định.",
         "Tiếp tục giữ những thói quen giúp em thấy an toàn và thoải mái.",
         "Việc em dành thời gian lắng nghe bản thân là một điều tích cực.",
-        "Tiếp tục giữ thói quen giúp em thấy an toàn và thoải mái.",
+        "Nếu muốn hiểu thêm, em có thể thử test lo âu hoặc một tình huống xử lý thực tế.",
     ),
     (
         RiskStateLabel.ATTENTION.value,
@@ -136,16 +192,16 @@ THRESHOLD_COPY = [
         "Có một vài dấu hiệu em nên để ý thêm.",
         "Chọn một việc nhỏ giúp em nghỉ ngơi, bình tĩnh hoặc chia sẻ nhẹ nhàng.",
         "Nhận ra cảm xúc của mình là bước đầu rất đáng quý.",
-        "Thử một tình huống luyện kỹ năng hoặc chia sẻ với người em tin tưởng.",
+        "Em có thể thử thêm test lo âu, stress học tập hoặc một tình huống xử lý thực tế.",
     ),
     (
         RiskStateLabel.SUPPORT.value,
         3,
         3,
         "Em không cần tự xử lý mọi thứ một mình.",
-        "Hãy cân nhắc nói chuyện với giáo viên, phụ huynh hoặc một người lớn tin cậy.",
+        "Hãy cân nhắc nói chuyện với người lớn tin tưởng và thử test lo âu hoặc trầm cảm nếu cảm giác này kéo dài.",
         "Tìm kiếm hỗ trợ là một cách chăm sóc bản thân, không phải lỗi của em.",
-        "Hãy cân nhắc nói chuyện với giáo viên, phụ huynh hoặc một người lớn tin cậy.",
+        "Hãy cân nhắc nói chuyện với giáo viên, phụ huynh hoặc một người lớn tin tưởng.",
     ),
     (
         RiskStateLabel.EARLY_SUPPORT.value,
@@ -154,7 +210,7 @@ THRESHOLD_COPY = [
         "Điều em đang trải qua đáng được hỗ trợ sớm.",
         "Ưu tiên ở gần nơi an toàn và nói với một người lớn em tin tưởng.",
         "Em xứng đáng được lắng nghe và hỗ trợ kịp thời.",
-        "Hãy tìm một người lớn tin cậy ở gần em. BeYou sẽ có nút SOS ở bước tiếp theo của sản phẩm.",
+        "Hãy tìm một người lớn tin tưởng ở gần em hoặc dùng SOS; sau đó em có thể làm thêm test phù hợp khi đã an toàn hơn.",
     ),
 ]
 
@@ -183,7 +239,7 @@ SCENARIO_SEEDS = [
         "title": "Bị trêu chọc online",
         "situation": "Một bạn đăng bình luận online trêu chọc ngoại hình của em và nhiều người bấm thích.",
         "skill_tag": "Giữ an toàn trên mạng",
-        "recommended_response": "Em có thể lưu bằng chứng, không đáp trả nóng vội và báo với người lớn tin cậy.",
+        "recommended_response": "Em có thể lưu bằng chứng, không đáp trả nóng vội và báo với người lớn tin tưởng.",
         "lesson": "Dừng lại trước khi phản ứng giúp em bảo vệ mình và có thêm hỗ trợ phù hợp.",
         "choices": [
             (
@@ -524,7 +580,7 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
         email=DEMO_STUDENT_EMAIL,
         role=UserRole.STUDENT.value,
         full_name="Nguyễn An Demo",
-        school="Trường THPT BeYou Demo",
+        school="Trường THPT Peerlight AI Demo",
         class_name="10A1",
     )
     teacher = _upsert_demo_user(

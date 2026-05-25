@@ -91,7 +91,7 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
 
 PRIVACY_NOTES = [
     "Chỉ hiển thị metadata vận hành: trạng thái, loại hành động, loại mục tiêu, thời gian và mã lỗi an toàn.",
-    "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
+    "Không hiển thị ghi chú SOS, câu trả lời test tâm lý, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
     "Support plan, mood check-in, adult summary và admin config chỉ hiển thị bằng count/status metadata an toàn.",
     "Dùng trang này để kiểm tra vận hành và xử lý sự cố, không dùng để giám sát từng học sinh.",
 ]
@@ -223,7 +223,6 @@ def _audit_event_item(event: AuditEvent) -> AuditEventItem:
         actor_role=event.actor_role,
         action=event.action,
         resource_type=event.resource_type,
-        resource_id=event.resource_id,
         status=event.status,
         timestamp=event.timestamp,
         reason=None,

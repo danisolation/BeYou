@@ -26,8 +26,8 @@ from app.schemas.support_plan import (
 from app.services.audit import record_audit_event
 
 SUPPORT_PLAN_PRIVACY_NOTES = [
-    "Kế hoạch này chỉ gồm phần em chọn để chia sẻ với người lớn tin cậy.",
-    "Ghi chú mood, câu trả lời tự kiểm tra và nội dung trò chuyện riêng tư không tự động được chia sẻ.",
+    "Kế hoạch này chỉ gồm phần em chọn để chia sẻ với người lớn tin tưởng.",
+    "Ghi chú mood, câu trả lời test tâm lý và nội dung trò chuyện riêng tư không tự động được chia sẻ.",
     "Em có thể tạm dừng hoặc ngừng chia sẻ kế hoạch bất cứ lúc nào.",
 ]
 
@@ -118,7 +118,7 @@ def _validate_selected_adults(
     if status_value == SupportPlanStatus.ACTIVE.value and not adult_ids:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Kế hoạch đang bật cần ít nhất một người lớn tin cậy đã liên kết.",
+            detail="Kế hoạch đang bật cần ít nhất một người lớn tin tưởng đã liên kết.",
         )
 
     linked_by_adult_id = {adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)}

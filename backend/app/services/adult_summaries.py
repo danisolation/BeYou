@@ -68,7 +68,7 @@ def _reason_required_detail(policy: SchoolPrivacyPolicyDefault) -> dict:
         "allowed_reasons": [option.model_dump() for option in access_reason_options(policy.allowed_reason_codes)],
         "copy": [
             "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
-            "Lý do không cấp thêm quyền; BeYou vẫn kiểm tra vai trò và liên kết đang hoạt động.",
+            "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
         ],
     }
 

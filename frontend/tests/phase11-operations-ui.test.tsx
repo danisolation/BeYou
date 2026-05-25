@@ -10,7 +10,7 @@ const operationsDashboard = {
   generated_at: "2026-05-22T00:00:00Z",
   privacy_notes: [
     "Chỉ hiển thị metadata vận hành: trạng thái, loại hành động, loại mục tiêu, thời gian và mã lỗi an toàn.",
-    "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
+    "Không hiển thị ghi chú SOS, câu trả lời test tâm lý, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
   ],
   readiness: {
     status: "degraded",
@@ -26,7 +26,7 @@ const operationsDashboard = {
         category: "configuration",
         status: "warn",
         summary: "Environment is not production.",
-        remediation: "Set production environment mode before using BeYou with real student data.",
+        remediation: "Set production environment mode before using Peerlight AI with real student data.",
       },
     ],
   },

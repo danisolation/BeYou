@@ -82,7 +82,7 @@ export default function StudentMoodCheckInPage() {
         <h1 className="text-display">Check-in cảm xúc</h1>
         <p className="mt-4 text-body">
           {options.student_prompt ??
-            "Dành một phút để gọi tên cảm xúc hiện tại. BeYou dùng thông tin này để gợi ý bước hỗ trợ nhẹ nhàng cho em."}
+            "Dành một phút để gọi tên cảm xúc hiện tại. Peerlight AI dùng thông tin này để gợi ý bước hỗ trợ nhẹ nhàng cho em."}
         </p>
         <div className="mt-5 rounded-3xl bg-white p-5">
           <h2 className="text-heading">Ranh giới riêng tư</h2>
@@ -208,7 +208,7 @@ function MoodResultCard({ result }: { result: MoodCheckIn }) {
       <div className="mt-4 flex flex-wrap gap-3">
         {result.suggest_support_plan ? (
           <Link className="inline-flex min-h-11 items-center font-semibold text-accent" href="/student/support-plan">
-            Xem kế hoạch người lớn tin cậy
+            Xem người lớn tin tưởng
           </Link>
         ) : null}
         {result.suggest_sos ? (

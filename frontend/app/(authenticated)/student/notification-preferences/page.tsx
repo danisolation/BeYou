@@ -76,7 +76,7 @@ export default function StudentNotificationPreferencesPage() {
       <div className="rounded-3xl bg-secondary p-5 shadow-sm sm:p-6">
         <h1 className="text-display">Nhắc nhở check-in</h1>
         <p className="mt-4 text-body">
-          Em kiểm soát việc BeYou có nhắc check-in cảm xúc hay không. Nhắc nhở v1.4 chỉ hiện trong BeYou, không gửi cho
+          Em kiểm soát việc Peerlight AI có nhắc check-in cảm xúc hay không. Nhắc nhở v1.4 chỉ hiện trong Peerlight AI, không gửi cho
           người lớn, không chấm điểm nguy cơ và không tự tạo SOS.
         </p>
         <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student">
@@ -107,7 +107,7 @@ export default function StudentNotificationPreferencesPage() {
             className="mt-1"
           />
           <span>
-            <span className="block font-semibold">Bật nhắc nhở check-in trong BeYou</span>
+            <span className="block font-semibold">Bật nhắc nhở check-in trong Peerlight AI</span>
             <span className="mt-1 block text-label">
               Em có thể tắt hoặc tạm dừng bất cứ lúc nào. Việc bỏ qua nhắc nhở không bị xem là tín hiệu nguy cơ.
             </span>

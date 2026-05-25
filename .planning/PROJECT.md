@@ -1,8 +1,8 @@
-# BeYou - Tu Tin La Minh
+# Peerlight AI
 
 ## What This Is
 
-BeYou is a privacy-first web app for Vietnamese high-school students to recognize peer pressure, check mental well-being through short assessments, practice handling school situations, chat with a basic supportive bot, build proactive trusted-adult support plans, complete lightweight mood check-ins, and send SOS alerts when they feel unsafe or at risk.
+Peerlight AI is a privacy-first web app for Vietnamese high-school students to recognize pressure, check mental well-being through short psychological self-checks, practice real school situations, chat with a supportive AI companion, build proactive trusted-adult support plans, complete lightweight mood check-ins, and send SOS alerts when they feel unsafe or at risk.
 
 The product serves students first. Teacher, parent, and admin portals support escalation, content management, trusted-adult support summaries, aggregate reporting, and operational visibility without turning sensitive student data into surveillance.
 
@@ -12,18 +12,18 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 phases complete; milestone audit found closure gaps as of 2026-05-25
-**Milestone status:** Gap closure needed before archive
-**Scope shipped:** 26 total phases, 64 total plans, 150 cumulative requirements satisfied; v1.4 is 29/29 requirements complete
-**Latest verification:** `.planning/phases/26-cross-role-privacy-regression-demo-readiness/26-VERIFICATION.md` passed with 4/4 Phase 26 must-haves verified
-**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` found 3 requirement-level partial gaps: NOTIF-03, POLICY-01, and OPS-02
+**Shipped version:** v1.4 Phases 21-27 complete locally as of 2026-05-25
+**Milestone status:** Gap closure complete; ready for live demo, commit, and milestone re-audit/archive
+**Scope shipped:** 27 total phases, 65 total plans, 157 cumulative requirements satisfied; v1.4 is 36/36 requirements complete
+**Latest verification:** Phase 27 full local verification passed after Peerlight AI refresh and audit gap closure
+**Latest audit:** `.planning/v1.4-MILESTONE-AUDIT.md` gaps closed by Phase 27: NOTIF-03, POLICY-01, and OPS-02
 
 ### Built Product
 
 - Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, and demo-data separation.
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
-- Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
-- Adult support flows: linked teacher/parent views, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
+- Student wellbeing flows: privacy notice, Test tâm lý results/history with three Vietnamese visible labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
+- Adult support flows: linked teacher/parent views only for students who have sent SOS, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard.
 - Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, metadata-only demo readiness, production smoke command, and Next 16-compatible lint/test/build gates.
 
@@ -34,8 +34,8 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Frontend full Vitest: `20 test files passed`, `94 tests passed`
 - Frontend lint: passed
 - Frontend production build: passed
-- Production smoke: `SMOKE_PASS 16/16`
-- Phase 26 code review and privacy grep gates: passed
+- Production smoke: `SMOKE_PASS 16/16` before Phase 27
+- Phase 27 copy/privacy grep gates: passed for frontend app/components and backend app, allowing the legacy demo password only
 
 ### Planning Archives
 
@@ -51,7 +51,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current Milestone: v1.4 Consent-Based Notifications & Access Transparency
 
-**Goal:** Add student-controlled reminder consent, selective mood-note sharing, reason-for-access transparency, and school policy controls without weakening BeYou's privacy-by-default boundaries.
+**Goal:** Add student-controlled reminder consent, selective mood-note sharing, reason-for-access transparency, school policy controls, Peerlight AI demo polish, and SOS-only adult visibility without weakening privacy-by-default boundaries.
 
 **Target features:**
 
@@ -86,7 +86,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Students can complete lightweight mood check-ins and review their own check-in history/trends.
 - [x] Teachers and parents can see privacy-preserving check-in/support summaries for linked students without raw private notes.
 - [x] Admins can configure mood check-in prompts/guidance and inspect v1.2 support activity metadata safely.
-- [x] New support-plan/check-in flows preserve BeYou's privacy-by-default, non-clinical, support-not-surveillance boundaries.
+- [x] New support-plan/check-in flows preserve Peerlight AI's privacy-by-default, non-clinical, support-not-surveillance boundaries.
 
 ### Validated in v1.3
 
@@ -104,6 +104,8 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Teachers and parents provide controlled support-oriented reasons before protected support-summary/shared-note access when policy requires it.
 - [x] Admins can configure school-level v1.4 privacy/notification defaults and inspect metadata-only operations readiness for v1.4 controls.
 - [x] Cross-role v1.4 privacy regressions, documentation, demo readiness, and production smoke are complete.
+- [x] v1.4 audit gaps are closed: school policy defaults drive runtime behavior, note-sharing policy is enforced, and operations audit responses do not expose raw `resource_id`.
+- [x] Peerlight AI rebrand, Vietnamese-first student UX, expanded psychological test content, and SOS-only adult visibility are complete.
 
 ### Out of Scope
 
@@ -115,17 +117,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - OAuth/SSO - email/password plus seeded demo accounts is enough until a production school identity provider is selected.
 - Parent/teacher access to full raw chatbot transcripts by default - violates privacy-by-default and may reduce student trust.
 - Adult/admin access to raw private mood notes by default - violates student-owned privacy boundaries.
-- Student risk leaderboard or punitive monitoring - BeYou must support, not surveil or discipline students.
+- Student risk leaderboard or punitive monitoring - Peerlight AI must support, not surveil or discipline students.
 
 ## Context
 
-The app is intended for high-school students and must feel friendly, light, and non-clinical. Student-facing copy stays supportive, calm, Vietnamese, and clear that BeYou does not replace professional care. Red is reserved for SOS or high-risk states.
+The app is intended for high-school students and must feel friendly, light, and non-clinical. Student-facing copy stays supportive, calm, Vietnamese, and clear that Peerlight AI does not replace professional care. Red is reserved for SOS or high-risk states.
 
 Core student flows shipped:
 
 1. Student logs in, opens dashboard, and can review privacy/support boundaries.
-2. Student takes a self-check, receives backend-scored feedback, and can review history.
-3. Student opens a school scenario, chooses a response, and receives feedback, better alternatives, and related skill guidance.
+2. Student takes a Test tâm lý, receives backend-scored feedback with Vietnamese visible labels, and can review history.
+3. Student opens a Tình huống xử lý thực tế, chooses a response, and receives supportive advice, better alternatives, and related skill guidance.
 4. Student chats with the bot; high-risk content triggers SOS/trusted-adult guidance without unrestricted advice.
 5. Student confirms SOS; linked teacher/parent see the alert in-app and status moves from sent to received, supporting, and completed.
 6. Student is redirected to privacy acknowledgement before sensitive `/student/*` content renders when acknowledgement is missing.
@@ -135,8 +137,8 @@ Core student flows shipped:
 Roles:
 
 - **Student**: uses tests, scenarios, chatbot, SOS, dashboard, history, support plan, and mood check-ins.
-- **Teacher**: receives SOS, views managed students, selected support-plan details, mood trend summaries, and updates SOS handling status.
-- **Parent**: receives SOS and sees linked student status/support summaries within privacy boundaries.
+- **Teacher**: receives SOS, views linked students only after they have sent SOS, sees selected support-plan details and mood trend summaries within privacy boundaries, and updates SOS handling status.
+- **Parent**: receives SOS and sees linked student status/support summaries only after the student has sent SOS.
 - **Admin**: manages users, links, wellbeing content, chatbot safety config, mood check-in config, aggregate reports, readiness, and metadata-only operations.
 
 ## Constraints
@@ -163,7 +165,7 @@ Roles:
 | Treat real student data as possible from day one | Sensitive psychology data needs production-minded defaults | Validated in v1.0 |
 | Use email/password and seeded demo accounts | Supports realistic demo without OAuth/SSO complexity | Validated in v1.0 |
 | Keep raw self-check answers student-only | Preserves student trust while enabling summary support from adults | Validated in v1.0 |
-| Keep adult views privacy-limited | Product should support students, not surveil them | Validated across v1.0-v1.2 |
+| Keep adult views privacy-limited | Product should support students, not surveil them | Validated across v1.0-v1.4 |
 | Use explicit local dev origins for credentialed CORS | Supports localhost and 127.0.0.1 dev URLs without wildcard credentials | Validated in v1.0; v1.2 added PUT coverage |
 | Keep chatbot transcripts student-owned | Admins manage safety config and metadata, not raw private chat by default | Validated in v1.0 |
 | Keep aggregate reports privacy-limited | Reports should support capacity planning, not expose raw detail or rank students by risk | Validated in v1.0 |
@@ -178,7 +180,7 @@ Roles:
 | Keep optional mood notes student-only by default | Private notes are for student reflection, not adult/admin monitoring | Validated in Phases 13-15 |
 | Let adults see trends and selected support preferences, not raw details | Adults need supportive context without raw private notes or check-in drilldowns | Validated in Phase 14 |
 | Let admins configure prompts/guidance but not raw student data | Configuration should improve copy while preserving metadata-only operations | Validated in Phase 15 |
-| Use public landing plus one-step demo role entry | Evaluators should understand BeYou and enter each seeded role quickly without manual credential copying | Validated in Phase 16 |
+| Use public landing plus one-step demo role entry | Evaluators should understand Peerlight AI and enter each seeded role quickly without manual credential copying | Validated in Phase 16 |
 | Use global responsive/accessibility guardrails before per-page polish | Shared layout fixes reduce overflow/focus risks across current and future screens | Validated in Phase 17 |
 | Make critical actions narrate consequences and outcomes | SOS, destructive, and config changes should be understandable and accessible without expanding private data access | Validated in Phase 18 |
 | Keep live demo smoke separate from production launch readiness | Public demo usability can pass while production `/health/ready` remains `not_ready` until demo seeding is disabled for real launch | Validated in Phase 19 |
@@ -188,6 +190,9 @@ Roles:
 | Require controlled reasons for protected adult support access | Reason prompts add transparency but cannot bypass relationship authorization or become free-text surveillance records | Validated in Phase 24 |
 | Keep admin policy controls metadata-only and in-app-only | Admins can configure safe defaults and inspect v1.4 readiness without external channels, raw exports, student drilldowns, or raw reason text | Validated in Phase 25 |
 | Close v1.4 with regression evidence before archiving | Full backend/frontend gates, production smoke, docs, and code review provide milestone closure confidence | Validated in Phase 26 |
+| Close audit gaps before archive | Policy defaults, note-sharing policy, and operations audit identifiers must be enforced at runtime before v1.4 can ship | Validated in Phase 27 |
+| Rebrand to Peerlight AI with Vietnamese-first student UX | User requested a calmer Stitch-inspired student experience, richer psychological test content, and Peerlight AI naming | Validated in Phase 27 |
+| Require SOS before teacher/parent student visibility | Adult support views should activate for students who sent SOS instead of enabling broad linked-student browsing | Validated in Phase 27 |
 
 ## Known Tech Debt
 
@@ -197,7 +202,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 phase work is complete, but milestone audit found gap-closure work before archive. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
+v1.4 phase work and gap closure are complete locally. Deferred candidates after v1.4 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels, multi-school tenancy, and richer operational launch automation.
 
 ## Evolution
 
@@ -217,4 +222,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after v1.4 milestone audit*
+*Last updated: 2026-05-25 after Phase 27 gap closure and Peerlight AI refresh*

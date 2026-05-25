@@ -15,7 +15,14 @@ type PageProps = {
 };
 
 function testName(summary: AdultSelfCheckSummaryItem) {
-  return summary.test_type ?? summary.test_title ?? "Bài tự kiểm tra";
+  return summary.test_type ?? summary.test_title ?? "Test tâm lý";
+}
+
+function displayRiskLabel(label: string) {
+  if (label === "On dinh") return "Bình thường";
+  if (label === "Can chu y" || label === "Nen tim ho tro") return "Cần quan tâm";
+  if (label === "Can ho tro som") return "Nguy cơ cao";
+  return label;
 }
 
 function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
@@ -23,7 +30,7 @@ function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
     <article className="rounded-3xl bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-heading">{testName(summary)}</h3>
-        <span className="rounded-full border border-[#CFE8E1] px-3 py-1 text-label">{summary.state_label}</span>
+        <span className="rounded-full border border-[#CFE8E1] px-3 py-1 text-label">{displayRiskLabel(summary.state_label)}</span>
         {summary.is_demo ? <DemoBadge /> : null}
       </div>
       <p className="mt-3 text-label">Hoàn thành: {new Date(summary.completed_at).toLocaleString("vi-VN")}</p>
@@ -88,7 +95,7 @@ export function AdultSummaryDetail({
       <section className="rounded-3xl bg-white p-6 shadow-sm">
         <h2 className="text-heading">Quyền riêng tư</h2>
         <p className="mt-3 text-body">Bạn đang xem phần tóm tắt được phép xem. Câu trả lời riêng tư và chi tiết điểm không hiển thị tại đây.</p>
-        <p className="mt-3 text-body">BeYou không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc.</p>
+        <p className="mt-3 text-body">Peerlight AI không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc.</p>
         <p className="mt-3 text-body">Tóm tắt này dùng để mở lời hỗ trợ, không phải theo dõi hay xếp hạng học sinh.</p>
         <p className="mt-2 text-label">Hãy bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào.</p>
         <p className="mt-3 text-label">Bạn đang xem phần tóm tắt được phép xem, không phải toàn bộ câu trả lời riêng tư của học sinh.</p>
@@ -101,8 +108,8 @@ export function AdultSummaryDetail({
         </section>
       ) : (
         <EmptyState
-          heading="Chưa có tóm tắt tự kiểm tra"
-          body="Khi học sinh hoàn thành bài tự kiểm tra và bạn có quyền xem, phần tóm tắt hỗ trợ sẽ hiển thị tại đây."
+          heading="Chưa có tóm tắt test tâm lý"
+          body="Khi học sinh hoàn thành test tâm lý và bạn có quyền xem, phần tóm tắt hỗ trợ sẽ hiển thị tại đây."
         />
       )}
 
@@ -110,8 +117,8 @@ export function AdultSummaryDetail({
         <h2 className="text-heading">Các lần gần đây</h2>
         {summary.recent_summaries.length === 0 ? (
           <EmptyState
-            heading="Chưa có tóm tắt tự kiểm tra"
-            body="Khi học sinh hoàn thành bài tự kiểm tra và bạn có quyền xem, phần tóm tắt hỗ trợ sẽ hiển thị tại đây."
+            heading="Chưa có tóm tắt test tâm lý"
+            body="Khi học sinh hoàn thành test tâm lý và bạn có quyền xem, phần tóm tắt hỗ trợ sẽ hiển thị tại đây."
           />
         ) : (
           <div className="space-y-4">
@@ -126,5 +133,5 @@ export function AdultSummaryDetail({
 }
 
 export default function TeacherSummaryPage({ params }: PageProps) {
-  return <AdultSummaryDetail params={params} loadSummary={getTeacherSelfCheckSummaries} sectionTitle="Tóm tắt tự kiểm tra được phép xem" />;
+  return <AdultSummaryDetail params={params} loadSummary={getTeacherSelfCheckSummaries} sectionTitle="Tóm tắt test tâm lý được phép xem" />;
 }

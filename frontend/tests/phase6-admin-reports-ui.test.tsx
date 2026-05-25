@@ -11,7 +11,7 @@ const sampleReport = {
   demo_scope: "all",
   suppression_threshold: 3,
   privacy_notes: [
-    "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời tự kiểm tra, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
+    "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời test tâm lý, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
     "Các nhóm nhạy cảm có ít hơn 3 bản ghi sẽ được ẩn để tránh nhận diện gián tiếp.",
     "Dùng báo cáo để cải thiện hỗ trợ chung, không dùng để xếp hạng hoặc giám sát từng học sinh.",
   ],
@@ -33,7 +33,7 @@ const sampleReport = {
     by_relationship: [{ key: "teacher", label: "Giáo viên hỗ trợ", count: 1 }],
   },
   self_check_usage: {
-    total_completed: { key: "self_check_completed", label: "Lượt tự kiểm tra", count: 5, suppressed: false },
+    total_completed: { key: "self_check_completed", label: "Lượt test tâm lý", count: 5, suppressed: false },
     by_test: [
       { key: "Sức khỏe cảm xúc", label: "Sức khỏe cảm xúc", count: 3, suppressed: false },
       { key: "Áp lực bạn bè", label: "Áp lực bạn bè", count: null, suppressed: true },
@@ -68,7 +68,7 @@ const sampleReport = {
     },
     sos_suggested_signals: {
       key: "sos_suggested_signals",
-      label: "Tín hiệu chatbot gợi ý SOS/người lớn tin cậy",
+      label: "Tín hiệu chatbot gợi ý SOS/người lớn tin tưởng",
       count: null,
       suppressed: true,
     },

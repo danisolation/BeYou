@@ -21,7 +21,7 @@ const reasonRequiredDetail = {
     ],
     copy: [
       "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
-      "Lý do không cấp thêm quyền; BeYou vẫn kiểm tra vai trò và liên kết đang hoạt động.",
+      "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
     ],
   },
 };
@@ -132,7 +132,7 @@ describe("Phase 24 reason-for-access UI", () => {
       return section;
     });
     expect(within(prompt).getByText("Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.")).toBeInTheDocument();
-    expect(within(prompt).getByText("Lý do không cấp thêm quyền; BeYou vẫn kiểm tra vai trò và liên kết đang hoạt động.")).toBeInTheDocument();
+    expect(within(prompt).getByText("Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.")).toBeInTheDocument();
     expect(screen.queryByText("Em dễ bình tĩnh hơn khi người lớn nói chậm.")).not.toBeInTheDocument();
     expect(screen.queryByText("Em muốn cô biết hôm nay em hơi mệt.")).not.toBeInTheDocument();
     expect(within(prompt).getByRole("button", { name: "Tiếp tục xem tóm tắt" })).toBeDisabled();

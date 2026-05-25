@@ -17,6 +17,7 @@ from app.db.models import (
     RelationshipType,
     SchoolPrivacyPolicyDefault,
     Session as UserSession,
+    SosAlert,
     StudentAdultLink,
     StudentNotificationPreference,
     User,
@@ -39,6 +40,7 @@ from app.services.privacy_controls import (
 def _clean_database() -> None:
     with SessionLocal() as db:
         db.execute(delete(MoodNoteShare))
+        db.execute(delete(SosAlert))
         db.execute(delete(MoodCheckinReminderState))
         db.execute(delete(StudentNotificationPreference))
         db.execute(delete(SchoolPrivacyPolicyDefault))
@@ -75,6 +77,22 @@ def _user(db: OrmSession, *, email: str, role: str) -> User:
     db.commit()
     db.refresh(user)
     return user
+
+
+def _sos_signal(db: OrmSession, student: User) -> None:
+    db.add(
+        SosAlert(
+            student_id=student.id,
+            student_full_name_snapshot=student.full_name,
+            student_school_snapshot=student.school,
+            student_class_name_snapshot=student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
 
 
 def test_v14_policy_and_preference_contracts_default_to_in_app_only(db: OrmSession) -> None:
@@ -125,6 +143,7 @@ def test_v14_authorization_resources_are_explicit_and_relationship_bound(db: Orm
         )
     )
     db.commit()
+    _sos_signal(db, student)
 
     require_permission(
         db,

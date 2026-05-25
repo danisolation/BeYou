@@ -32,7 +32,7 @@ const dueReminder = {
   due: true,
   status_reason: "due",
   title: "Nhắc nhẹ: em muốn check-in cảm xúc không?",
-  body: "Nếu em muốn, hãy dành một phút lắng nghe bản thân. Nhắc nhở này chỉ hiện trong BeYou, không gửi cho người lớn và không tự tạo SOS.",
+  body: "Nếu em muốn, hãy dành một phút lắng nghe bản thân. Nhắc nhở này chỉ hiện trong Peerlight AI, không gửi cho người lớn và không tự tạo SOS.",
   href: "/student/mood-check-ins",
   generated_at: "2026-05-22T00:00:00Z",
   last_checkin_at: null,

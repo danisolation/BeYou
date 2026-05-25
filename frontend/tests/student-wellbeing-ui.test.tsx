@@ -124,20 +124,20 @@ describe("student wellbeing dashboard and API helpers", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Bảng điều khiển của em")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Tự kiểm tra cảm xúc/ })).toHaveAttribute(
+    expect(await screen.findByText("Xin chào, Nguyễn")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Test tâm lý" })).toHaveAttribute(
       "href",
       "/student/self-checks",
     );
-    expect(screen.getByText("Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Tình huống luyện tập/ })).toHaveAttribute(
+    expect(screen.getByText(/Chọn bài test ngắn về stress/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Tình huống xử lý thực tế/ })).toHaveAttribute(
       "href",
       "/student/scenarios",
     );
     expect(
       screen.getByText("Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Xem lịch sử tự kiểm tra/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Xem lịch sử test tâm lý/ })).toHaveAttribute(
       "href",
       "/student/self-checks/history",
     );
@@ -172,11 +172,11 @@ describe("student self-check UI flow", () => {
 
     render(<SelfCheckListPage />);
 
-    expect(await screen.findByText("Tự kiểm tra cảm xúc")).toBeInTheDocument();
+    expect(await screen.findByText("Test tâm lý")).toBeInTheDocument();
     expect(screen.getByText("Số câu hỏi: 0")).toBeInTheDocument();
     expect(screen.getByText("Trạng thái: Đang mở")).toBeInTheDocument();
     expect(screen.getByText("Demo")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Bắt đầu tự kiểm tra" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Bắt đầu test" })).toHaveAttribute(
       "href",
       "/student/self-checks/test-1",
     );
@@ -254,13 +254,13 @@ describe("student self-check UI flow", () => {
     render(<SelfCheckResultPage params={{ attemptId: "attempt-1" }} />);
 
     expect(await screen.findByRole("heading", { name: "Có một vài dấu hiệu em nên để ý thêm." })).toBeInTheDocument();
-    expect(screen.getByText("Can chu y")).toBeInTheDocument();
+    expect(screen.getByText("Cần quan tâm")).toBeInTheDocument();
     expect(screen.getByText("Thử một tình huống luyện kỹ năng hoặc chia sẻ với người em tin tưởng.")).toBeInTheDocument();
     expect(screen.getByText("Điểm tham khảo: 5")).toBeInTheDocument();
     expect(
-      screen.getByText("Điểm này chỉ giúp BeYou chọn gợi ý phù hợp, không phải chẩn đoán."),
+      screen.getByText("Điểm này chỉ giúp Peerlight AI chọn gợi ý phù hợp, không phải chẩn đoán."),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem gợi ý tiếp theo" })).toHaveAttribute("href", "/student/scenarios");
+    expect(screen.getByRole("link", { name: "Làm test tâm lý khác" })).toHaveAttribute("href", "/student/self-checks");
   });
 
   it("shows self-check history summaries and private raw answer detail", async () => {
@@ -309,7 +309,7 @@ describe("student self-check UI flow", () => {
       </>,
     );
 
-    expect(await screen.findByText("Xem lịch sử tự kiểm tra")).toBeInTheDocument();
+    expect(await screen.findByText("Xem lịch sử test tâm lý")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Sức khỏe cảm xúc/ })).toHaveAttribute(
       "href",
       "/student/self-checks/history/attempt-1",
@@ -322,7 +322,7 @@ describe("student self-check UI flow", () => {
       ).toBeGreaterThan(0),
     );
     expect(
-      screen.getByText("Nội dung này là bản ghi tại thời điểm em hoàn thành bài tự kiểm tra."),
+      screen.getByText("Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý."),
     ).toBeInTheDocument();
     expect(screen.getByText("Hôm nay em thấy thế nào?")).toBeInTheDocument();
     expect(screen.getByText("Khá ổn")).toBeInTheDocument();
@@ -351,7 +351,7 @@ describe("student scenario UI flow", () => {
 
     render(<ScenarioListPage />);
 
-    expect(await screen.findByText("Tình huống luyện tập")).toBeInTheDocument();
+    expect(await screen.findByText("Tình huống xử lý thực tế")).toBeInTheDocument();
     expect(
       screen.getByText("Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."),
     ).toBeInTheDocument();
@@ -418,10 +418,10 @@ describe("student scenario UI flow", () => {
     await userEvent.click(screen.getByRole("radio", { name: "Em nói nhẹ nhàng rằng em muốn vào lớp." }));
     await userEvent.click(screen.getByRole("button", { name: "Chọn cách phản hồi này" }));
 
-    expect(await screen.findByText("Gợi ý sau lựa chọn của em")).toBeInTheDocument();
+    expect(await screen.findByText("Lời khuyên")).toBeInTheDocument();
     expect(screen.getByText("Lựa chọn có điểm tích cực")).toBeInTheDocument();
-    expect(screen.getByText("Cách phản hồi nên thử")).toBeInTheDocument();
-    expect(screen.getByText("Điều em có thể rút ra")).toBeInTheDocument();
+    expect(screen.getByText("Lời khuyên nên thử")).toBeInTheDocument();
+    expect(screen.getByText("Lời khuyên để nhớ")).toBeInTheDocument();
     expect(screen.getAllByText("Kỹ năng liên quan").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Từ chối an toàn").length).toBeGreaterThan(0);
   });

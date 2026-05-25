@@ -32,7 +32,7 @@ export default function AdminDashboardPage() {
       </div>
       <DemoGuideCard
         title="Đi theo luồng quản trị demo"
-        body="Dùng cổng quản trị để chứng minh BeYou quản lý nội dung và vận hành bằng metadata, không mở dữ liệu riêng tư thô của học sinh."
+        body="Dùng cổng quản trị để chứng minh Peerlight AI quản lý nội dung và vận hành bằng metadata, không mở dữ liệu riêng tư thô của học sinh."
         steps={[
           "Kiểm tra operations/readiness và báo cáo tổng hợp riêng tư.",
           "Mở cấu hình chatbot hoặc mood check-in để thấy guardrails.",

@@ -59,6 +59,7 @@ def _clean_database() -> None:
         )
         if checkin_ids:
             db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
+        db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
         db.execute(
             delete(AuditEvent).where(
                 or_(
@@ -165,6 +166,21 @@ def _link(
         is_demo=student.is_demo and adult.is_demo,
     )
     db.add(link)
+    if status_value == LinkStatus.ACTIVE.value and relationship_type in {UserRole.TEACHER.value, UserRole.PARENT.value}:
+        existing_sos = db.scalar(select(SosAlert.id).where(SosAlert.student_id == student.id).limit(1))
+        if existing_sos is None:
+            db.add(
+                SosAlert(
+                    student_id=student.id,
+                    student_full_name_snapshot=student.full_name,
+                    student_school_snapshot=student.school,
+                    student_class_name_snapshot=student.class_name,
+                    severity="support",
+                    source="test",
+                    current_status="sent",
+                    is_demo=student.is_demo,
+                )
+            )
     db.commit()
     db.refresh(link)
     return link

@@ -17,6 +17,7 @@ from app.db.models import (
     MoodNoteShare,
     SchoolPrivacyPolicyDefault,
     Session as UserSession,
+    SosAlert,
     StudentAdultLink,
     StudentSupportPlan,
     StudentSupportPlanAdult,
@@ -60,6 +61,7 @@ def _clean_database() -> None:
         if checkin_ids:
             db.execute(delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(checkin_ids)))
             db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
+        db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
         if plan_ids:
             db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids)))
             db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
@@ -132,6 +134,20 @@ def _link(db: OrmSession, *, student: User, adult: User, relationship_type: str)
             is_demo=True,
         )
     )
+    existing_sos = db.scalar(select(SosAlert.id).where(SosAlert.student_id == student.id).limit(1))
+    if existing_sos is None:
+        db.add(
+            SosAlert(
+                student_id=student.id,
+                student_full_name_snapshot=student.full_name,
+                student_school_snapshot=student.school,
+                student_class_name_snapshot=student.class_name,
+                severity="support",
+                source="test",
+                current_status="sent",
+                is_demo=True,
+            )
+        )
     db.commit()
 
 

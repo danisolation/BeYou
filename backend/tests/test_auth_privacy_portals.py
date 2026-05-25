@@ -270,6 +270,19 @@ def test_teacher_and_parent_portals_return_only_active_linked_students(
     parent = _user(db, email="parent-portal@example.test", role=UserRole.PARENT.value, full_name="Parent")
     _link(db, linked_student, teacher, UserRole.TEACHER.value)
     _link(db, linked_student, parent, UserRole.PARENT.value)
+    db.add(
+        SosAlert(
+            student_id=linked_student.id,
+            student_full_name_snapshot=linked_student.full_name,
+            student_school_snapshot=linked_student.school,
+            student_class_name_snapshot=linked_student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
 
     teacher_client = TestClient(app)
     parent_client = TestClient(app)

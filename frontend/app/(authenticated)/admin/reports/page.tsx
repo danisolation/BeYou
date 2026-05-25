@@ -136,7 +136,7 @@ export default function AdminReportsPage() {
         <>
           {!hasAnySensitiveData(report) ? (
             <p className="rounded-3xl bg-white p-6 shadow-sm">
-              Chưa có đủ dữ liệu tổng hợp trong phạm vi này. BeYou vẫn giữ nguyên ranh giới riêng tư và sẽ hiển thị xu hướng khi nhóm đủ lớn.
+              Chưa có đủ dữ liệu tổng hợp trong phạm vi này. Peerlight AI vẫn giữ nguyên ranh giới riêng tư và sẽ hiển thị xu hướng khi nhóm đủ lớn.
             </p>
           ) : null}
 

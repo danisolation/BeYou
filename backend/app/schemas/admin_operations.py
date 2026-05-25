@@ -110,7 +110,6 @@ class AuditEventItem(BaseModel):
     actor_role: str
     action: str
     resource_type: str
-    resource_id: str
     status: str
     timestamp: datetime
     reason: str | None = None

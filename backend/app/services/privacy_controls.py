@@ -37,7 +37,7 @@ from app.services.audit import record_audit_event
 REMINDER_HREF = "/student/mood-check-ins"
 REMINDER_TITLE = "Nhắc nhẹ: em muốn check-in cảm xúc không?"
 REMINDER_BODY = (
-    "Nếu em muốn, hãy dành một phút lắng nghe bản thân. Nhắc nhở này chỉ hiện trong BeYou, "
+    "Nếu em muốn, hãy dành một phút lắng nghe bản thân. Nhắc nhở này chỉ hiện trong Peerlight AI, "
     "không gửi cho người lớn và không tự tạo SOS."
 )
 CONSENT_VERSION = "v1.4-in-app-mood-reminders"
@@ -146,13 +146,23 @@ def get_or_create_student_notification_preference(
     if preference is not None:
         return preference
 
+    policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
+    enabled_by_policy = policy.default_in_app_reminders_enabled
+    allowed_channels = validate_v14_channels(
+        policy.allowed_channels,
+        external_channels_enabled=policy.external_channels_enabled,
+    )
     preference = StudentNotificationPreference(
         student_id=student.id,
-        in_app_reminders_enabled=False,
-        mood_checkin_reminders_enabled=False,
+        in_app_reminders_enabled=enabled_by_policy,
+        mood_checkin_reminders_enabled=enabled_by_policy,
         reminder_cadence="weekly",
-        allowed_channels=[IN_APP_CHANNEL],
-        timezone="Asia/Ho_Chi_Minh",
+        allowed_channels=allowed_channels,
+        quiet_hours_start=policy.default_quiet_hours_start,
+        quiet_hours_end=policy.default_quiet_hours_end,
+        timezone=policy.default_timezone,
+        consented_at=utc_now() if enabled_by_policy else None,
+        consent_version=CONSENT_VERSION if enabled_by_policy else None,
         is_demo=student.is_demo,
     )
     db.add(preference)
@@ -167,10 +177,12 @@ def get_or_create_student_notification_preference(
         status_value="success",
         reason="student_consent_control",
         metadata_summary={
-            "enabled": False,
-            "allowed_channel_count": 1,
+            "enabled": enabled_by_policy,
+            "policy_default_enabled": policy.default_in_app_reminders_enabled,
+            "has_policy_quiet_hours": bool(policy.default_quiet_hours_start and policy.default_quiet_hours_end),
+            "allowed_channel_count": len(allowed_channels),
             "external_channels_enabled": False,
-            "decision": "student_consent_default_off",
+            "decision": "school_policy_defaults_applied",
         },
         is_demo=student.is_demo,
     )
@@ -304,8 +316,12 @@ def update_student_notification_preference(
         purpose="student_private_support",
         student_id=student.id,
     )
+    policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
     preference = get_or_create_student_notification_preference(db, student=student)
-    allowed_channels = validate_v14_channels(payload.allowed_channels)
+    allowed_channels = validate_v14_channels(
+        payload.allowed_channels,
+        external_channels_enabled=policy.external_channels_enabled,
+    )
     enabled = payload.in_app_reminders_enabled and payload.mood_checkin_reminders_enabled
     if enabled and preference.consented_at is None:
         preference.consented_at = utc_now()
@@ -321,9 +337,9 @@ def update_student_notification_preference(
     preference.mood_checkin_reminders_enabled = payload.mood_checkin_reminders_enabled
     preference.reminder_cadence = payload.reminder_cadence
     preference.allowed_channels = allowed_channels
-    preference.quiet_hours_start = payload.quiet_hours_start
-    preference.quiet_hours_end = payload.quiet_hours_end
-    preference.timezone = payload.timezone
+    preference.quiet_hours_start = payload.quiet_hours_start or policy.default_quiet_hours_start
+    preference.quiet_hours_end = payload.quiet_hours_end or policy.default_quiet_hours_end
+    preference.timezone = payload.timezone or policy.default_timezone
     preference.updated_at = utc_now()
 
     db.flush()
@@ -343,6 +359,8 @@ def update_student_notification_preference(
             "paused": preference.paused_until is not None,
             "allowed_channel_count": len(allowed_channels),
             "external_channels_enabled": False,
+            "policy_default_enabled": policy.default_in_app_reminders_enabled,
+            "policy_defaults_applied": True,
         },
         is_demo=student.is_demo,
     )

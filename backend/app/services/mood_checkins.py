@@ -38,7 +38,7 @@ CONTEXT_TAG_OPTIONS = [
 MOOD_PRIVACY_NOTES = [
     "Check-in giúp em tự nhìn lại cảm xúc, không phải chẩn đoán.",
     "Ghi chú riêng tư vẫn do em kiểm soát; chia sẻ chọn lọc là tùy chọn.",
-    "BeYou không tự động gửi SOS; mọi chia sẻ là do em chủ động chọn.",
+    "Peerlight AI không tự động gửi SOS; mọi chia sẻ là do em chủ động chọn.",
 ]
 
 
@@ -84,7 +84,7 @@ def _derive_guidance(payload: MoodCheckInCreate) -> tuple[str, str, str, bool, b
     if high_concern:
         return (
             "Cần hỗ trợ sớm",
-            "Điều em đang cảm thấy đáng được người lớn tin cậy lắng nghe sớm.",
+            "Điều em đang cảm thấy đáng được người lớn tin tưởng lắng nghe sớm.",
             "Nếu em thấy không an toàn hoặc không thể tự xử lý, hãy dùng SOS như một hành động riêng em chủ động xác nhận.",
             True,
             payload.stress_level == 5,
@@ -93,7 +93,7 @@ def _derive_guidance(payload: MoodCheckInCreate) -> tuple[str, str, str, bool, b
         return (
             "Cần quan tâm",
             "Cảm xúc của em đang cần thêm sự chăm sóc nhẹ nhàng.",
-            "Em có thể xem lại kế hoạch người lớn tin cậy hoặc chọn một bước nhỏ giúp mình bình ổn hơn.",
+            "Em có thể xem lại người lớn tin tưởng hoặc chọn một bước nhỏ giúp mình bình ổn hơn.",
             True,
             False,
         )

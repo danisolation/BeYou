@@ -10,6 +10,13 @@ type PageProps = {
   params: { attemptId: string } | Promise<{ attemptId: string }>;
 };
 
+function displayRiskLabel(label: string) {
+  if (label === "On dinh") return "Bình thường";
+  if (label === "Can chu y" || label === "Nen tim ho tro") return "Cần quan tâm";
+  if (label === "Can ho tro som") return "Nguy cơ cao";
+  return label;
+}
+
 export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
   const [attempt, setAttempt] = useState<SelfCheckAttemptDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +48,7 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
           <h1 className="text-display">{attempt.test_title}</h1>
           {attempt.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-3 text-body">Nội dung này là bản ghi tại thời điểm em hoàn thành bài tự kiểm tra.</p>
+        <p className="mt-3 text-body">Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý.</p>
         <p className="mt-3 text-label">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
@@ -49,7 +56,7 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
         <h2 className="text-heading">{attempt.supportive_headline}</h2>
-        <p className="mt-3 text-body">{attempt.state_label}</p>
+        <p className="mt-3 text-body">{displayRiskLabel(attempt.state_label)}</p>
         <p className="mt-4 text-label">Điểm tham khảo: {attempt.score}</p>
       </section>
 

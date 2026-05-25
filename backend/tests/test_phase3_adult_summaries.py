@@ -120,6 +120,22 @@ def _link(db: OrmSession, *, student: User, adult: User, relationship_type: str)
     db.commit()
 
 
+def _sos_signal(db: OrmSession, *, student: User) -> None:
+    db.add(
+        SosAlert(
+            student_id=student.id,
+            student_full_name_snapshot=student.full_name,
+            student_school_snapshot=student.school,
+            student_class_name_snapshot=student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
+
+
 def _attempt(
     db: OrmSession,
     *,
@@ -194,6 +210,7 @@ def test_adult_summary_service_minimizes_recent_attempts_and_audits(db: OrmSessi
     student = _user(db, email="student-adult-summary@example.test", role=UserRole.STUDENT.value)
     teacher = _user(db, email="teacher-adult-summary@example.test", role=UserRole.TEACHER.value)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
+    _sos_signal(db, student=student)
     for index in range(6):
         _attempt(
             db,
@@ -272,6 +289,7 @@ def test_teacher_and_parent_summary_routes_enforce_link_and_omit_raw_answers(
             )
             _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
             _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
+            _sos_signal(db, student=student)
             _attempt(
                 db,
                 student=student,

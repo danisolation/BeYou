@@ -1,31 +1,31 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.4
-milestone_name: milestone
-status: milestone-gaps-found
-stopped_at: v1.4 audit found policy-runtime and operations identifier gaps
-last_updated: "2026-05-25T12:20:00.000Z"
+milestone_name: consent-based notifications and access transparency
+status: phase-27-complete
+stopped_at: Phase 27 completed; ready for live demo and v1.4 re-audit/archive
+last_updated: "2026-05-25T13:45:00.000Z"
 last_activity: 2026-05-25
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 7
+  completed_phases: 7
+  total_plans: 7
+  completed_plans: 7
   percent: 100
 ---
 
-# State: BeYou - Tu Tin La Minh
+# State: Peerlight AI
 
 **Initialized:** 2026-05-20  
-**Last updated:** 2026-05-25 after v1.4 milestone audit
-**Status:** v1.4 milestone gaps found; gap closure needed
+**Last updated:** 2026-05-25 after Phase 27 gap closure and Peerlight AI refresh
+**Status:** Phase 27 complete; live demo and v1.4 re-audit/archive ready
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.  
-**Current focus:** v1.4 gap closure
+**Current focus:** live demo, commit, milestone re-audit, and archive
 
 ## Planning Artifacts
 
@@ -34,9 +34,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 | Project context | `.planning/PROJECT.md` | Current |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current |
-| Active roadmap | `.planning/ROADMAP.md` | v1.4 phases 21-26 complete |
-| Active requirements | `.planning/REQUIREMENTS.md` | 29 v1.4 requirements mapped, 29 complete |
-| v1.4 milestone audit | `.planning/v1.4-MILESTONE-AUDIT.md` | Gaps found |
+| Active roadmap | `.planning/ROADMAP.md` | v1.4 phases 21-27 complete |
+| Active requirements | `.planning/REQUIREMENTS.md` | 36 v1.4 requirements mapped, 36 complete |
+| v1.4 milestone audit | `.planning/v1.4-MILESTONE-AUDIT.md` | Gaps closed after Phase 27 |
 | v1.3 roadmap archive | `.planning/milestones/v1.3-ROADMAP.md` | Archived |
 | v1.3 requirements archive | `.planning/milestones/v1.3-REQUIREMENTS.md` | Archived |
 | v1.3 audit archive | `.planning/milestones/v1.3-MILESTONE-AUDIT.md` | Passed |
@@ -65,17 +65,17 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 
 ## Current Position
 
-Phase: 26
+Phase: 27
 Plan: 01 complete
-Status: v1.4 audit found critical cross-phase gaps
+Status: v1.4 audit gaps closed locally and Peerlight AI refresh complete
 Last activity: 2026-05-25
 
 ## Requirements Coverage
 
-- cumulative shipped requirements: 150 total
+- cumulative shipped requirements: 157 total
 - v1.3 requirements archived: 20/20 complete
 - v1.2 requirements archived: 24/24 complete
-- v1.4 requirements: 29 total, 29 mapped, 29 complete
+- v1.4 requirements: 36 total, 36 mapped, 36 complete
 - blocker gaps: 0
 
 ## Key Decisions
@@ -99,7 +99,9 @@ Last activity: 2026-05-25
 | Require controlled reasons before protected adult support access | Phase 24 keeps support-summary and shared-note reads transparent without allowing free-text reasons or bypassing relationship authorization |
 | Keep admin policy and operations metadata-only | Phase 25 lets admins configure safe v1.4 defaults and inspect counts/readiness without raw content, external channels, exports, or drilldowns |
 | Close v1.4 with full regression and demo gates | Phase 26 verifies backend/frontend privacy regressions, docs, production smoke, and accepted demo readiness constraints |
-| Do not archive v1.4 until audit gaps close | Milestone audit found policy-runtime integration gaps and operations `resource_id` exposure that need a gap-closure phase |
+| Close audit gaps before archive | Phase 27 wires policy defaults into runtime, enforces note-sharing policy, and removes operations `resource_id` exposure |
+| Rebrand the product to Peerlight AI | Phase 27 refreshes student-facing Vietnamese UX, chat, dashboard, self-check/scenario labels, and demo psychological test content |
+| Restrict teacher/parent visibility to SOS-signaled students | Phase 27 makes adult support access require active relationship plus student-sent SOS before student lists/support summaries reveal the student |
 
 ## Known Tech Debt
 
@@ -108,14 +110,14 @@ Last activity: 2026-05-25
 
 ## Session Continuity
 
-Last session: 2026-05-25T12:20:00.000Z
-Stopped at: v1.4 milestone audit found gaps
+Last session: 2026-05-25T13:45:00.000Z
+Stopped at: Phase 27 complete; full local verification passed
 Resume file: .planning/ROADMAP.md
 
 ## Next Action
 
-Run:
+Run live demo for the user, then commit and rerun:
 
 ```text
-/gsd-plan-milestone-gaps
+/gsd-audit-milestone
 ```

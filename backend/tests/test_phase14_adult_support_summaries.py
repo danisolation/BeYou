@@ -11,6 +11,7 @@ from app.db.models import (
     AuditEvent,
     LinkStatus,
     MoodCheckIn,
+    SosAlert,
     Session as UserSession,
     StudentAdultLink,
     StudentSupportPlan,
@@ -41,6 +42,7 @@ def _clean_database() -> None:
             db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids)))
             db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
         db.execute(delete(MoodCheckIn).where(MoodCheckIn.student_id.in_(user_ids)))
+        db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
         db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(user_ids)))
         db.execute(
             delete(StudentAdultLink).where(
@@ -121,6 +123,18 @@ def _seed_summary_data(db: OrmSession) -> tuple[User, User, User, User]:
     outsider = _user(db, email="outsider-adult-summary@example.test", role=UserRole.TEACHER.value)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
+    db.add(
+        SosAlert(
+            student_id=student.id,
+            student_full_name_snapshot=student.full_name,
+            student_school_snapshot=student.school,
+            student_class_name_snapshot=student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
 
     plan = StudentSupportPlan(
         student_id=student.id,

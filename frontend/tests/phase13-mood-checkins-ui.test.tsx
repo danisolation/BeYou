@@ -20,7 +20,7 @@ const optionsResponse = {
   privacy_notes: [
     "Check-in giúp em tự nhìn lại cảm xúc, không phải chẩn đoán.",
     "Ghi chú riêng tư chỉ hiển thị cho em trong Phase 13.",
-    "BeYou không tự động gửi SOS hoặc thông báo người lớn từ check-in này.",
+    "Peerlight AI không tự động gửi SOS hoặc thông báo người lớn từ check-in này.",
   ],
   energy_scale_label: "1 là rất ít năng lượng, 5 là nhiều năng lượng",
   stress_scale_label: "1 là rất nhẹ, 5 là rất căng",
@@ -34,7 +34,7 @@ const highConcernResult = {
   context_tags: ["school", "sleep"],
   private_note: "Em thấy nhiều việc quá.",
   trend_label: "Cần hỗ trợ sớm",
-  supportive_message: "Điều em đang cảm thấy đáng được người lớn tin cậy lắng nghe sớm.",
+  supportive_message: "Điều em đang cảm thấy đáng được người lớn tin tưởng lắng nghe sớm.",
   suggested_next_action:
     "Nếu em thấy không an toàn hoặc không thể tự xử lý, hãy dùng SOS như một hành động riêng em chủ động xác nhận.",
   suggest_support_plan: true,
@@ -146,7 +146,7 @@ describe("Phase 13 mood check-in UI", () => {
     await userEvent.click(screen.getByRole("button", { name: "Lưu check-in" }));
 
     expect(await screen.findByText("Đã lưu check-in")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem kế hoạch người lớn tin cậy" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Xem người lớn tin tưởng" })).toHaveAttribute(
       "href",
       "/student/support-plan",
     );

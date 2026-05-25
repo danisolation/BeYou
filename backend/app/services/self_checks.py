@@ -25,11 +25,11 @@ VALID_STATE_LABELS = {label.value for label in RiskStateLabel}
 DEFAULT_RESULT_COPY = {
     RiskStateLabel.STABLE.value: {
         "supportive_headline": "Em đang có nhiều dấu hiệu ổn định.",
-        "short_comment": "Kết quả không phải chẩn đoán, chỉ giúp BeYou chọn gợi ý phù hợp.",
+        "short_comment": "Kết quả không phải chẩn đoán, chỉ giúp Peerlight AI chọn gợi ý phù hợp.",
         "advice_summary": "Hãy tiếp tục để ý những điều đang giúp em thấy an toàn và thoải mái.",
         "support_suggestion": "Nếu có điều gì làm em băn khoăn, em vẫn có thể chia sẻ với người em tin tưởng.",
         "positive_content": "Việc em dành thời gian lắng nghe bản thân là một thói quen tích cực.",
-        "suggested_next_action": "Tiếp tục giữ thói quen giúp em thấy an toàn và thoải mái.",
+        "suggested_next_action": "Nếu muốn hiểu thêm, em có thể thử test lo âu hoặc một tình huống xử lý thực tế.",
     },
     RiskStateLabel.ATTENTION.value: {
         "supportive_headline": "Có một vài dấu hiệu em nên để ý thêm.",
@@ -37,23 +37,23 @@ DEFAULT_RESULT_COPY = {
         "advice_summary": "Chọn một việc nhỏ giúp em bình tĩnh, nghỉ ngơi hoặc sắp xếp lại điều đang lo.",
         "support_suggestion": "Em có thể chia sẻ với bạn tin cậy, giáo viên hoặc người thân khi thấy cần.",
         "positive_content": "Nhận ra cảm xúc của mình là bước đầu rất đáng quý.",
-        "suggested_next_action": "Thử một tình huống luyện kỹ năng hoặc chia sẻ với người em tin tưởng.",
+        "suggested_next_action": "Em có thể thử thêm test lo âu, stress học tập hoặc một tình huống xử lý thực tế.",
     },
     RiskStateLabel.SUPPORT.value: {
         "supportive_headline": "Em không cần tự xử lý mọi thứ một mình.",
         "short_comment": "Kết quả không phải chẩn đoán, nhưng cho thấy em nên có thêm hỗ trợ.",
-        "advice_summary": "Hãy chọn một người lớn tin cậy và nói ngắn gọn điều em đang trải qua.",
+        "advice_summary": "Hãy chọn một người lớn tin tưởng và nói ngắn gọn điều em đang trải qua.",
         "support_suggestion": "Giáo viên, phụ huynh hoặc người phụ trách có thể cùng em tìm bước tiếp theo an toàn.",
         "positive_content": "Tìm kiếm hỗ trợ là một cách chăm sóc bản thân, không phải lỗi của em.",
-        "suggested_next_action": "Hãy cân nhắc nói chuyện với giáo viên, phụ huynh hoặc một người lớn tin cậy.",
+        "suggested_next_action": "Hãy cân nhắc nói chuyện với người lớn tin tưởng và thử test lo âu hoặc trầm cảm nếu cảm giác này kéo dài.",
     },
     RiskStateLabel.EARLY_SUPPORT.value: {
         "supportive_headline": "Điều em đang trải qua đáng được hỗ trợ sớm.",
-        "short_comment": "Kết quả không phải chẩn đoán, nhưng em nên có người lớn tin cậy ở bên.",
+        "short_comment": "Kết quả không phải chẩn đoán, nhưng em nên có người lớn tin tưởng ở bên.",
         "advice_summary": "Ưu tiên ở gần nơi an toàn và nói với một người lớn em tin tưởng.",
         "support_suggestion": "Nếu em thấy không ổn, hãy tìm giáo viên, phụ huynh hoặc người lớn gần nhất.",
         "positive_content": "Em xứng đáng được lắng nghe và hỗ trợ kịp thời.",
-        "suggested_next_action": "Hãy tìm một người lớn tin cậy ở gần em. BeYou sẽ có nút SOS ở bước tiếp theo của sản phẩm.",
+        "suggested_next_action": "Hãy tìm một người lớn tin tưởng ở gần em hoặc dùng SOS; sau đó em có thể làm thêm test phù hợp khi đã an toàn hơn.",
     },
 }
 
@@ -91,7 +91,7 @@ def list_published_tests(db: OrmSession) -> list[SelfCheckTest]:
 def get_published_test_detail(db: OrmSession, test_id: uuid.UUID) -> SelfCheckTest:
     test = db.scalar(_published_test_query(test_id))
     if test is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy bài tự kiểm tra.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý.")
     return test
 
 
@@ -140,7 +140,7 @@ def _validate_answers(
         if choice is None:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Lựa chọn không thuộc bài tự kiểm tra này.",
+                detail="Lựa chọn không thuộc test tâm lý này.",
             )
         selected.append((question, choice))
     return selected
@@ -288,8 +288,8 @@ def get_student_attempt_detail(
         .where(SelfCheckAttempt.id == attempt_id)
     )
     if attempt is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả tự kiểm tra.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý.")
     if attempt.student_id != student.id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả tự kiểm tra.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý.")
     attempt.answers.sort(key=lambda answer: (answer.sort_order, str(answer.id)))
     return attempt

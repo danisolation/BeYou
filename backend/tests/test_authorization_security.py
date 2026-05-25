@@ -269,6 +269,19 @@ def test_authorization_denies_unlinked_adult_and_allows_active_teacher_link(db: 
         )
     )
     db.commit()
+    db.add(
+        SosAlert(
+            student_id=student.id,
+            student_full_name_snapshot=student.full_name,
+            student_school_snapshot=student.school,
+            student_class_name_snapshot=student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
 
     require_permission(
         db,

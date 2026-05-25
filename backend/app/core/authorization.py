@@ -7,7 +7,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.db.models import AccountStatus, LinkStatus, StudentAdultLink, User, UserRole
+from app.db.models import AccountStatus, LinkStatus, SosAlert, StudentAdultLink, User, UserRole
 
 deny_by_default = True
 
@@ -57,6 +57,10 @@ def has_active_student_link(
         )
     )
     return link is not None
+
+
+def has_student_sos_signal(db: OrmSession, student_id: uuid.UUID) -> bool:
+    return db.scalar(select(SosAlert.id).where(SosAlert.student_id == student_id).limit(1)) is not None
 
 
 def require_permission(
@@ -162,6 +166,7 @@ def require_permission(
         }
         and student_id is not None
         and has_active_student_link(db, actor, student_id)
+        and has_student_sos_signal(db, student_id)
     ):
         return
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "BeYou",
+  title: "Peerlight AI",
   description: "Không gian hỗ trợ học sinh THPT",
 };
 

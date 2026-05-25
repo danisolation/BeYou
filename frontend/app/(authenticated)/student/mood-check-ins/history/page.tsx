@@ -61,7 +61,7 @@ export default function StudentMoodCheckInHistoryPage() {
     return (
       <EmptyState
         heading="Chưa có check-in nào để chia sẻ"
-        body="Khi em có check-in cảm xúc, em có thể tự chọn chia sẻ ghi chú riêng tư hoặc phần tóm tắt em tự viết với người lớn tin cậy. Không bắt buộc phải chia sẻ."
+        body="Khi em có check-in cảm xúc, em có thể tự chọn chia sẻ ghi chú riêng tư hoặc phần tóm tắt em tự viết với người lớn tin tưởng. Không bắt buộc phải chia sẻ."
       />
     );
   }
@@ -91,7 +91,7 @@ export default function StudentMoodCheckInHistoryPage() {
       <div className="rounded-3xl bg-secondary p-6 shadow-sm">
         <h1 className="text-display">Lịch sử check-in cảm xúc</h1>
         <p className="mt-4 text-body">
-          Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin cậy
+          Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin tưởng
           và đúng phần nội dung để chia sẻ; các nội dung khác vẫn riêng tư.
         </p>
       </div>
@@ -227,7 +227,7 @@ function MoodShareControls({
   function openPreview() {
     setErrorMessage(null);
     if (selectedAdultIds.length === 0) {
-      setErrorMessage("Hãy chọn ít nhất một người lớn tin cậy trước khi xem trước.");
+      setErrorMessage("Hãy chọn ít nhất một người lớn tin tưởng trước khi xem trước.");
       return;
     }
     if (shareScope === "student_summary" && studentSummary.trim().length === 0) {
@@ -341,7 +341,7 @@ function MoodShareControls({
                 onChange={(event) => setStudentSummary(event.target.value)}
               />
               <span className="mt-2 block text-label">
-                Em tự viết phần này. BeYou không tự tạo diễn giải hay chẩn đoán.
+                Em tự viết phần này. Peerlight AI không tự tạo diễn giải hay chẩn đoán.
               </span>
             </label>
           ) : null}

@@ -85,7 +85,7 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
                 category="configuration",
                 status="warn",
                 summary="Environment is not production.",
-                remediation="Set production environment mode before using BeYou with real student data.",
+                remediation="Set production environment mode before using Peerlight AI with real student data.",
             )
         )
 

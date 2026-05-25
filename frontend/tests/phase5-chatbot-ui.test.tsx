@@ -172,14 +172,14 @@ describe("Phase 5 student chatbot UI", () => {
     const fetchMock = mockFetch();
 
     const { rerender } = render(<StudentDashboardPage />);
-    expect(await screen.findByRole("link", { name: /Trò chuyện với BeYou/ })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: /Trò chuyện với Peerlight AI/ })).toHaveAttribute(
       "href",
       "/student/chat",
     );
     expect(screen.getByText("Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.")).toBeInTheDocument();
 
     rerender(<StudentChatPage />);
-    expect(await screen.findByText("Trò chuyện với BeYou")).toBeInTheDocument();
+    expect(await screen.findByText("Trò chuyện với Peerlight AI")).toBeInTheDocument();
     expect(screen.getByText("Chưa có tin nhắn nào. Em có thể bắt đầu bằng một điều nhỏ đang làm em bận lòng.")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Hôm nay em thấy áp lực.");
     await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
@@ -205,14 +205,14 @@ describe("Phase 5 student chatbot UI", () => {
     });
 
     render(<StudentChatPage />);
-    await screen.findByText("Trò chuyện với BeYou");
+    await screen.findByText("Trò chuyện với Peerlight AI");
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Em không muốn sống nữa.");
     await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
 
     expect(await screen.findByText("Mình muốn ưu tiên sự an toàn của em ngay lúc này")).toBeInTheDocument();
-    expect(screen.getAllByText(/người lớn tin cậy/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/người lớn tin cậy|người lớn tin tưởng/).length).toBeGreaterThan(0);
     expect(screen.getByText("BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Đi tới SOS hỗ trợ" })).toHaveAttribute("href", "/student");
+    expect(screen.getByRole("link", { name: "Đi tới SOS hỗ trợ" })).toHaveAttribute("href", "/student#peerlight-sos");
   });
 });
 

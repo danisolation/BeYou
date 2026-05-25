@@ -125,7 +125,7 @@ def test_demo_seed_creates_idempotent_demo_users_and_links(
         DEMO_ADMIN_EMAIL,
     }
     assert all(user.is_demo is True for user in users.values())
-    assert users[DEMO_STUDENT_EMAIL].school == "Trường THPT BeYou Demo"
+    assert users[DEMO_STUDENT_EMAIL].school == "Trường THPT Peerlight AI Demo"
     assert users[DEMO_STUDENT_EMAIL].class_name == "10A1"
 
     links = db.scalars(

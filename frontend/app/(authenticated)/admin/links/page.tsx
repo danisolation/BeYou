@@ -54,7 +54,7 @@ export default function AdminLinksPage() {
       setIsConfirming(true);
       await revokeLink(revokeTarget.id);
       await refreshData();
-      setNotice("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong BeYou.");
+      setNotice("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong Peerlight AI.");
     } catch {
       setError("Chưa thu hồi được liên kết. Hãy thử lại.");
     } finally {

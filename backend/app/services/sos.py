@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.core.authorization import require_permission
+from app.core.authorization import has_student_sos_signal, require_permission
 from app.core.config import Settings
 from app.db.models import (
     InAppNotification,
@@ -256,7 +256,7 @@ def create_sos_alert(
                 resource_type="sos_alert",
                 resource_id=str(alert.id),
                 title="Tín hiệu SOS mới",
-                body="Có tín hiệu hỗ trợ mới từ học sinh được liên kết trong BeYou.",
+                body="Có tín hiệu hỗ trợ mới từ học sinh được liên kết trong Peerlight AI.",
                 href=_notification_href(recipient, alert.id),
                 is_demo=student.is_demo or recipient.is_demo,
             )
@@ -542,6 +542,8 @@ def get_support_overview(
     students = _linked_students(db, adult, relationship)
     items: list[AdultSupportOverviewItem] = []
     for student in students:
+        if not has_student_sos_signal(db, student.id):
+            continue
         require_permission(
             db,
             adult,

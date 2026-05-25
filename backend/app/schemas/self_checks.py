@@ -23,6 +23,16 @@ def _validate_state_label(value: str) -> str:
     return value
 
 
+def display_state_label(value: str) -> str:
+    if value == RiskStateLabel.STABLE.value:
+        return "Bình thường"
+    if value in {RiskStateLabel.ATTENTION.value, RiskStateLabel.SUPPORT.value}:
+        return "Cần quan tâm"
+    if value == RiskStateLabel.EARLY_SUPPORT.value:
+        return "Nguy cơ cao"
+    return value
+
+
 class SelfCheckChoiceResponse(BaseModel):
     id: uuid.UUID
     text: str

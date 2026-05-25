@@ -1,4 +1,4 @@
-# Requirements: BeYou v1.4 Consent-Based Notifications & Access Transparency
+# Requirements: Peerlight AI v1.4 Consent-Based Notifications & Access Transparency
 
 **Defined:** 2026-05-22
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
@@ -53,6 +53,16 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **QA-02**: Frontend tests verify student reminder controls, reminder card copy/actions, mood-note share/revoke UI, adult reason prompts, admin policy controls, and operations metadata-only display.
 - [x] **QA-03**: Existing backend tests, frontend tests, lint, production build, and production smoke remain passing after v1.4 changes.
 - [x] **QA-04**: Documentation and planning artifacts explain v1.4 privacy boundaries, demo data, and deferred external channel delivery.
+
+### Audit Gap Closure & Peerlight AI Demo Refresh
+
+- [x] **GAP-01**: Student notification preference creation/update consumes school privacy policy reminder defaults, quiet hours, timezone, and pause options instead of hardcoded defaults.
+- [x] **GAP-02**: Mood-note sharing runtime enforces the admin `note_sharing_enabled` policy toggle and blocks share create/update when disabled.
+- [x] **GAP-03**: Admin operations audit response excludes raw `resource_id` while preserving metadata-only event visibility.
+- [x] **REFRESH-01**: User-facing UI copy is rebranded to Peerlight AI and Vietnamese-first labels for student self-checks, scenarios, chat, dashboard, login, and landing.
+- [x] **REFRESH-02**: Demo psychological test seeds include broader non-proprietary anxiety, depression, ADHD, and autism/social-communication content.
+- [x] **ACCESS-06**: Teacher/parent student lists and protected support-summary access are limited to linked students who have sent SOS.
+- [x] **QA-05**: Full backend/frontend tests, lint, build, and copy/privacy grep gates pass after gap closure and Peerlight AI refresh.
 
 ## Future Requirements
 
@@ -118,12 +128,19 @@ Explicit exclusions for v1.4.
 | QA-02 | Phase 26 | Complete |
 | QA-03 | Phase 26 | Complete |
 | QA-04 | Phase 26 | Complete |
+| GAP-01 | Phase 27 | Complete |
+| GAP-02 | Phase 27 | Complete |
+| GAP-03 | Phase 27 | Complete |
+| REFRESH-01 | Phase 27 | Complete |
+| REFRESH-02 | Phase 27 | Complete |
+| ACCESS-06 | Phase 27 | Complete |
+| QA-05 | Phase 27 | Complete |
 
 **Coverage:**
-- v1.4 requirements: 29 total
-- Mapped to phases: 29
+- v1.4 requirements: 36 total
+- Mapped to phases: 36
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-25 after Phase 26 completion*
+*Last updated: 2026-05-25 after Phase 27 gap closure and Peerlight AI refresh*

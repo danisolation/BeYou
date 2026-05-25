@@ -71,7 +71,7 @@ const notifications = [
     resource_type: "sos_alert",
     resource_id: "alert-1",
     title: "Tín hiệu SOS mới",
-    body: "Có tín hiệu hỗ trợ mới từ học sinh được liên kết trong BeYou.",
+    body: "Có tín hiệu hỗ trợ mới từ học sinh được liên kết trong Peerlight AI.",
     href: "/teacher/sos-alerts/alert-1",
     read_at: null,
     created_at: "2026-05-21T00:00:00Z",
@@ -161,13 +161,13 @@ describe("Phase 4 student SOS UI", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Gửi tín hiệu để người lớn tin cậy biết em cần hỗ trợ.")).toBeInTheDocument();
+    expect(await screen.findByText("Gửi tín hiệu để người lớn tin tưởng biết em cần hỗ trợ.")).toBeInTheDocument();
     expect(screen.queryByText("Xác nhận gửi tín hiệu hỗ trợ")).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Gửi SOS hỗ trợ" }));
     expect(screen.getByText("Xác nhận gửi tín hiệu hỗ trợ")).toBeInTheDocument();
     expect(
-      screen.getByText("Em có muốn gửi tín hiệu hỗ trợ ngay bây giờ không? Người lớn tin cậy được liên kết với em sẽ nhận thông báo trong BeYou."),
+      screen.getByText("Em có muốn gửi tín hiệu hỗ trợ ngay bây giờ không? Người lớn tin tưởng được liên kết với em sẽ nhận thông báo trong Peerlight AI."),
     ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("radio", { name: "Em đang không an toàn ngay lúc này" }));
@@ -242,7 +242,7 @@ describe("Phase 4 adult support portals", () => {
     expect(screen.getByText("Chế độ xem chỉ đọc của phụ huynh")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong BeYou dành cho giáo viên được phân quyền.",
+        "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong Peerlight AI dành cho giáo viên được phân quyền.",
       ),
     ).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Đánh dấu đã nhận" })).not.toBeInTheDocument();

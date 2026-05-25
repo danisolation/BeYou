@@ -34,7 +34,7 @@ from app.services.audit import record_audit_event
 
 SUPPRESSION_THRESHOLD = 3
 PRIVACY_NOTES = [
-    "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời tự kiểm tra, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
+    "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời test tâm lý, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
     "Các nhóm nhạy cảm có ít hơn 3 bản ghi sẽ được ẩn để tránh nhận diện gián tiếp.",
     "Dùng báo cáo để cải thiện hỗ trợ chung, không dùng để xếp hạng hoặc giám sát từng học sinh.",
 ]
@@ -64,7 +64,7 @@ SOS_STATUS_LABELS = {
 SOS_SEVERITY_LABELS = {"support": "Cần hỗ trợ", "urgent": "Không an toàn ngay lúc này"}
 SOS_SOURCE_LABELS = {
     "student_dashboard": "Từ bảng điều khiển học sinh",
-    "self_check_result": "Từ kết quả tự kiểm tra",
+    "self_check_result": "Từ kết quả test tâm lý",
     "chatbot": "Từ chatbot hỗ trợ",
     "demo_seed": "Dữ liệu demo",
 }
@@ -210,7 +210,7 @@ def _linked_students(db: OrmSession, demo_scope: DemoScope) -> LinkedStudentsAgg
 def _self_check_usage(db: OrmSession, demo_scope: DemoScope) -> SelfCheckAggregateReport:
     total = _scalar_count(db, SelfCheckAttempt, demo_scope)
     return SelfCheckAggregateReport(
-        total_completed=_privacy_bucket("self_check_completed", total, {"self_check_completed": "Lượt tự kiểm tra"}),
+        total_completed=_privacy_bucket("self_check_completed", total, {"self_check_completed": "Lượt test tâm lý"}),
         by_test=cast(
             list[PrivacyCountBucket],
             _group_counts(
@@ -316,7 +316,7 @@ def _chatbot_safety(db: OrmSession, demo_scope: DemoScope) -> ChatbotSafetyAggre
         sos_suggested_signals=_privacy_bucket(
             "sos_suggested_signals",
             sos_suggested_count,
-            {"sos_suggested_signals": "Tín hiệu chatbot gợi ý SOS/người lớn tin cậy"},
+            {"sos_suggested_signals": "Tín hiệu chatbot gợi ý SOS/người lớn tin tưởng"},
         ),
         by_stage=cast(
             list[PrivacyCountBucket],

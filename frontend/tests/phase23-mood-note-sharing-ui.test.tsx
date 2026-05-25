@@ -304,7 +304,7 @@ describe("Phase 23 mood note sharing UI", () => {
       within(card).getByLabelText("Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ"),
       "Em muốn cô biết hôm nay em hơi mệt.",
     );
-    expect(within(card).getByText("Em tự viết phần này. BeYou không tự tạo diễn giải hay chẩn đoán.")).toBeInTheDocument();
+    expect(within(card).getByText("Em tự viết phần này. Peerlight AI không tự tạo diễn giải hay chẩn đoán.")).toBeInTheDocument();
     await userEvent.click(within(card).getByRole("button", { name: "Xem trước trước khi chia sẻ" }));
     await userEvent.click(within(card).getByRole("button", { name: "Xác nhận chia sẻ" }));
 

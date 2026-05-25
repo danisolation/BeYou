@@ -86,7 +86,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   }
 
   if (hasError || test === null || currentQuestion === undefined) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại danh sách rồi mở lại bài tự kiểm tra." />;
+    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại danh sách rồi mở lại test tâm lý." />;
   }
 
   return (

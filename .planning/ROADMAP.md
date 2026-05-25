@@ -1,9 +1,9 @@
-# Roadmap: BeYou - Tu Tin La Minh
+# Roadmap: Peerlight AI
 
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 29/29 complete
+**Coverage:** 36/36 v1.4 requirements mapped; 36/36 complete
 
 ## Completed Milestones
 
@@ -22,6 +22,7 @@
 | 24 | Reason-for-Access & Adult Support Transparency | Teacher/parent protected support access is reason-gated when policy requires it, without bypassing relationship authorization or privacy boundaries. | ACCESS-01..ACCESS-05 | Phase 21, Phase 23 | yes |
 | 25 | Admin Privacy Policy & Operations Visibility | Admins can configure safe v1.4 policy defaults and inspect metadata-only operations/readiness for consent, reminders, sharing, and reason access. | POLICY-01, POLICY-02, OPS-01..OPS-03 | Phases 21-24 | yes |
 | 26 | Cross-Role Privacy Regression & Demo Readiness | v1.4 privacy invariants are covered by backend/frontend regression gates, build/lint/smoke checks, docs, and demo readiness. | QA-01..QA-04 | Phases 21-25 | yes |
+| 27 | Audit Gap Closure & Peerlight AI Demo Refresh | Close v1.4 audit gaps, refresh student UX under Peerlight AI, expand demo psychological content, and restrict adult visibility to SOS-signaled students. | GAP-01..GAP-03, REFRESH-01..REFRESH-02, ACCESS-06, QA-05 | Phases 21-26, v1.4 audit | yes |
 
 ## Phase Checklist
 
@@ -31,6 +32,7 @@
 - [x] Phase 24: Reason-for-Access & Adult Support Transparency (completed 2026-05-25)
 - [x] Phase 25: Admin Privacy Policy & Operations Visibility (completed 2026-05-25)
 - [x] Phase 26: Cross-Role Privacy Regression & Demo Readiness (completed 2026-05-25)
+- [x] Phase 27: Audit Gap Closure & Peerlight AI Demo Refresh (completed 2026-05-25)
 
 ## Phase Details
 
@@ -148,6 +150,26 @@ Plans:
 Plans:
 - [x] 26-01-PLAN.md - Cross-role privacy regression, docs, and demo readiness closure
 
+### Phase 27: Audit Gap Closure & Peerlight AI Demo Refresh
+
+**Goal:** Close v1.4 audit gaps, refresh student UX under Peerlight AI, expand demo psychological content, and restrict adult visibility to SOS-signaled students.
+**Depends on:** Phases 21-26, v1.4 audit
+**Requirements:** GAP-01, GAP-02, GAP-03, REFRESH-01, REFRESH-02, ACCESS-06, QA-05
+**UI hint:** yes
+**Status:** Complete
+
+**Success criteria:**
+1. School policy defaults drive student reminder preference creation/update and mood-note sharing honors the admin note-sharing toggle.
+2. Admin operations audit API no longer exposes raw `resource_id` while retaining metadata-only event visibility.
+3. Peerlight AI rebrand, Vietnamese-first labels, student sidebar/dashboard/chat refresh, expanded psychological test seeds, and visible result label mapping are in place.
+4. Teacher/parent lists and support-summary access only expose linked students who have sent SOS, with tests updated for the new privacy boundary.
+5. Full backend/frontend tests, lint, build, and copy/privacy grep gates pass.
+
+**Plans:** 1/1 complete
+
+Plans:
+- [x] 27-01-PLAN.md - Audit gap closure, Peerlight AI refresh, SOS-only adult visibility, and validation
+
 ## Traceability
 
 | Requirement | Phase | Status |
@@ -181,11 +203,18 @@ Plans:
 | QA-02 | Phase 26 | Complete |
 | QA-03 | Phase 26 | Complete |
 | QA-04 | Phase 26 | Complete |
+| GAP-01 | Phase 27 | Complete |
+| GAP-02 | Phase 27 | Complete |
+| GAP-03 | Phase 27 | Complete |
+| REFRESH-01 | Phase 27 | Complete |
+| REFRESH-02 | Phase 27 | Complete |
+| ACCESS-06 | Phase 27 | Complete |
+| QA-05 | Phase 27 | Complete |
 
 **Coverage:**
-- v1.4 requirements: 29 total
-- Mapped to phases: 29
-- Complete: 29
+- v1.4 requirements: 36 total
+- Mapped to phases: 36
+- Complete: 36
 - Unmapped: 0
 
 ## Assumptions
@@ -195,6 +224,7 @@ Plans:
 - Student privacy defaults from v1.0-v1.3 remain binding.
 - Adult shared-note reads require active student-created grants, not just relationship links.
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
+- Teacher/parent student visibility is support-only and requires both an active relationship and at least one student-sent SOS signal.
 
 ---
-*Last updated: 2026-05-25 after Phase 26 completion*
+*Last updated: 2026-05-25 after Phase 27 gap closure and Peerlight AI refresh*

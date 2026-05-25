@@ -83,8 +83,8 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
 
     render(<HomePage />);
 
-    expect(screen.getByRole("link", { name: "Đăng nhập thủ công" })).toHaveAttribute("href", "/login");
-    expect(screen.getByRole("link", { name: "Chọn vai trò demo" })).toHaveAttribute("href", "#demo-roles");
+    expect(screen.getAllByRole("link", { name: "Bắt đầu" })[0]).toHaveAttribute("href", "/login");
+    expect(screen.getByText("Vào demo trong một bước")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Vào vai Học sinh/ })).toBeEnabled();
     expect(screen.getByRole("button", { name: /Vào vai Giáo viên/ })).toBeEnabled();
     expect(screen.getByRole("button", { name: /Vào vai Phụ huynh/ })).toBeEnabled();
@@ -93,7 +93,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     cleanup();
     render(<LoginPage />);
 
-    expect(screen.getByText("Chào mừng đến với BeYou")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng đến với Peerlight AI")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Học sinh" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Giáo viên" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Phụ huynh" })).toBeEnabled();
@@ -114,7 +114,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     });
 
     render(<StudentDashboardPage />);
-    expect(await screen.findByText("Bảng điều khiển của em")).toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, Nguyễn")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Ai có thể xem thông tin của em?" })).toHaveAttribute(
       "href",
       "/privacy?review=true",

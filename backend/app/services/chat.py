@@ -77,19 +77,19 @@ DEFAULT_KEYWORDS_BY_CATEGORY: dict[str, list[str]] = {
 
 DEFAULT_ESCALATION_MESSAGE = (
     "Mình muốn ưu tiên sự an toàn của em ngay lúc này. Nếu em đang thấy không an toàn "
-    "ngay lúc này, hãy tìm một người lớn tin cậy ở gần em hoặc dùng SOS trong BeYou để "
+    "ngay lúc này, hãy tìm một người lớn tin tưởng ở gần em hoặc dùng SOS trong Peerlight AI để "
     "người lớn được liên kết biết em cần hỗ trợ."
 )
 DEFAULT_TRUSTED_ADULT_MESSAGE = (
-    "Nếu có người lớn tin cậy ở gần em, hãy nói với họ rằng em cần được ở cùng và được "
+    "Nếu có người lớn tin tưởng ở gần em, hãy nói với họ rằng em cần được ở cùng và được "
     "lắng nghe ngay bây giờ."
 )
 FIRST_RESPONSE_DISCLAIMER = (
-    "Chào em, mình là BeYou — một người bạn hỗ trợ trong ứng dụng. BeYou không thay thế "
+    "Chào em, mình là Peerlight AI — một người bạn hỗ trợ trong ứng dụng. Peerlight AI không thay thế "
     "chuyên gia tư vấn hay bác sĩ. Mình có thể lắng nghe và giúp em nghĩ về bước an toàn "
     "tiếp theo."
 )
-EMERGENCY_BOUNDARY = "BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài."
+EMERGENCY_BOUNDARY = "Peerlight AI không tự động gọi dịch vụ khẩn cấp bên ngoài."
 CONFIG_NAME = "default"
 logger = logging.getLogger(__name__)
 
@@ -107,9 +107,9 @@ class DeterministicSupportProvider:
     def generate(self, *, messages: list[dict[str, str]], first_response: bool) -> str:
         return (
             "Cảm ơn em đã chia sẻ. Mình nghe thấy chuyện này có thể đang làm em nặng lòng. "
-            "Em có thể thử dừng lại một chút, hít thở chậm, chọn một việc nhỏ em kiểm soát "
-            "được, và nói với một người lớn tin cậy nếu em cần thêm hỗ trợ. Điều gì trong "
-            "chuyện này khiến em muốn được lắng nghe nhất?"
+            "Em có thể thử dừng lại một chút, hít thở chậm, gọi tên cảm xúc chính, chọn một việc nhỏ "
+            "em kiểm soát được, và nói với một người lớn tin tưởng nếu em cần thêm hỗ trợ. "
+            "Nếu em muốn, hãy kể thêm: điều gì trong chuyện này khiến em cần được lắng nghe nhất?"
         )
 
 
@@ -131,9 +131,10 @@ class FreemodelProvider:
                 {
                     "role": "system",
                     "content": (
-                        "Bạn là BeYou, một chatbot hỗ trợ học sinh bằng tiếng Việt. "
+                        "Bạn là Peerlight AI, một chatbot hỗ trợ học sinh bằng tiếng Việt. "
                         "Không chẩn đoán, không tự nhận là bác sĩ hay nhà trị liệu. "
-                        "Luôn khuyến khích bước an toàn và người lớn tin cậy khi cần."
+                        "Trả lời ấm áp, cụ thể, ngắn gọn theo hướng: phản chiếu cảm xúc, gợi một bước nhỏ "
+                        "có thể làm ngay, khuyến khích người lớn tin tưởng khi cần, và không tiết lộ dữ liệu riêng tư."
                     ),
                 },
                 *messages,
@@ -278,7 +279,7 @@ def update_admin_safety_config(
         if not message:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Lời nhắn người lớn tin cậy không được để trống.",
+                detail="Lời nhắn người lớn tin tưởng không được để trống.",
             )
         config.trusted_adult_message = message
         changed_fields.append("trusted_adult_message")
@@ -437,7 +438,7 @@ def _get_or_create_thread(
         return thread
     thread = ChatThread(
         student_id=student.id,
-        title="Cuộc trò chuyện với BeYou",
+        title="Cuộc trò chuyện với Peerlight AI",
         safety_state="supportive",
         is_demo=student.is_demo,
         last_message_at=utc_now(),

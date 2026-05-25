@@ -38,7 +38,7 @@ from app.services.readiness import (
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="BeYou API")
+    app = FastAPI(title="Peerlight AI API")
     settings = get_settings()
 
     app.add_middleware(

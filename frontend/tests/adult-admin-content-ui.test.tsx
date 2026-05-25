@@ -65,7 +65,7 @@ const adultSummary = {
     state_label: "Can chu y",
     completed_at: "2026-05-21T00:00:00Z",
     advice_summary: "Em nên để ý thêm cảm xúc trong ngày.",
-    support_suggestion: "Hỏi em cần hỗ trợ gì và nhắc em chọn người lớn tin cậy.",
+    support_suggestion: "Hỏi em cần hỗ trợ gì và nhắc em chọn người lớn tin tưởng.",
     is_demo: true,
   },
   recent_summaries: [
@@ -139,7 +139,7 @@ describe("adult summary-only UI", () => {
     expect(screen.getAllByText("Tóm tắt gợi ý")[0]).toBeInTheDocument();
     expect(screen.getAllByText("Gợi ý hỗ trợ")[0]).toBeInTheDocument();
     expect(
-      screen.getByText("BeYou không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc."),
+      screen.getByText("Peerlight AI không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc."),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Bạn đang xem phần tóm tắt được phép xem, không phải toàn bộ câu trả lời riêng tư của học sinh."),

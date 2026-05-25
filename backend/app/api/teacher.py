@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.core.authorization import require_permission, require_role
+from app.core.authorization import has_student_sos_signal, require_permission, require_role
 from app.core.sessions import get_current_user
 from app.db.models import LinkStatus, StudentAdultLink, User, UserRole
 from app.db.session import get_db
@@ -31,6 +31,8 @@ def get_teacher_students(
     ).all()
     students: list[LinkedStudentResponse] = []
     for link, student in rows:
+        if not has_student_sos_signal(db, student.id):
+            continue
         require_permission(
             db,
             current_user,

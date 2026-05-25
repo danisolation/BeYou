@@ -1,11 +1,11 @@
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
 
-**BeYou - Tu Tin La Minh**
+**Peerlight AI**
 
-BeYou is a web app for Vietnamese high-school students to recognize peer pressure, check mental well-being through short assessments, practice handling school situations, chat with a basic supportive counseling bot, and send SOS alerts when they feel unsafe or at risk.
+Peerlight AI is a Vietnamese web app for high-school students to recognize pressure, check mental well-being through short psychological self-checks, practice real school situations, chat with a supportive AI companion, and send SOS alerts when they feel unsafe or at risk.
 
-The product serves students first. Teacher, parent, and admin portals support escalation, content management, aggregate reporting, and operational visibility without turning sensitive student data into surveillance. v1.1 is shipped, audited, archived, and ready for the next milestone.
+The product serves students first. Teacher, parent, and admin portals support escalation, content management, aggregate reporting, and metadata-only operational visibility without turning sensitive student data into surveillance. Teacher/parent visibility is now SOS-only for linked students who have sent SOS.
 
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 
@@ -18,28 +18,28 @@ The product serves students first. Teacher, parent, and admin portals support es
 
 ### Current State
 
-- **Latest shipped milestone:** v1.1 Production Hardening & Support Polish (2026-05-22)
-- **Cumulative scope:** 11 phases, 41 plans, 77/77 requirements satisfied.
-- **Latest audit:** `.planning/milestones/v1.1-MILESTONE-AUDIT.md` passed with 30/30 requirements, 5/5 phases, and 4/4 integration flows.
-- **Current planning status:** no active milestone; next milestone should start with `/gsd-new-milestone` and continue from Phase 12.
+- **Latest active milestone:** v1.4 Consent-Based Notifications & Access Transparency plus Phase 27 Peerlight AI refresh/gap closure (2026-05-25)
+- **Current scope:** phases 21-27 complete; v1.4 audit gaps closed locally; ready for live demo and milestone re-audit/archive.
+- **Latest local verification:** backend pytest `129 passed`, backend ruff passed, frontend Vitest `20 files / 94 tests` passed, frontend lint passed, frontend build passed.
+- **Current planning status:** update/commit Phase 27 artifacts, run live demo, then rerun `/gsd-audit-milestone` and archive v1.4 if accepted.
 
 ### Shipped Capabilities
 
 - Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, and demo-data separation.
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
-- Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, and confirmed SOS alerts.
-- Adult support flows: linked teacher/parent views, summary-only wellbeing support, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
+- Student wellbeing flows: privacy notice, Test tâm lý results/history with Vietnamese labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, support plans, mood check-ins, and confirmed SOS alerts.
+- Adult support flows: linked teacher/parent views only after a student has sent SOS, summary-only wellbeing support, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, privacy-limited aggregate reports, readiness, and metadata-only operations dashboard.
 
 ### Constraints
 
 - **Backend stack**: Python backend is required.
 - **Data sensitivity**: Real student psychological data may be entered, so privacy, role authorization, and secure defaults are required.
-- **Chatbot safety**: The chatbot must not claim to be a therapist or professional diagnosis tool. High-risk messages must trigger escalation guidance and SOS suggestions.
+- **Chatbot safety**: Peerlight AI chat must not claim to be a therapist or professional diagnosis tool. High-risk messages must trigger escalation guidance and SOS suggestions.
 - **SOS delivery**: In-app SOS is canonical. Email delivery is optional, backend-owned, best-effort, and must not expose raw student content or provider credentials.
 - **Operations visibility**: Admin operations views must stay metadata-only and must not add raw exports, risk leaderboards, or per-student risk drilldowns.
 - **Authentication**: Current product uses email/password plus seeded demo users; OAuth/SSO is deferred.
-- **UI/UX**: Student-facing screens must feel supportive, calm, mobile-friendly, and avoid heavy medicalized language.
+- **UI/UX**: Student-facing screens must feel supportive, calm, mobile-friendly, Vietnamese-first, and avoid heavy medicalized language.
 <!-- GSD:project-end -->
 
 <!-- GSD:stack-start source:research/STACK.md -->

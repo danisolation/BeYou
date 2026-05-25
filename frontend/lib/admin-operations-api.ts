@@ -83,7 +83,6 @@ export type AuditEventItem = {
   actor_role: string;
   action: string;
   resource_type: string;
-  resource_id: string;
   status: string;
   timestamp: string;
   reason: string | null;

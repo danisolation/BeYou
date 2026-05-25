@@ -153,7 +153,7 @@ export function RoleStudentList({
               />
               <div className="mt-5 rounded-2xl bg-secondary p-4">
                 <h3 className="text-heading">{summaryTitle}</h3>
-                <p className="mt-2 text-body">BeYou chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
+                <p className="mt-2 text-body">Peerlight AI chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
                 <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link
                     className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
@@ -190,7 +190,7 @@ function PrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "parent
           : "Giáo viên chỉ xem học sinh được liên kết: tóm tắt hỗ trợ, trạng thái SOS và gợi ý cần thiết để phối hợp chăm sóc."}
       </p>
       <p className="mt-3 text-body">
-        BeYou không hiển thị câu trả lời tự kiểm tra chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
+        Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
       </p>
       <p className="mt-3 text-label">
         Hãy dùng các tóm tắt này để mở lời hỗ trợ, không để giám sát, xếp hạng hoặc tạo áp lực cho học sinh.

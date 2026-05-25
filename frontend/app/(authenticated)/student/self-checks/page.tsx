@@ -32,23 +32,23 @@ export default function SelfCheckListPage() {
   }
 
   if (hasError) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang chính rồi mở lại bài tự kiểm tra." />;
+    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang chính rồi mở lại test tâm lý." />;
   }
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Tự kiểm tra cảm xúc</h1>
+        <h1 className="text-display">Test tâm lý</h1>
         <p className="mt-3 text-body">Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán.</p>
         <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/self-checks/history">
-          Xem lịch sử tự kiểm tra
+          Xem lịch sử test tâm lý
         </Link>
       </header>
 
       {tests.length === 0 ? (
         <EmptyState
-          heading="Chưa có bài tự kiểm tra đang mở"
-          body="Khi nhà trường bật nội dung phù hợp, em sẽ thấy các bài tự kiểm tra tại đây."
+          heading="Chưa có test tâm lý đang mở"
+          body="Khi nhà trường bật nội dung phù hợp, em sẽ thấy các bài test tại đây."
         />
       ) : (
         <section className="grid gap-4 md:grid-cols-2">
@@ -65,7 +65,7 @@ export default function SelfCheckListPage() {
                 className="mt-4 inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
                 href={`/student/self-checks/${test.id}`}
               >
-                Bắt đầu tự kiểm tra
+                Bắt đầu test
               </Link>
             </article>
           ))}

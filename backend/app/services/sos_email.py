@@ -61,12 +61,12 @@ def _minimal_email_message(
     recipient: User,
 ) -> EmailMessage:
     message = EmailMessage()
-    message["Subject"] = "BeYou: Co tin hieu SOS moi"
+    message["Subject"] = "Peerlight AI: Co tin hieu SOS moi"
     message["From"] = settings.smtp_from
     message["To"] = recipient.email
     message.set_content(
-        "BeYou co tin hieu SOS moi tu mot hoc sinh duoc lien ket voi ban.\n\n"
-        "Hay dang nhap BeYou de xem thong tin duoc phep va ho tro theo quy trinh trong ung dung.\n"
+        "Peerlight AI co tin hieu SOS moi tu mot hoc sinh duoc lien ket voi ban.\n\n"
+        "Hay dang nhap Peerlight AI de xem thong tin duoc phep va ho tro theo quy trinh trong ung dung.\n"
         "Email nay khong chua ghi chu rieng tu, cau tra loi tu kiem tra hay noi dung chatbot cua hoc sinh."
     )
     return message

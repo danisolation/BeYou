@@ -62,7 +62,7 @@ def _scenario_query(scenario_id: uuid.UUID | None = None):
 def get_self_check_test_or_404(db: OrmSession, test_id: uuid.UUID) -> SelfCheckTest:
     test = db.scalar(_self_check_query(test_id))
     if test is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy bài tự kiểm tra.")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý.")
     return test
 
 

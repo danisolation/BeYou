@@ -43,7 +43,7 @@ function PrivacyContent() {
         <p className="text-label font-semibold text-accent">Quyền riêng tư</p>
         <h1 className="mt-2 text-display">Ai có thể xem thông tin của em?</h1>
         <p className="mt-4 text-body">
-          Thông tin của em được giữ riêng tư trong BeYou. Một số người lớn tin cậy chỉ xem
+          Thông tin của em được giữ riêng tư trong Peerlight AI. Một số người lớn tin tưởng chỉ xem
           phần tóm tắt cần thiết để hỗ trợ em, không xem mọi câu trả lời riêng tư.
         </p>
 
@@ -61,8 +61,8 @@ function PrivacyContent() {
           <section>
             <h2 className="text-heading">Khi nào cần báo người lớn?</h2>
             <p className="mt-3 text-body">
-              Nếu có dấu hiệu em có thể không an toàn, BeYou có thể cần báo cho người lớn tin cậy
-              để giúp em kịp thời. BeYou không hứa giữ bí mật tuyệt đối trong tình huống có nguy cơ an toàn.
+              Nếu có dấu hiệu em có thể không an toàn, Peerlight AI có thể cần báo cho người lớn tin tưởng
+              để giúp em kịp thời. Peerlight AI không hứa giữ bí mật tuyệt đối trong tình huống có nguy cơ an toàn.
             </p>
           </section>
 
@@ -91,7 +91,7 @@ function PrivacyContent() {
           onClick={handleContinue}
           className="mt-6 min-h-12 w-full rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Tiếp tục vào BeYou
+          Tiếp tục vào Peerlight AI
         </button>
       </section>
     </main>

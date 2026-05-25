@@ -86,7 +86,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
       <section className="rounded-3xl bg-white p-6 shadow-sm">
         <h2 className="text-heading">Em muốn thử cách phản hồi nào?</h2>
         <div className="mt-6 space-y-4">
-          {scenario.choices.map((choice) => {
+          {scenario.choices.map((choice, index) => {
             const isSelected = selectedChoiceId === choice.id;
             return (
               <label
@@ -96,6 +96,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
                 }`}
               >
                 <input
+                  className="sr-only"
                   checked={isSelected}
                   name="scenario-choice"
                   onChange={() => {
@@ -104,6 +105,14 @@ export default function ScenarioDetailPage({ params }: PageProps) {
                   }}
                   type="radio"
                 />
+                <span
+                  aria-hidden="true"
+                  className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-semibold ${
+                    isSelected ? "bg-accent text-white" : "bg-secondary text-[#12332E]"
+                  }`}
+                >
+                  {index + 1}
+                </span>
                 <span>{choice.text}</span>
               </label>
             );
@@ -126,7 +135,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
             feedback.signal === "risky" ? "border border-[#F59E0B]" : "border border-accent"
           }`}
         >
-          <h2 className="text-heading">Gợi ý sau lựa chọn của em</h2>
+          <h2 className="text-heading">Lời khuyên</h2>
           <p className="mt-4 text-label">{signalLabel(feedback.signal)}</p>
           {feedback.selected_choice ? (
             <p className="mt-4 text-body">
@@ -137,11 +146,11 @@ export default function ScenarioDetailPage({ params }: PageProps) {
           {feedback.feedback ? <p className="mt-4 text-body">{feedback.feedback}</p> : null}
           <div className="mt-6 space-y-4">
             <div className="rounded-2xl bg-secondary p-4">
-              <h3 className="text-heading">Cách phản hồi nên thử</h3>
+              <h3 className="text-heading">Lời khuyên nên thử</h3>
               <p className="mt-2 text-body">{feedback.recommended_response}</p>
             </div>
             <div className="rounded-2xl bg-secondary p-4">
-              <h3 className="text-heading">Điều em có thể rút ra</h3>
+              <h3 className="text-heading">Lời khuyên để nhớ</h3>
               <p className="mt-2 text-body">{feedback.lesson}</p>
             </div>
             <p className="text-label">

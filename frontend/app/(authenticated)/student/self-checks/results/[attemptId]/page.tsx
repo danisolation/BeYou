@@ -11,6 +11,13 @@ type PageProps = {
   params: { attemptId: string } | Promise<{ attemptId: string }>;
 };
 
+function displayRiskLabel(label: string) {
+  if (label === "On dinh") return "Bình thường";
+  if (label === "Can chu y" || label === "Nen tim ho tro") return "Cần quan tâm";
+  if (label === "Can ho tro som") return "Nguy cơ cao";
+  return label;
+}
+
 export default function SelfCheckResultPage({ params }: PageProps) {
   const [attempt, setAttempt] = useState<SelfCheckAttemptDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +39,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
   }
 
   if (hasError || attempt === null) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể mở lại lịch sử tự kiểm tra để xem kết quả." />;
+    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể mở lại lịch sử test tâm lý để xem kết quả." />;
   }
 
   return (
@@ -43,7 +50,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
           {attempt.is_demo ? <DemoBadge /> : null}
         </div>
         <h1 className="mt-3 text-display">{attempt.supportive_headline}</h1>
-        <p className="mt-4 inline-flex min-h-11 items-center rounded-full bg-secondary px-4 text-heading">{attempt.state_label}</p>
+        <p className="mt-4 inline-flex min-h-11 items-center rounded-full bg-secondary px-4 text-heading">{displayRiskLabel(attempt.state_label)}</p>
         {attempt.suggested_next_action ? <p className="mt-4 text-body">{attempt.suggested_next_action}</p> : null}
         <div className="mt-6 space-y-3 text-body">
           {attempt.short_comment ? <p>{attempt.short_comment}</p> : null}
@@ -53,15 +60,18 @@ export default function SelfCheckResultPage({ params }: PageProps) {
         </div>
         <div className="mt-6 rounded-2xl bg-secondary p-4">
           <p className="text-label">Điểm tham khảo: {attempt.score}</p>
-          <p className="mt-2 text-label">Điểm này chỉ giúp BeYou chọn gợi ý phù hợp, không phải chẩn đoán.</p>
+          <p className="mt-2 text-label">Điểm này chỉ giúp Peerlight AI chọn gợi ý phù hợp, không phải chẩn đoán.</p>
         </div>
       </section>
       <nav className="flex flex-wrap gap-3">
-        <Link className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white" href="/student/scenarios">
-          Xem gợi ý tiếp theo
+        <Link className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white" href="/student/self-checks">
+          Làm test tâm lý khác
+        </Link>
+        <Link className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold" href="/student/scenarios">
+          Xem tình huống xử lý thực tế
         </Link>
         <Link className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold" href="/student/self-checks/history">
-          Xem lịch sử tự kiểm tra
+          Xem lịch sử test tâm lý
         </Link>
       </nav>
     </main>

@@ -68,7 +68,7 @@ describe("Phase 2 frontend auth foundation", () => {
     render(<LoginPage />);
 
     const submit = screen.getByRole("button", { name: "Đăng nhập" });
-    expect(screen.getByText("Chào mừng đến với BeYou")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng đến với Peerlight AI")).toBeInTheDocument();
     expect(screen.getByText("Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.")).toBeInTheDocument();
     expect(submit).toBeEnabled();
     expect(screen.getByLabelText("Email")).toBeRequired();
@@ -83,7 +83,7 @@ describe("Phase 2 frontend auth foundation", () => {
   it("renders public demo entry with one-step role options", () => {
     render(<HomePage />);
 
-    expect(screen.getByText("BeYou demo live")).toBeInTheDocument();
+    expect(screen.getByText("Peerlight AI demo live")).toBeInTheDocument();
     expect(screen.getByText("Không gian hỗ trợ học sinh THPT trước khi căng thẳng leo thang.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Vào vai Học sinh/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Vào vai Giáo viên/ })).toBeInTheDocument();
@@ -108,7 +108,7 @@ describe("Phase 2 frontend auth foundation", () => {
     const checkbox = screen.getByRole("checkbox", {
       name: "Em đã đọc và hiểu ai có thể xem thông tin của em.",
     });
-    const continueButton = screen.getByRole("button", { name: "Tiếp tục vào BeYou" });
+    const continueButton = screen.getByRole("button", { name: "Tiếp tục vào Peerlight AI" });
 
     expect(continueButton).toBeDisabled();
     await userEvent.click(checkbox);

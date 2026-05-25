@@ -105,9 +105,9 @@ export default function AdminChatbotPage() {
           </label>
 
           <label className="block space-y-2 text-label font-semibold">
-            Lời nhắn người lớn tin cậy
+            Lời nhắn người lớn tin tưởng
             <textarea
-              aria-label="Lời nhắn người lớn tin cậy"
+              aria-label="Lời nhắn người lớn tin tưởng"
               value={trustedAdultMessage}
               onChange={(event) => setTrustedAdultMessage(event.target.value)}
               className="min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"

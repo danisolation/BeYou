@@ -86,7 +86,7 @@ export default function AdminPrivacyPolicyPage() {
         <p className="text-label font-semibold text-accent">Cấu hình an toàn</p>
         <h1 className="mt-2 text-display">Chính sách riêng tư v1.4</h1>
         <p className="mt-3 max-w-3xl text-body">
-          Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập. v1.4 chỉ dùng nhắc nhở trong BeYou; Zalo,
+          Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập. v1.4 chỉ dùng nhắc nhở trong Peerlight AI; Zalo,
           SMS, push và email vẫn đang hoãn để có đủ quản trị đồng ý, vận hành và quyền riêng tư.
         </p>
       </header>
@@ -103,7 +103,7 @@ export default function AdminPrivacyPolicyPage() {
           <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
             <input
               type="checkbox"
-              aria-label="Bật mặc định nhắc nhở trong BeYou"
+              aria-label="Bật mặc định nhắc nhở trong Peerlight AI"
               checked={policy.default_in_app_reminders_enabled}
               onChange={(event) =>
                 setPolicy({ ...policy, default_in_app_reminders_enabled: event.target.checked })
@@ -111,7 +111,7 @@ export default function AdminPrivacyPolicyPage() {
               className="mt-1"
             />
             <span>
-              <span className="block font-semibold">Bật mặc định nhắc nhở trong BeYou</span>
+              <span className="block font-semibold">Bật mặc định nhắc nhở trong Peerlight AI</span>
               <span className="mt-1 block text-label">
                 Học sinh vẫn giữ quyền bật/tắt và tạm dừng. Mặc định này không gửi người lớn và không tạo SOS.
               </span>

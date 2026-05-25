@@ -135,7 +135,7 @@ def test_student_chat_uses_backend_fallback_first_response_and_never_returns_pro
     assert response.status_code == 201
     payload = response.json()
     assert payload["assistant_message"]["role"] == "assistant"
-    assert "Chào em, mình là BeYou" in payload["assistant_message"]["content"]
+    assert "Chào em, mình là Peerlight AI" in payload["assistant_message"]["content"]
     assert "không thay thế chuyên gia tư vấn hay bác sĩ" in payload["assistant_message"]["content"]
     assert "chẩn đoán" not in payload["assistant_message"]["content"].lower()
     assert payload["safety"]["high_risk"] is False
@@ -183,7 +183,7 @@ def test_high_risk_input_bypasses_provider_and_records_metadata_only_safety_even
     assert "không thay thế chuyên gia tư vấn hay bác sĩ" in payload["assistant_message"]["content"]
     assert "Mình muốn ưu tiên sự an toàn của em ngay lúc này" in payload["assistant_message"]["content"]
     assert "SOS" in payload["assistant_message"]["content"]
-    assert "người lớn tin cậy" in payload["assistant_message"]["content"]
+    assert "người lớn tin tưởng" in payload["assistant_message"]["content"]
 
     signal = db.scalar(select(ChatSafetySignal))
     assert signal is not None

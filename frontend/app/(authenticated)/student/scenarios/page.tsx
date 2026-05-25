@@ -27,13 +27,13 @@ export default function ScenarioListPage() {
   }
 
   if (hasError) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang chính rồi mở lại tình huống luyện tập." />;
+    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang chính rồi mở lại tình huống xử lý thực tế." />;
   }
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Tình huống luyện tập</h1>
+        <h1 className="text-display">Tình huống xử lý thực tế</h1>
         <p className="mt-3 text-body">Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn.</p>
         <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/scenarios/history">
           Xem lịch sử tình huống
@@ -41,7 +41,7 @@ export default function ScenarioListPage() {
       </header>
 
       {scenarios.length === 0 ? (
-        <EmptyState heading="Chưa có tình huống đang mở" body="Khi có tình huống luyện tập mới, em sẽ thấy tại đây." />
+        <EmptyState heading="Chưa có tình huống đang mở" body="Khi có tình huống xử lý thực tế mới, em sẽ thấy tại đây." />
       ) : (
         <section className="grid gap-4 md:grid-cols-2">
           {scenarios.map((scenario) => (

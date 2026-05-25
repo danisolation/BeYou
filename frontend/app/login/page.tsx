@@ -2,6 +2,7 @@
 
 import { Eye, EyeOff } from "lucide-react";
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { login, loginErrorCopy } from "@/lib/auth";
@@ -47,14 +48,23 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-dvh px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-6xl items-center">
+    <main className="min-h-dvh px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <header className="flex items-center justify-between rounded-[1.75rem] bg-white/85 px-5 py-4 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur">
+          <Link href="/" className="text-heading font-bold text-accent no-underline">
+            Peerlight AI
+          </Link>
+          <Link href="/#about" className="font-semibold text-[#12332E] no-underline hover:text-accent">
+            Về chúng tôi
+          </Link>
+        </header>
+        <div className="flex min-h-[calc(100dvh-8rem)] items-center">
         <section className="grid w-full gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div className="rounded-[2rem] bg-white/75 p-6 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur sm:p-8 lg:p-10">
-            <p className="text-label font-semibold uppercase tracking-[0.22em] text-accent">BeYou</p>
-            <h1 className="mt-3 max-w-xl text-display">Chào mừng đến với BeYou</h1>
+            <p className="text-label font-semibold uppercase tracking-[0.22em] text-accent">Peerlight AI</p>
+            <h1 className="mt-3 max-w-xl text-display">Chào mừng đến với Peerlight AI</h1>
             <p className="mt-4 max-w-2xl text-body">
-              Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.
+               Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.
             </p>
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {["Riêng tư trước", "Hỗ trợ đúng vai trò", "Dữ liệu demo rõ ràng"].map((item) => (
@@ -67,8 +77,8 @@ export default function LoginPage() {
 
           <section className="rounded-[2rem] bg-white p-5 shadow-xl shadow-[#12332E]/10 ring-1 ring-[#D7EFE8] sm:p-6 lg:p-8">
             <div className="rounded-3xl border border-[#CFE8E1] bg-secondary p-4">
-              <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
-              <p className="mt-1 text-label">Chọn một vai trò để BeYou tự điền email và mật khẩu demo.</p>
+               <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
+              <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {demoAccounts.map((account) => (
                   <button
@@ -146,6 +156,7 @@ export default function LoginPage() {
             </form>
           </section>
         </section>
+        </div>
       </div>
     </main>
   );

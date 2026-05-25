@@ -253,6 +253,19 @@ def test_unlinked_adult_student_access_denied(db: OrmSession) -> None:
         ]
     )
     db.commit()
+    db.add(
+        SosAlert(
+            student_id=linked_student.id,
+            student_full_name_snapshot=linked_student.full_name,
+            student_school_snapshot=linked_student.school,
+            student_class_name_snapshot=linked_student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
 
     teacher_client = TestClient(app)
     parent_client = TestClient(app)

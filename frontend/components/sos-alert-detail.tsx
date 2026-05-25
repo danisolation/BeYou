@@ -88,7 +88,7 @@ export function SosAlertDetail({
         <p className="mt-3 text-body">
           {mode === "teacher"
             ? "Giáo viên được phân quyền có thể cập nhật tiến trình SOS để học sinh và phụ huynh biết tín hiệu đang được xử lý."
-            : "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong BeYou dành cho giáo viên được phân quyền."}
+            : "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong Peerlight AI dành cho giáo viên được phân quyền."}
         </p>
       </section>
 
@@ -107,8 +107,8 @@ export function SosAlertDetail({
           </div>
         ) : null}
         <p className="mt-4 text-body">
-          BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài. Nếu học sinh đang không an toàn ngay lúc này,
-          hãy ưu tiên kết nối với người lớn tin cậy ở gần em.
+          Peerlight AI không tự động gọi dịch vụ khẩn cấp bên ngoài. Nếu học sinh đang không an toàn ngay lúc này,
+          hãy ưu tiên kết nối với người lớn tin tưởng ở gần em.
         </p>
       </section>
 
@@ -116,7 +116,7 @@ export function SosAlertDetail({
         <h2 className="text-heading">Tiến trình hỗ trợ</h2>
         <div className="mt-4 space-y-3">
           {alert.status_events.length === 0 ? (
-            <p className="text-body">Tín hiệu đã được gửi và đang chờ người lớn tin cậy phản hồi.</p>
+            <p className="text-body">Tín hiệu đã được gửi và đang chờ người lớn tin tưởng phản hồi.</p>
           ) : (
             alert.status_events.map((event) => (
               <article key={event.id} className="rounded-2xl border border-[#D7EFE8] p-4">

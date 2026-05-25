@@ -40,7 +40,7 @@ const operationsDashboard = {
   generated_at: "2026-05-25T00:00:00Z",
   privacy_notes: [
     "Chỉ hiển thị metadata vận hành: trạng thái, loại hành động, loại mục tiêu, thời gian và mã lỗi an toàn.",
-    "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
+    "Không hiển thị ghi chú SOS, câu trả lời test tâm lý, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
   ],
   readiness: {
     status: "degraded",
@@ -198,7 +198,7 @@ describe("Phase 25 admin policy and operations UI", () => {
     expect(screen.queryByRole("textbox", { name: /lý do/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: /Zalo|SMS|Email|Thông báo thiết bị/i })).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByLabelText("Bật mặc định nhắc nhở trong BeYou"));
+    await userEvent.click(screen.getByLabelText("Bật mặc định nhắc nhở trong Peerlight AI"));
     await userEvent.clear(screen.getByLabelText("Yên lặng từ"));
     await userEvent.type(screen.getByLabelText("Yên lặng từ"), "22:00");
     await userEvent.clear(screen.getByLabelText("Đến"));

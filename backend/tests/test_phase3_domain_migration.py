@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from sqlalchemy import inspect
 
 from app.core.authorization import require_permission
-from app.db.models import LinkStatus, RelationshipType, StudentAdultLink, User, UserRole
+from app.db.models import LinkStatus, RelationshipType, SosAlert, StudentAdultLink, User, UserRole
 from app.db.session import engine
 from app.db.session import SessionLocal
 
@@ -101,6 +101,18 @@ def test_phase3_authorization_keeps_raw_answers_student_private() -> None:
                 relationship_type=RelationshipType.TEACHER.value,
                 status=LinkStatus.ACTIVE.value,
                 created_by=admin.id,
+            )
+        )
+        db.add(
+            SosAlert(
+                student_id=student.id,
+                student_full_name_snapshot=student.full_name,
+                student_school_snapshot=None,
+                student_class_name_snapshot=None,
+                severity="support",
+                source="test",
+                current_status="sent",
+                is_demo=True,
             )
         )
         db.commit()

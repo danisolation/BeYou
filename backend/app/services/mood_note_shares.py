@@ -28,6 +28,7 @@ from app.schemas.mood_note_shares import (
     MoodNoteRevokeResponse,
 )
 from app.services.audit import record_audit_event
+from app.services.privacy_controls import get_or_create_school_privacy_policy
 
 MOOD_NOTE_SHARE_PRIVACY_NOTES = [
     "Em chỉ chia sẻ nội dung của check-in em chọn.",
@@ -172,6 +173,15 @@ def list_share_options(db: OrmSession, student: User) -> MoodNoteShareOptionsRes
         purpose="student_private_support",
         student_id=student.id,
     )
+    policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
+    if not policy.note_sharing_enabled:
+        return MoodNoteShareOptionsResponse(
+            available_adults=[],
+            privacy_notes=[
+                "Nhà trường đang tắt chia sẻ ghi chú check-in.",
+                *MOOD_NOTE_SHARE_PRIVACY_NOTES,
+            ],
+        )
     return MoodNoteShareOptionsResponse(
         available_adults=[
             MoodNoteShareLinkedAdultOption(
@@ -228,6 +238,12 @@ def create_or_update_mood_note_shares(
         student_id=student.id,
     )
     checkin = _load_owned_checkin(db, student, checkin_id)
+    policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
+    if not policy.note_sharing_enabled:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Nhà trường đang tắt chia sẻ ghi chú check-in.",
+        )
     student_summary = _validate_share_scope(checkin, payload)
     selected_rows = _validate_selected_adults(db, student, payload.adult_ids)
     active_by_adult_id = {

@@ -24,8 +24,8 @@ const supportPlanResponse = {
     },
   ],
   privacy_notes: [
-    "Kế hoạch này chỉ gồm phần em chọn để chia sẻ với người lớn tin cậy.",
-    "Ghi chú mood, câu trả lời tự kiểm tra và nội dung trò chuyện riêng tư không tự động được chia sẻ.",
+    "Kế hoạch này chỉ gồm phần em chọn để chia sẻ với người lớn tin tưởng.",
+    "Ghi chú mood, câu trả lời test tâm lý và nội dung trò chuyện riêng tư không tự động được chia sẻ.",
     "Em có thể tạm dừng hoặc ngừng chia sẻ kế hoạch bất cứ lúc nào.",
   ],
   is_demo: true,
@@ -117,9 +117,9 @@ describe("Phase 12 support plan UI", () => {
 
     render(<StudentSupportPlanPage />);
 
-    expect(await screen.findByText("Kế hoạch người lớn tin cậy")).toBeInTheDocument();
+    expect(await screen.findByText("Người lớn tin tưởng")).toBeInTheDocument();
     expect(
-      screen.getByText("Ghi chú mood, câu trả lời tự kiểm tra và nội dung trò chuyện riêng tư không tự động được chia sẻ."),
+      screen.getByText("Ghi chú mood, câu trả lời test tâm lý và nội dung trò chuyện riêng tư không tự động được chia sẻ."),
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/Cô Bình Demo/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Lưu kế hoạch hỗ trợ" })).toBeDisabled();
@@ -155,7 +155,7 @@ describe("Phase 12 support plan UI", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Kế hoạch người lớn tin cậy" })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: "Người lớn tin tưởng" })).toHaveAttribute(
       "href",
       "/student/support-plan",
     );

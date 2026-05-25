@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "beyou-backend"
 version = "0.1.0"
-description = "BeYou FastAPI backend"
+description = "Peerlight AI FastAPI backend"
 requires-python = ">=3.12"
 dependencies = [
   "fastapi",

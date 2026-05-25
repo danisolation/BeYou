@@ -11,6 +11,13 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("vi-VN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
 }
 
+function displayRiskLabel(label: string) {
+  if (label === "On dinh") return "Bình thường";
+  if (label === "Can chu y" || label === "Nen tim ho tro") return "Cần quan tâm";
+  if (label === "Can ho tro som") return "Nguy cơ cao";
+  return label;
+}
+
 export default function SelfCheckHistoryPage() {
   const [items, setItems] = useState<SelfCheckHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,13 +38,13 @@ export default function SelfCheckHistoryPage() {
   }
 
   if (hasError) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang tự kiểm tra rồi mở lịch sử lần nữa." />;
+    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang test tâm lý rồi mở lịch sử lần nữa." />;
   }
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Xem lịch sử tự kiểm tra</h1>
+        <h1 className="text-display">Xem lịch sử test tâm lý</h1>
         <p className="mt-3 text-body">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
@@ -45,7 +52,7 @@ export default function SelfCheckHistoryPage() {
 
       {items.length === 0 ? (
         <EmptyState
-          heading="Em chưa có lần tự kiểm tra nào"
+          heading="Em chưa có lần test tâm lý nào"
           body="Sau khi hoàn thành một bài, kết quả và gợi ý của em sẽ xuất hiện ở đây."
         />
       ) : (
@@ -61,7 +68,7 @@ export default function SelfCheckHistoryPage() {
                 {item.is_demo ? <DemoBadge /> : null}
               </div>
               <p className="mt-3 text-label">{formatDate(item.completed_at)}</p>
-              <p className="mt-3 text-body">{item.state_label}</p>
+              <p className="mt-3 text-body">{displayRiskLabel(item.state_label)}</p>
               {item.supportive_headline ? <p className="mt-2 text-body">{item.supportive_headline}</p> : null}
               {item.suggested_next_action ? <p className="mt-2 text-label">{item.suggested_next_action}</p> : null}
               <span className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent">Xem chi tiết</span>

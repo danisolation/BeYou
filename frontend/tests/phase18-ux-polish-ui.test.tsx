@@ -179,7 +179,7 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
     await userEvent.click(screen.getAllByRole("button", { name: "Thu hồi liên kết" }).at(-1)!);
 
     expect(
-      await screen.findByText("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong BeYou."),
+      await screen.findByText("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong Peerlight AI."),
     ).toBeInTheDocument();
   });
 
