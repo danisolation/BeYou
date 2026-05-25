@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 20/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 25/29 complete
 
 ## Completed Milestones
 
@@ -29,7 +29,7 @@
 - [x] Phase 22: Student Reminder Preferences & In-App Mood Reminders
 - [x] Phase 23: Selective Mood-Note Sharing & Revocation (completed 2026-05-25)
 - [x] Phase 24: Reason-for-Access & Adult Support Transparency (completed 2026-05-25)
-- [ ] Phase 25: Admin Privacy Policy & Operations Visibility
+- [x] Phase 25: Admin Privacy Policy & Operations Visibility (completed 2026-05-25)
 - [ ] Phase 26: Cross-Role Privacy Regression & Demo Readiness
 
 ## Phase Details
@@ -116,7 +116,7 @@ Plans:
 **Depends on:** Phases 21-24
 **Requirements:** POLICY-01, POLICY-02, OPS-01, OPS-02, OPS-03
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Admin policy UI/API configures reminder defaults, quiet-hour defaults, pause options, reason requirements, allowed reason codes, and helper copy.
@@ -124,10 +124,10 @@ Plans:
 3. Operations dashboard shows v1.4 counts/readiness for preferences, reminders, shares, revocations, shared-note reads, reason-gated access, and policy updates.
 4. Demo seed/readiness verifies sample v1.4 policy and metadata without real student content.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] 25-01-PLAN.md - Admin privacy policy defaults, operations buckets, readiness, and demo seed
+- [x] 25-01-PLAN.md - Admin privacy policy defaults, operations buckets, readiness, and demo seed
 
 ### Phase 26: Cross-Role Privacy Regression & Demo Readiness
 
@@ -172,11 +172,11 @@ Plans:
 | ACCESS-03 | Phase 24 | Complete |
 | ACCESS-04 | Phase 24 | Complete |
 | ACCESS-05 | Phase 24 | Complete |
-| POLICY-01 | Phase 25 | Pending |
-| POLICY-02 | Phase 25 | Pending |
-| OPS-01 | Phase 25 | Pending |
-| OPS-02 | Phase 25 | Pending |
-| OPS-03 | Phase 25 | Pending |
+| POLICY-01 | Phase 25 | Complete |
+| POLICY-02 | Phase 25 | Complete |
+| OPS-01 | Phase 25 | Complete |
+| OPS-02 | Phase 25 | Complete |
+| OPS-03 | Phase 25 | Complete |
 | QA-01 | Phase 26 | Pending |
 | QA-02 | Phase 26 | Pending |
 | QA-03 | Phase 26 | Pending |
@@ -185,7 +185,7 @@ Plans:
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 20
+- Complete: 25
 - Unmapped: 0
 
 ## Assumptions
@@ -197,4 +197,4 @@ Plans:
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
 
 ---
-*Last updated: 2026-05-25 after Phase 24 completion*
+*Last updated: 2026-05-25 after Phase 25 completion*

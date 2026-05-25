@@ -12,10 +12,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 in progress; Phases 21-24 complete as of 2026-05-25
-**Milestone status:** Active; Phase 25 is next
-**Scope shipped:** 24 total phases, 62 total plans, 141 cumulative requirements satisfied; v1.4 is 20/29 requirements complete
-**Latest verification:** `.planning/phases/24-reason-for-access-adult-support-transparency/24-VERIFICATION.md` passed with 5/5 Phase 24 must-haves verified
+**Shipped version:** v1.4 in progress; Phases 21-25 complete as of 2026-05-25
+**Milestone status:** Active; Phase 26 is next
+**Scope shipped:** 25 total phases, 63 total plans, 146 cumulative requirements satisfied; v1.4 is 25/29 requirements complete
+**Latest verification:** `.planning/phases/25-admin-privacy-policy-operations-visibility/25-VERIFICATION.md` passed with 5/5 Phase 25 must-haves verified
 
 ### Built Product
 
@@ -23,17 +23,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
 - Student wellbeing flows: privacy notice, self-check tests/results/history, school scenarios/feedback/history, supportive chatbot, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
 - Adult support flows: linked teacher/parent views, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
-- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, privacy-limited aggregate reports, and metadata-only operations dashboard.
+- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard.
 - Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, metadata-only demo readiness, production smoke command, and Next 16-compatible lint/test/build gates.
 
 ### Latest Verification Snapshot
 
-- Phase 24 backend targeted/regression pytest: `19 passed`
+- Phase 25 backend targeted/regression pytest: `27 passed`
 - Backend ruff: passed
-- Phase 24 frontend targeted/regression Vitest: `13 passed`
+- Phase 25 frontend targeted/regression Vitest: `11 passed`
 - Frontend lint: passed
 - Frontend production build: passed
-- Phase 24 code review and privacy grep gates: passed
+- Phase 25 code review and privacy grep gates: passed
 
 ### Planning Archives
 
@@ -100,10 +100,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Students can receive supportive in-app mood check-in reminders without diagnosis, pressure, or automatic SOS side effects.
 - [x] Students can selectively share specific private mood notes or note summaries with chosen linked adults and revoke sharing later.
 - [x] Teachers and parents provide controlled support-oriented reasons before protected support-summary/shared-note access when policy requires it.
+- [x] Admins can configure school-level v1.4 privacy/notification defaults and inspect metadata-only operations readiness for v1.4 controls.
 
 ### Active
 
-- [ ] Admins can configure school-level privacy/notification policy defaults and inspect metadata-only operations readiness for v1.4 controls.
+- [ ] Cross-role v1.4 privacy regressions, documentation, demo readiness, and production smoke are complete.
 
 ### Out of Scope
 
@@ -186,12 +187,13 @@ Roles:
 | Start v1.4 with consent and transparency before external channels | Notification and sensitive-access features need student control, school policy, and audit boundaries before adding Zalo/SMS/push or broader adult access | Active in v1.4 |
 | Make selective mood-note sharing student-granted and revocable | Raw mood notes stay private by default; adults only see notes or student summaries through active relationship plus active unrevoked student grant | Validated in Phase 23 |
 | Require controlled reasons for protected adult support access | Reason prompts add transparency but cannot bypass relationship authorization or become free-text surveillance records | Validated in Phase 24 |
+| Keep admin policy controls metadata-only and in-app-only | Admins can configure safe defaults and inspect v1.4 readiness without external channels, raw exports, student drilldowns, or raw reason text | Validated in Phase 25 |
 
 ## Known Tech Debt
 
 - `npm --prefix frontend audit --omit=dev` reports an existing moderate Next/PostCSS advisory; `npm audit fix --force` proposes a breaking downgrade, so track until a non-breaking stable Next release resolves it.
 - Future hardening can add direct DemoRoleEntry click-through tests and authenticated browser dashboard hydration in production smoke.
-- Deferred future work includes notification retry queues, Zalo/SMS/push channels, admin policy/operations controls, counselor handoff, content diff/version history, multi-school tenancy, and production OAuth/SSO.
+- Deferred future work includes notification retry queues, Zalo/SMS/push channels, counselor handoff, content diff/version history, multi-school tenancy, and production OAuth/SSO.
 
 ## Next Milestone Goals
 
@@ -215,4 +217,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after completing Phase 24*
+*Last updated: 2026-05-25 after completing Phase 25*

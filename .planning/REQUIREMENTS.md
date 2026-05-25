@@ -41,11 +41,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Admin Policy & Operations
 
-- [ ] **POLICY-01**: Admin can configure school-level v1.4 defaults for reminder availability, quiet-hour defaults, pause options, reason requirements, and allowed reason choices.
-- [ ] **POLICY-02**: Admin policy saves validate privacy-safe defaults and reject external reminder channel enablement in v1.4.
-- [ ] **OPS-01**: Admin operations dashboard includes metadata-only v1.4 buckets for reminder preferences, reminder events, note shares/revocations/reads, reason-gated access, and policy changes.
-- [ ] **OPS-02**: Operations views and audit summaries exclude raw notes, raw reason text, names, emails, identifiers where unsafe, private content, exports, and per-student risk drilldowns.
-- [ ] **OPS-03**: Demo seed/readiness can verify v1.4 policy, consent, reminder, and sharing sample state without real student data.
+- [x] **POLICY-01**: Admin can configure school-level v1.4 defaults for reminder availability, quiet-hour defaults, pause options, reason requirements, and allowed reason choices.
+- [x] **POLICY-02**: Admin policy saves validate privacy-safe defaults and reject external reminder channel enablement in v1.4.
+- [x] **OPS-01**: Admin operations dashboard includes metadata-only v1.4 buckets for reminder preferences, reminder events, note shares/revocations/reads, reason-gated access, and policy changes.
+- [x] **OPS-02**: Operations views and audit summaries exclude raw notes, raw reason text, names, emails, identifiers where unsafe, private content, exports, and per-student risk drilldowns.
+- [x] **OPS-03**: Demo seed/readiness can verify v1.4 policy, consent, reminder, and sharing sample state without real student data.
 
 ### Privacy Regression & Demo Readiness
 
@@ -109,11 +109,11 @@ Explicit exclusions for v1.4.
 | ACCESS-03 | Phase 24 | Complete |
 | ACCESS-04 | Phase 24 | Complete |
 | ACCESS-05 | Phase 24 | Complete |
-| POLICY-01 | Phase 25 | Pending |
-| POLICY-02 | Phase 25 | Pending |
-| OPS-01 | Phase 25 | Pending |
-| OPS-02 | Phase 25 | Pending |
-| OPS-03 | Phase 25 | Pending |
+| POLICY-01 | Phase 25 | Complete |
+| POLICY-02 | Phase 25 | Complete |
+| OPS-01 | Phase 25 | Complete |
+| OPS-02 | Phase 25 | Complete |
+| OPS-03 | Phase 25 | Complete |
 | QA-01 | Phase 26 | Pending |
 | QA-02 | Phase 26 | Pending |
 | QA-03 | Phase 26 | Pending |
@@ -126,4 +126,4 @@ Explicit exclusions for v1.4.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-25 after Phase 24 completion*
+*Last updated: 2026-05-25 after Phase 25 completion*
