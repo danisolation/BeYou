@@ -9,11 +9,9 @@ from sqlalchemy.orm import Session as OrmSession, selectinload
 
 from app.db.models import (
     ContentStatus,
-    RiskStateLabel,
     Scenario,
     ScenarioAttempt,
     ScenarioChoice,
-    ScenarioSignal,
     SelfCheckAttempt,
     SelfCheckAttemptAnswer,
     SelfCheckChoice,

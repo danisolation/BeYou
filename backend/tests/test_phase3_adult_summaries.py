@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import timedelta
-import uuid
 
 import pytest
 from fastapi.testclient import TestClient
