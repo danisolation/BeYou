@@ -13,7 +13,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** Complete; next milestone not started
+**Milestone status:** v1.5 Production Pilot Readiness & Identity started
 **Scope shipped:** 27 total phases, 65 total plans, 157 cumulative requirements satisfied; v1.4 is 36/36 requirements complete
 **Latest verification:** Phase 27 full local verification passed after Peerlight AI refresh and audit gap closure
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
@@ -54,6 +54,18 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 audit archive: `.planning/milestones/v1.2-MILESTONE-AUDIT.md`
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
+
+## Current Milestone: v1.5 Production Pilot Readiness & Identity
+
+**Goal:** Move Peerlight AI from a public demo that is usable to a production-pilot-ready system that can safely support a real school pilot without demo data, unsafe deployment drift, or weak identity controls.
+
+**Target features:**
+
+- Production/demo environment separation with demo seeding disabled for real launch and readiness checks that can pass in production mode.
+- Deployment guardrails for Vercel/Render configuration, frontend root-directory safety, environment validation, and repeatable smoke verification.
+- Production identity foundation with OAuth/SSO-ready contracts while preserving current email/password demo access.
+- School pilot operational readiness: admin launch checklist, safe seed/data controls, metadata-only monitoring, and rollback/handoff guidance.
+- Privacy regression coverage proving production pilot changes do not weaken student-owned data, SOS boundaries, or support-not-surveillance rules.
 
 ## Completed Milestone: v1.4 Consent-Based Notifications & Access Transparency
 
@@ -112,6 +124,14 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Cross-role v1.4 privacy regressions, documentation, demo readiness, and production smoke are complete.
 - [x] v1.4 audit gaps are closed: school policy defaults drive runtime behavior, note-sharing policy is enforced, and operations audit responses do not expose raw `resource_id`.
 - [x] Peerlight AI rebrand, Vietnamese-first student UX, expanded psychological test content, and SOS-only adult visibility are complete.
+
+### Active in v1.5
+
+- [ ] Production and demo runtime modes are explicit, validated, and safe to deploy independently.
+- [ ] Real production readiness can pass when demo seeding is disabled and required secrets/configuration are present.
+- [ ] Frontend/backend deployment configuration is protected against root-directory, origin, cookie, and environment drift.
+- [ ] Identity contracts support production OAuth/SSO readiness without removing current demo login flows.
+- [ ] School pilot operations expose safe launch, monitoring, rollback, and handoff metadata without raw student surveillance.
 
 ### Out of Scope
 
@@ -208,7 +228,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.4 is archived. Deferred candidates for v1.5 remain production identity/OAuth readiness, counselor handoff, external notification delivery channels with provider governance/retries, multi-school tenancy, and richer operational launch automation.
+v1.5 focuses on production pilot readiness and identity. Deferred candidates after v1.5 remain counselor handoff, external notification delivery channels with provider governance/retries, multi-school tenancy, and richer launch automation.
 
 ## Evolution
 
@@ -228,4 +248,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after v1.4 milestone archive*
+*Last updated: 2026-05-25 after v1.5 milestone start*
