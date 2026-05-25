@@ -72,6 +72,26 @@ export type ProductionSmokeChecklistItem = {
   remediation: string | null;
 };
 
+export type DeploymentGuardrailItem = {
+  key: string;
+  category: string;
+  status: "pass" | "warn" | "fail";
+  evidence: string;
+  remediation: string | null;
+  command: string | null;
+};
+
+export type SmokeProfileItem = {
+  key: string;
+  label: string;
+  status: "pass" | "warn" | "fail";
+  command: string;
+  uses_demo_accounts: boolean;
+  requires_readiness_ready: boolean;
+  evidence: string;
+  remediation: string | null;
+};
+
 export type SosEmailDeliveryItem = {
   delivery_key: string;
   alert_key: string;
@@ -107,6 +127,8 @@ export type AdminOperationsDashboard = {
   demo_seed: DemoSeedSummary;
   connectivity: ConnectivitySummary;
   production_smoke: ProductionSmokeChecklistItem[];
+  deployment_guardrails: DeploymentGuardrailItem[];
+  smoke_profiles: SmokeProfileItem[];
   sos_email: {
     total: number;
     by_status: OperationCountBucket[];

@@ -86,6 +86,47 @@ const operationsDashboard = {
       remediation: "Verify deployed origins.",
     },
   ],
+  deployment_guardrails: [
+    {
+      key: "frontend_api_target",
+      category: "vercel_frontend",
+      status: "warn",
+      evidence: "frontend_api_target_checked_by_guard=yes; backend_raw_value_exposed=no",
+      remediation: "Run guard:deploy with NEXT_PUBLIC_API_BASE_URL and BEYOU_EXPECTED_BACKEND_URL.",
+      command: "npm --prefix frontend run guard:deploy",
+    },
+    {
+      key: "cors_cookie_contract",
+      category: "render_backend",
+      status: "pass",
+      evidence:
+        "exact_allowed_origin_match=yes; allowed_origin_count=1; all_origins_https=yes; credentialed_cors=yes",
+      remediation: null,
+      command: "npm --prefix frontend run guard:deploy",
+    },
+  ],
+  smoke_profiles: [
+    {
+      key: "demo_smoke",
+      label: "Demo smoke",
+      status: "pass",
+      command: "npm --prefix frontend run smoke:demo",
+      uses_demo_accounts: true,
+      requires_readiness_ready: false,
+      evidence: "uses_demo_accounts=yes; requires_readiness_ready=no; public_demo_seeded_flow=yes",
+      remediation: null,
+    },
+    {
+      key: "pilot_smoke",
+      label: "Production pilot smoke",
+      status: "warn",
+      command: "npm --prefix frontend run smoke:pilot",
+      uses_demo_accounts: false,
+      requires_readiness_ready: true,
+      evidence: "readiness_status=not_ready; production_pilot_runtime=no",
+      remediation: "Switch to production_pilot runtime and require readiness ready before pilot smoke.",
+    },
+  ],
   sos_email: {
     total: 1,
     by_status: [{ key: "queued", label: "Đang chờ", count: 1 }],
@@ -209,8 +250,17 @@ describe("Phase 11 operations visibility UI", () => {
     expect(screen.getByText("Readiness")).toBeInTheDocument();
     expect(screen.getByText("Demo seed readiness")).toBeInTheDocument();
     expect(screen.getByText("Connectivity & session contract")).toBeInTheDocument();
-    expect(screen.getByText("Production smoke checklist")).toBeInTheDocument();
-    expect(screen.getAllByText("npm --prefix frontend run smoke:production")).toHaveLength(2);
+    expect(screen.getByText("Deployment guardrails")).toBeInTheDocument();
+    expect(
+      screen.getByText("Kiểm tra Render, Vercel, API target, CORS và cookie bằng metadata an toàn."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Smoke profiles")).toBeInTheDocument();
+    expect(screen.getByText("Demo smoke")).toBeInTheDocument();
+    expect(screen.getByText("Production pilot smoke")).toBeInTheDocument();
+    expect(screen.getByText(/không phụ thuộc tài khoản demo/)).toBeInTheDocument();
+    expect(screen.getByText("npm --prefix frontend run guard:deploy")).toBeInTheDocument();
+    expect(screen.getByText("npm --prefix frontend run smoke:demo")).toBeInTheDocument();
+    expect(screen.getByText("npm --prefix frontend run smoke:pilot")).toBeInTheDocument();
     expect(screen.getByText(/Không hiển thị cookie value hoặc secret/)).toBeInTheDocument();
     expect(screen.getByText("SOS email attempts")).toBeInTheDocument();
     expect(screen.getByText("Audit events")).toBeInTheDocument();
@@ -233,6 +283,9 @@ describe("Phase 11 operations visibility UI", () => {
 
     const rendered = document.body.textContent ?? "";
     expect(rendered).not.toMatch(/RAW_|answer_text|transcript|message_content|student-ops@example|teacher-ops@example|recipient_id/i);
+    expect(rendered).not.toMatch(
+      /DATABASE_URL|SESSION_COOKIE_NAME|SMTP_PASSWORD|FREEMODEL_API_KEY|resource_id|student\.demo@beyou\.local/i,
+    );
     expect(screen.queryByRole("button", { name: /Xuất|Tải xuống|Export/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Chi tiết học sinh|drilldown|xếp hạng/i })).not.toBeInTheDocument();
   });
