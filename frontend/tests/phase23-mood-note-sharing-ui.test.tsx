@@ -351,7 +351,7 @@ describe("Phase 23 mood note sharing UI", () => {
 
     const card = await screen.findByText("Cần hỗ trợ sớm").then(() => cardFor("Cần hỗ trợ sớm"));
     await userEvent.click(within(card).getByRole("button", { name: "Thu hồi quyền xem" }));
-    expect(within(card).getByText(/Cô Bình/)).toBeInTheDocument();
+    expect(within(card).getByText("Áp dụng với: Cô Bình.")).toBeInTheDocument();
     expect(
       within(card).getByText(
         "Thu hồi quyền xem: Người lớn này sẽ không còn xem được nội dung đã chia sẻ. Lịch sử kiểm tra chỉ lưu thông tin thao tác, không lưu nội dung ghi chú.",

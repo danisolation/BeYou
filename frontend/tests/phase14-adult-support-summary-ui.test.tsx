@@ -33,9 +33,10 @@ const teacherSummary = {
   },
   privacy_notes: [
     "Bạn đang xem tóm tắt hỗ trợ được phép xem, không phải toàn bộ dữ liệu riêng tư của học sinh.",
-    "Ghi chú mood riêng tư, câu trả lời tự kiểm tra và nội dung trò chuyện không hiển thị tại đây.",
-    "Mục tiêu là lắng nghe và hỗ trợ, không giám sát, chẩn đoán, kỷ luật hoặc xếp hạng rủi ro.",
+    "Ghi chú cảm xúc chỉ hiển thị khi học sinh đã chủ động đồng ý chia sẻ.",
+    "Mục tiêu là lắng nghe và hỗ trợ trong đúng phạm vi học sinh đã chọn.",
   ],
+  shared_mood_notes: [],
   is_demo: true,
 };
 

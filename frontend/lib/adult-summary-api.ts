@@ -45,10 +45,22 @@ export type AdultMoodTrendSummary = {
   suggested_supportive_action: string;
 };
 
+export type AdultSharedMoodNote = {
+  id: string;
+  mood_checkin_id: string;
+  shared_at: string;
+  mood_created_at: string;
+  share_scope: "private_note" | "student_summary";
+  content: string;
+  relationship_type: string;
+  is_demo: boolean;
+};
+
 export type AdultSupportSummaryResponse = {
   student: AdultSummaryStudent;
   support_plan: AdultSupportPlanSummary;
   mood_summary: AdultMoodTrendSummary;
+  shared_mood_notes: AdultSharedMoodNote[];
   privacy_notes: string[];
   is_demo: boolean;
 };

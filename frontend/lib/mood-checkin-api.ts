@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api";
 
 export type MoodLabel = "steady" | "okay" | "tired" | "sad" | "anxious" | "overwhelmed";
+export type MoodNoteShareScope = "private_note" | "student_summary";
 
 export type MoodOption = {
   key: MoodLabel;
@@ -31,6 +32,52 @@ export type MoodCheckInPayload = {
   private_note?: string | null;
 };
 
+export type MoodNoteShareLinkedAdultOption = {
+  id: string;
+  full_name: string;
+  relationship_type: string;
+  is_demo: boolean;
+};
+
+export type MoodNoteActiveShare = {
+  id: string;
+  mood_checkin_id: string;
+  adult_id: string;
+  adult_full_name: string;
+  relationship_type: string;
+  share_scope: MoodNoteShareScope;
+  has_private_note: boolean;
+  has_student_summary: boolean;
+  created_at: string;
+  is_demo: boolean;
+};
+
+export type MoodNoteShareOptionsResponse = {
+  available_adults: MoodNoteShareLinkedAdultOption[];
+  privacy_notes: string[];
+};
+
+export type MoodNoteSharePayload = {
+  adult_ids: string[];
+  share_scope: MoodNoteShareScope;
+  student_summary: string | null;
+};
+
+export type MoodNoteShareResponse = {
+  mood_checkin_id: string;
+  active_shares: MoodNoteActiveShare[];
+  shareable: boolean;
+  can_share_private_note: boolean;
+  message: string;
+};
+
+export type MoodNoteRevokeResponse = {
+  mood_checkin_id: string;
+  revoked_count: number;
+  active_shares: MoodNoteActiveShare[];
+  message: string;
+};
+
 export type MoodCheckIn = {
   id: string;
   mood_label: MoodLabel;
@@ -45,6 +92,9 @@ export type MoodCheckIn = {
   suggest_sos: boolean;
   created_at: string;
   is_demo: boolean;
+  shareable: boolean;
+  can_share_private_note?: boolean;
+  active_shares: MoodNoteActiveShare[];
 };
 
 export type MoodCheckInHistory = {
@@ -73,4 +123,27 @@ export function submitMoodCheckIn(payload: MoodCheckInPayload) {
 
 export function getMoodCheckInHistory() {
   return apiFetch<MoodCheckInHistory>("/api/student/mood-check-ins/history");
+}
+
+export function getMoodNoteShareOptions() {
+  return apiFetch<MoodNoteShareOptionsResponse>("/api/student/mood-check-ins/share-options");
+}
+
+export function shareMoodCheckInNote(checkinId: string, payload: MoodNoteSharePayload) {
+  return apiFetch<MoodNoteShareResponse>(`/api/student/mood-check-ins/${checkinId}/shares`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function revokeMoodCheckInShare(checkinId: string, adultId: string) {
+  return apiFetch<MoodNoteRevokeResponse>(`/api/student/mood-check-ins/${checkinId}/shares/${adultId}`, {
+    method: "DELETE",
+  });
+}
+
+export function revokeAllMoodCheckInShares(checkinId: string) {
+  return apiFetch<MoodNoteRevokeResponse>(`/api/student/mood-check-ins/${checkinId}/shares`, {
+    method: "DELETE",
+  });
 }

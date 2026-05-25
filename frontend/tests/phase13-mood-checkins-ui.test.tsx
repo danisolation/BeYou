@@ -50,6 +50,9 @@ const historyResponse = {
       id: "mood-2",
       private_note: "RAW_PRIVATE_STUDENT_NOTE",
       created_at: "2026-05-22T01:00:00Z",
+      shareable: true,
+      can_share_private_note: true,
+      active_shares: [],
     },
   ],
 };
@@ -79,6 +82,14 @@ function mockMoodFetch() {
     if (path === "/api/student/mood-check-ins/history") {
       return Promise.resolve(
         new Response(JSON.stringify(historyResponse), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    }
+    if (path === "/api/student/mood-check-ins/share-options") {
+      return Promise.resolve(
+        new Response(JSON.stringify({ available_adults: [], privacy_notes: [] }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         }),

@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   getMoodCheckInHistory,
+  getMoodNoteShareOptions,
   moodLabelFallbacks,
+  revokeAllMoodCheckInShares,
+  revokeMoodCheckInShare,
+  shareMoodCheckInNote,
   type ContextTagOption,
   type MoodCheckIn,
+  type MoodNoteActiveShare,
+  type MoodNoteShareLinkedAdultOption,
+  type MoodNoteShareScope,
 } from "@/lib/mood-checkin-api";
 
 const contextFallbacks: Record<string, string> = {
@@ -23,12 +30,16 @@ const contextFallbacks: Record<string, string> = {
 
 export default function StudentMoodCheckInHistoryPage() {
   const [items, setItems] = useState<MoodCheckIn[]>([]);
+  const [availableAdults, setAvailableAdults] = useState<MoodNoteShareLinkedAdultOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    getMoodCheckInHistory()
-      .then((payload) => setItems(payload.items))
+    Promise.all([getMoodCheckInHistory(), getMoodNoteShareOptions()])
+      .then(([historyPayload, shareOptions]) => {
+        setItems(historyPayload.items);
+        setAvailableAdults(shareOptions.available_adults);
+      })
       .catch(() => setErrorMessage("Chưa tải được lịch sử check-in. Hãy thử lại sau."))
       .finally(() => setIsLoading(false));
   }, []);
@@ -49,9 +60,29 @@ export default function StudentMoodCheckInHistoryPage() {
   if (items.length === 0) {
     return (
       <EmptyState
-        heading="Chưa có check-in cảm xúc"
-        body="Khi em lưu check-in, BeYou sẽ hiển thị lịch sử timestamp ở đây để em tự nhìn lại."
+        heading="Chưa có check-in nào để chia sẻ"
+        body="Khi em có check-in cảm xúc, em có thể tự chọn chia sẻ ghi chú riêng tư hoặc phần tóm tắt em tự viết với người lớn tin cậy. Không bắt buộc phải chia sẻ."
       />
+    );
+  }
+
+  function updateItemShares(
+    checkinId: string,
+    activeShares: MoodNoteActiveShare[],
+    shareable?: boolean,
+    canSharePrivateNote?: boolean,
+  ) {
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === checkinId
+          ? {
+              ...item,
+              active_shares: activeShares,
+              shareable: shareable ?? item.shareable,
+              can_share_private_note: canSharePrivateNote ?? item.can_share_private_note,
+            }
+          : item,
+      ),
     );
   }
 
@@ -60,12 +91,19 @@ export default function StudentMoodCheckInHistoryPage() {
       <div className="rounded-3xl bg-secondary p-6 shadow-sm">
         <h1 className="text-display">Lịch sử check-in cảm xúc</h1>
         <p className="mt-4 text-body">
-          Đây là lịch sử riêng của em. Ghi chú riêng tư không được hiển thị ở cổng người lớn trong Phase 13.
+          Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin cậy
+          và đúng phần nội dung để chia sẻ; các nội dung khác vẫn riêng tư.
         </p>
       </div>
       <div className="space-y-4">
         {items.map((item) => (
-          <MoodHistoryItem key={item.id} item={item} contextOptions={contextOptions} />
+          <MoodHistoryItem
+            key={item.id}
+            item={item}
+            contextOptions={contextOptions}
+            availableAdults={availableAdults}
+            onSharesChanged={updateItemShares}
+          />
         ))}
       </div>
     </section>
@@ -75,9 +113,18 @@ export default function StudentMoodCheckInHistoryPage() {
 function MoodHistoryItem({
   item,
   contextOptions,
+  availableAdults,
+  onSharesChanged,
 }: {
   item: MoodCheckIn;
   contextOptions: ContextTagOption[];
+  availableAdults: MoodNoteShareLinkedAdultOption[];
+  onSharesChanged: (
+    checkinId: string,
+    activeShares: MoodNoteActiveShare[],
+    shareable?: boolean,
+    canSharePrivateNote?: boolean,
+  ) => void;
 }) {
   const contextLabels = item.context_tags.map(
     (tag) => contextOptions.find((option) => option.key === tag)?.label ?? tag,
@@ -106,6 +153,434 @@ function MoodHistoryItem({
           <p className="mt-2 text-body">{item.private_note}</p>
         </div>
       ) : null}
+      {item.shareable ? (
+        <MoodShareControls
+          item={item}
+          availableAdults={availableAdults}
+          onSharesChanged={onSharesChanged}
+        />
+      ) : null}
     </article>
+  );
+}
+
+function relationshipLabel(value: string) {
+  if (value === "teacher") {
+    return "teacher";
+  }
+  if (value === "parent") {
+    return "parent";
+  }
+  return value;
+}
+
+function shareScopePreview(scope: MoodNoteShareScope) {
+  return scope === "private_note" ? "private note" : "phần tóm tắt em tự viết";
+}
+
+function MoodShareControls({
+  item,
+  availableAdults,
+  onSharesChanged,
+}: {
+  item: MoodCheckIn;
+  availableAdults: MoodNoteShareLinkedAdultOption[];
+  onSharesChanged: (
+    checkinId: string,
+    activeShares: MoodNoteActiveShare[],
+    shareable?: boolean,
+    canSharePrivateNote?: boolean,
+  ) => void;
+}) {
+  const canSharePrivateNote = item.can_share_private_note ?? Boolean(item.private_note);
+  const defaultScope: MoodNoteShareScope = canSharePrivateNote ? "private_note" : "student_summary";
+  const [isDraftOpen, setIsDraftOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedAdultIds, setSelectedAdultIds] = useState<string[]>([]);
+  const [shareScope, setShareScope] = useState<MoodNoteShareScope>(defaultScope);
+  const [studentSummary, setStudentSummary] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const previewHeadingRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    setShareScope(defaultScope);
+  }, [defaultScope]);
+
+  useEffect(() => {
+    if (isPreviewOpen) {
+      previewHeadingRef.current?.focus();
+    }
+  }, [isPreviewOpen]);
+
+  const selectedAdults = availableAdults.filter((adult) => selectedAdultIds.includes(adult.id));
+
+  function toggleAdult(adultId: string) {
+    setSelectedAdultIds((currentIds) =>
+      currentIds.includes(adultId)
+        ? currentIds.filter((id) => id !== adultId)
+        : [...currentIds, adultId],
+    );
+  }
+
+  function openPreview() {
+    setErrorMessage(null);
+    if (selectedAdultIds.length === 0) {
+      setErrorMessage("Hãy chọn ít nhất một người lớn tin cậy trước khi xem trước.");
+      return;
+    }
+    if (shareScope === "student_summary" && studentSummary.trim().length === 0) {
+      setErrorMessage("Em cần tự viết phần tóm tắt trước khi chia sẻ.");
+      return;
+    }
+    setIsPreviewOpen(true);
+  }
+
+  async function confirmShare() {
+    setIsSaving(true);
+    setErrorMessage(null);
+    try {
+      const response = await shareMoodCheckInNote(item.id, {
+        adult_ids: selectedAdultIds,
+        share_scope: shareScope,
+        student_summary: shareScope === "student_summary" ? studentSummary.trim() : null,
+      });
+      onSharesChanged(
+        item.id,
+        response.active_shares,
+        response.shareable,
+        response.can_share_private_note,
+      );
+      setSuccessMessage(response.message);
+      setIsDraftOpen(false);
+      setIsPreviewOpen(false);
+    } catch {
+      setErrorMessage("Chưa cập nhật được quyền chia sẻ. Hãy thử lại hoặc quay lại sau.");
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 rounded-2xl border border-[#D7EFE8] bg-white p-4">
+      <ActiveShareList
+        item={item}
+        onSharesChanged={onSharesChanged}
+        onSuccess={setSuccessMessage}
+        onError={setErrorMessage}
+      />
+
+      {successMessage ? (
+        <p className="mt-3 text-label text-[#2CA58D]" aria-live="polite">
+          {successMessage}
+        </p>
+      ) : null}
+      {errorMessage ? (
+        <p className="mt-3 text-label text-red-700" role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
+
+      {!isDraftOpen && !isPreviewOpen ? (
+        <div className="mt-4">
+          <button
+            type="button"
+            className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+            onClick={() => {
+              setIsDraftOpen(true);
+              setSuccessMessage(null);
+            }}
+          >
+            Chia sẻ ghi chú
+          </button>
+          <p className="mt-2 text-label">Chỉ những người lớn em chọn mới xem được ghi chú này.</p>
+        </div>
+      ) : null}
+
+      {isDraftOpen && !isPreviewOpen ? (
+        <div className="mt-4 space-y-4">
+          {!canSharePrivateNote ? (
+            <p className="text-label">
+              Check-in này không có ghi chú riêng tư; em vẫn có thể tự viết tóm tắt nếu muốn chia sẻ.
+            </p>
+          ) : null}
+
+          <fieldset className="space-y-2">
+            <legend className="text-label font-semibold">Nội dung muốn chia sẻ</legend>
+            <label className="flex min-h-11 items-center gap-2 text-body">
+              <input
+                type="radio"
+                name={`share-scope-${item.id}`}
+                value="private_note"
+                checked={shareScope === "private_note"}
+                disabled={!canSharePrivateNote}
+                onChange={() => setShareScope("private_note")}
+              />
+              Chia sẻ ghi chú riêng tư
+            </label>
+            <label className="flex min-h-11 items-center gap-2 text-body">
+              <input
+                type="radio"
+                name={`share-scope-${item.id}`}
+                value="student_summary"
+                checked={shareScope === "student_summary"}
+                onChange={() => setShareScope("student_summary")}
+              />
+              Chia sẻ phần tóm tắt em tự viết
+            </label>
+          </fieldset>
+
+          {shareScope === "student_summary" ? (
+            <label className="block text-body">
+              <span className="text-label font-semibold">Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ</span>
+              <textarea
+                aria-label="Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ"
+                className="mt-2 min-h-28 w-full rounded-2xl border border-[#D7EFE8] p-3 text-body"
+                value={studentSummary}
+                onChange={(event) => setStudentSummary(event.target.value)}
+              />
+              <span className="mt-2 block text-label">
+                Em tự viết phần này. BeYou không tự tạo diễn giải hay chẩn đoán.
+              </span>
+            </label>
+          ) : null}
+
+          <fieldset className="space-y-2">
+            <legend className="text-label font-semibold">Người lớn tin cậy</legend>
+            {availableAdults.length === 0 ? (
+              <p className="text-label">Chưa có người lớn đang liên kết để chọn.</p>
+            ) : (
+              availableAdults.map((adult) => (
+                <label key={adult.id} className="flex min-h-11 items-center gap-2 text-body">
+                  <input
+                    type="checkbox"
+                    checked={selectedAdultIds.includes(adult.id)}
+                    onChange={() => toggleAdult(adult.id)}
+                  />
+                  {adult.full_name} - {relationshipLabel(adult.relationship_type)}
+                </label>
+              ))
+            )}
+          </fieldset>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+              onClick={() => {
+                setIsDraftOpen(false);
+                setErrorMessage(null);
+              }}
+            >
+              Giữ riêng tư
+            </button>
+            <button
+              type="button"
+              className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+              onClick={openPreview}
+            >
+              Xem trước trước khi chia sẻ
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {isPreviewOpen ? (
+        <SharePreviewPanel
+          headingRef={previewHeadingRef}
+          selectedAdultNames={selectedAdults.map((adult) => adult.full_name)}
+          shareScope={shareScope}
+          isSaving={isSaving}
+          onEdit={() => setIsPreviewOpen(false)}
+          onConfirm={confirmShare}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function SharePreviewPanel({
+  headingRef,
+  selectedAdultNames,
+  shareScope,
+  isSaving,
+  onEdit,
+  onConfirm,
+}: {
+  headingRef: RefObject<HTMLHeadingElement | null>;
+  selectedAdultNames: string[];
+  shareScope: MoodNoteShareScope;
+  isSaving: boolean;
+  onEdit: () => void;
+  onConfirm: () => void;
+}) {
+  return (
+    <div className="mt-4 rounded-2xl bg-secondary p-4">
+      <h3 ref={headingRef} tabIndex={-1} className="text-heading">
+        Xem trước trước khi chia sẻ
+      </h3>
+      <div className="mt-3 space-y-2 text-body">
+        <p>Em sắp chia sẻ ghi chú này với: {selectedAdultNames.join(", ")}.</p>
+        <p>Nội dung được chia sẻ: {shareScopePreview(shareScope)}.</p>
+        <p>Vẫn riêng tư: các check-in khác, ghi chú khác, điểm số chi tiết và những gì em không chọn chia sẻ.</p>
+        <p>Em có thể thu hồi quyền xem trong lịch sử check-in bất cứ lúc nào.</p>
+        <p>Việc chia sẻ này không gửi thông báo ngoài ứng dụng, không tạo SOS và không tạo điểm rủi ro.</p>
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+          onClick={onEdit}
+        >
+          Sửa lựa chọn
+        </button>
+        <button
+          type="button"
+          className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+          onClick={onConfirm}
+          disabled={isSaving}
+        >
+          {isSaving ? "Đang lưu quyền chia sẻ..." : "Xác nhận chia sẻ"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ActiveShareList({
+  item,
+  onSharesChanged,
+  onSuccess,
+  onError,
+}: {
+  item: MoodCheckIn;
+  onSharesChanged: (
+    checkinId: string,
+    activeShares: MoodNoteActiveShare[],
+    shareable?: boolean,
+    canSharePrivateNote?: boolean,
+  ) => void;
+  onSuccess: (message: string | null) => void;
+  onError: (message: string | null) => void;
+}) {
+  const [revokeTarget, setRevokeTarget] = useState<MoodNoteActiveShare | "all" | null>(null);
+  const [isRevoking, setIsRevoking] = useState(false);
+
+  async function confirmRevoke() {
+    setIsRevoking(true);
+    onError(null);
+    try {
+      const response =
+        revokeTarget === "all"
+          ? await revokeAllMoodCheckInShares(item.id)
+          : revokeTarget
+            ? await revokeMoodCheckInShare(item.id, revokeTarget.adult_id)
+            : null;
+      if (response) {
+        onSharesChanged(item.id, response.active_shares);
+        onSuccess(response.message);
+      }
+      setRevokeTarget(null);
+    } catch {
+      onError("Chưa cập nhật được quyền chia sẻ. Hãy thử lại hoặc quay lại sau.");
+    } finally {
+      setIsRevoking(false);
+    }
+  }
+
+  if (item.active_shares.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="space-y-2">
+        {item.active_shares.map((share) => (
+          <div key={share.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-secondary p-3">
+            <div>
+              <p className="text-body">{share.adult_full_name}</p>
+              <p className="text-label">{relationshipLabel(share.relationship_type)}</p>
+            </div>
+            <span className="rounded-full bg-[#2CA58D] px-3 py-1 text-label text-white">Đang được chia sẻ</span>
+            <button
+              type="button"
+              className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-label font-semibold text-red-700"
+              onClick={() => setRevokeTarget(share)}
+            >
+              Thu hồi quyền xem
+            </button>
+          </div>
+        ))}
+      </div>
+      {item.active_shares.length > 1 ? (
+        <button
+          type="button"
+          className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-label font-semibold text-red-700"
+          onClick={() => setRevokeTarget("all")}
+        >
+          Thu hồi tất cả
+        </button>
+      ) : null}
+      {revokeTarget ? (
+        <RevokeShareConfirmation
+          targetNames={
+            revokeTarget === "all"
+              ? item.active_shares.map((share) => share.adult_full_name)
+              : [revokeTarget.adult_full_name]
+          }
+          isRevoking={isRevoking}
+          onCancel={() => setRevokeTarget(null)}
+          onConfirm={confirmRevoke}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function RevokeShareConfirmation({
+  targetNames,
+  isRevoking,
+  onCancel,
+  onConfirm,
+}: {
+  targetNames: string[];
+  isRevoking: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
+  return (
+    <div className="mt-4 rounded-2xl border border-red-200 bg-white p-4">
+      <h3 ref={headingRef} tabIndex={-1} className="text-heading">
+        Thu hồi quyền xem
+      </h3>
+      <p className="mt-2 text-body">Áp dụng với: {targetNames.join(", ")}.</p>
+      <p className="mt-2 text-body">
+        Thu hồi quyền xem: Người lớn này sẽ không còn xem được nội dung đã chia sẻ. Lịch sử kiểm tra chỉ lưu thông tin thao tác, không lưu nội dung ghi chú.
+      </p>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+          onClick={onCancel}
+        >
+          Giữ nguyên quyền xem
+        </button>
+        <button
+          type="button"
+          className="min-h-11 rounded-full bg-red-600 px-5 py-2 text-label font-semibold text-white"
+          onClick={onConfirm}
+          disabled={isRevoking}
+        >
+          {isRevoking ? "Đang thu hồi quyền xem..." : "Xác nhận thu hồi quyền xem"}
+        </button>
+      </div>
+    </div>
   );
 }

@@ -73,6 +73,7 @@ export function AdultSupportSummaryDetail({
       </section>
 
       <SupportPlanCard summary={summary} />
+      <AdultSharedMoodNotesCard summary={summary} />
       <MoodTrendCard summary={summary} />
     </main>
   );
@@ -111,11 +112,41 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
   );
 }
 
+function AdultSharedMoodNotesCard({ summary }: { summary: AdultSupportSummaryResponse }) {
+  return (
+    <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <h2 className="text-heading">Ghi chú được học sinh đồng ý chia sẻ</h2>
+      <p className="mt-3 text-body">Chỉ hiển thị những nội dung học sinh đã chủ động chọn chia sẻ với bạn.</p>
+      <div className="mt-4 space-y-3">
+        {summary.shared_mood_notes.length === 0 ? (
+          <p className="rounded-2xl bg-secondary p-4 text-body">
+            Học sinh chưa chia sẻ ghi chú cảm xúc nào với bạn, hoặc quyền chia sẻ đã được thu hồi.
+          </p>
+        ) : (
+          summary.shared_mood_notes.map((note) => (
+            <article key={note.id} className="rounded-2xl bg-secondary p-4">
+              <p className="text-label">{new Date(note.shared_at).toLocaleString("vi-VN")}</p>
+              <p className="mt-1 text-label">
+                {note.share_scope === "private_note" ? "Ghi chú riêng tư được chia sẻ" : "Tóm tắt học sinh tự viết"}
+              </p>
+              <p className="mt-2 text-body">{note.content}</p>
+              <p className="mt-3 text-label">
+                Nội dung này có thể không còn hiển thị nếu học sinh thu hồi quyền xem.
+              </p>
+            </article>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
+
 function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   const mood = summary.mood_summary;
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
       <h2 className="text-heading">Xu hướng check-in cảm xúc</h2>
+      <p className="mt-3 text-label">Tóm tắt tổng hợp</p>
       {mood.latest_trend_label ? (
         <>
           <p className="mt-3 text-body">
