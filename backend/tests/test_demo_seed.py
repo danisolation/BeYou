@@ -106,6 +106,22 @@ def test_demo_seed_refuses_when_disabled(
     get_settings.cache_clear()
 
 
+def test_production_pilot_demo_seed_noops_before_writes(
+    db: OrmSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    monkeypatch.setenv("ALLOW_DEMO_SEED", "true")
+    get_settings.cache_clear()
+    settings = get_settings()
+
+    assert seed_demo_data(db, settings) is False
+
+    for model in (User, StudentAdultLink, SelfCheckTest, Scenario, MoodCheckInConfig):
+        assert db.scalars(select(model)).all() == []
+    get_settings.cache_clear()
+
+
 def test_demo_seed_creates_idempotent_demo_users_and_links(
     db: OrmSession,
     monkeypatch: pytest.MonkeyPatch,

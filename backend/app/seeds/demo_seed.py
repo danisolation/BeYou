@@ -572,6 +572,8 @@ def _seed_v1_4_demo_state(db: OrmSession, *, admin: User, student: User, teacher
 
 
 def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
+    if settings.is_production_pilot:
+        return False
     if not settings.allow_demo_seed:
         return False
 
