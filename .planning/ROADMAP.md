@@ -3,7 +3,7 @@
 **Created:** 2026-05-22
 **Granularity:** Coarse
 **Milestone:** v1.4 Consent-Based Notifications & Access Transparency
-**Coverage:** 29/29 v1.4 requirements mapped; 15/29 complete
+**Coverage:** 29/29 v1.4 requirements mapped; 20/29 complete
 
 ## Completed Milestones
 
@@ -27,8 +27,8 @@
 
 - [x] Phase 21: Privacy Control Foundation & Policy Contracts
 - [x] Phase 22: Student Reminder Preferences & In-App Mood Reminders
-- [x] Phase 23: Selective Mood-Note Sharing & Revocation (completed 2026-05-25)
-- [ ] Phase 24: Reason-for-Access & Adult Support Transparency
+- [x] Phase 23: Selective Mood-Note Sharing & Revocation (completed 2026-05-25)
+- [x] Phase 24: Reason-for-Access & Adult Support Transparency (completed 2026-05-25)
 - [ ] Phase 25: Admin Privacy Policy & Operations Visibility
 - [ ] Phase 26: Cross-Role Privacy Regression & Demo Readiness
 
@@ -97,7 +97,7 @@ Plans:
 **Depends on:** Phase 21, Phase 23
 **Requirements:** ACCESS-01, ACCESS-02, ACCESS-03, ACCESS-04, ACCESS-05
 **UI hint:** yes
-**Status:** Not Started
+**Status:** Complete
 
 **Success criteria:**
 1. Backend reason gate blocks protected teacher/parent summary or shared-note access until a controlled allowed reason code is provided when policy requires it.
@@ -105,10 +105,10 @@ Plans:
 3. Adult UI explains reasons as support/transparency, not discipline or surveillance.
 4. Allowed, denied, and missing-reason attempts are audited as metadata only.
 
-**Plans:** 0/1 complete
+**Plans:** 1/1 complete
 
 Plans:
-- [ ] 24-01-PLAN.md - Reason-gated adult access and metadata-only transparency audit
+- [x] 24-01-PLAN.md - Reason-gated adult access and metadata-only transparency audit
 
 ### Phase 25: Admin Privacy Policy & Operations Visibility
 
@@ -167,11 +167,11 @@ Plans:
 | SHARE-03 | Phase 23 | Complete |
 | SHARE-04 | Phase 23 | Complete |
 | SHARE-05 | Phase 23 | Complete |
-| ACCESS-01 | Phase 24 | Pending |
-| ACCESS-02 | Phase 24 | Pending |
-| ACCESS-03 | Phase 24 | Pending |
-| ACCESS-04 | Phase 24 | Pending |
-| ACCESS-05 | Phase 24 | Pending |
+| ACCESS-01 | Phase 24 | Complete |
+| ACCESS-02 | Phase 24 | Complete |
+| ACCESS-03 | Phase 24 | Complete |
+| ACCESS-04 | Phase 24 | Complete |
+| ACCESS-05 | Phase 24 | Complete |
 | POLICY-01 | Phase 25 | Pending |
 | POLICY-02 | Phase 25 | Pending |
 | OPS-01 | Phase 25 | Pending |
@@ -185,7 +185,7 @@ Plans:
 **Coverage:**
 - v1.4 requirements: 29 total
 - Mapped to phases: 29
-- Complete: 15
+- Complete: 20
 - Unmapped: 0
 
 ## Assumptions
@@ -197,4 +197,4 @@ Plans:
 - Admin policy defaults cannot override explicit student privacy boundaries or enable external channels in v1.4.
 
 ---
-*Last updated: 2026-05-22 after Phase 22 completion*
+*Last updated: 2026-05-25 after Phase 24 completion*

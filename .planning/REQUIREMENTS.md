@@ -33,11 +33,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Reason-for-Access Transparency
 
-- [ ] **ACCESS-01**: Policy can require controlled reason prompts before teacher/parent access to protected support summaries or shared mood notes.
-- [ ] **ACCESS-02**: Teacher/parent must provide an allowed support-oriented reason before protected access when policy requires it.
-- [ ] **ACCESS-03**: Reason submission never bypasses role or active relationship authorization.
-- [ ] **ACCESS-04**: Allowed, denied, and missing-reason access attempts create metadata-only audit with safe reason code, actor role, resource type, and status.
-- [ ] **ACCESS-05**: Adult UI copy explains that reason prompts support transparency and support-not-surveillance boundaries.
+- [x] **ACCESS-01**: Policy can require controlled reason prompts before teacher/parent access to protected support summaries or shared mood notes.
+- [x] **ACCESS-02**: Teacher/parent must provide an allowed support-oriented reason before protected access when policy requires it.
+- [x] **ACCESS-03**: Reason submission never bypasses role or active relationship authorization.
+- [x] **ACCESS-04**: Allowed, denied, and missing-reason access attempts create metadata-only audit with safe reason code, actor role, resource type, and status.
+- [x] **ACCESS-05**: Adult UI copy explains that reason prompts support transparency and support-not-surveillance boundaries.
 
 ### Admin Policy & Operations
 
@@ -104,11 +104,11 @@ Explicit exclusions for v1.4.
 | SHARE-03 | Phase 23 | Complete |
 | SHARE-04 | Phase 23 | Complete |
 | SHARE-05 | Phase 23 | Complete |
-| ACCESS-01 | Phase 24 | Pending |
-| ACCESS-02 | Phase 24 | Pending |
-| ACCESS-03 | Phase 24 | Pending |
-| ACCESS-04 | Phase 24 | Pending |
-| ACCESS-05 | Phase 24 | Pending |
+| ACCESS-01 | Phase 24 | Complete |
+| ACCESS-02 | Phase 24 | Complete |
+| ACCESS-03 | Phase 24 | Complete |
+| ACCESS-04 | Phase 24 | Complete |
+| ACCESS-05 | Phase 24 | Complete |
 | POLICY-01 | Phase 25 | Pending |
 | POLICY-02 | Phase 25 | Pending |
 | OPS-01 | Phase 25 | Pending |
@@ -126,4 +126,4 @@ Explicit exclusions for v1.4.
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after Phase 22 completion*
+*Last updated: 2026-05-25 after Phase 24 completion*
