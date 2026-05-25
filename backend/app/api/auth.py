@@ -24,6 +24,7 @@ INVALID_LOGIN_DETAIL = "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra 
 DISABLED_LOGIN_DETAIL = (
     "Tài khoản này đang bị tạm khóa. Hãy liên hệ quản trị viên hoặc người phụ trách demo."
 )
+DEMO_LOGIN_DISABLED_DETAIL = "Demo accounts are disabled in production pilot mode."
 
 
 def _client_ip(request: Request) -> str | None:
@@ -64,6 +65,10 @@ def login(
     if user.status != AccountStatus.ACTIVE.value:
         record_login_failure(payload.email, client_ip)
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=DISABLED_LOGIN_DETAIL)
+
+    if user.is_demo and (settings.is_production_pilot or not settings.allow_demo_login):
+        record_login_failure(payload.email, client_ip)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=DEMO_LOGIN_DISABLED_DETAIL)
 
     reset_login_failures(payload.email, client_ip)
     create_session(db, user, response, settings)

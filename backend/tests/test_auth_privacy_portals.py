@@ -95,6 +95,7 @@ def _user(
     status: str = AccountStatus.ACTIVE.value,
     school: str | None = "THPT Demo",
     class_name: str | None = "10A1",
+    is_demo: bool = True,
 ) -> User:
     user = User(
         email=email,
@@ -104,7 +105,7 @@ def _user(
         full_name=full_name,
         school=school,
         class_name=class_name,
-        is_demo=True,
+        is_demo=is_demo,
     )
     db.add(user)
     db.commit()
@@ -184,6 +185,69 @@ def test_invalid_and_disabled_login_responses_are_generic_or_safe(
     assert invalid_response.json()["detail"] == "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra lại thông tin đăng nhập."
     assert disabled_response.status_code == 403
     assert "tạm khóa" in disabled_response.json()["detail"]
+
+
+def test_production_pilot_denies_demo_login_before_session(
+    db: OrmSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    get_settings.cache_clear()
+    demo_user = _user(db, email="pilot-demo-login@example.test", role=UserRole.ADMIN.value, full_name="Pilot Demo")
+    reset_login_failures(demo_user.email, "testclient")
+
+    with TestClient(create_app()) as pilot_client:
+        response = _login(pilot_client, demo_user.email)
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Demo accounts are disabled in production pilot mode."
+    assert "set-cookie" not in response.headers
+    assert db.scalars(select(UserSession).where(UserSession.user_id == demo_user.id)).all() == []
+    get_settings.cache_clear()
+
+
+def test_allow_demo_login_false_denies_demo_login_before_session(
+    db: OrmSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("ALLOW_DEMO_LOGIN", "false")
+    get_settings.cache_clear()
+    demo_user = _user(db, email="disabled-demo-login@example.test", role=UserRole.STUDENT.value, full_name="Demo Disabled")
+    reset_login_failures(demo_user.email, "testclient")
+
+    with TestClient(create_app()) as guarded_client:
+        response = _login(guarded_client, demo_user.email)
+
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Demo accounts are disabled in production pilot mode."
+    assert "set-cookie" not in response.headers
+    assert db.scalars(select(UserSession).where(UserSession.user_id == demo_user.id)).all() == []
+    get_settings.cache_clear()
+
+
+def test_production_pilot_allows_non_demo_login_session(
+    db: OrmSession,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    get_settings.cache_clear()
+    pilot_user = _user(
+        db,
+        email="pilot-non-demo-login@example.test",
+        role=UserRole.ADMIN.value,
+        full_name="Pilot User",
+        is_demo=False,
+    )
+
+    with TestClient(create_app()) as pilot_client:
+        response = _login(pilot_client, pilot_user.email)
+
+    assert response.status_code == 200
+    assert "set-cookie" in response.headers
+    sessions = db.scalars(select(UserSession).where(UserSession.user_id == pilot_user.id)).all()
+    assert len(sessions) == 1
+    assert sessions[0].is_demo is False
+    get_settings.cache_clear()
 
 
 def test_repeated_invalid_login_attempts_return_429(db: OrmSession, client: TestClient) -> None:
