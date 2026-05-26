@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -300,6 +300,125 @@ describe("Phase 11 operations visibility UI", () => {
     );
     expect(screen.queryByRole("button", { name: /Xuất|Tải xuống|Export/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Chi tiết học sinh|drilldown|xếp hạng/i })).not.toBeInTheDocument();
+  });
+
+  it("renders Phase 30 identity operations metadata without raw identity, token, export, or drilldown controls", async () => {
+    const phase30Dashboard = {
+      ...operationsDashboard,
+      privacy_notes: [
+        ...operationsDashboard.privacy_notes,
+        "Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng, liên kết đang hoạt động và SOS của học sinh quyết định.",
+      ],
+      auth_provider: {
+        enabled: true,
+        provider_key: "pilot_sso",
+        provider_label: "Pilot SSO",
+        mode: "production_pilot",
+        status: "warn",
+        last_check_status: "metadata_checked",
+        remediation: "Xác nhận provider trước khi mở pilot.",
+        client_secret: "client_secret",
+        issuer_url: "issuer_url",
+        callback_url: "callback_url",
+      },
+      identity_mappings: {
+        by_status: [
+          { key: "linked", label: "Đã liên kết", count: 3 },
+          { key: "pending_review", label: "Chờ duyệt", count: 1 },
+        ],
+        pending_review_count: 1,
+        disabled_count: 2,
+        deprovisioned_count: 0,
+        raw_subject: "raw_subject",
+        raw_email: "pilot.student@example.edu",
+      },
+      session_auth: {
+        by_auth_method: [
+          { key: "password", label: "Password", count: 2 },
+          { key: "sso", label: "SSO", count: 3 },
+        ],
+        by_provider: [
+          { key: "local", label: "Local", count: 2 },
+          { key: "pilot_sso", label: "Pilot SSO", count: 3 },
+        ],
+        access_token: "access_token",
+        refresh_token: "refresh_token",
+        id_token: "id_token",
+      },
+    };
+
+    mockFetch({
+      "/api/admin/operations/dashboard?limit=25": phase30Dashboard,
+    });
+
+    render(<AdminOperationsPage />);
+
+    expect(await screen.findByText("Auth provider readiness")).toBeInTheDocument();
+    expect(screen.getByText("Identity mapping buckets")).toBeInTheDocument();
+    expect(screen.getByText("Session auth methods")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Theo dõi cấu hình đăng nhập ngoài bằng metadata an toàn, không hiển thị client ID, issuer, callback URL hoặc secret.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Tóm tắt session backend-owned theo phương thức đăng nhập và provider an toàn; không lưu token trong trình duyệt."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Pilot SSO")).toBeInTheDocument();
+    expect(screen.getByText("Đã liên kết")).toBeInTheDocument();
+    expect(screen.getByText("Chờ duyệt")).toBeInTheDocument();
+    expect(screen.getByText("Phương thức đăng nhập")).toBeInTheDocument();
+    expect(screen.getAllByText("Provider").length).toBeGreaterThan(0);
+    expect(
+      screen.getByText("Một số liên kết danh tính đang chờ duyệt. Không có tài khoản nào được tự động cấp quyền."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Session vẫn dùng cookie HttpOnly do backend sở hữu; UI không đọc hoặc lưu access token."),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng, liên kết đang hoạt động và SOS của học sinh quyết định.",
+      ),
+    ).toBeInTheDocument();
+
+    const rendered = document.body.textContent ?? "";
+    const renderedWithoutAllowedCopy = rendered.replace("drilldown tài khoản", "");
+    expect(rendered).not.toMatch(
+      /client_secret|issuer_url|callback_url|raw_subject|raw_email|refresh_token|id_token|RAW_|pilot\.student@example\.edu/i,
+    );
+    expect(renderedWithoutAllowedCopy).not.toMatch(/drilldown/i);
+    expect(screen.queryByRole("button", { name: /drilldown|export|xuất|raw json|json/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /drilldown|chi tiết học sinh|tài khoản|raw json|export|xuất/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/raw json viewer|per-user|per-student|school_class|groups|claim/i)).not.toBeInTheDocument();
+  });
+
+  it("shows Phase 30 identity fallbacks when older operations payloads omit identity fields", async () => {
+    mockFetch({
+      "/api/admin/operations/dashboard?limit=25": operationsDashboard,
+    });
+
+    render(<AdminOperationsPage />);
+
+    expect(await screen.findByText("Auth provider readiness")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có metadata danh tính.")).toBeInTheDocument();
+    expect(screen.getByText("Hãy kiểm tra cấu hình provider và tải lại trang vận hành.")).toBeInTheDocument();
+
+    const mappingPanel = screen.getByText("Identity mapping buckets").closest("section");
+    if (mappingPanel === null) {
+      throw new Error("missing identity mapping panel");
+    }
+    expect(
+      within(mappingPanel).getByText("Chưa có metadata liên kết danh tính. Không có tài khoản nào được tự động cấp quyền từ claim bên ngoài."),
+    ).toBeInTheDocument();
+
+    const sessionPanel = screen.getByText("Session auth methods").closest("section");
+    if (sessionPanel === null) {
+      throw new Error("missing session auth panel");
+    }
+    expect(within(sessionPanel).getByText("Chưa có metadata session theo phương thức đăng nhập.")).toBeInTheDocument();
   });
 });
 
