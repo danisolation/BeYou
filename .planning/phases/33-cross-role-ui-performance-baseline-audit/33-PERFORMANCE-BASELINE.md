@@ -110,4 +110,13 @@ powershell -NoProfile -Command "Push-Location frontend; node --test scripts/phas
 cd backend; .\.venv\Scripts\python.exe -m pytest tests/test_phase33_performance_baseline.py -q
 ```
 
+Final Phase 33 fail-fast verification also passed:
+
+```powershell
+npm --prefix frontend run test -- tests/phase33-ui-inventory.test.tsx
+cd frontend; node --test scripts/phase33-frontend-baseline.test.mjs
+cd frontend; node --test scripts/phase33-artifact-redline.test.mjs
+cd backend; .\.venv\Scripts\python.exe -m pytest tests/test_phase33_performance_baseline.py -q
+```
+
 Phase 33 records baseline and routing only. Backend/database optimization belongs to Phase 36, frontend loading/render/build work belongs to Phase 37, and final release gates/comparisons belong to Phase 38.

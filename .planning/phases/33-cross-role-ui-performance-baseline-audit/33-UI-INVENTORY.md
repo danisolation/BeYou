@@ -2015,3 +2015,14 @@ Phase 33 records candidate routing only. The rows below are handoff queues for d
 - When a legitimate UI field is sensitive, classify it only, for example: student_display_name field present in UI response, summary-only adult view, metadata-only admin count, or route parameter segment present.
 - Keep adult visibility SOS-only or summary-only, keep reason-gated and relationship-gated boundaries, keep privacy acknowledgement routing, and keep backend-owned HttpOnly cookie authentication unchanged.
 - Any later fix must route to Phase 34, Phase 35, Phase 37, or Phase 38; this artifact is a baseline queue, not an implementation instruction for Phase 33.
+
+## Final Phase 33 Verification Commands
+
+```powershell
+npm --prefix frontend run test -- tests/phase33-ui-inventory.test.tsx
+cd frontend; node --test scripts/phase33-frontend-baseline.test.mjs
+cd frontend; node --test scripts/phase33-artifact-redline.test.mjs
+cd backend; .\.venv\Scripts\python.exe -m pytest tests/test_phase33_performance_baseline.py -q
+```
+
+These commands passed locally for Phase 33 final safety and baseline readiness. The commands validate route/state/category coverage, frontend aggregate baseline shape, artifact redlines, and backend aggregate-only performance evidence without changing production runtime behavior.
