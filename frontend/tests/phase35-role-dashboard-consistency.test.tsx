@@ -135,6 +135,14 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<StudentDashboardPage />);
 
+    expect(await screen.findByText("Vai trò học sinh")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Xin chào, Nguyễn" })).toBeInTheDocument();
+    expect(screen.getByText("Thông tin của em là riêng tư theo mặc định")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Người lớn chỉ thấy thông tin trong phạm vi em cho phép hoặc khi có SOS cần hỗ trợ; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở.",
+      ),
+    ).toBeInTheDocument();
     expect(await screen.findByRole("link", { name: "Ai có thể xem thông tin của em?" })).toBeInTheDocument();
     const sosButton = screen.getByRole("button", { name: "Gửi SOS hỗ trợ" });
     expect(sosButton.className).toMatch(/bg-red-600/);
