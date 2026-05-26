@@ -1,5 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AdminDashboardPage from "@/app/(authenticated)/admin/page";
@@ -218,6 +220,16 @@ describe("Phase 11 operations visibility UI", () => {
       expect.objectContaining({ credentials: "include" }),
     );
     expect(localStorageSpy).not.toHaveBeenCalled();
+  });
+
+  it("keeps Phase 30 identity operations fields optional in the admin operations API contract", () => {
+    const apiSource = readFileSync(join(process.cwd(), "lib/admin-operations-api.ts"), "utf8");
+
+    expect(apiSource).toContain("export type AuthProviderReadinessSummary");
+    expect(apiSource).toContain("auth_provider?: AuthProviderReadinessSummary | null");
+    expect(apiSource).toContain("identity_mappings?: IdentityMappingOperationsSummary | null");
+    expect(apiSource).toContain("session_auth?: SessionAuthOperationsSummary | null");
+    expect(apiSource).toContain("return apiFetch<AdminOperationsDashboard>");
   });
 
   it("adds operations card to admin dashboard", async () => {
