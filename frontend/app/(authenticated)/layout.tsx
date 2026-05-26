@@ -17,6 +17,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
 import { DemoBanner } from "@/components/demo-banner";
+import { ErrorState, LoadingState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 import { AuthUser, getCurrentUser } from "@/lib/auth";
 
@@ -25,6 +26,13 @@ const roleLabels: Record<AuthUser["role"], string> = {
   teacher: "Giáo viên",
   parent: "Phụ huynh",
   admin: "Quản trị",
+};
+
+const roleBoundaryCopy: Record<AuthUser["role"], string> = {
+  student: "Không gian riêng tư của em; chỉ chia sẻ theo xác nhận và quyền phù hợp.",
+  teacher: "Hỗ trợ học sinh theo liên kết được phép, tập trung SOS và không giám sát dữ liệu riêng tư thô.",
+  parent: "Đồng hành ở chế độ đọc tóm tắt được phép xem, không mở nội dung riêng tư thô của con.",
+  admin: "Chỉ vận hành metadata an toàn; không mở dữ liệu riêng tư thô, xuất dữ liệu, hoặc bảng xếp hạng nguy cơ.",
 };
 
 const roleNav: Array<{ role: AuthUser["role"]; href: string; label: string }> = [
@@ -104,11 +112,23 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   }
 
   if (isLoading) {
-    return <main className="min-h-screen bg-background px-4 py-10">Đang tải thông tin...</main>;
+    return (
+      <main className="min-h-screen bg-background px-4 py-10">
+        <div className="mx-auto max-w-3xl">
+          <LoadingState />
+        </div>
+      </main>
+    );
   }
 
   if (loadFailed || user === null) {
-    return <main className="min-h-screen bg-background px-4 py-10">Chưa đăng nhập.</main>;
+    return (
+      <main className="min-h-screen bg-background px-4 py-10">
+        <div className="mx-auto max-w-3xl">
+          <ErrorState title="Chưa đăng nhập." message="Hãy đăng nhập lại để vào cổng phù hợp với vai trò của bạn." />
+        </div>
+      </main>
+    );
   }
 
   const wrongRole = expectedRole !== null && user.role !== expectedRole;
@@ -131,57 +151,56 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
           <div className="min-w-0">
             <p className="text-label font-semibold uppercase tracking-[0.2em] text-accent">Peerlight AI</p>
             <p className="truncate text-body font-semibold">{user.full_name}</p>
-            <p className="text-label">{roleLabels[user.role]}</p>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
+              <StatusBadge tone="safe">{roleLabels[user.role]}</StatusBadge>
+              <p className="max-w-2xl text-label">{roleBoundaryCopy[user.role]}</p>
+            </div>
           </div>
           {!isStudentShell ? (
             <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label="Điều hướng vai trò">
-            <div className="flex min-w-max gap-2">
-              {navigationItems.map((item) => (
-                <Link
-                  key={item.role}
-                  href={item.href}
-                  className="flex min-h-11 shrink-0 items-center rounded-2xl px-4 text-label font-semibold text-[#12332E] hover:bg-secondary"
-                  aria-current={pathname === item.href ? "page" : undefined}
+              <div className="flex min-w-max gap-2">
+                {navigationItems.map((item) => (
+                  <Link
+                    key={item.role}
+                    href={item.href}
+                    className="flex min-h-11 shrink-0 items-center rounded-2xl px-4 text-label font-semibold text-[#12332E] hover:bg-secondary"
+                    aria-current={pathname === item.href ? "page" : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="min-h-11 shrink-0 rounded-2xl border border-[#CFE8E1] px-4 text-label font-semibold hover:border-accent hover:bg-secondary"
                 >
-                  {item.label}
-                </Link>
-              ))}
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="min-h-11 shrink-0 rounded-2xl border border-[#CFE8E1] px-4 text-label font-semibold hover:border-accent hover:bg-secondary"
-              >
-                Đăng xuất
-              </button>
-            </div>
-          </nav>
+                  Đăng xuất
+                </button>
+              </div>
+            </nav>
           ) : null}
         </div>
       </header>
 
-      <main id="main-content" className={isStudentShell ? "mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8" : "mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8"}>
+      <main id="main-content" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {privacyRedirectRequired ? (
-          <section className="rounded-3xl bg-white p-6 shadow-sm">
-            <h1 className="text-heading">Cần xác nhận quyền riêng tư trước khi vào cổng học sinh.</h1>
-            <p className="mt-3 text-body">
-              Peerlight AI đang chuyển em tới trang giải thích ai có thể xem thông tin của em. Nội dung học sinh sẽ chỉ mở
-              sau khi em xác nhận đã hiểu.
-            </p>
-          </section>
+          <PrivacyBoundaryCard
+            title="Cần xác nhận quyền riêng tư trước khi vào cổng học sinh."
+            description="Peerlight AI đang chuyển em tới trang giải thích ai có thể xem thông tin của em. Nội dung học sinh sẽ chỉ mở sau khi em xác nhận đã hiểu."
+          />
         ) : wrongRole ? (
-          <section className="rounded-3xl bg-white p-6 shadow-sm">
-            <h1 className="text-heading">Không thể mở cổng này với vai trò hiện tại.</h1>
-            <p className="mt-3 text-body">
-              Peerlight AI chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng
-              của bạn để tiếp tục hỗ trợ an toàn.
-            </p>
-            <Link
-              href={user.dashboard_route}
-              className="mt-5 inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
-            >
-              Đi tới cổng phù hợp
-            </Link>
-          </section>
+          <PrivacyBoundaryCard
+            title="Không thể mở cổng này với vai trò hiện tại."
+            description="Peerlight AI chỉ hiển thị dữ liệu trong phạm vi vai trò và liên kết được phân quyền. Hãy quay về đúng cổng của bạn để tiếp tục hỗ trợ an toàn."
+            actions={
+              <Link
+                href={user.dashboard_route}
+                className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white"
+              >
+                Đi tới cổng phù hợp
+              </Link>
+            }
+          />
         ) : (
           isStudentShell ? (
             <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
@@ -242,19 +261,42 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
                   </button>
                 </div>
               </aside>
-              <nav className="flex gap-2 overflow-x-auto rounded-3xl bg-white/90 p-3 shadow-sm ring-1 ring-[#D7EFE8] lg:hidden" aria-label="Điều hướng học sinh">
-                {studentNav.map((item) => (
-                  <Link key={item.href} href={item.href} className="min-w-max rounded-2xl px-4 py-2 text-label font-semibold no-underline hover:bg-secondary">
-                    {item.label}
-                  </Link>
-                ))}
-                <Link href="/student#peerlight-sos" className="min-w-max rounded-2xl px-4 py-2 text-label font-semibold text-red-700 no-underline hover:bg-red-50">
+              <nav
+                className="flex gap-2 overflow-x-auto rounded-3xl bg-white/90 p-3 shadow-sm ring-1 ring-[#D7EFE8] lg:hidden"
+                aria-label="Điều hướng học sinh"
+              >
+                {studentNav.map((item) => {
+                  const active = pathname === item.href || (item.href !== "/student" && pathname.startsWith(`${item.href}/`));
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`inline-flex min-h-11 min-w-max items-center rounded-2xl px-4 text-label font-semibold no-underline ${
+                        active ? "bg-accent text-white" : "hover:bg-secondary"
+                      }`}
+                      aria-current={active ? "page" : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+                <Link
+                  href="/student#peerlight-sos"
+                  className="inline-flex min-h-11 min-w-max items-center rounded-2xl px-4 text-label font-semibold text-red-700 no-underline hover:bg-red-50"
+                >
                   SOS
                 </Link>
-                <Link href="/student/notification-preferences" className="min-w-max rounded-2xl px-4 py-2 text-label font-semibold no-underline hover:bg-secondary">
+                <Link
+                  href="/student/notification-preferences"
+                  className="inline-flex min-h-11 min-w-max items-center rounded-2xl px-4 text-label font-semibold no-underline hover:bg-secondary"
+                >
                   Cài đặt
                 </Link>
-                <button type="button" onClick={handleLogout} className="min-w-max rounded-2xl px-4 py-2 text-label font-semibold hover:bg-secondary">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="inline-flex min-h-11 min-w-max items-center rounded-2xl px-4 text-label font-semibold hover:bg-secondary"
+                >
                   Đăng xuất
                 </button>
               </nav>
