@@ -24,6 +24,7 @@ import {
   snoozeMoodCheckInReminder,
   type MoodCheckInReminder,
 } from "@/lib/notification-preferences-api";
+import { safeInternalHref } from "@/lib/safe-navigation";
 import {
   createStudentSosAlert,
   listStudentSosAlerts,
@@ -63,6 +64,7 @@ export default function StudentDashboardPage() {
   const [sosSuccessMessage, setSosSuccessMessage] = useState<string | null>(null);
   const [moodReminder, setMoodReminder] = useState<MoodCheckInReminder | null>(null);
   const [reminderActionMessage, setReminderActionMessage] = useState<string | null>(null);
+  const [reminderActionError, setReminderActionError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
 
@@ -121,6 +123,16 @@ export default function StudentDashboardPage() {
     } finally {
       setIsSendingSos(false);
     }
+  }
+
+  function setReminderSuccess(message: string) {
+    setReminderActionError(false);
+    setReminderActionMessage(message);
+  }
+
+  function setReminderFailure() {
+    setReminderActionError(true);
+    setReminderActionMessage("Chưa cập nhật được nhắc nhở. Hãy thử lại.");
   }
 
   if (isLoading) {
@@ -185,19 +197,38 @@ export default function StudentDashboardPage() {
         <MoodReminderCard
           reminder={moodReminder}
           actionMessage={reminderActionMessage}
+          actionMessageTone={reminderActionError ? "error" : "status"}
           onDismiss={async () => {
-            const result = await dismissMoodCheckInReminder();
-            setMoodReminder(result.reminder);
-            setReminderActionMessage("Đã ẩn nhắc nhở. Peerlight AI không gửi thông báo cho người lớn và không tạo SOS.");
+            try {
+              const result = await dismissMoodCheckInReminder();
+              setMoodReminder(result.reminder);
+              setReminderSuccess("Đã ẩn nhắc nhở. Peerlight AI không gửi thông báo cho người lớn và không tạo SOS.");
+            } catch {
+              setReminderFailure();
+            }
           }}
           onSnooze={async () => {
-            const result = await snoozeMoodCheckInReminder(240);
-            setMoodReminder(result.reminder);
-            setReminderActionMessage("Đã nhắc lại sau. Việc tạm hoãn không bị xem là tín hiệu nguy cơ.");
+            try {
+              const result = await snoozeMoodCheckInReminder(240);
+              setMoodReminder(result.reminder);
+              setReminderSuccess("Đã nhắc lại sau. Việc tạm hoãn không bị xem là tín hiệu nguy cơ.");
+            } catch {
+              setReminderFailure();
+            }
           }}
           onOpen={async () => {
-            await openMoodCheckInReminder();
-            window.location.href = moodReminder.href;
+            const href = safeInternalHref(moodReminder.href);
+            if (!href) {
+              setReminderActionError(true);
+              setReminderActionMessage("Không mở được đường dẫn check-in an toàn. Hãy mở Check-in cảm xúc từ bảng điều khiển.");
+              return;
+            }
+            try {
+              await openMoodCheckInReminder();
+              window.location.assign(href);
+            } catch {
+              setReminderFailure();
+            }
           }}
         />
       ) : null}
@@ -337,12 +368,14 @@ export default function StudentDashboardPage() {
 function MoodReminderCard({
   reminder,
   actionMessage,
+  actionMessageTone,
   onDismiss,
   onSnooze,
   onOpen,
 }: {
   reminder: MoodCheckInReminder;
   actionMessage: string | null;
+  actionMessageTone: "status" | "error";
   onDismiss: () => Promise<void>;
   onSnooze: () => Promise<void>;
   onOpen: () => Promise<void>;
@@ -387,7 +420,14 @@ function MoodReminderCard({
           Cài đặt nhắc nhở
         </Link>
       </div>
-      {actionMessage ? <p role="status" className="mt-4 text-body text-accent">{actionMessage}</p> : null}
+      {actionMessage ? (
+        <p
+          role={actionMessageTone === "error" ? "alert" : "status"}
+          className={`mt-4 text-body ${actionMessageTone === "error" ? "text-red-700" : "text-accent"}`}
+        >
+          {actionMessage}
+        </p>
+      ) : null}
     </SurfaceCard>
   );
 }
@@ -398,7 +438,7 @@ function ChatEntryCard() {
       <p className="mt-3 text-body">Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.</p>
       <p className="mt-3 text-label">Peerlight AI không thay thế chuyên gia tư vấn hay bác sĩ.</p>
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/chat">
-        Mở trò chuyện
+        Trò chuyện với Peerlight AI
       </Link>
     </EntryCard>
   );
@@ -492,7 +532,7 @@ function WellbeingEntryCard({
     <EntryCard title={title} className="hover:-translate-y-0.5 hover:ring-[#D7EFE8]">
       <p className="mt-3 text-body">{body}</p>
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={href}>
-        Mở {title}
+        {title}
       </Link>
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={historyHref}>
         {historyLabel}

@@ -4,6 +4,7 @@ import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { EntryCard, PageHeader, PrivacyBoundaryCard, StatusBadge, SurfaceCard } from "@/components/ui-primitives";
+import { safeInternalHref } from "@/lib/safe-navigation";
 import { sosStatusLabels, type AdultSupportOverviewItem, type InAppNotification } from "@/lib/sos-api";
 
 export type AdultLinkedStudent = {
@@ -47,7 +48,8 @@ export function AdultStudentList({
   notifications = [],
 }: AdultStudentListProps) {
   const supportByStudent = new Map(supportOverview.map((item) => [item.student.id, item]));
-  const firstStudent = students[0];
+  const visibleStudents = students.filter((student) => supportByStudent.has(student.id));
+  const firstStudent = visibleStudents[0];
   const isParent = roleContext === "parent";
 
   return (
@@ -87,11 +89,11 @@ export function AdultStudentList({
         }
       />
       <NotificationList notifications={notifications} />
-      {students.length === 0 ? (
+      {visibleStudents.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
-          {students.map((student) => (
+          {visibleStudents.map((student) => (
             <EntryCard
               key={student.id}
               title={student.full_name}
@@ -163,21 +165,24 @@ function NotificationList({ notifications }: { notifications: InAppNotification[
         <p className="mt-3 text-body">Chưa có thông báo SOS mới từ học sinh được liên kết.</p>
       ) : (
         <div className="mt-4 space-y-3">
-          {notifications.slice(0, 5).map((notification) => (
-            <article key={notification.id} className="rounded-2xl border border-[#D7EFE8] p-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-semibold">{notification.title}</h3>
-                {notification.is_demo ? <DemoBadge /> : null}
-                {notification.read_at === null ? <StatusBadge tone="safe">Mới</StatusBadge> : null}
-              </div>
-              <p className="mt-2 text-body">{notification.body}</p>
-              {notification.href ? (
-                <Link className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent" href={notification.href}>
-                  Mở trạng thái SOS
-                </Link>
-              ) : null}
-            </article>
-          ))}
+          {notifications.slice(0, 5).map((notification) => {
+            const href = safeInternalHref(notification.href);
+            return (
+              <article key={notification.id} className="rounded-2xl border border-[#D7EFE8] p-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-semibold">{notification.title}</h3>
+                  {notification.is_demo ? <DemoBadge /> : null}
+                  {notification.read_at === null ? <StatusBadge tone="safe">Mới</StatusBadge> : null}
+                </div>
+                <p className="mt-2 text-body">{notification.body}</p>
+                {href ? (
+                  <Link className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent" href={href}>
+                    Mở trạng thái SOS
+                  </Link>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       )}
     </SurfaceCard>

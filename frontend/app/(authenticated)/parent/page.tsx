@@ -24,7 +24,7 @@ export default function ParentDashboardPage() {
 
     Promise.all([
       apiFetch<AdultLinkedStudent[]>("/api/parent/students"),
-      getParentSupportOverview().catch(() => []),
+      getParentSupportOverview(),
       getNotifications().catch(() => []),
     ])
       .then(([linkedStudents, overviewItems, notificationItems]) => {

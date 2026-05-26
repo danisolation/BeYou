@@ -118,6 +118,36 @@ const parentSupportOverview = [
   },
 ];
 
+const unsafeMoodReminder = {
+  due: true,
+  status_reason: "due",
+  title: "Nhắc check-in cảm xúc",
+  body: "Em có thể ghi nhanh trạng thái nếu muốn.",
+  href: "https://example.test/student/mood-check-ins",
+  generated_at: "2026-05-26T10:00:00Z",
+  last_checkin_at: null,
+  next_due_at: "2026-05-27T10:00:00Z",
+  snoozed_until: null,
+  preference: {
+    id: "pref-1",
+    student_id: "student-1",
+    in_app_reminders_enabled: true,
+    mood_checkin_reminders_enabled: true,
+    reminder_cadence: "daily",
+    allowed_channels: ["in_app"],
+    consent_version: "2026-05-20",
+    consented_at: "2026-05-20T00:00:00Z",
+    quiet_hours_start: null,
+    quiet_hours_end: null,
+    timezone: "Asia/Ho_Chi_Minh",
+    paused_until: null,
+    pause_reason_code: null,
+    channel_boundaries: [],
+    updated_at: "2026-05-26T10:00:00Z",
+    is_demo: true,
+  },
+};
+
 const unsafeControlRegex = /Export|Xuất|Download|Tải xuống|reset|drilldown|risk leaderboard|xếp hạng nguy cơ|Chi tiết học sinh|raw audit/;
 const rawAdultAdminLabelRegex = /raw self-check|private notes|chat transcripts|provider claims|request bodies|free-text access reasons/i;
 const PHASE35_REQUIREMENTS = ["ROLE-01", "ROLE-02", "ROLE-03", "ROLE-04"];
@@ -199,6 +229,46 @@ describe("Phase 35 role dashboard consistency regression", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/sos-1");
     expect(document.body.textContent ?? "").not.toMatch(rawAdultAdminLabelRegex);
+  });
+
+  it("rejects unsafe API-provided navigation hrefs on student and adult dashboards", async () => {
+    mockFetch({
+      "/api/student/profile": studentProfile,
+      "/api/student/sos-alerts": [],
+      "/api/student/reminders/mood-check-in": unsafeMoodReminder,
+    });
+
+    const { unmount } = render(<StudentDashboardPage />);
+
+    expect(await screen.findByText("Nhắc check-in cảm xúc")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Mở check-in" }));
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Không mở được đường dẫn check-in an toàn. Hãy mở Check-in cảm xúc từ bảng điều khiển.",
+    );
+
+    unmount();
+    mockFetch({
+      "/api/teacher/students": linkedStudents,
+      "/api/teacher/support-overview": teacherSupportOverview,
+      "/api/notifications": [
+        {
+          id: "notification-unsafe",
+          resource_type: "sos_alert",
+          resource_id: "sos-unsafe",
+          title: "Tín hiệu SOS mới",
+          body: "Có tín hiệu hỗ trợ mới từ học sinh được liên kết.",
+          href: "javascript:alert(1)",
+          read_at: null,
+          created_at: "2026-05-26T10:00:00Z",
+          is_demo: true,
+        },
+      ],
+    });
+
+    render(<TeacherDashboardPage />);
+
+    expect(await screen.findByText("Tín hiệu SOS mới")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Mở trạng thái SOS" })).not.toBeInTheDocument();
   });
 
   it("renders Parent read-only SOS posture without Teacher update wording as parent copy", async () => {

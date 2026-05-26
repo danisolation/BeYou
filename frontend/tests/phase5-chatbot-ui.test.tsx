@@ -233,8 +233,9 @@ describe("Phase 5 admin chatbot safety UI", () => {
     expect(screen.getByText("Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.")).toBeInTheDocument();
     expect(screen.queryByText(/api_key|admin-secret-key|FREEMODEL_API_KEY/i)).not.toBeInTheDocument();
 
-    await userEvent.clear(screen.getByLabelText("Từ khóa nguy cơ cao"));
-    await userEvent.type(screen.getByLabelText("Từ khóa nguy cơ cao"), "tự tử\nkhông muốn sống\nbị đe dọa");
+    const highRiskKeywords = await screen.findByLabelText("Từ khóa nguy cơ cao");
+    await userEvent.clear(highRiskKeywords);
+    await userEvent.type(highRiskKeywords, "tự tử\nkhông muốn sống\nbị đe dọa");
     await userEvent.click(screen.getByRole("button", { name: "Lưu cấu hình an toàn" }));
 
     await waitFor(() => expect(screen.getByText("Đã lưu cấu hình an toàn. Guardrail backend vẫn luôn bật.")).toBeInTheDocument());

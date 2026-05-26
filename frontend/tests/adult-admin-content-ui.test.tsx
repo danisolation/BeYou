@@ -81,6 +81,25 @@ const adultSummary = {
   ],
 };
 
+const supportOverview = [
+  {
+    student: {
+      id: "student-1",
+      full_name: "Nguyễn An Demo",
+      school: "Trường THPT BeYou Demo",
+      class_name: "10A1",
+    },
+    latest_self_check_summary: {
+      support_suggestion: "Hỏi em cần hỗ trợ gì và nhắc em chọn người lớn tin tưởng.",
+    },
+    latest_sos_alert: null,
+    open_sos_count: 0,
+    warning_group: "can_quan_tam",
+    warning_group_label: "Cần quan tâm",
+    is_demo: true,
+  },
+];
+
 describe("adult summary-only UI", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
@@ -111,6 +130,9 @@ describe("adult summary-only UI", () => {
     mockFetch({
       "/api/teacher/students": [linkedStudent],
       "/api/parent/students": [linkedStudent],
+      "/api/teacher/support-overview": supportOverview,
+      "/api/parent/support-overview": supportOverview,
+      "/api/notifications": [],
     });
 
     const { rerender } = render(<TeacherDashboardPage />);

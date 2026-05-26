@@ -31,6 +31,26 @@ const linkedStudent = {
   is_demo: true,
 };
 
+const supportOverview = [
+  {
+    student: {
+      id: "student-1",
+      full_name: "Nguyễn An Demo",
+      school: "Trường THPT BeYou Demo",
+      class_name: "10A1",
+    },
+    latest_self_check_summary: null,
+    latest_sos_alert: {
+      id: "sos-1",
+      current_status: "sent",
+    },
+    open_sos_count: 1,
+    warning_group: "can_quan_tam",
+    warning_group_label: "Cần quan tâm",
+    is_demo: true,
+  },
+];
+
 const studentProfile = {
   id: "student-1",
   full_name: "Nguyễn An Demo",
@@ -120,6 +140,9 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
       "/api/student/sos-alerts": [],
       "/api/teacher/students": [linkedStudent],
       "/api/parent/students": [{ ...linkedStudent, relationship_type: "parent" }],
+      "/api/teacher/support-overview": supportOverview,
+      "/api/parent/support-overview": supportOverview,
+      "/api/notifications": [],
       "/api/admin/users": [{ id: "admin-1" }],
       "/api/admin/links": [{ id: "link-1" }],
     });

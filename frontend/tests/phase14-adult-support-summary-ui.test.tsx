@@ -53,6 +53,25 @@ const parentSummary = {
   },
 };
 
+const supportOverview = [
+  {
+    student: {
+      id: "student-1",
+      full_name: "Nguyễn An Demo",
+      school: "Trường THPT BeYou Demo",
+      class_name: "10A1",
+    },
+    latest_self_check_summary: {
+      support_suggestion: "Hỏi em cần được hỗ trợ thế nào hôm nay.",
+    },
+    latest_sos_alert: null,
+    open_sos_count: 0,
+    warning_group: "can_quan_tam",
+    warning_group_label: "Cần hỗ trợ sớm",
+    is_demo: true,
+  },
+];
+
 function mockFetch() {
   const fetchMock = vi.fn((url: string) => {
     const path = new URL(url).pathname;
@@ -91,7 +110,10 @@ function mockFetch() {
         ),
       );
     }
-    if (path === "/api/teacher/support-overview" || path === "/api/notifications") {
+    if (path === "/api/teacher/support-overview") {
+      return Promise.resolve(new Response(JSON.stringify(supportOverview), { status: 200, headers: { "Content-Type": "application/json" } }));
+    }
+    if (path === "/api/notifications") {
       return Promise.resolve(new Response(JSON.stringify([]), { status: 200, headers: { "Content-Type": "application/json" } }));
     }
     return Promise.resolve(new Response(JSON.stringify({ detail: "not found" }), { status: 404 }));

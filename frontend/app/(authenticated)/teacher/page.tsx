@@ -24,7 +24,7 @@ export default function TeacherDashboardPage() {
 
     Promise.all([
       apiFetch<AdultLinkedStudent[]>("/api/teacher/students"),
-      getTeacherSupportOverview().catch(() => []),
+      getTeacherSupportOverview(),
       getNotifications().catch(() => []),
     ])
       .then(([linkedStudents, overviewItems, notificationItems]) => {
