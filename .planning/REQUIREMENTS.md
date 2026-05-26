@@ -43,12 +43,12 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Privacy, Security & Regression Gates
 
-- [ ] **QA-01**: Backend tests verify runtime mode validation, production readiness success/failure, demo seed blocking/no-op behavior, deployment config checks, and secret masking.
-- [ ] **QA-02**: Deploy guard and smoke tests verify Vercel/Render config expectations, credentialed CORS, cookie contract, demo smoke, and production-pilot smoke behavior.
-- [ ] **QA-03**: Auth/identity tests verify provider metadata, identity mapping safety, disabled/deprovisioned account denial, session auth-method metadata, privacy acknowledgement routing, and no browser token storage.
-- [ ] **QA-04**: Cross-role privacy tests verify identity and production changes do not weaken SOS-only adult visibility, active relationship checks, reason gates, selective mood-note sharing, or student-owned private data.
-- [ ] **QA-05**: Operations and readiness tests or grep gates verify metadata-only responses and reject raw identifiers, emails, notes, transcripts, answers, secrets, free-text reasons, exports, and risk leaderboards.
-- [ ] **QA-06**: Full backend tests, backend lint, frontend tests, frontend lint, frontend build, documentation checks, and relevant demo/pilot smoke commands pass or record explicit accepted external constraints.
+- [x] **QA-01**: Backend tests verify runtime mode validation, production readiness success/failure, demo seed blocking/no-op behavior, deployment config checks, and secret masking.
+- [x] **QA-02**: Deploy guard and smoke tests verify Vercel/Render config expectations, credentialed CORS, cookie contract, demo smoke, and production-pilot smoke behavior.
+- [x] **QA-03**: Auth/identity tests verify provider metadata, identity mapping safety, disabled/deprovisioned account denial, session auth-method metadata, privacy acknowledgement routing, and no browser token storage.
+- [x] **QA-04**: Cross-role privacy tests verify identity and production changes do not weaken SOS-only adult visibility, active relationship checks, reason gates, selective mood-note sharing, or student-owned private data.
+- [x] **QA-05**: Operations and readiness tests or grep gates verify metadata-only responses and reject raw identifiers, emails, notes, transcripts, answers, secrets, free-text reasons, exports, and risk leaderboards.
+- [x] **QA-06**: Full backend tests, backend lint, frontend tests, frontend lint, frontend build, documentation checks, and relevant demo/pilot smoke commands pass or record explicit accepted external constraints.
 
 ## Future Requirements
 
@@ -111,19 +111,19 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | PILOT-03 | Phase 31 | Complete |
 | PILOT-04 | Phase 31 | Complete |
 | PILOT-05 | Phase 31 | Complete |
-| QA-01 | Phase 32 | Pending |
-| QA-02 | Phase 32 | Pending |
-| QA-03 | Phase 32 | Pending |
-| QA-04 | Phase 32 | Pending |
-| QA-05 | Phase 32 | Pending |
-| QA-06 | Phase 32 | Pending |
+| QA-01 | Phase 32 | Complete |
+| QA-02 | Phase 32 | Complete |
+| QA-03 | Phase 32 | Complete |
+| QA-04 | Phase 32 | Complete |
+| QA-05 | Phase 32 | Complete |
+| QA-06 | Phase 32 | Complete (live pilot smoke constrained) |
 
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 22
+- Complete: 28
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-26 after Phase 32 Plan 32-04 docs gates*
+*Last updated: 2026-05-26 after Phase 32 verification*

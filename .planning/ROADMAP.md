@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 22/28 complete; Phases 28-31 complete; Phase 32 executing
+**Coverage:** 28/28 v1.5 requirements mapped; 28/28 complete; Phases 28-32 complete
 
 ## Completed Milestones
 
@@ -29,7 +29,7 @@
 - [x] Phase 29: Deployment Guardrails & Smoke Profiles (completed 2026-05-25)
 - [x] Phase 30: Identity Foundation & Auth Contracts (completed 2026-05-26)
 - [x] Phase 31: School Pilot Operations & Safe Launch (completed 2026-05-26)
-- [ ] Phase 32: Privacy, Security & Release Gates
+- [x] Phase 32: Privacy, Security & Release Gates (completed 2026-05-26, constrained pass)
 
 ## Phase Details
 
@@ -116,7 +116,7 @@ Plans:
 **Depends on:** Phases 28-31
 **Requirements:** QA-01, QA-02, QA-03, QA-04, QA-05, QA-06
 **UI hint:** yes
-**Status:** Executing
+**Status:** Complete (constrained pass)
 
 **Success criteria:**
 1. Backend tests verify runtime mode validation, readiness pass/fail behavior, seed blocking, deployment checks, and secret masking.
@@ -126,14 +126,14 @@ Plans:
 5. Operations/readiness tests or grep gates reject raw identifiers, emails, notes, transcripts, answers, secrets, free-text reasons, exports, and risk leaderboards.
 6. Backend tests/lint, frontend tests/lint/build, docs checks, and relevant smoke commands pass or document explicit accepted external constraints.
 
-**Plans:** 4/5 complete
+**Plans:** 5/5 complete
 
 Plans:
 - [x] 32-01-PLAN.md — Backend runtime/readiness, identity/privacy, and operations metadata release gates.
 - [x] 32-02-PLAN.md — Node deployment/smoke release-gate tests and `test:release-gates` script.
 - [x] 32-03-PLAN.md — Frontend no-token auth, privacy routing, and operations UI redline gates.
 - [x] 32-04-PLAN.md — README release-gate command matrix, live smoke constraints, and privacy grep guidance.
-- [ ] 32-05-PLAN.md — Final Phase 32 verification evidence and release decision.
+- [x] 32-05-PLAN.md — Final Phase 32 verification evidence and release decision.
 
 ## Traceability
 
@@ -161,17 +161,17 @@ Plans:
 | PILOT-03 | Phase 31 | Complete |
 | PILOT-04 | Phase 31 | Complete |
 | PILOT-05 | Phase 31 | Complete |
-| QA-01 | Phase 32 | Pending |
-| QA-02 | Phase 32 | Pending |
-| QA-03 | Phase 32 | Pending |
-| QA-04 | Phase 32 | Pending |
-| QA-05 | Phase 32 | Pending |
-| QA-06 | Phase 32 | Pending |
+| QA-01 | Phase 32 | Complete |
+| QA-02 | Phase 32 | Complete |
+| QA-03 | Phase 32 | Complete |
+| QA-04 | Phase 32 | Complete |
+| QA-05 | Phase 32 | Complete |
+| QA-06 | Phase 32 | Complete (live pilot smoke constrained) |
 
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 22
+- Complete: 28
 - Unmapped: 0
 
 ## Assumptions
@@ -182,4 +182,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 32 Plan 32-04*
+*Last updated: 2026-05-26 after Phase 32 verification*

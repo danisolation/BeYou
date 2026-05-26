@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 executing with 4/5 plans complete
-**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 4/5 plans executed
-**Current execution:** Phase 32 Privacy, Security & Release Gates is executing; Plan 32-05 final verification evidence is next
-**Latest verification:** Phase 32 Plan 32-04 README release-gate docs passed required string checks and Node release gates
+**Milestone status:** v1.5 Production Pilot Readiness & Identity complete with Phase 32 constrained pass; ready for milestone completion workflow
+**Scope shipped:** 32 total phases; v1.5 Phases 28-32 have 22/22 plans executed and 28/28 requirements complete
+**Current execution:** Phase 32 Privacy, Security & Release Gates is complete; next action is complete/archive v1.5 milestone
+**Latest verification:** Phase 32 final verification constrained pass: backend `189 passed`, backend ruff passed, frontend `111 passed`, frontend lint/build passed, Node release gates passed, guardrail passed, public demo smoke `16/16`, live pilot smoke constrained
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -45,6 +45,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 32 Plan 32-02 verification: passed, including deterministic Node release gates, deploy guardrail tests, and smoke profile tests
 - Phase 32 Plan 32-03 verification: passed, including frontend no-token/privacy/operations release gates, related UI regressions, and frontend lint
 - Phase 32 Plan 32-04 verification: passed, including README release-gate matrix, live smoke constraints, privacy grep guidance, and Node release gates
+- Phase 32 final verification: constrained pass, including full backend/frontend/lint/build/docs/guard/demo-smoke gates; live `smoke:pilot` remains constrained until safe production-pilot URLs/configuration and readiness `ready` exist
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -152,10 +153,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Node Phase 32 release gates now prove production-pilot deploy guardrails, demo/pilot smoke split, metadata-only guardrail output, and explicit live pilot smoke constraints for QA-02 and QA-06.
 - [x] Frontend Phase 32 release gates now prove no-token auth, privacy acknowledgement routing, and metadata-only operations DOM behavior for QA-03, QA-04, and QA-05.
 - [x] README Phase 32 release guidance now maps QA-01..QA-06 to exact commands and documents live `smoke:pilot` constraints plus privacy grep gates.
+- [x] Final Phase 32 verification records deterministic gates passed, public demo smoke passed, and live production-pilot smoke constrained with no high-severity deterministic privacy/security failures.
 
 ### Active in v1.5
 
-- [ ] Execute Phase 32 release gates so production, identity, operations, and privacy boundaries are proven before v1.5 ships.
+- [x] Execute Phase 32 release gates so production, identity, operations, and privacy boundaries are proven before v1.5 ships.
 
 ### Out of Scope
 
@@ -255,6 +257,7 @@ Roles:
 | Keep live pilot smoke constraints explicit | Phase 32 Plan 32-02 adds deterministic Node gates and requires real safe pilot URLs/readiness before live `smoke:pilot` can count as evidence | Validated in Phase 32 |
 | Keep operations UI as a final redaction layer | Phase 32 Plan 32-03 filters unsafe audit metadata before rendering the admin operations DOM | Validated in Phase 32 |
 | Preserve release docs as support-not-surveillance guidance | Phase 32 Plan 32-04 documents release commands, constrained live smoke, and privacy grep gates without normalizing raw exports/reset/risk drilldowns | Validated in Phase 32 |
+| Treat unavailable pilot smoke as constrained, not passed | Phase 32 final verification passed deterministic gates and public demo smoke, while recording live `smoke:pilot` as constrained until safe pilot config/readiness exists | Validated in Phase 32 |
 
 ## Known Tech Debt
 
@@ -284,4 +287,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after Phase 32 Plan 32-04*
+*Last updated: 2026-05-26 after Phase 32 verification*

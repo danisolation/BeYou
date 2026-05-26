@@ -50,6 +50,16 @@ const studentProfile = {
   ],
 };
 
+const demoCapabilities = {
+  demo_login_enabled: true,
+  public_demo_entry_enabled: true,
+  email_password_enabled: true,
+  provider_login_enabled: false,
+  provider_label: null,
+  provider_mode: null,
+  production_pilot: false,
+};
+
 function setViewport(width: number, height: number) {
   Object.defineProperty(window, "innerWidth", { configurable: true, value: width });
   Object.defineProperty(window, "innerHeight", { configurable: true, value: height });
@@ -78,7 +88,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     cleanup();
   });
 
-  it.each(viewports)("keeps public role entry accessible at $label width", ({ width, height }) => {
+  it.each(viewports)("keeps public role entry accessible at $label width", async ({ width, height }) => {
     setViewport(width, height);
 
     render(<HomePage />);
@@ -91,10 +101,11 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     expect(screen.getByRole("button", { name: /Vào vai Quản trị/ })).toBeEnabled();
 
     cleanup();
+    mockFetch({ "/api/auth/capabilities": demoCapabilities });
     render(<LoginPage />);
 
     expect(screen.getByText("Chào mừng đến với Peerlight AI")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Học sinh" })).toBeEnabled();
+    expect(await screen.findByRole("button", { name: "Học sinh" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Giáo viên" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Phụ huynh" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Quản trị" })).toBeEnabled();
