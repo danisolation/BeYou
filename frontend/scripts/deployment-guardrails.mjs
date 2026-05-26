@@ -4,7 +4,16 @@ import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
 
 const VALID_PROFILES = new Set(["public_demo", "production_pilot"]);
-const SECRET_LABELS = ["DATABASE_URL", "SESSION_COOKIE_NAME", "SMTP_PASSWORD", "FREEMODEL_API_KEY"];
+const SECRET_LABELS = [
+  "DATABASE_URL",
+  "SESSION_COOKIE_NAME",
+  "SMTP_PASSWORD",
+  "FREEMODEL_API_KEY",
+  "client_secret",
+  "access_token",
+  "refresh_token",
+  "id_token",
+];
 const OVERRIDE_ENV_KEYS = {
   BEYOU_RENDER_RUNTIME_MODE: "RUNTIME_MODE",
   BEYOU_RENDER_ALLOW_DEMO_SEED: "ALLOW_DEMO_SEED",
@@ -444,8 +453,9 @@ function sanitizeText(value) {
   sanitized = sanitized.replace(/\bbeyou_session\b/g, "[redacted-cookie]");
 
   for (const label of SECRET_LABELS) {
-    sanitized = sanitized.replace(new RegExp(`\\b${label}\\b`, "g"), "[redacted-env]");
+    sanitized = sanitized.replace(new RegExp(`\\b${label}\\b`, "gi"), "[redacted-env]");
   }
+  sanitized = sanitized.replace(/\beyJ[A-Za-z0-9_-]{10,}\b/g, "[redacted-token]");
 
   return sanitized;
 }

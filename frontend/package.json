@@ -8,6 +8,7 @@
     "test": "vitest run",
     "guard:deploy": "node scripts/deployment-guardrails.mjs",
     "test:deploy-guardrails": "node --test scripts/deployment-guardrails.test.mjs",
+    "test:release-gates": "node --test scripts/release-gates.test.mjs",
     "test:smoke-profiles": "node --test scripts/smoke-profiles.test.mjs",
     "smoke:demo": "node scripts/demo-smoke.mjs",
     "smoke:pilot": "node scripts/pilot-smoke.mjs",

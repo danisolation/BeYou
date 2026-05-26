@@ -126,11 +126,11 @@ Plans:
 5. Operations/readiness tests or grep gates reject raw identifiers, emails, notes, transcripts, answers, secrets, free-text reasons, exports, and risk leaderboards.
 6. Backend tests/lint, frontend tests/lint/build, docs checks, and relevant smoke commands pass or document explicit accepted external constraints.
 
-**Plans:** 1/5 complete
+**Plans:** 2/5 complete
 
 Plans:
 - [x] 32-01-PLAN.md — Backend runtime/readiness, identity/privacy, and operations metadata release gates.
-- [ ] 32-02-PLAN.md — Node deployment/smoke release-gate tests and `test:release-gates` script.
+- [x] 32-02-PLAN.md — Node deployment/smoke release-gate tests and `test:release-gates` script.
 - [ ] 32-03-PLAN.md — Frontend no-token auth, privacy routing, and operations UI redline gates.
 - [ ] 32-04-PLAN.md — README release-gate command matrix, live smoke constraints, and privacy grep guidance.
 - [ ] 32-05-PLAN.md — Final Phase 32 verification evidence and release decision.
@@ -182,4 +182,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 32 Plan 32-01*
+*Last updated: 2026-05-26 after Phase 32 Plan 32-02*
