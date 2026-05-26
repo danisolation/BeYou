@@ -235,11 +235,100 @@ def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
         ALLOW_DEMO_LOGIN=False,
         CHAT_PROVIDER="fallback",
         SOS_EMAIL_PROVIDER="disabled",
+        AUTH_PROVIDER_ENABLED=True,
+        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
+        AUTH_PROVIDER_MODE="pilot",
+        AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
     )
 
     checks = evaluate_static_readiness_checks(settings)
 
     assert {check.status for check in checks} == {"pass"}
+
+
+def test_auth_provider_settings_accept_safe_metadata_only() -> None:
+    settings = Settings(
+        AUTH_PROVIDER_ENABLED=True,
+        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
+        AUTH_PROVIDER_MODE="pilot",
+        AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
+    )
+
+    assert settings.auth_provider_enabled is True
+    assert settings.auth_provider_key == "school_sso"
+    assert settings.auth_provider_label == "Dang nhap truong pilot"
+    assert settings.auth_provider_mode == "pilot"
+    assert settings.auth_provider_last_check_status == "san sang"
+
+
+def test_auth_provider_settings_reject_raw_domains_and_secret_like_values() -> None:
+    cases = [
+        ("AUTH_PROVIDER_KEY", "school.example"),
+        ("AUTH_PROVIDER_KEY", "login.school.edu"),
+        ("AUTH_PROVIDER_KEY", "client_secret"),
+        ("AUTH_PROVIDER_KEY", "issuer_url"),
+        ("AUTH_PROVIDER_KEY", "access_token"),
+        ("AUTH_PROVIDER_MODE", "school.example"),
+        ("AUTH_PROVIDER_MODE", "login.school.edu"),
+        ("AUTH_PROVIDER_MODE", "callback_url"),
+        ("AUTH_PROVIDER_MODE", "refresh_token"),
+        ("AUTH_PROVIDER_MODE", "id_token"),
+        ("AUTH_PROVIDER_LABEL", "school.example"),
+        ("AUTH_PROVIDER_LABEL", "login.school.edu"),
+        ("AUTH_PROVIDER_LABEL", "student@example.edu"),
+        ("AUTH_PROVIDER_LABEL", "client_id abc"),
+        ("AUTH_PROVIDER_LABEL", "issuer_url https://login.school.edu"),
+        ("AUTH_PROVIDER_LAST_CHECK_STATUS", "school.example"),
+        ("AUTH_PROVIDER_LAST_CHECK_STATUS", "login.school.edu"),
+        ("AUTH_PROVIDER_LAST_CHECK_STATUS", "callback_url https://pilot.example/callback"),
+        ("AUTH_PROVIDER_LAST_CHECK_STATUS", "access_token present"),
+        ("AUTH_PROVIDER_LAST_CHECK_STATUS", "$argon2id$v=19$m=65536"),
+    ]
+
+    for field_name, raw_value in cases:
+        try:
+            Settings(**{field_name: raw_value})
+        except ValidationError:
+            continue
+
+        raise AssertionError(f"{field_name} accepted unsafe provider metadata: {raw_value}")
+
+
+def test_identity_configuration_reflects_safe_auth_provider_metadata() -> None:
+    settings = Settings(
+        RUNTIME_MODE="production_pilot",
+        ENVIRONMENT="production",
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_SAMESITE="none",
+        FRONTEND_ORIGIN="https://pilot.example",
+        DATABASE_URL=SAFE_DATABASE_URL,
+        ALLOW_DEMO_SEED=False,
+        ALLOW_DEMO_LOGIN=False,
+        CHAT_PROVIDER="fallback",
+        SOS_EMAIL_PROVIDER="disabled",
+        AUTH_PROVIDER_ENABLED=True,
+        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
+        AUTH_PROVIDER_MODE="pilot",
+        AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
+    )
+
+    checks = evaluate_static_readiness_checks(settings)
+    by_key = {check.key: check for check in checks}
+    rendered = "\n".join(check.model_dump_json() for check in checks)
+
+    assert by_key["identity_configuration"].status == "pass"
+    assert "auth_provider_enabled" not in rendered
+    assert "client_secret" not in rendered
+    assert "issuer_url" not in rendered
+    assert "callback_url" not in rendered
+    assert "access_token" not in rendered
+    assert "refresh_token" not in rendered
+    assert "id_token" not in rendered
+    assert "school.example" not in rendered
+    assert "login.school.edu" not in rendered
 
 
 def test_production_pilot_readiness_flags_smtp_placeholder_credentials() -> None:
