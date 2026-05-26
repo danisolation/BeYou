@@ -343,7 +343,7 @@ class StudentNotificationPreference(Base):
     __tablename__ = "student_notification_preferences"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     in_app_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     mood_checkin_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     reminder_cadence: Mapped[str] = mapped_column(String(32), default=ReminderCadence.WEEKLY.value, nullable=False)
@@ -362,6 +362,8 @@ class StudentNotificationPreference(Base):
     )
 
     __table_args__ = (
+        UniqueConstraint("student_id", name="uq_student_notification_preferences_student_id"),
+        Index("ix_student_notification_preferences_student_id", "student_id"),
         Index("ix_student_notification_preferences_is_demo", "is_demo"),
         Index("ix_student_notification_preferences_paused_until", "paused_until"),
     )
