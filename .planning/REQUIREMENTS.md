@@ -10,9 +10,9 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 ### UI Consistency
 
 - [x] **UIC-01**: The app has a cross-role UI inventory that identifies drift in shell, navigation, spacing, cards, tables, forms, loading, error, empty, responsive, and accessibility patterns across Student, Teacher, Parent, and Admin surfaces.
-- [ ] **UIC-02**: Shared lightweight UI primitives exist for page headers, sections, cards, status badges, responsive table wrappers, loading states, error states, and empty states without importing role-specific business logic.
-- [ ] **UIC-03**: Student, Teacher, Parent, and Admin screens keep role-specific privacy boundary copy while using consistent Peerlight AI visual rhythm and Vietnamese support tone.
-- [ ] **UIC-04**: Cross-role UI changes preserve responsive behavior, keyboard focus, skip-link behavior, accessible status/error announcements, and SOS/high-risk color semantics.
+- [x] **UIC-02**: Shared lightweight UI primitives exist for page headers, sections, cards, status badges, responsive table wrappers, loading states, error states, and empty states without importing role-specific business logic.
+- [x] **UIC-03**: Student, Teacher, Parent, and Admin screens keep role-specific privacy boundary copy while using consistent Peerlight AI visual rhythm and Vietnamese support tone.
+- [x] **UIC-04**: Cross-role UI changes preserve responsive behavior, keyboard focus, skip-link behavior, accessible status/error announcements, and SOS/high-risk color semantics.
 
 ### Role Dashboards
 
@@ -92,9 +92,9 @@ Deferred to future milestones, not in v1.6 scope.
 | Requirement | Phase | Status |
 |---|---|---|
 | UIC-01 | Phase 33 | Complete |
-| UIC-02 | Phase 34 | Pending |
-| UIC-03 | Phase 34 | Pending |
-| UIC-04 | Phase 34 | Pending |
+| UIC-02 | Phase 34 | Complete |
+| UIC-03 | Phase 34 | Complete |
+| UIC-04 | Phase 34 | Complete |
 | ROLE-01 | Phase 35 | Pending |
 | ROLE-02 | Phase 35 | Pending |
 | ROLE-03 | Phase 35 | Pending |
