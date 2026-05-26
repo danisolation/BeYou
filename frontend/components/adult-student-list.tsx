@@ -3,7 +3,7 @@ import Link from "next/link";
 import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
-import { EntryCard, PageHeader, StatusBadge, SurfaceCard } from "@/components/ui-primitives";
+import { EntryCard, PageHeader, PrivacyBoundaryCard, StatusBadge, SurfaceCard } from "@/components/ui-primitives";
 import { sosStatusLabels, type AdultSupportOverviewItem, type InAppNotification } from "@/lib/sos-api";
 
 export type AdultLinkedStudent = {
@@ -51,7 +51,7 @@ export function AdultStudentList({
   const isParent = roleContext === "parent";
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <PageHeader
         eyebrow={isParent ? "Vai trò phụ huynh" : "Vai trò giáo viên"}
         title={title}
@@ -137,22 +137,21 @@ function AdultPrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "p
   const isParent = roleContext === "parent";
 
   return (
-    <SurfaceCard>
-      <h2 className="text-heading">
-        {isParent ? "Ranh giới hỗ trợ của phụ huynh" : "Ranh giới hỗ trợ của giáo viên"}
-      </h2>
-      <p className="mt-3 text-body">
-        {isParent
-          ? "Phụ huynh chỉ xem thông tin của con đã được liên kết: tóm tắt hỗ trợ, trạng thái SOS và gợi ý cần thiết để đồng hành."
-          : "Giáo viên chỉ xem học sinh được liên kết: tóm tắt hỗ trợ, trạng thái SOS và gợi ý cần thiết để phối hợp chăm sóc."}
-      </p>
+    <PrivacyBoundaryCard
+      title={isParent ? "Ranh giới hỗ trợ của phụ huynh" : "Ranh giới hỗ trợ của giáo viên"}
+      description={
+        isParent
+          ? "Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên."
+          : "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát."
+      }
+    >
       <p className="mt-3 text-body">
         Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
       </p>
       <p className="mt-3 text-label">
         Hãy dùng các tóm tắt này để mở lời hỗ trợ, không để giám sát, xếp hạng hoặc tạo áp lực cho học sinh.
       </p>
-    </SurfaceCard>
+    </PrivacyBoundaryCard>
   );
 }
 
