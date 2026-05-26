@@ -63,6 +63,28 @@ export type ConnectivitySummary = {
   credentialed_cors_methods: string[];
 };
 
+export type AuthProviderReadinessSummary = {
+  enabled: boolean;
+  provider_key: string;
+  provider_label: string;
+  mode: string;
+  status: "pass" | "warn" | "fail";
+  last_check_status: string | null;
+  remediation: string | null;
+};
+
+export type IdentityMappingOperationsSummary = {
+  by_status: OperationCountBucket[];
+  pending_review_count: number;
+  disabled_count: number;
+  deprovisioned_count: number;
+};
+
+export type SessionAuthOperationsSummary = {
+  by_auth_method: OperationCountBucket[];
+  by_provider: OperationCountBucket[];
+};
+
 export type ProductionSmokeChecklistItem = {
   key: string;
   label: string;
@@ -138,6 +160,9 @@ export type AdminOperationsDashboard = {
   };
   v1_2_audit?: OperationCountBucket[];
   v1_4_audit?: OperationCountBucket[];
+  auth_provider?: AuthProviderReadinessSummary | null;
+  identity_mappings?: IdentityMappingOperationsSummary | null;
+  session_auth?: SessionAuthOperationsSummary | null;
   audit: {
     total_matching: number;
     filters: {
