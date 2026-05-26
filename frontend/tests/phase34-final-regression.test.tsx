@@ -5,7 +5,9 @@ import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AdminDashboardPage from "@/app/(authenticated)/admin/page";
+import ParentDashboardPage from "@/app/(authenticated)/parent/page";
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
+import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
 
 function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
@@ -18,6 +20,22 @@ function mockFetch(responses: Record<string, unknown>) {
     return Promise.resolve(
       new Response(JSON.stringify(body), {
         status: body === undefined ? 404 : 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+  });
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+}
+
+function mockFetchStatus(statusByPath: Record<string, number>, responses: Record<string, unknown> = {}) {
+  const fetchMock = vi.fn((url: string) => {
+    const path = new URL(url).pathname;
+    const status = statusByPath[path] ?? 200;
+    const body = responses[path] ?? (status >= 400 ? { detail: "unavailable" } : []);
+    return Promise.resolve(
+      new Response(JSON.stringify(body), {
+        status,
         headers: { "Content-Type": "application/json" },
       }),
     );
@@ -68,6 +86,29 @@ describe("Phase 34 final UI regression", () => {
 
     expect(screen.getByText("Xác nhận gửi tín hiệu hỗ trợ")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ở lại trang này" })).toBeInTheDocument();
+  });
+
+  it("renders explicit error states when primary dashboard loads fail", async () => {
+    mockFetchStatus({
+      "/api/student/profile": 500,
+      "/api/admin/users": 500,
+      "/api/teacher/students": 500,
+      "/api/parent/students": 500,
+    });
+
+    render(
+      <>
+        <StudentDashboardPage />
+        <AdminDashboardPage />
+        <TeacherDashboardPage />
+        <ParentDashboardPage />
+      </>,
+    );
+
+    expect(await screen.findAllByRole("alert")).toHaveLength(4);
+    expect(screen.getAllByText("Không thể tải thông tin")).toHaveLength(4);
+    expect(screen.queryByText("0 tài khoản")).not.toBeInTheDocument();
+    expect(screen.queryByText("Chưa có học sinh được liên kết")).not.toBeInTheDocument();
   });
 
   it("keeps Admin metadata-only entries free of unsafe control labels", async () => {

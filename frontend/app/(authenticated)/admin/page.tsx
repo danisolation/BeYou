@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { EntryCard, LoadingState, PageHeader } from "@/components/ui-primitives";
+import { EntryCard, ErrorState, LoadingState, PageHeader } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 
 type AdminUser = { id: string };
@@ -14,15 +14,41 @@ type AdminLink = { id: string };
 export default function AdminDashboardPage() {
   const [counts, setCounts] = useState({ users: 0, links: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
+    let isActive = true;
+
     Promise.all([
       apiFetch<AdminUser[]>("/api/admin/users"),
       apiFetch<AdminLink[]>("/api/admin/links"),
     ])
-      .then(([users, links]) => setCounts({ users: users.length, links: links.length }))
-      .finally(() => setIsLoading(false));
+      .then(([users, links]) => {
+        if (!isActive) {
+          return;
+        }
+        setCounts({ users: users.length, links: links.length });
+        setLoadFailed(false);
+      })
+      .catch(() => {
+        if (isActive) {
+          setLoadFailed(true);
+        }
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
+
+  if (loadFailed) {
+    return <ErrorState />;
+  }
 
   return (
     <section className="space-y-6">

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
-import { EntryCard, LoadingState, ResponsiveTable, SurfaceCard } from "@/components/ui-primitives";
+import { EntryCard, ErrorState, LoadingState, ResponsiveTable, SurfaceCard } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 import {
   dismissMoodCheckInReminder,
@@ -55,19 +55,39 @@ export default function StudentDashboardPage() {
   const [moodReminder, setMoodReminder] = useState<MoodCheckInReminder | null>(null);
   const [reminderActionMessage, setReminderActionMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
+    let isActive = true;
+
     Promise.all([
       apiFetch<StudentProfile>("/api/student/profile"),
       listStudentSosAlerts().catch(() => []),
       getMoodCheckInReminder().catch(() => null),
     ])
       .then(([studentProfile, alerts, reminder]) => {
+        if (!isActive) {
+          return;
+        }
         setProfile(studentProfile);
         setSosAlerts(alerts);
         setMoodReminder(reminder);
+        setLoadFailed(false);
       })
-      .finally(() => setIsLoading(false));
+      .catch(() => {
+        if (isActive) {
+          setLoadFailed(true);
+        }
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   async function handleSendSos() {
@@ -96,6 +116,10 @@ export default function StudentDashboardPage() {
 
   if (isLoading) {
     return <LoadingState />;
+  }
+
+  if (loadFailed) {
+    return <ErrorState />;
   }
 
   if (profile === null) {
