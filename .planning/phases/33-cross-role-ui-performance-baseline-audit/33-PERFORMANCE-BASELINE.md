@@ -47,6 +47,33 @@ Severity guide:
 - `P1`: likely N+1/unbounded query or production-visible slowness candidate.
 - `P2`: payload/waterfall/build-size concern that is visible but not safety-critical.
 
+## Candidate Routing Queue
+
+Phase 33 records performance candidate routing only. The rows below are handoff queues for downstream plans and do not authorize Phase 33 optimization, pagination, batching, caching, indexing, migration, schema, backend behavior, frontend behavior, UI, production logging, analytics, or APM changes.
+
+### Phase 36
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Admin users/links full-list and link hydration | Backend/database hot-path work owns bounded list and hydration candidates while preserving admin metadata-only serialization. | endpoint/status/duration/payload/query-count labels only |
+| Teacher/Parent linked students and SOS checks | Backend/database work owns linked-student and SOS-signal query-count candidates while preserving active relationship and SOS-only visibility gates. | endpoint/role/query-count labels only |
+| Support overview and support summary broad loads | Backend/database work owns SQL-side filtering and query-count candidate review while preserving reason gates and summary-only adult boundaries. | endpoint/role/query-count labels only |
+| Operations dashboard buckets | Backend/database work owns expensive metadata aggregation candidates while preserving operations sanitizers. | endpoint/status/query-count labels only |
+
+### Phase 37
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Student, Teacher, Parent, and Admin route fetch waterfalls | Frontend loading/render work owns static fetch candidate comparison and perceived loading behavior. | route/source/count labels only |
+| Build evidence follow-up | Frontend route/build review belongs with downstream render and bundle comparison work. | route/build-availability labels only |
+
+### Phase 38
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Baseline-to-post-optimization comparison | Release gates own final threshold decisions, accepted constraints, and comparison evidence after Phases 36 and 37. | environment/command/metric labels only |
+| Public demo, deployed cold/warm, and live production-pilot constraints | Release gates own environment distinction and must not treat public demo evidence as live production-pilot proof. | environment labels only |
+
 ## Environment Constraints
 
 - `local deterministic`: completed via Node helper and pytest helper on the local repository; evidence is repeatable and aggregate-only.

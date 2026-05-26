@@ -1968,6 +1968,40 @@ Aggregate-only cross-role UI baseline for Phase 33. This artifact records route,
 | Admin operations has richer metadata panels than other dashboards; later dashboard consistency must keep admin surfaces aggregate-only. | P0 | Phase 35 | local deterministic source inspection | frontend/app/(authenticated)/admin/operations/page.tsx |
 | Status, alert, and focus semantics need release-gate confirmation across selected states before milestone close. | P0 | Phase 38 | local deterministic plus existing Vitest coverage | frontend/tests/phase20-responsive-smoke-ui.test.tsx; frontend/tests/role-dashboards.test.tsx; frontend/tests/phase32-release-gates-ui.test.tsx |
 
+## Candidate Routing Queue
+
+Phase 33 records candidate routing only. The rows below are handoff queues for downstream plans and do not authorize Phase 33 UI redesign, runtime behavior changes, production logging, analytics, APM, schema work, or performance changes.
+
+### Phase 34
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Role shell and navigation rhythm | Shared shell, navigation, role guidance, responsive rhythm, and accessibility primitive gaps belong to shared UI primitives work. | route/state/category counts and source-file labels only |
+| Student-first supportive composition | Student route spacing and guidance patterns should inform shared primitives without erasing student privacy meaning. | aggregate route/category matrix only |
+| Responsive and keyboard/focus primitive coverage | Cross-role responsive, skip-link, focus, status, and alert semantics need shared primitive alignment before dashboard-specific polish. | state/category labels only |
+
+### Phase 35
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Student dashboard cards, tables, forms, and empty states | Dashboard-level consistency belongs to role dashboard work while preserving student-first support copy. | route/state/category counts and source-file labels only |
+| Teacher and Parent shared list posture | Teacher and Parent dashboards share a list component but require distinct teacher workflow and parent read-only support posture. | component/source classification only |
+| Admin dashboard and operations panel consistency | Admin dashboard consistency must keep operations metadata-only and avoid raw operational data surfaces. | metadata-panel classification only |
+
+### Phase 37
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Page-local loading states | Loading patterns and perceived responsiveness are frontend loading/render candidates, not Phase 33 fixes. | state/category labels only |
+| Frontend route waterfalls | Route fetch candidates identified by the baseline helper belong to frontend data-loading comparison work. | route/count/source labels only |
+
+### Phase 38
+
+| Candidate | Why it is routed here | Safe evidence label |
+|---|---|---|
+| Error and accessible status/alert confirmation | Final release gates should verify status, alert, focus, and error semantics after downstream UI changes. | route/state/category labels only |
+| Local/demo/live-pilot evidence separation | Milestone closure must preserve the distinction between local deterministic, public demo, deployed cold/warm, and unavailable live production-pilot evidence. | environment labels only |
+
 ## Environment and Evidence Labels
 
 - local deterministic: source-code inspection and Vitest helper coverage available for this plan.
