@@ -13,11 +13,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity complete with Phase 32 constrained pass; ready for milestone completion workflow
+**Milestone status:** v1.5 Production Pilot Readiness & Identity audited with tech debt status; ready for milestone completion workflow
 **Scope shipped:** 32 total phases; v1.5 Phases 28-32 have 22/22 plans executed and 28/28 requirements complete
-**Current execution:** Phase 32 Privacy, Security & Release Gates is complete; next action is complete/archive v1.5 milestone
+**Current execution:** v1.5 milestone audit is complete; next action is complete/archive v1.5 milestone
 **Latest verification:** Phase 32 final verification constrained pass: backend `189 passed`, backend ruff passed, frontend `111 passed`, frontend lint/build passed, Node release gates passed, guardrail passed, public demo smoke `16/16`, live pilot smoke constrained
-**Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
+**Latest audit:** `.planning/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
 
 ### Built Product
 
@@ -46,7 +46,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 32 Plan 32-03 verification: passed, including frontend no-token/privacy/operations release gates, related UI regressions, and frontend lint
 - Phase 32 Plan 32-04 verification: passed, including README release-gate matrix, live smoke constraints, privacy grep guidance, and Node release gates
 - Phase 32 final verification: constrained pass, including full backend/frontend/lint/build/docs/guard/demo-smoke gates; live `smoke:pilot` remains constrained until safe production-pilot URLs/configuration and readiness `ready` exist
-- v1.4 milestone audit: passed after 3-source cross-reference and integration checker
+- v1.5 milestone audit: tech debt status after 3-source cross-reference and integration checker; 28/28 requirements satisfied, 0 blockers, live `smoke:pilot` remains a pre-launch constraint
 
 ### Planning Archives
 
