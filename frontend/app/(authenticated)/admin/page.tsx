@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
+import { EntryCard, LoadingState, PageHeader } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 
 type AdminUser = { id: string };
@@ -24,12 +26,11 @@ export default function AdminDashboardPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-display">Cổng quản trị</h1>
-        <p className="mt-3 max-w-2xl text-body">
-          Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Vai trò quản trị"
+        title="Cổng quản trị"
+        description="Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn."
+      />
       <DemoGuideCard
         title="Đi theo luồng quản trị demo"
         body="Dùng cổng quản trị để chứng minh Peerlight AI quản lý nội dung và vận hành bằng metadata, không mở dữ liệu riêng tư thô của học sinh."
@@ -85,13 +86,25 @@ export default function AdminDashboardPage() {
           href="/admin/users"
           title="Quản lý tài khoản"
           description="Tạo, cập nhật, tạm khóa hoặc xóa tài khoản theo đúng phạm vi demo."
-          countLabel={isLoading ? "Đang tải thông tin..." : `${counts.users} tài khoản`}
+          countLabel={
+            isLoading ? (
+              <LoadingState message="Đang tải thông tin..." className="bg-transparent p-0 shadow-none ring-0" />
+            ) : (
+              `${counts.users} tài khoản`
+            )
+          }
         />
         <AdminEntryCard
           href="/admin/links"
           title="Liên kết học sinh và người lớn hỗ trợ"
           description="Tạo hoặc thu hồi liên kết giữa học sinh với giáo viên/phụ huynh."
-          countLabel={isLoading ? "Đang tải thông tin..." : `${counts.links} liên kết`}
+          countLabel={
+            isLoading ? (
+              <LoadingState message="Đang tải thông tin..." className="bg-transparent p-0 shadow-none ring-0" />
+            ) : (
+              `${counts.links} liên kết`
+            )
+          }
         />
       </div>
     </section>
@@ -107,16 +120,18 @@ function AdminEntryCard({
   href: string;
   title: string;
   description: string;
-  countLabel: string;
+  countLabel: ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className="block min-w-0 rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6"
-    >
-      <p className="text-label font-semibold text-accent">{countLabel}</p>
-      <h2 className="mt-2 text-heading">{title}</h2>
-      <p className="mt-3 text-body">{description}</p>
+    <Link href={href} className="block min-w-0 no-underline">
+      <EntryCard
+        title={title}
+        description={description}
+        meta={<span className="font-semibold">{countLabel}</span>}
+        className="h-full hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
+      >
+        <span className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent">Mở bảng</span>
+      </EntryCard>
     </Link>
   );
 }
