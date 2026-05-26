@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: milestone
-status: verifying
-last_updated: "2026-05-26T09:22:14.473Z"
+status: planning
+last_updated: "2026-05-26T09:40:02.199Z"
 progress:
   total_phases: 6
   completed_phases: 2
@@ -15,15 +15,15 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-05-26 after Phase 33 verification passed
-**Status:** Phase complete — ready for verification
+**Last updated:** 2026-05-26 after Phase 34 verification
+**Status:** Ready to plan Phase 35; Phase 34 automated verification passed with human visual walkthrough pending
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-26)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** Phase 34 — Shared UI Primitives & Role Shell Harmonization
+**Current focus:** Phase 35 — Role Dashboard Consistency Pass
 
 ## Planning Artifacts
 
@@ -39,17 +39,17 @@ See: `.planning/PROJECT.md` (updated 2026-05-26)
 
 ## Current Position
 
-Phase: 34 (Shared UI Primitives & Role Shell Harmonization) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Progress: 1/6 phases complete
+Phase: 35 (Role Dashboard Consistency Pass) — PLANNING
+Plan: Not started
+Status: Ready to discuss and plan
+Progress: 2/6 phases complete
 
 ## Roadmap Summary
 
 | Phase | Name | Status |
 |---|---|---|
 | 33 | Cross-Role UI & Performance Baseline Audit | Complete |
-| 34 | Shared UI Primitives & Role Shell Harmonization | Not started |
+| 34 | Shared UI Primitives & Role Shell Harmonization | Complete |
 | 35 | Role Dashboard Consistency Pass | Not started |
 | 36 | Backend & DB Hot Path Optimization | Not started |
 | 37 | Frontend Data Loading & Render Optimization | Not started |
@@ -58,7 +58,7 @@ Progress: 1/6 phases complete
 ## Requirements Coverage
 
 - cumulative shipped requirements: 198 total
-- v1.6 requirements: 27 total, 27 mapped, 4 complete
+- v1.6 requirements: 27 total, 27 mapped, 8 complete
 - blocker gaps: 0
 
 ## Performance Metrics
@@ -87,6 +87,15 @@ Progress: 1/6 phases complete
 - Plan 33-02: 3 tasks, 4 files, 5 min, verification passed (frontend Node helper/test, backend pytest, performance artifact gate)
 - Plan 33-03: 3 tasks, 3 files, 4 min, verification passed (UI inventory Vitest, frontend baseline Node test, artifact redline Node test, backend performance pytest)
 
+**Phase 34 verification metrics:**
+
+- Phase 34 targeted frontend suite: 8 files, 46 tests passed (`phase34-final-regression`, `phase34-ui-primitives`, `phase34-role-shell`, `phase34-adult-shared-presentation`, role dashboards, responsive smoke, auth portals, release-gates UI).
+- Frontend lint: passed.
+- Frontend production build: passed.
+- Backend schema drift gate: passed (`alembic check`, no new upgrade operations detected).
+- Code review: clean after WR-01 load-failure fix.
+- Verifier: 4/4 must-haves verified; human visual cross-role rhythm walkthrough remains pending.
+
 ## Accumulated Context
 
 ### Decisions
@@ -107,10 +116,15 @@ Progress: 1/6 phases complete
 - [Phase 33]: Plan 33-02 routed performance hotspot candidates to Phases 36, 37, and 38 without implementing fixes.
 - [Phase 33]: Plan 33-03 kept Phase 33 audit/baseline-only with artifact redline checks and routing documentation only.
 - [Phase 33]: Plan 33-03 allows policy redline terms only in Privacy Redlines sections while globally failing on raw identifier, token, cookie, and browser storage evidence.
+- [Phase 34]: Shared UI primitives now live in `frontend/components/ui-primitives.tsx` and remain presentation-only with static import guards.
+- [Phase 34]: Authenticated role shell remains owner of auth, privacy acknowledgement redirects, wrong-role handling, logout, and role routing while showing active role/data-boundary guidance.
+- [Phase 34]: Adult Teacher/Parent shared presentation moved to neutral `frontend/components/adult-student-list.tsx`; route pages keep role-owned data fetching.
+- [Phase 34]: Student/Admin dashboards adopted representative primitives; Student/Teacher/Parent/Admin primary load failures now render explicit `ErrorState` instead of misleading empty/default states.
 
 ### TODOs
 
-- Discuss and plan Phase 34 using Phase 33 UI inventory findings.
+- Complete the human visual walkthrough for Phase 34 if the user wants final visual acceptance now.
+- Discuss and plan Phase 35 using Phase 33 inventory and Phase 34 primitive foundation.
 - Preserve requirement coverage at 27/27 across all phase plans.
 - Keep privacy redlines visible in every UI/performance phase.
 - Record local/demo/live-pilot evidence distinctions wherever performance is measured.
@@ -124,11 +138,11 @@ Progress: 1/6 phases complete
 
 ### Next Recommended Command
 
-`/gsd-discuss-phase 34`
+`/gsd-discuss-phase 35`
 
 ### Resume Notes
 
-Phase 33 verification passed. Use `33-UI-INVENTORY.md` to drive Phase 34 shared primitives, shell/navigation, loading/error/empty, accessibility, and role-boundary copy decisions.
+Phase 34 automated verification passed and `34-VERIFICATION.md` is recorded with status `human_needed` only for visual rhythm acceptance. Use `33-UI-INVENTORY.md`, `34-UI-SPEC.md`, and Phase 34 primitives to plan Phase 35 dashboard consistency.
 
 ---
-*Last updated: 2026-05-26 after Phase 33 verification passed. Next: discuss/plan Phase 34.*
+*Last updated: 2026-05-26 after Phase 34 verification. Next: discuss/plan Phase 35 or run the Phase 34 visual walkthrough/demo.*
