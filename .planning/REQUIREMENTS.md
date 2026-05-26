@@ -89,43 +89,41 @@ Deferred to future milestones, not in v1.6 scope.
 
 ## Traceability
 
-Traceability is populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |---|---|---|
-| UIC-01 | TBD | Pending |
-| UIC-02 | TBD | Pending |
-| UIC-03 | TBD | Pending |
-| UIC-04 | TBD | Pending |
-| ROLE-01 | TBD | Pending |
-| ROLE-02 | TBD | Pending |
-| ROLE-03 | TBD | Pending |
-| ROLE-04 | TBD | Pending |
-| ROLE-05 | TBD | Pending |
-| BASE-01 | TBD | Pending |
-| BASE-02 | TBD | Pending |
-| BASE-03 | TBD | Pending |
-| DBPERF-01 | TBD | Pending |
-| DBPERF-02 | TBD | Pending |
-| DBPERF-03 | TBD | Pending |
-| DBPERF-04 | TBD | Pending |
-| DBPERF-05 | TBD | Pending |
-| FEPERF-01 | TBD | Pending |
-| FEPERF-02 | TBD | Pending |
-| FEPERF-03 | TBD | Pending |
-| FEPERF-04 | TBD | Pending |
-| FEPERF-05 | TBD | Pending |
-| QA-01 | TBD | Pending |
-| QA-02 | TBD | Pending |
-| QA-03 | TBD | Pending |
-| QA-04 | TBD | Pending |
-| QA-05 | TBD | Pending |
+| UIC-01 | Phase 33 | Pending |
+| UIC-02 | Phase 34 | Pending |
+| UIC-03 | Phase 34 | Pending |
+| UIC-04 | Phase 34 | Pending |
+| ROLE-01 | Phase 35 | Pending |
+| ROLE-02 | Phase 35 | Pending |
+| ROLE-03 | Phase 35 | Pending |
+| ROLE-04 | Phase 35 | Pending |
+| ROLE-05 | Phase 34 | Pending |
+| BASE-01 | Phase 33 | Pending |
+| BASE-02 | Phase 33 | Pending |
+| BASE-03 | Phase 33 | Pending |
+| DBPERF-01 | Phase 36 | Pending |
+| DBPERF-02 | Phase 36 | Pending |
+| DBPERF-03 | Phase 36 | Pending |
+| DBPERF-04 | Phase 36 | Pending |
+| DBPERF-05 | Phase 36 | Pending |
+| FEPERF-01 | Phase 37 | Pending |
+| FEPERF-02 | Phase 37 | Pending |
+| FEPERF-03 | Phase 37 | Pending |
+| FEPERF-04 | Phase 37 | Pending |
+| FEPERF-05 | Phase 37 | Pending |
+| QA-01 | Phase 38 | Pending |
+| QA-02 | Phase 38 | Pending |
+| QA-03 | Phase 38 | Pending |
+| QA-04 | Phase 38 | Pending |
+| QA-05 | Phase 38 | Pending |
 
 **Coverage:**
 - v1.6 requirements: 27 total
-- Mapped to phases: 0
-- Unmapped: 27
+- Mapped to phases: 27
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-26*
-*Last updated: 2026-05-26 after v1.6 requirements definition*
+*Last updated: 2026-05-26 after v1.6 roadmap creation*
