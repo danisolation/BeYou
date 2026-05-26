@@ -13,9 +13,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-29 complete
-**Scope shipped:** 29 total phases; v1.5 Phases 28-29 have 7/7 plans executed and 10/28 requirements complete
-**Latest verification:** Phase 29 verification passed with deployment guardrails, safe frontend/backend validation, split demo/pilot smoke profiles, operations metadata, docs, and regression gates validated
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-30 complete, Phase 31 ready
+**Scope shipped:** 30 total phases; v1.5 Phases 28-30 have 12/12 plans executed and 17/28 requirements complete
+**Latest verification:** Phase 30 verification passed with OAuth/SSO-ready identity contracts, backend-owned session metadata, public-safe auth capabilities, metadata-only identity operations UI, code review fixes, and clean schema drift gate
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -25,7 +25,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Student wellbeing flows: privacy notice, Test tâm lý results/history with three Vietnamese visible labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
 - Adult support flows: linked teacher/parent views only for students who have sent SOS, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
 - Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard.
-- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, and Next 16-compatible lint/test/build gates.
+- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, public-safe auth capabilities, and Next 16-compatible lint/test/build gates.
 
 ### Latest Verification Snapshot
 
@@ -38,6 +38,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 27 copy/privacy grep gates: passed for frontend app/components and backend app, allowing the legacy demo password only
 - Phase 28 verification: passed, including backend runtime/readiness/auth/seed regressions, frontend operations contract regressions, code review, and schema drift check
 - Phase 29 verification: passed, including guardrail/smoke Node tests, backend operations metadata tests, operations UI regressions, frontend lint/build, schema drift check, and clean code review/re-review
+- Phase 30 verification: passed, including identity/session schema tests, external identity resolver tests, authorization privacy regressions, auth capabilities tests, operations UI regressions, code review fixes, Alembic check, schema drift check, backend ruff, frontend lint/build
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -135,10 +136,13 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Frontend/backend deployment configuration is protected against root-directory, origin, cookie, and environment drift.
 - [x] Demo smoke and production-pilot smoke are separate, with pilot smoke requiring readiness `ready` and no demo-user dependency.
 - [x] Deployment guardrail/smoke metadata and README guidance are metadata-only and prevent public demo smoke from being mistaken for production-pilot proof.
+- [x] Identity contracts support future OAuth/SSO through provider+subject mappings without unverified email auto-merge or privileged auto-create.
+- [x] Auth sessions remain backend-owned HttpOnly cookies while recording safe auth method/provider metadata with no browser token storage.
+- [x] Production pilot can disable public demo entry through public-safe auth capabilities while local/demo email-password flows continue.
+- [x] Identity readiness and operations expose only metadata-safe provider, mapping, and session buckets.
 
 ### Active in v1.5
 
-- [ ] Identity contracts support production OAuth/SSO readiness without removing current demo login flows.
 - [ ] School pilot operations expose safe launch, monitoring, rollback, and handoff metadata without raw student surveillance.
 
 ### Out of Scope
@@ -148,7 +152,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Real Zalo/SMS/push notification delivery - requires consent, provider governance, and production retry/dead-letter operations.
 - Chatbot replacing professional psychological care - chatbot only provides supportive first response and escalation guidance.
 - Full school-district deployment automation and multi-school tenancy - deferred until single-school operational safety is stable.
-- OAuth/SSO - email/password plus seeded demo accounts is enough until a production school identity provider is selected.
+- Full OAuth/SSO callback - Phase 30 only prepares identity contracts; provider-specific login waits until a school IdP is selected.
 - Parent/teacher access to full raw chatbot transcripts by default - violates privacy-by-default and may reduce student trust.
 - Adult/admin access to raw private mood notes by default - violates student-owned privacy boundaries.
 - Student risk leaderboard or punitive monitoring - Peerlight AI must support, not surveil or discipline students.
@@ -232,6 +236,9 @@ Roles:
 | Keep production readiness metadata-only | Public readiness stays status-only and admin operations expose masked runtime/connectivity metadata without secrets, cookie names, raw identifiers, or student content | Validated in Phase 28 |
 | Separate deployment guardrails from live smoke checks | Config-only guardrails validate Render/Vercel/API/CORS/cookie expectations, while smoke scripts own live health/readiness/CORS checks | Validated in Phase 29 |
 | Keep demo smoke and pilot smoke distinct | `smoke:demo` can use seeded public-demo accounts; `smoke:pilot` requires readiness `ready` and no demo-user dependency | Validated in Phase 29 |
+| Prepare identity contracts before full OAuth/SSO | Provider-specific callbacks stay deferred, but Phase 30 added safe provider+subject mappings, session auth metadata, and public-safe capabilities | Validated in Phase 30 |
+| Keep identity claims out of authorization | App-owned role, active relationship, privacy acknowledgement, and student-sent SOS remain the source of truth for access | Validated in Phase 30 |
+| Keep identity operations metadata-only | Admin operations can show readiness, mapping, and session buckets without raw claims, provider subjects, emails, exports, or account drilldowns | Validated in Phase 30 |
 
 ## Known Tech Debt
 
@@ -261,4 +268,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-25 after Phase 29 verification*
+*Last updated: 2026-05-26 after Phase 30 verification*
