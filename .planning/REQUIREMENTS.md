@@ -35,11 +35,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### School Pilot Operations & Safe Launch
 
-- [ ] **PILOT-01**: Admin operations includes a production pilot launch checklist covering runtime mode, readiness, migrations, origins/cookies, seed state, identity readiness, smoke evidence, and privacy regression status.
-- [ ] **PILOT-02**: Admin can verify demo/real data safety through counts and statuses only, and production pilot launch is blocked or flagged when active demo users, links, or walkthrough rows are present unexpectedly.
-- [ ] **PILOT-03**: Pilot operations exposes login, session, readiness, audit, and launch metadata without raw emails, raw identifiers, private notes, chatbot transcripts, self-check answers, SOS notes, free-text reasons, exports, or per-student risk drilldowns.
-- [ ] **PILOT-04**: Pilot rollback and handoff guidance documents safe redeploy, config rollback, readiness recheck, school contact, and incident escalation paths without destructive database reset or raw data export defaults.
-- [ ] **PILOT-05**: Baseline content and school policy setup guidance supports real pilot launch without creating public demo accounts, demo student-adult links, or demo walkthrough data in production pilot mode.
+- [x] **PILOT-01**: Admin operations includes a production pilot launch checklist covering runtime mode, readiness, migrations, origins/cookies, seed state, identity readiness, smoke evidence, and privacy regression status.
+- [x] **PILOT-02**: Admin can verify demo/real data safety through counts and statuses only, and production pilot launch is blocked or flagged when active demo users, links, or walkthrough rows are present unexpectedly.
+- [x] **PILOT-03**: Pilot operations exposes login, session, readiness, audit, and launch metadata without raw emails, raw identifiers, private notes, chatbot transcripts, self-check answers, SOS notes, free-text reasons, exports, or per-student risk drilldowns.
+- [x] **PILOT-04**: Pilot rollback and handoff guidance documents safe redeploy, config rollback, readiness recheck, school contact, and incident escalation paths without destructive database reset or raw data export defaults.
+- [x] **PILOT-05**: Baseline content and school policy setup guidance supports real pilot launch without creating public demo accounts, demo student-adult links, or demo walkthrough data in production pilot mode.
 
 ### Privacy, Security & Regression Gates
 
@@ -106,11 +106,11 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | IDENT-05 | Phase 30 | Complete |
 | IDENT-06 | Phase 30 | Complete |
 | IDENT-07 | Phase 30 | Complete |
-| PILOT-01 | Phase 31 | Pending |
-| PILOT-02 | Phase 31 | Pending |
-| PILOT-03 | Phase 31 | Pending |
-| PILOT-04 | Phase 31 | Pending |
-| PILOT-05 | Phase 31 | Pending |
+| PILOT-01 | Phase 31 | Complete |
+| PILOT-02 | Phase 31 | Complete |
+| PILOT-03 | Phase 31 | Complete |
+| PILOT-04 | Phase 31 | Complete |
+| PILOT-05 | Phase 31 | Complete |
 | QA-01 | Phase 32 | Pending |
 | QA-02 | Phase 32 | Pending |
 | QA-03 | Phase 32 | Pending |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 17
+- Complete: 22
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-26 after Phase 30 verification*
+*Last updated: 2026-05-26 after Phase 31 verification*

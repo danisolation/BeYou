@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-30 complete, Phase 31 executing
-**Scope shipped:** 30 total phases; v1.5 Phases 28-30 have 12/12 plans executed and 17/28 requirements complete
-**Current execution:** Phase 31 school pilot operations are being prepared with metadata-only launch checklist, data-safety buckets, rollback guidance, and handoff metadata; do not mark complete until verification passes
-**Latest verification:** Phase 30 verification passed with OAuth/SSO-ready identity contracts, backend-owned session metadata, public-safe auth capabilities, metadata-only identity operations UI, code review fixes, and clean schema drift gate
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 ready
+**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete
+**Current execution:** Phase 32 Privacy, Security & Release Gates is ready to discuss/plan
+**Latest verification:** Phase 31 verification passed with metadata-only launch checklist, data-safety buckets, operations UI panels, rollback/handoff docs, code review, backend/frontend/docs gates, and `31-VERIFICATION.md` score 5/5
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -25,8 +25,8 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
 - Student wellbeing flows: privacy notice, Test tâm lý results/history with three Vietnamese visible labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
 - Adult support flows: linked teacher/parent views only for students who have sent SOS, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
-- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard.
-- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, public-safe auth capabilities, and Next 16-compatible lint/test/build gates.
+- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard with pilot launch/data-safety/handoff panels.
+- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, public-safe auth capabilities, school pilot launch checklist/rollback guidance, and Next 16-compatible lint/test/build gates.
 
 ### Latest Verification Snapshot
 
@@ -40,6 +40,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 28 verification: passed, including backend runtime/readiness/auth/seed regressions, frontend operations contract regressions, code review, and schema drift check
 - Phase 29 verification: passed, including guardrail/smoke Node tests, backend operations metadata tests, operations UI regressions, frontend lint/build, schema drift check, and clean code review/re-review
 - Phase 30 verification: passed, including identity/session schema tests, external identity resolver tests, authorization privacy regressions, auth capabilities tests, operations UI regressions, code review fixes, Alembic check, schema drift check, backend ruff, frontend lint/build
+- Phase 31 verification: passed, including pilot operations backend regressions, operations UI regressions, README docs gate, code review, backend ruff, frontend lint/build, and `31-VERIFICATION.md` score 5/5
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -141,10 +142,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Auth sessions remain backend-owned HttpOnly cookies while recording safe auth method/provider metadata with no browser token storage.
 - [x] Production pilot can disable public demo entry through public-safe auth capabilities while local/demo email-password flows continue.
 - [x] Identity readiness and operations expose only metadata-safe provider, mapping, and session buckets.
+- [x] School pilot operations expose safe launch checklist, demo/real data-safety metadata, rollback guidance, and handoff metadata without raw student surveillance.
 
 ### Active in v1.5
 
-- [ ] School pilot operations expose safe launch, monitoring, rollback, and handoff metadata without raw student surveillance.
+- [ ] Privacy, security, and release gates prove production, identity, operations, and privacy boundaries still hold before v1.5 ships.
 
 ### Out of Scope
 

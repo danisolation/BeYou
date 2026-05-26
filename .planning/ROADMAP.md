@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 17/28 complete; Phases 28-30 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 22/28 complete; Phases 28-31 complete
 
 ## Completed Milestones
 
@@ -28,7 +28,7 @@
 - [x] Phase 28: Runtime Mode & Production Readiness Foundation (completed 2026-05-25)
 - [x] Phase 29: Deployment Guardrails & Smoke Profiles (completed 2026-05-25)
 - [x] Phase 30: Identity Foundation & Auth Contracts (completed 2026-05-26)
-- [ ] Phase 31: School Pilot Operations & Safe Launch
+- [x] Phase 31: School Pilot Operations & Safe Launch (completed 2026-05-26)
 - [ ] Phase 32: Privacy, Security & Release Gates
 
 ## Phase Details
@@ -99,7 +99,7 @@ Plans:
 **Depends on:** Phases 28-30
 **Requirements:** PILOT-01, PILOT-02, PILOT-03, PILOT-04, PILOT-05
 **UI hint:** yes
-**Status:** Pending
+**Status:** Complete
 
 **Success criteria:**
 1. Admin can review a production pilot launch checklist covering runtime, readiness, migrations, origins/cookies, seed state, identity readiness, smoke evidence, and privacy regression.
@@ -108,7 +108,7 @@ Plans:
 4. Operations expose login, session, readiness, audit, and launch metadata without raw emails, identifiers, notes, transcripts, answers, SOS notes, free-text reasons, exports, or risk drilldowns.
 5. Pilot rollback/handoff guidance supports safe redeploy, config rollback, readiness recheck, school contact, and incident escalation without destructive reset or raw export defaults.
 
-**Plans:** 0/1 pending
+**Plans:** 5/5 plans complete
 
 ### Phase 32: Privacy, Security & Release Gates
 
@@ -149,11 +149,11 @@ Plans:
 | IDENT-05 | Phase 30 | Complete |
 | IDENT-06 | Phase 30 | Complete |
 | IDENT-07 | Phase 30 | Complete |
-| PILOT-01 | Phase 31 | Pending |
-| PILOT-02 | Phase 31 | Pending |
-| PILOT-03 | Phase 31 | Pending |
-| PILOT-04 | Phase 31 | Pending |
-| PILOT-05 | Phase 31 | Pending |
+| PILOT-01 | Phase 31 | Complete |
+| PILOT-02 | Phase 31 | Complete |
+| PILOT-03 | Phase 31 | Complete |
+| PILOT-04 | Phase 31 | Complete |
+| PILOT-05 | Phase 31 | Complete |
 | QA-01 | Phase 32 | Pending |
 | QA-02 | Phase 32 | Pending |
 | QA-03 | Phase 32 | Pending |
@@ -164,7 +164,7 @@ Plans:
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 17
+- Complete: 22
 - Unmapped: 0
 
 ## Assumptions
@@ -175,4 +175,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 30 verification*
+*Last updated: 2026-05-26 after Phase 31 verification*
