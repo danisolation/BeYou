@@ -41,6 +41,42 @@ from app.services.privacy import NOTICE_VERSION
 
 FRONTEND_ORIGIN = "http://localhost:3000"
 ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN}
+AUTH_CAPABILITY_FORBIDDEN_MARKERS = {
+    "provider_key",
+    "client_id",
+    "client_secret",
+    "issuer",
+    "issuer_url",
+    "callback",
+    "callback_url",
+    "school.example",
+    "login.school.edu",
+    "raw_email",
+    "raw_subject",
+    "raw_claim",
+    "access_token",
+    "refresh_token",
+    "id_token",
+    "cookie",
+    "beyou_session",
+    "password_hash",
+    "$argon2id$",
+}
+
+
+def _assert_public_safe_auth_capabilities(payload: dict[str, object]) -> None:
+    assert set(payload) == {
+        "demo_login_enabled",
+        "public_demo_entry_enabled",
+        "email_password_enabled",
+        "provider_login_enabled",
+        "provider_label",
+        "provider_mode",
+        "production_pilot",
+    }
+    serialized = str(payload).lower()
+    for marker in AUTH_CAPABILITY_FORBIDDEN_MARKERS:
+        assert marker not in serialized
 
 
 def _clean_database() -> None:
@@ -142,6 +178,101 @@ def _login(
         json={"email": email, "password": password},
         headers=headers or ORIGIN_HEADERS,
     )
+
+
+def test_auth_capabilities_demo_runtime_returns_safe_public_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "public_demo")
+    monkeypatch.setenv("ALLOW_DEMO_LOGIN", "true")
+    monkeypatch.setenv("AUTH_PROVIDER_ENABLED", "false")
+    get_settings.cache_clear()
+
+    with TestClient(create_app()) as demo_client:
+        response = demo_client.get("/api/auth/capabilities")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload == {
+        "demo_login_enabled": True,
+        "public_demo_entry_enabled": True,
+        "email_password_enabled": True,
+        "provider_login_enabled": False,
+        "provider_label": None,
+        "provider_mode": None,
+        "production_pilot": False,
+    }
+    _assert_public_safe_auth_capabilities(payload)
+    get_settings.cache_clear()
+
+
+def test_auth_capabilities_production_pilot_demo_disabled_hides_public_entry(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
+    monkeypatch.setenv("ALLOW_DEMO_LOGIN", "false")
+    monkeypatch.setenv("SESSION_COOKIE_NAME", "beyou_session")
+    monkeypatch.setenv("AUTH_PROVIDER_ENABLED", "false")
+    get_settings.cache_clear()
+
+    with TestClient(create_app()) as pilot_client:
+        response = pilot_client.get("/api/auth/capabilities")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["demo_login_enabled"] is False
+    assert payload["public_demo_entry_enabled"] is False
+    assert payload["email_password_enabled"] is True
+    assert payload["provider_login_enabled"] is False
+    assert payload["provider_label"] is None
+    assert payload["provider_mode"] is None
+    assert payload["production_pilot"] is True
+    _assert_public_safe_auth_capabilities(payload)
+    get_settings.cache_clear()
+
+
+def test_auth_capabilities_provider_enabled_returns_label_and_mode_only(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AUTH_PROVIDER_ENABLED", "true")
+    monkeypatch.setenv("AUTH_PROVIDER_KEY", "pilot_sso")
+    monkeypatch.setenv("AUTH_PROVIDER_LABEL", "Pilot SSO")
+    monkeypatch.setenv("AUTH_PROVIDER_MODE", "pilot")
+    get_settings.cache_clear()
+
+    with TestClient(create_app()) as provider_client:
+        response = provider_client.get("/api/auth/capabilities")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["provider_login_enabled"] is True
+    assert payload["provider_label"] == "Pilot SSO"
+    assert payload["provider_mode"] == "pilot"
+    assert "provider_key" not in payload
+    _assert_public_safe_auth_capabilities(payload)
+    get_settings.cache_clear()
+
+
+def test_auth_capabilities_provider_disabled_suppresses_provider_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("AUTH_PROVIDER_ENABLED", "false")
+    monkeypatch.setenv("AUTH_PROVIDER_KEY", "pilot_sso")
+    monkeypatch.setenv("AUTH_PROVIDER_LABEL", "Pilot SSO")
+    monkeypatch.setenv("AUTH_PROVIDER_MODE", "pilot")
+    get_settings.cache_clear()
+
+    with TestClient(create_app()) as disabled_provider_client:
+        response = disabled_provider_client.get("/api/auth/capabilities")
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["provider_login_enabled"] is False
+    assert payload["provider_label"] is None
+    assert payload["provider_mode"] is None
+    assert "provider_key" not in payload
+    _assert_public_safe_auth_capabilities(payload)
+    get_settings.cache_clear()
 
 
 def _session_cookie_for(
