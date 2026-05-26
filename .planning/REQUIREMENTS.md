@@ -24,8 +24,8 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Production Performance Baseline
 
-- [ ] **BASE-01**: v1.6 records a baseline for key role routes and APIs, including local/demo constraints, frontend route/build evidence, backend endpoint timings, payload sizes, and likely DB query hot spots.
-- [ ] **BASE-02**: Backend timing or query-count evidence is collected with aggregate-only metadata and never logs raw student content, emails, identifiers, private notes, transcripts, answers, provider claims, secrets, or raw request bodies.
+- [x] **BASE-01**: v1.6 records a baseline for key role routes and APIs, including local/demo constraints, frontend route/build evidence, backend endpoint timings, payload sizes, and likely DB query hot spots.
+- [x] **BASE-02**: Backend timing or query-count evidence is collected with aggregate-only metadata and never logs raw student content, emails, identifiers, private notes, transcripts, answers, provider claims, secrets, or raw request bodies.
 - [x] **BASE-03**: The baseline distinguishes local deterministic evidence, public demo evidence, Render/Vercel cold or warm behavior where available, and unavailable live production-pilot constraints.
 
 ### Backend and Database Performance
@@ -100,8 +100,8 @@ Deferred to future milestones, not in v1.6 scope.
 | ROLE-03 | Phase 35 | Pending |
 | ROLE-04 | Phase 35 | Pending |
 | ROLE-05 | Phase 34 | Pending |
-| BASE-01 | Phase 33 | Pending |
-| BASE-02 | Phase 33 | Pending |
+| BASE-01 | Phase 33 | Complete |
+| BASE-02 | Phase 33 | Complete |
 | BASE-03 | Phase 33 | Complete |
 | DBPERF-01 | Phase 36 | Pending |
 | DBPERF-02 | Phase 36 | Pending |
