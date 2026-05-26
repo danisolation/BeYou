@@ -1,0 +1,158 @@
+---
+phase: 35-role-dashboard-consistency-pass
+plan: 03
+type: execute
+wave: 2
+depends_on:
+  - 35-01
+files_modified:
+  - frontend/components/adult-student-list.tsx
+  - frontend/app/(authenticated)/teacher/page.tsx
+  - frontend/app/(authenticated)/parent/page.tsx
+autonomous: true
+requirements:
+  - ROLE-02
+  - ROLE-03
+must_haves:
+  truths:
+    - "Teacher and Parent dashboards are visually sibling-like through neutral AdultStudentList."
+    - "Teacher keeps SOS handling/update posture."
+    - "Parent keeps read-only/supportive posture."
+  artifacts:
+    - path: "frontend/components/adult-student-list.tsx"
+      provides: "Neutral adult dashboard presentation"
+    - path: "frontend/app/(authenticated)/teacher/page.tsx"
+      provides: "Teacher route-owned data and role copy"
+    - path: "frontend/app/(authenticated)/parent/page.tsx"
+      provides: "Parent route-owned data and role copy"
+  key_links:
+    - from: "frontend/app/(authenticated)/teacher/page.tsx"
+      to: "/api/teacher/students"
+      via: "apiFetch"
+      pattern: "/api/teacher/students"
+    - from: "frontend/app/(authenticated)/parent/page.tsx"
+      to: "/api/parent/students"
+      via: "apiFetch"
+      pattern: "/api/parent/students"
+---
+
+<objective>
+Harmonize Teacher and Parent dashboards through the neutral adult presentation component.
+
+Purpose: Satisfy ROLE-02 and ROLE-03 without changing backend/API/auth/data-loading behavior.
+Output: Adult dashboards share rhythm while preserving Teacher SOS handling and Parent read-only posture.
+</objective>
+
+<execution_context>
+@~/.copilot/get-shit-done/workflows/execute-plan.md
+@~/.copilot/get-shit-done/templates/summary.md
+</execution_context>
+
+<context>
+@.planning/REQUIREMENTS.md
+@.planning/phases/35-role-dashboard-consistency-pass/35-CONTEXT.md
+@.planning/phases/35-role-dashboard-consistency-pass/35-UI-SPEC.md
+@frontend/components/adult-student-list.tsx
+@frontend/app/(authenticated)/teacher/page.tsx
+@frontend/app/(authenticated)/parent/page.tsx
+@frontend/components/ui-primitives.tsx
+@frontend/components/empty-state.tsx
+</context>
+
+<tasks>
+
+<task type="auto" tdd="true">
+  <name>Task 1: Strengthen AdultStudentList rhythm and privacy boundary</name>
+  <files>frontend/components/adult-student-list.tsx</files>
+  <read_first>
+    frontend/components/adult-student-list.tsx
+    frontend/components/ui-primitives.tsx
+    frontend/components/empty-state.tsx
+    .planning/phases/35-role-dashboard-consistency-pass/35-UI-SPEC.md
+  </read_first>
+  <behavior>
+    - AdultStudentList uses `space-y-6`.
+    - Adult privacy card uses `PrivacyBoundaryCard`.
+    - Empty states explain no linked/SOS-eligible student means no student details are shown.
+  </behavior>
+  <action>
+    In `frontend/components/adult-student-list.tsx`, import `PrivacyBoundaryCard` from `@/components/ui-primitives`. Change the root `<section className="space-y-5">` to `className="space-y-6"`. Replace `AdultPrivacyBoundaryCard` internals from `SurfaceCard` to `PrivacyBoundaryCard`. Use exact Teacher description `Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.` and exact Parent description `Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên.` Keep the shared raw-data sentence `Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.` Keep support-not-surveillance sentence. For `students.length === 0`, keep heading `Chưa có học sinh được liên kết` and ensure body includes role-provided `emptyBody`; do not add raw student fields.
+  </action>
+  <acceptance_criteria>
+    - `grep -n "space-y-6" frontend/components/adult-student-list.tsx` finds root adult dashboard rhythm.
+    - `grep -n "PrivacyBoundaryCard" frontend/components/adult-student-list.tsx` finds import and usage.
+    - `grep -n "đồng hành/read-only" frontend/components/adult-student-list.tsx` finds Parent read-only copy.
+    - `grep -n "không giám sát" frontend/components/adult-student-list.tsx` finds Teacher support-not-surveillance copy.
+    - `grep -n "Chưa có học sinh được liên kết" frontend/components/adult-student-list.tsx` finds adult empty state.
+  </acceptance_criteria>
+  <verify>
+    <automated>npm --prefix frontend run test -- tests/phase35-role-dashboard-consistency.test.tsx tests/role-dashboards.test.tsx</automated>
+  </verify>
+  <done>Adult shared component uses harmonized rhythm and explicit privacy boundaries.</done>
+</task>
+
+<task type="auto" tdd="true">
+  <name>Task 2: Preserve distinct Teacher/Parent route copy and SOS CTAs</name>
+  <files>frontend/app/(authenticated)/teacher/page.tsx, frontend/app/(authenticated)/parent/page.tsx</files>
+  <read_first>
+    frontend/app/(authenticated)/teacher/page.tsx
+    frontend/app/(authenticated)/parent/page.tsx
+    frontend/components/adult-student-list.tsx
+    .planning/phases/35-role-dashboard-consistency-pass/35-CONTEXT.md
+  </read_first>
+  <behavior>
+    - Teacher page keeps `/api/teacher/students`, `getTeacherSupportOverview`, `Xem và cập nhật SOS`.
+    - Parent page keeps `/api/parent/students`, `getParentSupportOverview`, `Xem trạng thái SOS`.
+    - Parent page does not contain `Xem và cập nhật SOS`.
+  </behavior>
+  <action>
+    Update only route copy/props if needed. Teacher subtitle must be `Xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.`. Parent subtitle must be `Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành/read-only.`. Keep Teacher props `summaryBasePath="/teacher/students"`, `sosBasePath="/teacher/sos-alerts"`, `sosCta="Xem và cập nhật SOS"`. Keep Parent props `summaryBasePath="/parent/students"`, `sosBasePath="/parent/sos-alerts"`, `sosCta="Xem trạng thái SOS"`. Do not change `Promise.all`, API paths, support overview calls, notifications calls, loading/error states, or auth.
+  </action>
+  <acceptance_criteria>
+    - `grep -n "/api/teacher/students" frontend/app/(authenticated)/teacher/page.tsx` still finds Teacher API path.
+    - `grep -n "getTeacherSupportOverview" frontend/app/(authenticated)/teacher/page.tsx` still finds Teacher overview call.
+    - `grep -n "Xem và cập nhật SOS" frontend/app/(authenticated)/teacher/page.tsx` still finds Teacher SOS CTA.
+    - `grep -n "/api/parent/students" frontend/app/(authenticated)/parent/page.tsx` still finds Parent API path.
+    - `grep -n "Xem trạng thái SOS" frontend/app/(authenticated)/parent/page.tsx` still finds Parent SOS CTA.
+    - `grep -n "Xem và cập nhật SOS" frontend/app/(authenticated)/parent/page.tsx` returns no matches.
+  </acceptance_criteria>
+  <verify>
+    <automated>npm --prefix frontend run test -- tests/phase35-role-dashboard-consistency.test.tsx tests/role-dashboards.test.tsx tests/phase20-responsive-smoke-ui.test.tsx tests/auth-portals.test.tsx</automated>
+  </verify>
+  <done>Teacher/Parent remain sibling-like but role-distinct with route-owned data unchanged.</done>
+</task>
+
+</tasks>
+
+<threat_model>
+## Trust Boundaries
+
+| Boundary | Description |
+|---|---|
+| Teacher/Parent pages → AdultStudentList | Role-owned API data enters neutral presentation component. |
+| Adult dashboards → student data | Adult visibility must remain SOS-only/summary-only under existing backend checks. |
+| Parent dashboard → SOS status | Parent may view status but must not gain update posture. |
+
+## STRIDE Threat Register
+
+| Threat ID | Category | Component | Disposition | Mitigation Plan |
+|---|---|---|---|---|
+| T-35-03-01 | Information Disclosure | AdultStudentList | mitigate | Do not add raw private fields; copy states no raw self-check/chat content. |
+| T-35-03-02 | Elevation of Privilege | Parent SOS CTA | mitigate | Parent CTA remains `Xem trạng thái SOS`; tests reject Teacher update wording in parent page. |
+| T-35-03-03 | Information Disclosure | shared adult component imports | mitigate | Keep component under `frontend/components/`; tests reject route-page imports. |
+| T-35-03-04 | Safety UX | SOS urgency | mitigate | `SupportOverviewCard` keeps danger tone and red SOS action for existing SOS. |
+| T-35-03-05 | Denial of Service | keyboard/touch targets | mitigate | Preserve `min-h-11` links and buttons. |
+</threat_model>
+
+<verification>
+Run:
+`npm --prefix frontend run test -- tests/phase35-role-dashboard-consistency.test.tsx tests/role-dashboards.test.tsx tests/phase20-responsive-smoke-ui.test.tsx tests/auth-portals.test.tsx`
+</verification>
+
+<success_criteria>
+ROLE-02 and ROLE-03 are satisfied: Teacher/Parent dashboards use harmonized patterns while preserving active relationship/SOS-only visibility semantics through existing API ownership and role-specific copy.
+</success_criteria>
+
+<output>
+After completion, create `.planning/phases/35-role-dashboard-consistency-pass/35-03-SUMMARY.md`
+</output>

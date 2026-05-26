@@ -65,7 +65,7 @@
 **Depends on:** Phase 34
 **Requirements:** ROLE-01, ROLE-02, ROLE-03, ROLE-04
 **UI hint:** yes
-**Status:** Not started
+**Status:** Ready to execute
 
 **Success criteria:**
 1. Student can use a dashboard with harmonized shell, cards, status surfaces, and loading/error/empty patterns while still seeing student-first privacy and support copy.
@@ -73,7 +73,7 @@
 3. Parent can use harmonized dashboard patterns while retaining read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
 4. Admin can use harmonized operations surfaces that remain metadata-only and do not add raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
 
-**Plans:** TBD
+**Plans:** 5 plans ready
 
 ### Phase 36: Backend & DB Hot Path Optimization
 
@@ -169,7 +169,7 @@
 |---|---|---|---|
 | 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
 | 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
-| 35. Role Dashboard Consistency Pass | 0/TBD | Not started | - |
+| 35. Role Dashboard Consistency Pass | 0/5 | Ready to execute | - |
 | 36. Backend & DB Hot Path Optimization | 0/TBD | Not started | - |
 | 37. Frontend Data Loading & Render Optimization | 0/TBD | Not started | - |
 | 38. UI/Performance Release Gates | 0/TBD | Not started | - |
