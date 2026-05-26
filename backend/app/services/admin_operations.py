@@ -51,6 +51,12 @@ from app.schemas.admin_operations import (
     OperationCountBucket,
     OperationReadinessAttentionCheck,
     OperationReadinessSummary,
+    PilotDataSafetyBucket,
+    PilotDataSafetySummary,
+    PilotHandoffItem,
+    PilotHandoffSummary,
+    PilotLaunchChecklistItem,
+    PilotLaunchSummary,
     ProductionSmokeChecklistItem,
     RuntimeModeSummary,
     SessionAuthOperationsSummary,
@@ -153,6 +159,7 @@ DEPLOY_GUARD_COMMAND = "npm --prefix frontend run guard:deploy"
 DEMO_SMOKE_COMMAND = "npm --prefix frontend run smoke:demo"
 PILOT_SMOKE_COMMAND = "npm --prefix frontend run smoke:pilot"
 PRODUCTION_SMOKE_COMMAND = "npm --prefix frontend run smoke:production"
+PRIVACY_REGRESSION_COMMAND = "python -m pytest tests/test_phase31_school_pilot_operations.py -q"
 SAFE_OPERATION_VALUE_RE = re.compile(r"^[a-z][a-z0-9_]{0,95}$")
 SAFE_TEXT_FALLBACK = "metadata_an_toan"
 SAFE_REMEDIATION_FALLBACK = "Kiểm tra cấu hình provider bằng metadata an toàn."
@@ -791,6 +798,583 @@ def _smoke_profiles(settings: Settings, readiness_report: ReadinessReport) -> li
     ]
 
 
+def _readiness_check_status(report: ReadinessReport, key: str) -> str:
+    for check in report.checks:
+        if check.key == key:
+            return check.status
+    return "fail"
+
+
+def _check_by_key(items: list[Any], key: str) -> Any | None:
+    return next((item for item in items if item.key == key), None)
+
+
+def _safe_required_text(value: str) -> str:
+    return _safe_operation_text(value) or SAFE_TEXT_FALLBACK
+
+
+def _safe_static_guidance(value: str) -> str:
+    normalized = " ".join(value.strip().split())
+    compact = normalized.lower().replace("-", "_").replace(" ", "_")
+    forbidden_guidance_markers = {
+        "email",
+        "recipient_id",
+        "student_id",
+        "student_full_name",
+        "note",
+        "private_note",
+        "sos_note",
+        "transcript",
+        "message",
+        "student_summary",
+        "reason_text",
+        "raw_reason",
+        "access_reason_text",
+        "raw_subject",
+        "provider_subject",
+        "raw_email",
+        "raw_claims",
+        "client_id",
+        "client_secret",
+        "issuer_url",
+        "callback_url",
+        "tenant_url",
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "password_hash",
+    }
+    if not normalized:
+        return SAFE_TEXT_FALLBACK
+    if any(marker in compact for marker in forbidden_guidance_markers):
+        return SAFE_TEXT_FALLBACK
+    if any(symbol in normalized for symbol in ("://", "\\", "@", "?", "#")):
+        return SAFE_TEXT_FALLBACK
+    if re.search(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\b", normalized.lower()):
+        return SAFE_TEXT_FALLBACK
+    if re.search(r"\$argon2(?:id|i|d)\$", normalized) or re.search(r"\beyJ[A-Za-z0-9_-]{10,}\b", normalized):
+        return SAFE_TEXT_FALLBACK
+    return normalized
+
+
+def _safe_count(
+    db: OrmSession,
+    model: type[Any],
+    *conditions: Any,
+) -> int:
+    query = select(func.count()).select_from(model)
+    if conditions:
+        query = query.where(*conditions)
+    return db.scalar(query) or 0
+
+
+def _non_demo_content_counts(db: OrmSession) -> dict[str, int]:
+    return {
+        "self_checks": _safe_count(
+            db,
+            SelfCheckTest,
+            SelfCheckTest.is_demo.is_(False),
+            SelfCheckTest.status == ContentStatus.PUBLISHED.value,
+            SelfCheckTest.is_active.is_(True),
+        ),
+        "scenarios": _safe_count(
+            db,
+            Scenario,
+            Scenario.is_demo.is_(False),
+            Scenario.status == ContentStatus.PUBLISHED.value,
+        ),
+        "mood_configs": _safe_count(
+            db,
+            MoodCheckInConfig,
+            MoodCheckInConfig.is_demo.is_(False),
+            MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
+        ),
+    }
+
+
+def _safe_school_policy_count(db: OrmSession) -> int:
+    return _safe_count(
+        db,
+        SchoolPrivacyPolicyDefault,
+        SchoolPrivacyPolicyDefault.is_demo.is_(False),
+        SchoolPrivacyPolicyDefault.external_channels_enabled.is_(False),
+        SchoolPrivacyPolicyDefault.allowed_channels == ["in_app"],
+    )
+
+
+def _pilot_launch_item(
+    key: str,
+    label: str,
+    status: str,
+    blocking: bool,
+    evidence: str,
+    remediation: str | None = None,
+    command: str | None = None,
+) -> PilotLaunchChecklistItem:
+    return PilotLaunchChecklistItem(
+        key=key,
+        label=label,
+        status=status,
+        blocking=blocking,
+        evidence=_safe_required_text(evidence),
+        remediation=_safe_operation_text(remediation, fallback=None),
+        command=command,
+    )
+
+
+def _derive_pilot_launch_status(items: list[PilotLaunchChecklistItem]) -> str:
+    if any(item.blocking and item.status == "fail" for item in items):
+        return "blocked"
+    if any(item.status == "warn" for item in items):
+        return "needs_review"
+    return "ready"
+
+
+def _baseline_content_status(db: OrmSession, settings: Settings) -> PilotLaunchChecklistItem:
+    counts = _non_demo_content_counts(db)
+    ready = all(count > 0 for count in counts.values())
+    status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
+    return _pilot_launch_item(
+        "baseline_content",
+        "Baseline content",
+        status,
+        True,
+        (
+            f"self_checks={counts['self_checks']}; "
+            f"scenarios={counts['scenarios']}; "
+            f"mood_configs={counts['mood_configs']}"
+        ),
+        None if ready else "Prepare non-demo baseline self-checks, scenarios, and mood config before school pilot launch.",
+    )
+
+
+def _school_policy_setup_status(db: OrmSession, settings: Settings) -> PilotLaunchChecklistItem:
+    safe_policy_count = _safe_school_policy_count(db)
+    ready = safe_policy_count > 0
+    status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
+    return _pilot_launch_item(
+        "school_policy_setup",
+        "School policy setup",
+        status,
+        True,
+        f"safe_policy_count={safe_policy_count}",
+        None if ready else "Configure non-demo school privacy defaults with in-app channels only.",
+    )
+
+
+def _pilot_launch_summary(
+    db: OrmSession,
+    *,
+    readiness_report: ReadinessReport,
+    settings: Settings,
+    deployment_guardrails: list[DeploymentGuardrailItem],
+    smoke_profiles: list[SmokeProfileItem],
+    auth_provider: AuthProviderReadinessSummary,
+) -> PilotLaunchSummary:
+    runtime_status = "pass" if settings.is_production_pilot else "fail"
+    readiness_status = (
+        "pass"
+        if readiness_report.status == "ready"
+        else "warn"
+        if readiness_report.status == "degraded"
+        else "fail"
+    )
+    migration_status = _readiness_check_status(readiness_report, "alembic_migration")
+    origin_guardrail = _check_by_key(deployment_guardrails, "cors_cookie_contract")
+    origin_status = origin_guardrail.status if origin_guardrail is not None else "fail"
+    demo_policy_status = (
+        "fail"
+        if settings.is_production_pilot and (settings.allow_demo_seed or settings.allow_demo_login)
+        else "pass"
+        if settings.is_production_pilot
+        else "warn"
+    )
+    identity_status = auth_provider.status
+    if settings.is_production_pilot and not auth_provider.enabled:
+        identity_status = "fail"
+    pilot_smoke = _check_by_key(smoke_profiles, "pilot_smoke")
+    pilot_smoke_status = pilot_smoke.status if pilot_smoke is not None else "fail"
+
+    checklist = [
+        _pilot_launch_item(
+            "runtime_mode",
+            "Runtime mode",
+            runtime_status,
+            True,
+            (
+                f"runtime_mode={settings.runtime_mode}; "
+                f"production_pilot={_yes_no(settings.is_production_pilot)}"
+            ),
+            None if runtime_status == "pass" else "Set RUNTIME_MODE=production_pilot for school pilot launch.",
+        ),
+        _pilot_launch_item(
+            "readiness_status",
+            "Readiness status",
+            readiness_status,
+            True,
+            f"readiness_status={readiness_report.status}",
+            None if readiness_status == "pass" else "Resolve readiness warnings and failures before launch.",
+        ),
+        _pilot_launch_item(
+            "migration_status",
+            "Migration status",
+            migration_status,
+            True,
+            f"alembic_migration_status={migration_status}",
+            None if migration_status == "pass" else "Apply pending backend migrations before launch.",
+        ),
+        _pilot_launch_item(
+            "origin_cookie_contract",
+            "Origins and cookies",
+            origin_status,
+            True,
+            origin_guardrail.evidence if origin_guardrail is not None else "cors_cookie_contract=missing",
+            None if origin_status == "pass" else "Fix HTTPS origin and Secure SameSite=None cookie configuration.",
+            DEPLOY_GUARD_COMMAND,
+        ),
+        _pilot_launch_item(
+            "demo_seed_login_policy",
+            "Demo seed and login policy",
+            demo_policy_status,
+            True,
+            (
+                f"demo_seed_allowed={_yes_no(settings.allow_demo_seed)}; "
+                f"demo_login_allowed={_yes_no(settings.allow_demo_login)}"
+            ),
+            None if demo_policy_status == "pass" else "Disable demo seed and demo login for production pilot.",
+        ),
+        _pilot_launch_item(
+            "identity_readiness",
+            "Identity readiness",
+            identity_status,
+            True,
+            (
+                f"auth_provider_enabled={_yes_no(auth_provider.enabled)}; "
+                f"auth_provider_status={auth_provider.status}"
+            ),
+            None if identity_status == "pass" else "Configure the pilot identity provider before school launch.",
+        ),
+        _pilot_launch_item(
+            "pilot_smoke_profile",
+            "Production pilot smoke evidence",
+            pilot_smoke_status,
+            True,
+            pilot_smoke.evidence if pilot_smoke is not None else "pilot_smoke=missing",
+            None if pilot_smoke_status == "pass" else "Run pilot smoke only after readiness and demo flags are safe.",
+            PILOT_SMOKE_COMMAND,
+        ),
+        _pilot_launch_item(
+            "privacy_regression_status",
+            "Privacy regression status",
+            "pass",
+            True,
+            "phase31_privacy_regression_gate=covered_by_targeted_tests",
+            command=PRIVACY_REGRESSION_COMMAND,
+        ),
+        _baseline_content_status(db, settings),
+        _school_policy_setup_status(db, settings),
+    ]
+    return PilotLaunchSummary(
+        status=_derive_pilot_launch_status(checklist),
+        generated_at=utc_now(),
+        checklist=checklist,
+    )
+
+
+def _pilot_data_bucket(
+    key: str,
+    label: str,
+    count: int,
+    status: str,
+    blocking: bool,
+    evidence: str,
+    remediation: str | None = None,
+) -> PilotDataSafetyBucket:
+    return PilotDataSafetyBucket(
+        key=key,
+        label=label,
+        count=count,
+        status=status,
+        blocking=blocking,
+        evidence=_safe_required_text(evidence),
+        remediation=_safe_operation_text(remediation, fallback=None),
+    )
+
+
+def _derive_data_safety_status(buckets: list[PilotDataSafetyBucket]) -> str:
+    if any(bucket.blocking and bucket.status == "fail" and bucket.count > 0 for bucket in buckets):
+        return "blocked"
+    if any(bucket.status == "warn" and bucket.count > 0 for bucket in buckets):
+        return "needs_review"
+    return "safe"
+
+
+def _pilot_demo_bucket_status(count: int, settings: Settings, *, blocking_in_pilot: bool) -> tuple[str, bool]:
+    if settings.is_production_pilot and count > 0:
+        return ("fail", True) if blocking_in_pilot else ("warn", False)
+    if count > 0:
+        return "warn", False
+    return "pass", False
+
+
+def _pilot_data_safety_summary(db: OrmSession, settings: Settings) -> PilotDataSafetySummary:
+    production_pilot = _yes_no(settings.is_production_pilot)
+    demo_counts = {
+        "demo_active_users": _safe_count(
+            db,
+            User,
+            User.is_demo.is_(True),
+            User.status == AccountStatus.ACTIVE.value,
+        ),
+        "demo_active_links": _safe_count(
+            db,
+            StudentAdultLink,
+            StudentAdultLink.is_demo.is_(True),
+            StudentAdultLink.status == LinkStatus.ACTIVE.value,
+        ),
+        "demo_published_self_checks": _safe_count(
+            db,
+            SelfCheckTest,
+            SelfCheckTest.is_demo.is_(True),
+            SelfCheckTest.status == ContentStatus.PUBLISHED.value,
+            SelfCheckTest.is_active.is_(True),
+        ),
+        "demo_published_scenarios": _safe_count(
+            db,
+            Scenario,
+            Scenario.is_demo.is_(True),
+            Scenario.status == ContentStatus.PUBLISHED.value,
+        ),
+        "demo_mood_configs": _safe_count(
+            db,
+            MoodCheckInConfig,
+            MoodCheckInConfig.is_demo.is_(True),
+            MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
+        ),
+        "demo_policy_defaults": _safe_count(
+            db,
+            SchoolPrivacyPolicyDefault,
+            SchoolPrivacyPolicyDefault.is_demo.is_(True),
+        ),
+        "demo_notification_preferences": _safe_count(
+            db,
+            StudentNotificationPreference,
+            StudentNotificationPreference.is_demo.is_(True),
+        ),
+        "demo_reminder_states": _safe_count(
+            db,
+            MoodCheckinReminderState,
+            MoodCheckinReminderState.is_demo.is_(True),
+        ),
+        "demo_mood_shares": _safe_count(
+            db,
+            MoodNoteShare,
+            MoodNoteShare.is_demo.is_(True),
+        ),
+        "real_active_students": _safe_count(
+            db,
+            User,
+            User.is_demo.is_(False),
+            User.status == AccountStatus.ACTIVE.value,
+            User.role == UserRole.STUDENT.value,
+        ),
+        "real_active_adults": _safe_count(
+            db,
+            User,
+            User.is_demo.is_(False),
+            User.status == AccountStatus.ACTIVE.value,
+            User.role.in_([UserRole.TEACHER.value, UserRole.PARENT.value]),
+        ),
+    }
+    blocking_keys = {
+        "demo_active_users",
+        "demo_active_links",
+        "demo_published_self_checks",
+        "demo_published_scenarios",
+        "demo_mood_configs",
+    }
+    labels = {
+        "demo_active_users": "Demo active users",
+        "demo_active_links": "Demo active links",
+        "demo_published_self_checks": "Demo published self-checks",
+        "demo_published_scenarios": "Demo published scenarios",
+        "demo_mood_configs": "Demo mood configs",
+        "demo_policy_defaults": "Demo policy defaults",
+        "demo_notification_preferences": "Demo notification preferences",
+        "demo_reminder_states": "Demo reminder states",
+        "demo_mood_shares": "Demo mood shares",
+        "real_active_students": "Real active students",
+        "real_active_adults": "Real active adults",
+    }
+    buckets: list[PilotDataSafetyBucket] = []
+    for key, count in demo_counts.items():
+        if key.startswith("real_"):
+            status, blocking = "pass", False
+        else:
+            status, blocking = _pilot_demo_bucket_status(
+                count,
+                settings,
+                blocking_in_pilot=key in blocking_keys,
+            )
+        buckets.append(
+            _pilot_data_bucket(
+                key,
+                labels[key],
+                count,
+                status,
+                blocking,
+                f"count={count}; production_pilot={production_pilot}",
+                None if status == "pass" else "Use non-demo pilot data and keep operations metadata aggregate-only.",
+            )
+        )
+    return PilotDataSafetySummary(status=_derive_data_safety_status(buckets), buckets=buckets)
+
+
+def _pilot_handoff_item(
+    key: str,
+    label: str,
+    status: str,
+    guidance: str,
+    command: str | None = None,
+) -> PilotHandoffItem:
+    return PilotHandoffItem(
+        key=key,
+        label=label,
+        status=status,
+        guidance=_safe_static_guidance(guidance),
+        command=command,
+    )
+
+
+def _baseline_item_status(count: int, settings: Settings) -> str:
+    if count > 0:
+        return "pass"
+    return "fail" if settings.is_production_pilot else "warn"
+
+
+def _pilot_handoff_summary(db: OrmSession, settings: Settings) -> PilotHandoffSummary:
+    content_counts = _non_demo_content_counts(db)
+    safe_policy_count = _safe_school_policy_count(db)
+    demo_seed_status = (
+        "pass"
+        if settings.is_production_pilot and not settings.allow_demo_seed
+        else "fail"
+        if settings.is_production_pilot
+        else "warn"
+    )
+    rollback = [
+        _pilot_handoff_item(
+            "redeploy_known_good",
+            "Redeploy known good frontend/backend",
+            "pass",
+            "Redeploy the last known good Vercel frontend and Render backend build.",
+        ),
+        _pilot_handoff_item(
+            "rollback_config",
+            "Revert configuration",
+            "pass",
+            "Revert deployment environment variables to the last known good values.",
+        ),
+        _pilot_handoff_item(
+            "rerun_readiness_guardrails_smoke",
+            "Rerun readiness, guardrails, and smoke",
+            "pass",
+            "Run /health/ready, npm --prefix frontend run guard:deploy, and npm --prefix frontend run smoke:pilot.",
+            PILOT_SMOKE_COMMAND,
+        ),
+        _pilot_handoff_item(
+            "notify_school_owner",
+            "Notify school owner",
+            "pass",
+            "Notify the school or pilot owner if real users are affected.",
+        ),
+        _pilot_handoff_item(
+            "escalate_incident",
+            "Escalate incident",
+            "pass",
+            "Escalate incidents through the agreed school support path.",
+        ),
+        _pilot_handoff_item(
+            "avoid_destructive_reset",
+            "Avoid destructive database reset",
+            "pass",
+            "Do not use destructive database reset as the default rollback path.",
+        ),
+        _pilot_handoff_item(
+            "avoid_raw_export",
+            "Avoid raw data export defaults",
+            "pass",
+            "Do not use raw data export as the default rollback path.",
+        ),
+    ]
+    school_handoff = [
+        _pilot_handoff_item(
+            "admin_contact_metadata",
+            "Admin contact metadata",
+            "warn",
+            "Contact paths are documented outside Peerlight AI; no raw contact details are stored in operations metadata.",
+        ),
+        _pilot_handoff_item(
+            "support_channel_metadata",
+            "Support channel metadata",
+            "warn",
+            "School support paths are documented outside Peerlight AI; no raw contact details are stored in operations metadata.",
+        ),
+        _pilot_handoff_item(
+            "incident_path_metadata",
+            "Incident path metadata",
+            "warn",
+            "Incident escalation paths are documented outside Peerlight AI; no raw contact details are stored in operations metadata.",
+        ),
+    ]
+    baseline_setup = [
+        _pilot_handoff_item(
+            "baseline_self_checks",
+            "Baseline self-checks",
+            _baseline_item_status(content_counts["self_checks"], settings),
+            f"Published non-demo self-check count={content_counts['self_checks']} before school pilot launch.",
+        ),
+        _pilot_handoff_item(
+            "baseline_scenarios",
+            "Baseline scenarios",
+            _baseline_item_status(content_counts["scenarios"], settings),
+            f"Published non-demo scenario count={content_counts['scenarios']} before school pilot launch.",
+        ),
+        _pilot_handoff_item(
+            "baseline_mood_config",
+            "Baseline mood config",
+            _baseline_item_status(content_counts["mood_configs"], settings),
+            f"Published non-demo mood config count={content_counts['mood_configs']} before school pilot launch.",
+        ),
+        _pilot_handoff_item(
+            "school_policy_defaults",
+            "School policy defaults",
+            _baseline_item_status(safe_policy_count, settings),
+            f"Safe non-demo school policy count={safe_policy_count}; reminders stay in-app only.",
+        ),
+        _pilot_handoff_item(
+            "in_app_only_reminders",
+            "In-app only reminders",
+            _baseline_item_status(safe_policy_count, settings),
+            f"In-app only policy count={safe_policy_count}; external reminder channels remain disabled.",
+        ),
+        _pilot_handoff_item(
+            "demo_seed_disabled_for_pilot",
+            "Demo seed disabled for pilot",
+            demo_seed_status,
+            (
+                f"production_pilot={_yes_no(settings.is_production_pilot)}; "
+                f"demo_seed_allowed={_yes_no(settings.allow_demo_seed)}"
+            ),
+        ),
+    ]
+    return PilotHandoffSummary(
+        rollback=rollback,
+        school_handoff=school_handoff,
+        baseline_setup=baseline_setup,
+    )
+
+
 def record_readiness_audit(db: OrmSession, *, actor: User, report: ReadinessReport, resource_type: str) -> None:
     fail_count = sum(1 for check in report.checks if check.status == "fail")
     warn_count = sum(1 for check in report.checks if check.status == "warn")
@@ -828,6 +1412,9 @@ def build_operations_dashboard(
     status: str | None = None,
     limit: int = 25,
 ) -> AdminOperationsDashboardResponse:
+    auth_provider = _auth_provider_summary(settings)
+    deployment_guardrails = _deployment_guardrails(settings)
+    smoke_profiles = _smoke_profiles(settings, readiness_report)
     return AdminOperationsDashboardResponse(
         generated_at=utc_now(),
         privacy_notes=PRIVACY_NOTES,
@@ -835,12 +1422,22 @@ def build_operations_dashboard(
         runtime=_runtime_mode_summary(settings),
         demo_seed=_demo_seed_summary(db, settings),
         connectivity=_connectivity_summary(settings),
-        auth_provider=_auth_provider_summary(settings),
+        auth_provider=auth_provider,
         identity_mappings=_identity_mapping_summary(db),
         session_auth=_session_auth_summary(db),
+        pilot_launch=_pilot_launch_summary(
+            db,
+            readiness_report=readiness_report,
+            settings=settings,
+            deployment_guardrails=deployment_guardrails,
+            smoke_profiles=smoke_profiles,
+            auth_provider=auth_provider,
+        ),
+        pilot_data_safety=_pilot_data_safety_summary(db, settings),
+        pilot_handoff=_pilot_handoff_summary(db, settings),
         production_smoke=_production_smoke_checklist(),
-        deployment_guardrails=_deployment_guardrails(settings),
-        smoke_profiles=_smoke_profiles(settings, readiness_report),
+        deployment_guardrails=deployment_guardrails,
+        smoke_profiles=smoke_profiles,
         sos_email=_delivery_summary(db, limit=limit),
         v1_2_audit=_v1_2_audit_buckets(db),
         v1_4_audit=_v1_4_audit_buckets(db),

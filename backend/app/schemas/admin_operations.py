@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -95,6 +95,51 @@ class SessionAuthOperationsSummary(BaseModel):
     by_provider: list[OperationCountBucket]
 
 
+class PilotLaunchChecklistItem(BaseModel):
+    key: str
+    label: str
+    status: ReadinessCheckStatus
+    blocking: bool
+    evidence: str
+    remediation: str | None = None
+    command: str | None = None
+
+
+class PilotLaunchSummary(BaseModel):
+    status: Literal["ready", "needs_review", "blocked"]
+    generated_at: datetime
+    checklist: list[PilotLaunchChecklistItem]
+
+
+class PilotDataSafetyBucket(BaseModel):
+    key: str
+    label: str
+    count: int
+    status: ReadinessCheckStatus
+    blocking: bool
+    evidence: str
+    remediation: str | None = None
+
+
+class PilotDataSafetySummary(BaseModel):
+    status: Literal["safe", "needs_review", "blocked"]
+    buckets: list[PilotDataSafetyBucket]
+
+
+class PilotHandoffItem(BaseModel):
+    key: str
+    label: str
+    status: ReadinessCheckStatus
+    guidance: str
+    command: str | None = None
+
+
+class PilotHandoffSummary(BaseModel):
+    rollback: list[PilotHandoffItem]
+    school_handoff: list[PilotHandoffItem]
+    baseline_setup: list[PilotHandoffItem]
+
+
 class ProductionSmokeChecklistItem(BaseModel):
     key: str
     label: str
@@ -184,6 +229,9 @@ class AdminOperationsDashboardResponse(BaseModel):
     auth_provider: AuthProviderReadinessSummary | None = None
     identity_mappings: IdentityMappingOperationsSummary | None = None
     session_auth: SessionAuthOperationsSummary | None = None
+    pilot_launch: PilotLaunchSummary | None = None
+    pilot_data_safety: PilotDataSafetySummary | None = None
+    pilot_handoff: PilotHandoffSummary | None = None
     production_smoke: list[ProductionSmokeChecklistItem]
     deployment_guardrails: list[DeploymentGuardrailItem]
     smoke_profiles: list[SmokeProfileItem]
