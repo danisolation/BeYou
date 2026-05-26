@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
+import { EntryCard, LoadingState, ResponsiveTable, SurfaceCard } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 import {
   dismissMoodCheckInReminder,
@@ -94,7 +95,7 @@ export default function StudentDashboardPage() {
   }
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <LoadingState />;
   }
 
   if (profile === null) {
@@ -106,7 +107,7 @@ export default function StudentDashboardPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-[2rem] bg-secondary p-5 shadow-sm sm:p-6">
+      <SurfaceCard className="bg-secondary">
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-display">Xin chào, {profile.full_name.split(" ")[0]}</h1>
           {profile.is_demo ? <DemoBadge /> : null}
@@ -123,7 +124,7 @@ export default function StudentDashboardPage() {
         <Link className="mt-5 inline-flex min-h-11 items-center font-semibold text-accent" href="/privacy?review=true">
           Ai có thể xem thông tin của em?
         </Link>
-      </div>
+      </SurfaceCard>
 
       <DemoGuideCard
         title="Đi theo luồng học sinh trong 5 phút"
@@ -353,16 +354,13 @@ function MoodReminderCard({
 
 function ChatEntryCard() {
   return (
-    <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
-      <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href="/student/chat">
-        Trò chuyện với Peerlight AI
-      </Link>
+    <EntryCard title="Trò chuyện với Peerlight AI" className="hover:-translate-y-0.5 hover:ring-[#D7EFE8]">
       <p className="mt-3 text-body">Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.</p>
       <p className="mt-3 text-label">Peerlight AI không thay thế chuyên gia tư vấn hay bác sĩ.</p>
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/chat">
         Mở trò chuyện
       </Link>
-    </article>
+    </EntryCard>
   );
 }
 
@@ -378,7 +376,7 @@ function QuickWellbeingTable() {
         <p className="text-label font-semibold uppercase tracking-[0.16em] text-accent">Theo dõi nhanh</p>
         <h2 className="mt-2 text-heading">Bảng trạng thái hỗ trợ của em</h2>
       </div>
-      <div className="overflow-x-auto">
+      <ResponsiveTable className="rounded-none ring-0">
         <table className="w-full text-left text-body">
           <thead className="bg-secondary text-label uppercase tracking-[0.12em]">
             <tr>
@@ -397,7 +395,7 @@ function QuickWellbeingTable() {
             ))}
           </tbody>
         </table>
-      </div>
+      </ResponsiveTable>
     </section>
   );
 }
@@ -412,7 +410,7 @@ function StudentSosStatusList({ alerts }: { alerts: SosAlert[] }) {
     );
   }
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+    <SurfaceCard>
       <h2 className="text-heading">Tiến trình SOS của em</h2>
       <div className="mt-4 space-y-3">
         {alerts.slice(0, 5).map((alert) => (
@@ -427,7 +425,7 @@ function StudentSosStatusList({ alerts }: { alerts: SosAlert[] }) {
           </article>
         ))}
       </div>
-    </section>
+    </SurfaceCard>
   );
 }
 
@@ -449,11 +447,11 @@ function WellbeingEntryCard({
   secondaryLabel?: string;
 }) {
   return (
-    <article className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-transparent hover:-translate-y-0.5 hover:ring-[#D7EFE8] sm:p-6">
-      <Link className="inline-flex min-h-11 items-center text-heading text-[#12332E]" href={href}>
-        {title}
-      </Link>
+    <EntryCard title={title} className="hover:-translate-y-0.5 hover:ring-[#D7EFE8]">
       <p className="mt-3 text-body">{body}</p>
+      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={href}>
+        Mở {title}
+      </Link>
       <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={historyHref}>
         {historyLabel}
       </Link>
@@ -462,7 +460,7 @@ function WellbeingEntryCard({
           {secondaryLabel}
         </Link>
       ) : null}
-    </article>
+    </EntryCard>
   );
 }
 
