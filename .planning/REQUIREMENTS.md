@@ -26,10 +26,10 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 ### Identity Foundation & Auth Contracts
 
 - [ ] **IDENT-01**: Admin or operator can see configured authentication provider readiness using metadata-only fields such as enabled status, provider label, mode, and last check status.
-- [ ] **IDENT-02**: Backend supports an OAuth/SSO-ready identity mapping contract that links external provider and subject metadata to an internal user without relying on unverified email auto-merge.
-- [ ] **IDENT-03**: Existing email/password and seeded demo login flows continue to work in demo/local mode, while production pilot mode can disable public demo entry and demo accounts safely.
-- [ ] **IDENT-04**: Auth sessions record safe auth method/provider metadata and continue to use backend-owned HttpOnly cookie sessions with no browser token storage.
-- [ ] **IDENT-05**: All auth methods enforce account status, session revocation, privacy acknowledgement requirements, and role dashboard routing through the same backend session/user contract.
+- [x] **IDENT-02**: Backend supports an OAuth/SSO-ready identity mapping contract that links external provider and subject metadata to an internal user without relying on unverified email auto-merge.
+- [x] **IDENT-03**: Existing email/password and seeded demo login flows continue to work in demo/local mode, while production pilot mode can disable public demo entry and demo accounts safely.
+- [x] **IDENT-04**: Auth sessions record safe auth method/provider metadata and continue to use backend-owned HttpOnly cookie sessions with no browser token storage.
+- [x] **IDENT-05**: All auth methods enforce account status, session revocation, privacy acknowledgement requirements, and role dashboard routing through the same backend session/user contract.
 - [ ] **IDENT-06**: External identity claims, school/class metadata, or provider groups never grant adult student visibility; app role, active relationship, and student-sent SOS remain mandatory.
 - [ ] **IDENT-07**: Unknown, unlinked, disabled, or deprovisioned external identities receive safe denial or pending-review behavior without creating privileged users automatically.
 
@@ -100,10 +100,10 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | DEPLOY-04 | Phase 29 | Complete |
 | DEPLOY-05 | Phase 29 | Complete |
 | IDENT-01 | Phase 30 | Pending |
-| IDENT-02 | Phase 30 | Pending |
-| IDENT-03 | Phase 30 | Pending |
-| IDENT-04 | Phase 30 | Pending |
-| IDENT-05 | Phase 30 | Pending |
+| IDENT-02 | Phase 30 | Complete |
+| IDENT-03 | Phase 30 | Complete |
+| IDENT-04 | Phase 30 | Complete |
+| IDENT-05 | Phase 30 | Complete |
 | IDENT-06 | Phase 30 | Pending |
 | IDENT-07 | Phase 30 | Pending |
 | PILOT-01 | Phase 31 | Pending |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 10
+- Complete: 14
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-25 after Phase 29 Plan 04 execution*
+*Last updated: 2026-05-26 after Phase 30 Plan 01 execution*
