@@ -25,7 +25,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Identity Foundation & Auth Contracts
 
-- [ ] **IDENT-01**: Admin or operator can see configured authentication provider readiness using metadata-only fields such as enabled status, provider label, mode, and last check status.
+- [x] **IDENT-01**: Admin or operator can see configured authentication provider readiness using metadata-only fields such as enabled status, provider label, mode, and last check status.
 - [x] **IDENT-02**: Backend supports an OAuth/SSO-ready identity mapping contract that links external provider and subject metadata to an internal user without relying on unverified email auto-merge.
 - [x] **IDENT-03**: Existing email/password and seeded demo login flows continue to work in demo/local mode, while production pilot mode can disable public demo entry and demo accounts safely.
 - [x] **IDENT-04**: Auth sessions record safe auth method/provider metadata and continue to use backend-owned HttpOnly cookie sessions with no browser token storage.
@@ -99,7 +99,7 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | DEPLOY-03 | Phase 29 | Complete |
 | DEPLOY-04 | Phase 29 | Complete |
 | DEPLOY-05 | Phase 29 | Complete |
-| IDENT-01 | Phase 30 | Pending |
+| IDENT-01 | Phase 30 | Complete |
 | IDENT-02 | Phase 30 | Complete |
 | IDENT-03 | Phase 30 | Complete |
 | IDENT-04 | Phase 30 | Complete |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 16
+- Complete: 17
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-26 after Phase 30 Plan 02 execution*
+*Last updated: 2026-05-26 after Phase 30 Plan 03 execution*
