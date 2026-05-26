@@ -304,6 +304,86 @@ def test_authorization_denies_unlinked_adult_and_allows_active_teacher_link(db: 
     assert exc_info.value.status_code == 403
 
 
+def test_external_identity_claims_do_not_grant_adult_visibility(db: OrmSession) -> None:
+    student = _user(db, email="student-claims-boundary@example.test", role=UserRole.STUDENT.value)
+    teacher = _user(db, email="teacher-claims-boundary@example.test", role=UserRole.TEACHER.value)
+    fake_claims = {
+        "groups": ["teacher", "admin"],
+        "school": "THPT Demo",
+        "class_name": "10A1",
+        "email_domain": "school.example",
+    }
+
+    assert fake_claims["groups"] == ["teacher", "admin"]
+    assert fake_claims["school"] == "THPT Demo"
+    assert fake_claims["class_name"] == "10A1"
+    assert fake_claims["email_domain"] == "school.example"
+    assert {"groups", "school", "class_name", "email_domain"}.isdisjoint(
+        require_permission.__code__.co_varnames
+    )
+    with pytest.raises(HTTPException) as exc_info:
+        require_permission(
+            db,
+            teacher,
+            resource_type="adult_support_summary",
+            action="read",
+            purpose="support_not_surveillance",
+            student_id=student.id,
+        )
+
+    assert exc_info.value.status_code == 403
+
+
+def test_active_adult_link_still_requires_student_sos_for_support_summary(db: OrmSession) -> None:
+    student = _user(db, email="student-sos-boundary@example.test", role=UserRole.STUDENT.value)
+    teacher = _user(db, email="teacher-sos-boundary@example.test", role=UserRole.TEACHER.value)
+    db.add(
+        StudentAdultLink(
+            student_id=student.id,
+            adult_id=teacher.id,
+            relationship_type=UserRole.TEACHER.value,
+            status=LinkStatus.ACTIVE.value,
+            created_by=teacher.id,
+            is_demo=True,
+        )
+    )
+    db.commit()
+
+    with pytest.raises(HTTPException) as exc_info:
+        require_permission(
+            db,
+            teacher,
+            resource_type="adult_support_summary",
+            action="read",
+            purpose="support_not_surveillance",
+            student_id=student.id,
+        )
+
+    assert exc_info.value.status_code == 403
+    db.add(
+        SosAlert(
+            student_id=student.id,
+            student_full_name_snapshot=student.full_name,
+            student_school_snapshot=student.school,
+            student_class_name_snapshot=student.class_name,
+            severity="support",
+            source="test",
+            current_status="sent",
+            is_demo=True,
+        )
+    )
+    db.commit()
+
+    require_permission(
+        db,
+        teacher,
+        resource_type="adult_support_summary",
+        action="read",
+        purpose="support_not_surveillance",
+        student_id=student.id,
+    )
+
+
 def test_audit_metadata_rejects_forbidden_sensitive_keys(db: OrmSession) -> None:
     actor = _user(db, email="admin-audit@example.test", role=UserRole.ADMIN.value)
 
