@@ -129,7 +129,21 @@ describe("Phase 35 role dashboard consistency regression", () => {
   it("renders Student privacy and SOS confirmation redlines", async () => {
     mockFetch({
       "/api/student/profile": studentProfile,
-      "/api/student/sos-alerts": [],
+      "/api/student/sos-alerts": [
+        {
+          id: "student-sos-1",
+          student: { id: "student-1", full_name: "Nguyễn An Demo", school: "Trường THPT BeYou Demo", class_name: "10A1" },
+          severity: "urgent",
+          source: "student_dashboard",
+          note: null,
+          current_status: "sent",
+          created_at: "2026-05-26T10:00:00Z",
+          updated_at: "2026-05-26T10:00:00Z",
+          completed_at: null,
+          status_events: [],
+          is_demo: true,
+        },
+      ],
       "/api/notifications/mood-check-in/reminder": null,
     });
 
@@ -144,6 +158,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
       ),
     ).toBeInTheDocument();
     expect(await screen.findByRole("link", { name: "Ai có thể xem thông tin của em?" })).toBeInTheDocument();
+    expect(screen.getByText("Em đang không an toàn ngay lúc này").className).toMatch(/bg-red-600/);
     const sosButton = screen.getByRole("button", { name: "Gửi SOS hỗ trợ" });
     expect(sosButton.className).toMatch(/bg-red-600/);
 
