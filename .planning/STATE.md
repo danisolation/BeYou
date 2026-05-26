@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: Cross-Role UI Consistency & Production Performance
-status: roadmap_created
-stopped_at: v1.6 roadmap created
-last_updated: "2026-05-26T07:05:00.000Z"
-last_activity: 2026-05-26 -- v1.6 roadmap created with Phases 33-38 and 27/27 requirements mapped
+status: planning
+stopped_at: Phase 33 context gathered
+last_updated: "2026-05-26T07:25:00.000Z"
+last_activity: 2026-05-26 -- Phase 33 context gathered and ready for planning
 progress:
   total_phases: 6
   completed_phases: 0
@@ -17,15 +17,15 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-05-26 after v1.6 roadmap creation
-**Status:** v1.6 roadmap created; ready for Phase 33 planning
+**Last updated:** 2026-05-26 after Phase 33 context gathered
+**Status:** Phase 33 context gathered; ready for Phase 33 planning
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-26)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** Begin Phase 33 planning for cross-role UI drift and privacy-safe production performance baseline evidence.
+**Current focus:** Plan Phase 33 using `.planning\phases\33-cross-role-ui-performance-baseline-audit\33-CONTEXT.md`
 
 ## Planning Artifacts
 
@@ -42,8 +42,8 @@ See: `.planning/PROJECT.md` (updated 2026-05-26)
 ## Current Position
 
 Phase: 33 (Cross-Role UI & Performance Baseline Audit)
-Plan: not started
-Status: Roadmap created, awaiting phase discussion/planning
+Plan: context gathered; plan not started
+Status: Phase 33 context gathered, awaiting planning
 Progress: 0/6 phases complete
 
 ## Roadmap Summary
@@ -66,6 +66,7 @@ Progress: 0/6 phases complete
 ## Performance Metrics
 
 **Latest inherited verification from v1.5:**
+
 - Backend pytest: 189 passed
 - Backend ruff: passed
 - Frontend Vitest: 111 passed
@@ -74,6 +75,7 @@ Progress: 0/6 phases complete
 - Live production-pilot smoke: constrained until safe pilot URLs/configuration and `/health/ready=ready` exist
 
 **v1.6 baseline status:**
+
 - Cross-role UI inventory: pending Phase 33
 - Backend endpoint timings: pending Phase 33
 - Payload size evidence: pending Phase 33
@@ -93,6 +95,7 @@ Progress: 0/6 phases complete
 - Adult visibility remains SOS-only with active relationship checks and reason gates where required.
 - Admin operations remain metadata-only; raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, and destructive reset controls remain out of scope.
 - Live `smoke:pilot` remains separate from public demo proof and is not an in-scope production-pilot launch deliverable for v1.6.
+- [Phase 33]: Phase 33 context gathered — CONTEXT.md locks UI inventory scope, performance baseline scope, privacy-safe evidence rules, and baseline artifact format for planning.
 
 ### TODOs
 
@@ -110,15 +113,16 @@ Progress: 0/6 phases complete
 
 ### Next Recommended Command
 
-`/gsd-discuss-phase 33`
+`/gsd-plan-phase 33`
 
 ### Resume Notes
 
-Start Phase 33 by building:
+Plan Phase 33 from `.planning\phases\33-cross-role-ui-performance-baseline-audit\33-CONTEXT.md`, then build:
+
 1. Cross-role UI inventory across Student, Teacher, Parent, and Admin surfaces.
 2. Baseline evidence for key frontend routes, builds, backend timings, payload sizes, and DB hot spot candidates.
 3. Privacy-safe evidence rules that separate aggregate metadata from forbidden raw student or identity data.
 4. Explicit local/demo/Render/Vercel/live-pilot constraint labels.
 
 ---
-*Last updated: 2026-05-26 after v1.6 roadmap creation.*
+*Last updated: 2026-05-26 after Phase 33 context gathered.*
