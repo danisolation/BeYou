@@ -226,7 +226,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
     render(<AdminDashboardPage />);
 
     expect(await screen.findByText("Vai trò quản trị")).toBeInTheDocument();
-    expect(screen.getByText("Vận hành metadata-only")).toBeInTheDocument();
+    expect(screen.getAllByText("Vận hành metadata-only").length).toBeGreaterThanOrEqual(1);
     expect(
       screen.getByText(
         "Cổng quản trị chỉ hiển thị metadata vận hành, cấu hình và số lượng tổng hợp; không mở câu trả lời tự kiểm tra, ghi chú riêng tư, transcript chat, request body, provider claim hoặc lý do truy cập dạng tự do.",

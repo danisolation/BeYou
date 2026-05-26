@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { EntryCard, ErrorState, LoadingState, PageHeader } from "@/components/ui-primitives";
+import { EntryCard, ErrorState, LoadingState, PageHeader, PrivacyBoundaryCard } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 
 type AdminUser = { id: string };
@@ -56,6 +56,10 @@ export default function AdminDashboardPage() {
         eyebrow="Vai trò quản trị"
         title="Cổng quản trị"
         description="Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn."
+      />
+      <PrivacyBoundaryCard
+        title="Vận hành metadata-only"
+        description="Cổng quản trị chỉ hiển thị metadata vận hành, cấu hình và số lượng tổng hợp; không mở câu trả lời tự kiểm tra, ghi chú riêng tư, transcript chat, request body, provider claim hoặc lý do truy cập dạng tự do."
       />
       <DemoGuideCard
         title="Đi theo luồng quản trị demo"
