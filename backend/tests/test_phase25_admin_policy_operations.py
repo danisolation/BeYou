@@ -1,16 +1,21 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime, timedelta, timezone
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session as OrmSession
 
+from app.core.config import Settings
 from app.core.security import hash_password
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    AuthSessionMethod,
+    ExternalIdentity,
+    ExternalIdentityStatus,
     LinkStatus,
     MoodCheckIn,
     MoodCheckinReminderState,
@@ -24,7 +29,10 @@ from app.db.models import (
 )
 from app.db.session import SessionLocal
 from app.main import app
+from app.schemas.readiness import ReadinessReport
 from app.seeds.demo_seed import DEMO_ADMIN_EMAIL, DEMO_PARENT_EMAIL, DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL
+from app.services.admin_operations import build_operations_dashboard
+from app.services.readiness import evaluate_static_readiness_checks
 
 FRONTEND_ORIGIN = "http://localhost:3000"
 ORIGIN_HEADERS = {"Origin": FRONTEND_ORIGIN, "Sec-Fetch-Site": "same-site"}
@@ -63,7 +71,9 @@ def _clean_database() -> None:
             )
             db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(phase_user_ids)))
             db.execute(delete(UserSession).where(UserSession.user_id.in_(phase_user_ids)))
+            db.execute(delete(ExternalIdentity).where(ExternalIdentity.linked_user_id.in_(phase_user_ids)))
         db.execute(delete(AuditEvent).where(AuditEvent.resource_id.like("phase25%")))
+        db.execute(delete(ExternalIdentity).where(ExternalIdentity.provider_key.like("phase30_%")))
         db.execute(delete(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
         if phase_user_ids:
             db.execute(delete(User).where(User.id.in_(phase_user_ids)))
@@ -313,4 +323,115 @@ def test_operations_dashboard_exposes_v1_4_counts_and_sanitizes_reason_content(
     assert "student.demo@beyou.local" not in rendered
     assert "access_reason_text" not in rendered
     assert "private_note" not in rendered
+
+
+def test_operations_dashboard_exposes_identity_auth_metadata_only(db: OrmSession) -> None:
+    admin = _user(db, email="admin-phase25-identity@example.test", role=UserRole.ADMIN.value)
+    now = datetime.now(timezone.utc)
+    db.add_all(
+        [
+            ExternalIdentity(
+                provider_key="phase30_provider",
+                provider_subject_hash="raw_subject_should_never_render",
+                linked_user_id=admin.id,
+                status=ExternalIdentityStatus.LINKED.value,
+                provider_label="school.example",
+                display_label="student-phase25-identity@example.test",
+            ),
+            ExternalIdentity(
+                provider_key="phase30_provider",
+                provider_subject_hash="provider_subject_should_never_render",
+                linked_user_id=None,
+                status=ExternalIdentityStatus.PENDING_REVIEW.value,
+                provider_label="login.school.edu",
+                display_label="raw_claims groups school class_name",
+            ),
+            ExternalIdentity(
+                provider_key="phase30_provider",
+                provider_subject_hash="client_secret_should_never_render",
+                linked_user_id=None,
+                status=ExternalIdentityStatus.DISABLED.value,
+            ),
+            ExternalIdentity(
+                provider_key="phase30_provider",
+                provider_subject_hash="access_token_should_never_render",
+                linked_user_id=None,
+                status=ExternalIdentityStatus.DEPROVISIONED.value,
+            ),
+            UserSession(
+                token_hash="phase30-token-hash-password",
+                user_id=admin.id,
+                expires_at=now + timedelta(hours=1),
+                is_demo=True,
+                auth_method=AuthSessionMethod.PASSWORD.value,
+                auth_provider_key="local",
+            ),
+            UserSession(
+                token_hash="phase30-token-hash-sso",
+                user_id=admin.id,
+                expires_at=now + timedelta(hours=1),
+                is_demo=True,
+                auth_method=AuthSessionMethod.SSO.value,
+                auth_provider_key="phase30_provider",
+            ),
+        ]
+    )
+    db.commit()
+    settings = Settings(
+        AUTH_PROVIDER_ENABLED=True,
+        AUTH_PROVIDER_KEY="pilot_sso",
+        AUTH_PROVIDER_LABEL="Dang nhap pilot",
+        AUTH_PROVIDER_MODE="pilot",
+        AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
+    )
+    checks = evaluate_static_readiness_checks(settings)
+    report = ReadinessReport(status="degraded", generated_at=now, checks=checks)
+
+    dashboard = build_operations_dashboard(db, readiness_report=report, settings=settings)
+
+    assert dashboard.auth_provider is not None
+    assert dashboard.auth_provider.enabled is True
+    assert dashboard.auth_provider.provider_key == "pilot_sso"
+    assert dashboard.identity_mappings is not None
+    assert dashboard.identity_mappings.pending_review_count == 1
+    assert dashboard.identity_mappings.disabled_count == 1
+    assert dashboard.identity_mappings.deprovisioned_count == 1
+    assert {bucket.key: bucket.count for bucket in dashboard.identity_mappings.by_status} == {
+        "deprovisioned": 1,
+        "disabled": 1,
+        "linked": 1,
+        "pending_review": 1,
+    }
+    assert dashboard.session_auth is not None
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}["password"] >= 1
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}["sso"] == 1
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_provider}["phase30_provider"] == 1
+    assert (
+        "Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng, "
+        "liên kết đang hoạt động và SOS của học sinh quyết định."
+        in dashboard.privacy_notes
+    )
+
+    rendered = dashboard.model_dump_json()
+    for forbidden in (
+        "raw_subject",
+        "provider_subject",
+        "raw_email",
+        "raw_claims",
+        "groups",
+        "school.example",
+        "login.school.edu",
+        "student-phase25-identity@example.test",
+        "client_id",
+        "client_secret",
+        "issuer_url",
+        "callback_url",
+        "tenant_url",
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "password_hash",
+        "eyJhbGciOi",
+    ):
+        assert forbidden not in rendered
 
