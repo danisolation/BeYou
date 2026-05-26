@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Production Pilot Readiness & Identity
 status: executing
-stopped_at: Completed 30-03-PLAN.md
-last_updated: "2026-05-26T02:34:44.033Z"
+stopped_at: Completed 30-04-PLAN.md
+last_updated: "2026-05-26T02:42:58.989Z"
 last_activity: 2026-05-26
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 12
-  completed_plans: 10
-  percent: 83
+  completed_plans: 11
+  percent: 92
 ---
 
 # State: Peerlight AI
@@ -82,7 +82,7 @@ See: `.planning/PROJECT.md` (updated 2026-05-25)
 ## Current Position
 
 Phase: 30 (Identity Foundation & Auth Contracts) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-05-26
 
@@ -136,6 +136,9 @@ Last activity: 2026-05-26
 | Keep authorization app-owned | Plan 30-02 left `require_permission` unchanged so adult visibility remains role + active link + student SOS, not provider claims |
 | Keep provider readiness metadata-only | Plan 30-03 exposes auth provider readiness through safe booleans, labels, statuses, and enum-like keys without raw domains, URLs, secrets, tokens, or claims |
 | Keep identity operations aggregate-only | Plan 30-03 adds mapping/session auth buckets without provider subject hashes, per-user drilldowns, exports, or raw JSON viewers |
+| Keep public auth capabilities safe | Plan 30-04 exposes only demo/email/provider booleans plus optional provider label/mode without provider internals, raw domains, tokens, cookies, emails, or password hashes |
+| Gate demo shortcuts from backend metadata | Plan 30-04 hides public demo role buttons when `public_demo_entry_enabled=false` while preserving email/password cookie login |
+| Preserve no-token frontend auth | Plan 30-04 keeps capability and login calls on `apiFetch` with `credentials: include`, with no browser token storage or OAuth redirect/callback |
 
 ## Known Tech Debt
 
@@ -144,8 +147,8 @@ Last activity: 2026-05-26
 
 ## Session Continuity
 
-Last session: 2026-05-26T02:34:44.024Z
-Stopped at: Completed 30-03-PLAN.md
+Last session: 2026-05-26T02:42:58.982Z
+Stopped at: Completed 30-04-PLAN.md
 Resume file: None
 
 ## Next Action
