@@ -85,6 +85,51 @@ export type SessionAuthOperationsSummary = {
   by_provider: OperationCountBucket[];
 };
 
+export type PilotLaunchChecklistItem = {
+  key: string;
+  label: string;
+  status: "pass" | "warn" | "fail";
+  blocking: boolean;
+  evidence: string;
+  remediation: string | null;
+  command: string | null;
+};
+
+export type PilotLaunchSummary = {
+  status: "ready" | "needs_review" | "blocked";
+  generated_at: string;
+  checklist: PilotLaunchChecklistItem[];
+};
+
+export type PilotDataSafetyBucket = {
+  key: string;
+  label: string;
+  count: number;
+  status: "pass" | "warn" | "fail";
+  blocking: boolean;
+  evidence: string;
+  remediation: string | null;
+};
+
+export type PilotDataSafetySummary = {
+  status: "safe" | "needs_review" | "blocked";
+  buckets: PilotDataSafetyBucket[];
+};
+
+export type PilotHandoffItem = {
+  key: string;
+  label: string;
+  status: "pass" | "warn" | "fail";
+  guidance: string;
+  command: string | null;
+};
+
+export type PilotHandoffSummary = {
+  rollback: PilotHandoffItem[];
+  school_handoff: PilotHandoffItem[];
+  baseline_setup: PilotHandoffItem[];
+};
+
 export type ProductionSmokeChecklistItem = {
   key: string;
   label: string;
@@ -163,6 +208,9 @@ export type AdminOperationsDashboard = {
   auth_provider?: AuthProviderReadinessSummary | null;
   identity_mappings?: IdentityMappingOperationsSummary | null;
   session_auth?: SessionAuthOperationsSummary | null;
+  pilot_launch?: PilotLaunchSummary | null;
+  pilot_data_safety?: PilotDataSafetySummary | null;
+  pilot_handoff?: PilotHandoffSummary | null;
   audit: {
     total_matching: number;
     filters: {

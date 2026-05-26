@@ -13,6 +13,12 @@ import {
   type IdentityMappingOperationsSummary,
   getAdminOperationsDashboard,
   type OperationCountBucket,
+  type PilotDataSafetyBucket,
+  type PilotDataSafetySummary,
+  type PilotHandoffItem,
+  type PilotHandoffSummary,
+  type PilotLaunchChecklistItem,
+  type PilotLaunchSummary,
   type ProductionSmokeChecklistItem,
   type RuntimeModeSummary,
   type SessionAuthOperationsSummary,
@@ -85,7 +91,7 @@ export default function AdminOperationsPage() {
       })
       .catch(() => {
         if (!cancelled) {
-          setError("Chưa tải được metadata đăng nhập. Hãy thử lại từ cổng quản trị.");
+          setError("Chưa tải được metadata pilot. Hãy thử lại từ cổng quản trị hoặc kiểm tra readiness backend.");
         }
       })
       .finally(() => {
@@ -112,11 +118,13 @@ export default function AdminOperationsPage() {
   return (
     <section className="space-y-6">
       <header className="rounded-3xl bg-white p-6 shadow-sm">
-        <p className="text-label font-semibold text-accent">Vận hành an toàn</p>
-        <h1 className="mt-2 text-display">Vận hành metadata-only</h1>
+        <p className="text-label font-semibold text-accent">Vận hành pilot an toàn</p>
+        <h1 className="mt-2 text-display">Sẵn sàng mở pilot trường học</h1>
         <p className="mt-3 max-w-3xl text-body">
-          Theo dõi readiness, gửi email SOS và audit vận hành bằng metadata. Trang này không mở nội dung riêng tư của học sinh.
+          Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này
+          không mở nội dung riêng tư của học sinh.
         </p>
+        <p className="mt-3 text-label font-semibold text-accent">Vận hành metadata-only</p>
         <p className="mt-3 text-label">Cập nhật: {generatedAt}</p>
       </header>
 
@@ -210,11 +218,49 @@ export default function AdminOperationsPage() {
         </button>
       </form>
 
-      {isLoading ? <p className="rounded-3xl bg-white p-6 shadow-sm">Đang tải dữ liệu vận hành...</p> : null}
+      {isLoading ? <p className="rounded-3xl bg-white p-6 shadow-sm">Đang tải metadata vận hành pilot...</p> : null}
       {error ? <p className="rounded-3xl bg-white p-6 text-red-700 shadow-sm">{error}</p> : null}
 
       {dashboard ? (
         <>
+          <Panel
+            title="Production pilot launch status"
+            description="Trạng thái launch pilot được suy ra từ checklist metadata, không phải phê duyệt pháp lý hoặc lâm sàng."
+            testId="pilot-launch-status"
+          >
+            <PilotLaunchStatusPanel summary={dashboard.pilot_launch ?? null} />
+          </Panel>
+          <Panel
+            title="Launch checklist"
+            description="Các điều kiện runtime, readiness, guardrail, smoke, baseline và policy trước khi dùng với dữ liệu học sinh thật."
+            testId="pilot-launch-checklist"
+          >
+            <PilotLaunchChecklistPanel checklist={dashboard.pilot_launch?.checklist ?? []} />
+          </Panel>
+          <Panel
+            title="Demo/real data safety"
+            description="Đếm aggregate demo/real metadata để tránh phụ thuộc demo khi mở production pilot."
+            testId="pilot-data-safety"
+          >
+            <PilotDataSafetyPanel summary={dashboard.pilot_data_safety ?? null} />
+          </Panel>
+          <Panel
+            title="Baseline setup"
+            description="Thiết lập nội dung, policy và reminder không-demo trước khi trường bắt đầu onboarding."
+            testId="pilot-baseline-setup"
+          >
+            <PilotHandoffItems
+              items={dashboard.pilot_handoff?.baseline_setup ?? []}
+              emptyCopy="Chưa có metadata thiết lập baseline. Hãy xác nhận nội dung, chính sách và cấu hình pilot trước khi mở cho trường."
+            />
+          </Panel>
+          <Panel
+            title="Rollback và handoff"
+            description="Hướng dẫn rollback và bàn giao chỉ là metadata tĩnh; không lưu contact details hoặc incident free text."
+            testId="pilot-handoff-guidance"
+          >
+            <PilotHandoffPanel handoff={dashboard.pilot_handoff ?? null} />
+          </Panel>
           <Panel
             title="Deployment guardrails"
             description="Kiểm tra Render, Vercel, API target, CORS và cookie bằng metadata an toàn."
@@ -254,7 +300,7 @@ export default function AdminOperationsPage() {
           <section className="grid gap-4 lg:grid-cols-2">
             <Panel
               title="Identity mapping buckets"
-              description="Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản."
+              description="Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc đường mở tài khoản."
             >
               <IdentityMappingPanel
                 mappings={dashboard.identity_mappings ?? null}
@@ -330,10 +376,10 @@ export default function AdminOperationsPage() {
 }
 
 function statusClass(status: string) {
-  if (status === "pass" || status === "covered") {
+  if (status === "ready" || status === "safe" || status === "pass" || status === "covered") {
     return "border-accent bg-secondary text-accent-dark";
   }
-  if (status === "warn") {
+  if (status === "needs_review" || status === "warn") {
     return "border-warning bg-[#FFF8E8] text-[#6B4A00]";
   }
   return "border-[#F3C0C0] bg-white text-red-700";
@@ -344,6 +390,135 @@ function StatusBadge({ status }: { status: string }) {
     <span className={`inline-flex rounded-full border px-3 py-1 text-label font-semibold ${statusClass(status)}`}>
       {status}
     </span>
+  );
+}
+
+function pilotLaunchCopy(status: PilotLaunchSummary["status"]) {
+  if (status === "blocked") {
+    return "Pilot đang bị chặn. Hãy xử lý các mục fail trước khi dùng với dữ liệu học sinh thật.";
+  }
+  if (status === "ready") {
+    return "Pilot sẵn sàng theo metadata hiện tại. Vẫn cần xác nhận vận hành với trường trước khi mở thực tế.";
+  }
+  return "Pilot cần rà soát thêm. Các mục warn không mở dữ liệu riêng tư nhưng cần xác nhận trước launch.";
+}
+
+function PilotLaunchStatusPanel({ summary }: { summary: PilotLaunchSummary | null }) {
+  const status = summary?.status ?? "needs_review";
+  return (
+    <div className="rounded-2xl bg-secondary p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <StatusBadge status={status} />
+        <p className="text-body">{pilotLaunchCopy(status)}</p>
+      </div>
+      {summary?.generated_at ? <p className="mt-3 text-label">Cập nhật checklist: {formatDate(summary.generated_at)}</p> : null}
+    </div>
+  );
+}
+
+function PilotLaunchChecklistPanel({ checklist }: { checklist: PilotLaunchChecklistItem[] }) {
+  if (checklist.length === 0) {
+    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có checklist pilot. Hãy kiểm tra readiness và tải lại trang vận hành.</p>;
+  }
+
+  return (
+    <div className="grid gap-3 md:grid-cols-2">
+      {checklist.map((item) => (
+        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="font-semibold">{item.label}</h3>
+            <StatusBadge status={item.status} />
+          </div>
+          <p className="mt-2 text-label">Blocking: {item.blocking ? "yes" : "no"}</p>
+          <p className="mt-2 text-body">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function PilotDataSafetyPanel({ summary }: { summary: PilotDataSafetySummary | null }) {
+  const buckets = summary?.buckets ?? [];
+  if (buckets.length === 0) {
+    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có metadata an toàn dữ liệu pilot. Không có dữ liệu thô được hiển thị.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-2xl bg-secondary p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <StatusBadge status={summary?.status ?? "needs_review"} />
+          <p className="text-body">Tổng hợp demo/real data safety bằng count metadata.</p>
+        </div>
+      </div>
+      <div className="grid gap-3 md:grid-cols-2">
+        {buckets.map((bucket) => (
+          <PilotDataSafetyBucketCard key={bucket.key} bucket={bucket} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PilotDataSafetyBucketCard({ bucket }: { bucket: PilotDataSafetyBucket }) {
+  return (
+    <article className="rounded-2xl border border-[#D7EFE8] p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="font-semibold">{bucket.label}</h3>
+        <StatusBadge status={bucket.status} />
+      </div>
+      <p className="mt-2 text-display">{bucket.count}</p>
+      <p className="mt-2 text-label">Blocking: {bucket.blocking ? "yes" : "no"}</p>
+      <p className="mt-2 text-body">{bucket.evidence}</p>
+      {bucket.remediation ? <p className="mt-2 text-label">{bucket.remediation}</p> : null}
+    </article>
+  );
+}
+
+function PilotHandoffPanel({ handoff }: { handoff: PilotHandoffSummary | null }) {
+  const rollback = handoff?.rollback ?? [];
+  const schoolHandoff = handoff?.school_handoff ?? [];
+  if (rollback.length === 0 && schoolHandoff.length === 0) {
+    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có hướng dẫn handoff. Hãy dùng quy trình rollback an toàn trong README và kiểm tra lại readiness.</p>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <PilotHandoffItems title="Rollback" items={rollback} emptyCopy="Chưa có hướng dẫn rollback." />
+      <PilotHandoffItems title="School handoff" items={schoolHandoff} emptyCopy="Chưa có metadata handoff cho trường." />
+    </div>
+  );
+}
+
+function PilotHandoffItems({
+  title,
+  items,
+  emptyCopy,
+}: {
+  title?: string;
+  items: PilotHandoffItem[];
+  emptyCopy: string;
+}) {
+  if (items.length === 0) {
+    return <p className="rounded-2xl bg-secondary p-4 text-body">{emptyCopy}</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {title ? <h3 className="text-label font-semibold text-accent">{title}</h3> : null}
+      {items.map((item) => (
+        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <h4 className="font-semibold">{item.label}</h4>
+            <StatusBadge status={item.status} />
+          </div>
+          <p className="mt-2 text-body">{item.guidance}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
+        </article>
+      ))}
+    </div>
   );
 }
 
@@ -620,9 +795,19 @@ function MetricCard({ title, value, description }: { title: string; value: strin
   );
 }
 
-function Panel({ title, description, children }: { title: string; description: string; children: ReactNode }) {
+function Panel({
+  title,
+  description,
+  children,
+  testId,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+  testId?: string;
+}) {
   return (
-    <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm">
+    <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm" data-testid={testId}>
       <div>
         <h2 className="text-heading">{title}</h2>
         <p className="mt-2 text-body">{description}</p>

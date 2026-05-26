@@ -362,7 +362,7 @@ describe("Phase 11 operations visibility UI", () => {
       ),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản."),
+      screen.getByText("Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc đường mở tài khoản."),
     ).toBeInTheDocument();
     expect(
       screen.getByText("Tóm tắt session backend-owned theo phương thức đăng nhập và provider an toàn; không lưu token trong trình duyệt."),
@@ -386,7 +386,7 @@ describe("Phase 11 operations visibility UI", () => {
 
     const rendered = document.body.textContent ?? "";
     const renderedWithoutAllowedCopy = rendered.replace(
-      "Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản.",
+      "Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc đường mở tài khoản.",
       "",
     );
     expect(rendered).not.toMatch(
