@@ -84,11 +84,11 @@
 6. External identity claims, school/class metadata, or provider groups never grant adult student visibility; active relationship plus student-sent SOS remains mandatory.
 7. Unknown, unlinked, disabled, or deprovisioned identities receive safe denial or pending-review behavior without privileged auto-creation.
 
-**Plans:** 1/5 plans executed
+**Plans:** 2/5 plans executed
 
 Plans:
 - [x] 30-01-PLAN.md — Backend identity/session schema and safe session metadata.
-- [ ] 30-02-PLAN.md — External identity resolver contract and authorization boundary regressions.
+- [x] 30-02-PLAN.md — External identity resolver contract and authorization boundary regressions.
 - [ ] 30-03-PLAN.md — Backend provider readiness and admin operations identity metadata.
 - [ ] 30-04-PLAN.md — Public-safe auth capabilities and production-pilot demo entry gating.
 - [ ] 30-05-PLAN.md — Admin operations UI panels for provider, mapping, and session auth metadata.
@@ -147,8 +147,8 @@ Plans:
 | IDENT-03 | Phase 30 | Pending |
 | IDENT-04 | Phase 30 | Pending |
 | IDENT-05 | Phase 30 | Pending |
-| IDENT-06 | Phase 30 | Pending |
-| IDENT-07 | Phase 30 | Pending |
+| IDENT-06 | Phase 30 | Complete |
+| IDENT-07 | Phase 30 | Complete |
 | PILOT-01 | Phase 31 | Pending |
 | PILOT-02 | Phase 31 | Pending |
 | PILOT-03 | Phase 31 | Pending |
@@ -164,7 +164,7 @@ Plans:
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 10
+- Complete: 16
 - Unmapped: 0
 
 ## Assumptions
@@ -175,4 +175,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 30 Plan 01 execution*
+*Last updated: 2026-05-26 after Phase 30 Plan 02 execution*

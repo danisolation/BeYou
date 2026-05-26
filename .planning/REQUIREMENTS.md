@@ -30,8 +30,8 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [x] **IDENT-03**: Existing email/password and seeded demo login flows continue to work in demo/local mode, while production pilot mode can disable public demo entry and demo accounts safely.
 - [x] **IDENT-04**: Auth sessions record safe auth method/provider metadata and continue to use backend-owned HttpOnly cookie sessions with no browser token storage.
 - [x] **IDENT-05**: All auth methods enforce account status, session revocation, privacy acknowledgement requirements, and role dashboard routing through the same backend session/user contract.
-- [ ] **IDENT-06**: External identity claims, school/class metadata, or provider groups never grant adult student visibility; app role, active relationship, and student-sent SOS remain mandatory.
-- [ ] **IDENT-07**: Unknown, unlinked, disabled, or deprovisioned external identities receive safe denial or pending-review behavior without creating privileged users automatically.
+- [x] **IDENT-06**: External identity claims, school/class metadata, or provider groups never grant adult student visibility; app role, active relationship, and student-sent SOS remain mandatory.
+- [x] **IDENT-07**: Unknown, unlinked, disabled, or deprovisioned external identities receive safe denial or pending-review behavior without creating privileged users automatically.
 
 ### School Pilot Operations & Safe Launch
 
@@ -104,8 +104,8 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 | IDENT-03 | Phase 30 | Complete |
 | IDENT-04 | Phase 30 | Complete |
 | IDENT-05 | Phase 30 | Complete |
-| IDENT-06 | Phase 30 | Pending |
-| IDENT-07 | Phase 30 | Pending |
+| IDENT-06 | Phase 30 | Complete |
+| IDENT-07 | Phase 30 | Complete |
 | PILOT-01 | Phase 31 | Pending |
 | PILOT-02 | Phase 31 | Pending |
 | PILOT-03 | Phase 31 | Pending |
@@ -121,9 +121,9 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 **Coverage:**
 - v1.5 requirements: 28 total
 - Mapped to phases: 28
-- Complete: 14
+- Complete: 16
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-26 after Phase 30 Plan 01 execution*
+*Last updated: 2026-05-26 after Phase 30 Plan 02 execution*
