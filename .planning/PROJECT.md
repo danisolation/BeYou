@@ -13,9 +13,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.5 Production Pilot Readiness & Identity archived as of 2026-05-26
-**Milestone status:** between milestones; next milestone requirements and roadmap are not defined yet
+**Milestone status:** v1.6 Cross-Role UI Consistency & Production Performance started; requirements and roadmap are being defined
 **Scope shipped:** 32 total phases; v1.5 Phases 28-32 completed 22/22 plans and 28/28 requirements
-**Current execution:** v1.5 milestone archive is complete; next action is `/gsd-new-milestone`
+**Current execution:** v1.6 milestone initialization; research, requirements, and roadmap are next
 **Latest verification:** Phase 32 final verification constrained pass: backend `189 passed`, backend ruff passed, frontend `111 passed`, frontend lint/build passed, Node release gates passed, guardrail passed, public demo smoke `16/16`, live pilot smoke constrained
 **Latest audit:** `.planning/milestones/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
 
@@ -70,6 +70,18 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 audit archive: `.planning/milestones/v1.2-MILESTONE-AUDIT.md`
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
+
+## Current Milestone: v1.6 Cross-Role UI Consistency & Production Performance
+
+**Goal:** Make Student, Teacher, Parent, and Admin experiences feel like one cohesive Peerlight AI product while reducing production slowness across database, backend, and frontend paths.
+
+**Target features:**
+
+- Cross-role UI audit and harmonization for shell/navigation, spacing, cards, tables, forms, empty/loading/error states, Vietnamese support copy, responsive behavior, and accessibility.
+- Shared frontend patterns/components where they reduce drift without introducing large UI rewrites.
+- Production performance audit for PostgreSQL queries/indexes, backend endpoint latency, N+1 patterns, payload size, caching/pagination opportunities, and Render/Vercel runtime constraints.
+- Frontend performance improvements for data fetching, render waterfalls, bundle/runtime cost, route loading states, and perceived responsiveness on production.
+- Measurable performance and UI regression gates so improvements are verified without weakening privacy, role authorization, or metadata-only operations.
 
 ## Completed Milestone: v1.5 Production Pilot Readiness & Identity
 
@@ -164,9 +176,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] README Phase 32 release guidance now maps QA-01..QA-06 to exact commands and documents live `smoke:pilot` constraints plus privacy grep gates.
 - [x] Final Phase 32 verification records deterministic gates passed, public demo smoke passed, and live production-pilot smoke constrained with no high-severity deterministic privacy/security failures.
 
-### Active for Next Milestone
+### Active in v1.6
 
-- Fresh requirements are not defined yet. Use `/gsd-new-milestone` to gather next-scope requirements.
+- [ ] Harmonize Student, Teacher, Parent, and Admin UI patterns into a cohesive Peerlight AI experience.
+- [ ] Improve production performance across database, backend APIs, and frontend rendering/data loading.
+- [ ] Add measurable UI/performance regression gates that preserve privacy, role authorization, and metadata-only operations boundaries.
 
 ### Out of Scope
 
@@ -276,7 +290,7 @@ Roles:
 
 ## Next Milestone Goals
 
-Next milestone goals are not selected yet. Candidate themes from deferred scope: live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, and richer launch automation.
+v1.6 focuses on cross-role UI consistency and production performance. Deferred candidates after v1.6 remain live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, and richer launch automation.
 
 ## Evolution
 
@@ -296,4 +310,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after v1.5 milestone archive*
+*Last updated: 2026-05-26 after starting v1.6 milestone*
