@@ -71,7 +71,6 @@ def _identity(
         linked_user_id=linked_user.id if linked_user else None,
         provider_label="Pilot SSO",
         display_label="safe-review-label",
-        is_demo=True,
     )
     db.add(identity)
     db.commit()
