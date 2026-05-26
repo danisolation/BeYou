@@ -290,16 +290,16 @@ export function ResponsiveTable({ children }: { children: React.ReactNode }) {
 |---|-------|---------|---------------|
 | — | No unverified assumptions used. | — | — |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Exact primitive file split**
+1. **Exact primitive file split — RESOLVED**
    - What we know: `ui-primitives.tsx` or small component files are both allowed. [VERIFIED: 34-CONTEXT.md]
-   - What's unclear: Planner may choose one file or multiple files.
+   - Resolution: Use one neutral `frontend/components/ui-primitives.tsx` for the shared primitive foundation and enhance the existing `frontend/components/empty-state.tsx` in place.
    - Recommendation: Use one `ui-primitives.tsx` plus keep/enhance existing `empty-state.tsx` unless file size becomes unwieldy. [VERIFIED: existing component layout]
 
-2. **Smallest adoption set**
+2. **Smallest adoption set — RESOLVED**
    - What we know: Shell, Teacher/Parent shared presentation, existing empty/demo guide components, Student/Admin entry cards are prioritized. [VERIFIED: 34-CONTEXT.md]
-   - What's unclear: Whether to touch every role page in Phase 34.
+   - Resolution: Adopt primitives narrowly in the authenticated shell, Teacher/Parent neutral shared presentation, and representative Student/Admin dashboard surfaces; leave full dashboard consistency to Phase 35.
    - Recommendation: Do not touch every dashboard; prove primitives on representative surfaces and leave full dashboard consistency to Phase 35. [VERIFIED: ROADMAP.md]
 
 ## Environment Availability
