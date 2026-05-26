@@ -1,3 +1,4 @@
+import re
 from functools import lru_cache
 from typing import Literal
 
@@ -5,6 +6,34 @@ from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 RuntimeMode = Literal["local_demo", "public_demo", "production_pilot"]
+
+SAFE_PROVIDER_VALUE_RE = re.compile(r"^[a-z][a-z0-9_]{0,95}$")
+FORBIDDEN_PROVIDER_MARKERS = {
+    "access_token",
+    "callback",
+    "callback_url",
+    "class",
+    "claim",
+    "client",
+    "client_id",
+    "client_secret",
+    "group",
+    "groups",
+    "http",
+    "id_token",
+    "issuer",
+    "issuer_url",
+    "password_hash",
+    "provider_subject",
+    "raw_claim",
+    "raw_subject",
+    "refresh_token",
+    "school",
+    "secret",
+    "tenant",
+    "tenant_url",
+    "token",
+}
 
 
 class Settings(BaseSettings):
@@ -40,6 +69,14 @@ class Settings(BaseSettings):
     smtp_from: str = Field(default="", validation_alias="SMTP_FROM")
     smtp_use_tls: bool = Field(default=True, validation_alias="SMTP_USE_TLS")
     smtp_timeout_seconds: float = Field(default=10.0, validation_alias="SMTP_TIMEOUT_SECONDS")
+    auth_provider_enabled: bool = Field(default=False, validation_alias="AUTH_PROVIDER_ENABLED")
+    auth_provider_key: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_KEY")
+    auth_provider_label: str = Field(default="Chưa cấu hình", validation_alias="AUTH_PROVIDER_LABEL")
+    auth_provider_mode: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_MODE")
+    auth_provider_last_check_status: str | None = Field(
+        default=None,
+        validation_alias="AUTH_PROVIDER_LAST_CHECK_STATUS",
+    )
 
     @field_validator("session_cookie_name")
     @classmethod
@@ -94,6 +131,26 @@ class Settings(BaseSettings):
             raise ValueError("SOS_EMAIL_PROVIDER must be disabled, local_outbox, or smtp")
         return normalized
 
+    @field_validator("auth_provider_key", "auth_provider_mode")
+    @classmethod
+    def validate_auth_provider_enum_metadata(cls, value: str) -> str:
+        normalized = value.strip().lower().replace("-", "_")
+        cls._reject_unsafe_provider_metadata(normalized)
+        if not SAFE_PROVIDER_VALUE_RE.fullmatch(normalized):
+            raise ValueError("Auth provider key and mode must be safe enum-like metadata")
+        return normalized
+
+    @field_validator("auth_provider_label", "auth_provider_last_check_status")
+    @classmethod
+    def validate_auth_provider_safe_string(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        normalized = " ".join(value.strip().split())
+        if not normalized:
+            return normalized
+        cls._reject_unsafe_provider_metadata(normalized)
+        return normalized
+
     @staticmethod
     def _validate_origin(value: str, field_name: str) -> str:
         if value.endswith("/"):
@@ -101,6 +158,24 @@ class Settings(BaseSettings):
         if "*" in value:
             raise ValueError(f"{field_name} cannot contain wildcards when credentials are enabled")
         return value
+
+    @staticmethod
+    def _reject_unsafe_provider_metadata(value: str) -> None:
+        normalized = value.strip().lower()
+        compact = normalized.replace("-", "_").replace(" ", "_")
+        if not normalized:
+            return
+        if any(marker in compact for marker in FORBIDDEN_PROVIDER_MARKERS):
+            raise ValueError("Auth provider metadata cannot contain secret, token, claim, or raw identity markers")
+        if any(symbol in normalized for symbol in ("://", "/", "\\", "@", "?", "#")):
+            raise ValueError("Auth provider metadata cannot contain URLs, emails, or path-like values")
+        if re.search(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\b", normalized):
+            raise ValueError("Auth provider metadata cannot contain raw domains")
+        if re.search(r"\$argon2(?:id|i|d)\$", normalized) or re.search(
+            r"\beyJ[A-Za-z0-9_-]{10,}\b",
+            value,
+        ):
+            raise ValueError("Auth provider metadata cannot contain password hashes or token-like values")
 
     @property
     def allowed_frontend_origins(self) -> list[str]:

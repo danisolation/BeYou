@@ -331,6 +331,14 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
+    provider_ready = (
+        settings.auth_provider_enabled
+        and bool(settings.auth_provider_key.strip())
+        and settings.auth_provider_key != "disabled"
+        and bool(settings.auth_provider_label.strip())
+        and bool(settings.auth_provider_mode.strip())
+        and settings.auth_provider_mode != "disabled"
+    )
     if settings.is_production_pilot and settings.allow_demo_login:
         checks.append(
             _safe_check(
@@ -341,13 +349,60 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
                 remediation="Use non-demo login configuration before production pilot launch.",
             )
         )
-    else:
+    elif settings.is_production_pilot and provider_ready:
         checks.append(
             _safe_check(
                 key="identity_configuration",
                 category="authentication",
                 status="pass",
-                summary="Identity configuration is safe for the selected runtime mode.",
+                summary="Production pilot auth provider readiness is configured with safe metadata.",
+            )
+        )
+    elif settings.is_production_pilot:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="fail",
+                summary="Production pilot auth provider readiness is not enabled.",
+                remediation="Enable metadata-only provider readiness before pilot launch.",
+            )
+        )
+    elif settings.is_demo_runtime and not settings.allow_demo_login:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="pass",
+                summary="Demo runtime identity configuration keeps demo login disabled safely.",
+            )
+        )
+    elif settings.is_demo_runtime:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="pass",
+                summary="Demo runtime identity configuration is safe for non-pilot use.",
+            )
+        )
+    elif provider_ready:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="pass",
+                summary="Auth provider readiness is configured with safe metadata.",
+            )
+        )
+    else:
+        checks.append(
+            _safe_check(
+                key="identity_configuration",
+                category="authentication",
+                status="warn",
+                summary="Auth provider readiness is disabled outside production pilot mode.",
+                remediation="Enable metadata-only provider readiness before a school SSO pilot.",
             )
         )
 

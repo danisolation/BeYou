@@ -236,7 +236,7 @@ def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
         CHAT_PROVIDER="fallback",
         SOS_EMAIL_PROVIDER="disabled",
         AUTH_PROVIDER_ENABLED=True,
-        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_KEY="pilot_sso",
         AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
         AUTH_PROVIDER_MODE="pilot",
         AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
@@ -250,14 +250,14 @@ def test_production_pilot_static_readiness_can_pass_safe_config() -> None:
 def test_auth_provider_settings_accept_safe_metadata_only() -> None:
     settings = Settings(
         AUTH_PROVIDER_ENABLED=True,
-        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_KEY="pilot_sso",
         AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
         AUTH_PROVIDER_MODE="pilot",
         AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
     )
 
     assert settings.auth_provider_enabled is True
-    assert settings.auth_provider_key == "school_sso"
+    assert settings.auth_provider_key == "pilot_sso"
     assert settings.auth_provider_label == "Dang nhap truong pilot"
     assert settings.auth_provider_mode == "pilot"
     assert settings.auth_provider_last_check_status == "san sang"
@@ -309,7 +309,7 @@ def test_identity_configuration_reflects_safe_auth_provider_metadata() -> None:
         CHAT_PROVIDER="fallback",
         SOS_EMAIL_PROVIDER="disabled",
         AUTH_PROVIDER_ENABLED=True,
-        AUTH_PROVIDER_KEY="school_sso",
+        AUTH_PROVIDER_KEY="pilot_sso",
         AUTH_PROVIDER_LABEL="Dang nhap truong pilot",
         AUTH_PROVIDER_MODE="pilot",
         AUTH_PROVIDER_LAST_CHECK_STATUS="san sang",
