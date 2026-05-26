@@ -361,7 +361,8 @@ def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_eviden
     ]
 
     _assert_aggregate_only_evidence(evidence_rows)
-    assert {row["statusCategory"] for row in evidence_rows} <= {"2xx", "3xx", "4xx", "5xx"}
+    for row in evidence_rows:
+        assert row["statusCategory"] == "2xx", row
     assert db.scalar(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read")) is not None
 
 
