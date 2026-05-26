@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 planned and ready to execute
-**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 5 verified plans ready
-**Current execution:** Phase 32 Privacy, Security & Release Gates is ready to execute
-**Latest verification:** Phase 31 verification passed with metadata-only launch checklist, data-safety buckets, operations UI panels, rollback/handoff docs, code review, backend/frontend/docs gates, and `31-VERIFICATION.md` score 5/5
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 executing with 1/5 plans complete
+**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 1/5 plans executed
+**Current execution:** Phase 32 Privacy, Security & Release Gates is executing; Plan 32-02 Node deploy/smoke release gates is next
+**Latest verification:** Phase 32 Plan 32-01 backend release gates passed with 8 new tests, 72 related backend regressions, and backend ruff
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -41,6 +41,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 29 verification: passed, including guardrail/smoke Node tests, backend operations metadata tests, operations UI regressions, frontend lint/build, schema drift check, and clean code review/re-review
 - Phase 30 verification: passed, including identity/session schema tests, external identity resolver tests, authorization privacy regressions, auth capabilities tests, operations UI regressions, code review fixes, Alembic check, schema drift check, backend ruff, frontend lint/build
 - Phase 31 verification: passed, including pilot operations backend regressions, operations UI regressions, README docs gate, code review, backend ruff, frontend lint/build, and `31-VERIFICATION.md` score 5/5
+- Phase 32 Plan 32-01 verification: passed, including backend release gates for QA-01/QA-03/QA-04/QA-05, 72 related backend regressions, and backend ruff
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -144,6 +145,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Identity readiness and operations expose only metadata-safe provider, mapping, and session buckets.
 - [x] School pilot operations expose safe launch checklist, demo/real data-safety metadata, rollback guidance, and handoff metadata without raw student surveillance.
 - [x] Phase 32 release-gate context, research, and 5 verified execution plans are ready for final v1.5 privacy/security validation.
+- [x] Backend Phase 32 release gates now prove production-pilot readiness/seed blocking, no-callback/no-token identity scope, SOS-only adult visibility, and operations metadata redlines for QA-01, QA-03, QA-04, and QA-05.
 
 ### Active in v1.5
 
@@ -243,6 +245,7 @@ Roles:
 | Prepare identity contracts before full OAuth/SSO | Provider-specific callbacks stay deferred, but Phase 30 added safe provider+subject mappings, session auth metadata, and public-safe capabilities | Validated in Phase 30 |
 | Keep identity claims out of authorization | App-owned role, active relationship, privacy acknowledgement, and student-sent SOS remain the source of truth for access | Validated in Phase 30 |
 | Keep identity operations metadata-only | Admin operations can show readiness, mapping, and session buckets without raw claims, provider subjects, emails, exports, or account drilldowns | Validated in Phase 30 |
+| Fix release-gate sanitizer gaps immediately | Phase 32 Plan 32-01 expanded operations redlines when QA-05 caught answer/export/risk markers in serialized dashboard metadata | Validated in Phase 32 |
 
 ## Known Tech Debt
 
@@ -272,4 +275,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after Phase 30 verification*
+*Last updated: 2026-05-26 after Phase 32 Plan 32-01*

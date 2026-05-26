@@ -3,7 +3,7 @@
 **Created:** 2026-05-25
 **Granularity:** Coarse
 **Milestone:** v1.5 Production Pilot Readiness & Identity
-**Coverage:** 28/28 v1.5 requirements mapped; 22/28 complete; Phases 28-31 complete
+**Coverage:** 28/28 v1.5 requirements mapped; 22/28 complete; Phases 28-31 complete; Phase 32 executing
 
 ## Completed Milestones
 
@@ -116,7 +116,7 @@ Plans:
 **Depends on:** Phases 28-31
 **Requirements:** QA-01, QA-02, QA-03, QA-04, QA-05, QA-06
 **UI hint:** yes
-**Status:** Planned
+**Status:** Executing
 
 **Success criteria:**
 1. Backend tests verify runtime mode validation, readiness pass/fail behavior, seed blocking, deployment checks, and secret masking.
@@ -126,10 +126,10 @@ Plans:
 5. Operations/readiness tests or grep gates reject raw identifiers, emails, notes, transcripts, answers, secrets, free-text reasons, exports, and risk leaderboards.
 6. Backend tests/lint, frontend tests/lint/build, docs checks, and relevant smoke commands pass or document explicit accepted external constraints.
 
-**Plans:** 5/5 planned
+**Plans:** 1/5 complete
 
 Plans:
-- [ ] 32-01-PLAN.md — Backend runtime/readiness, identity/privacy, and operations metadata release gates.
+- [x] 32-01-PLAN.md — Backend runtime/readiness, identity/privacy, and operations metadata release gates.
 - [ ] 32-02-PLAN.md — Node deployment/smoke release-gate tests and `test:release-gates` script.
 - [ ] 32-03-PLAN.md — Frontend no-token auth, privacy routing, and operations UI redline gates.
 - [ ] 32-04-PLAN.md — README release-gate command matrix, live smoke constraints, and privacy grep guidance.
@@ -182,4 +182,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 31 verification*
+*Last updated: 2026-05-26 after Phase 32 Plan 32-01*
