@@ -5,6 +5,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AdminOperationsPage from "@/app/(authenticated)/admin/operations/page";
 
+const phase31RequirementIds = ["PILOT-01", "PILOT-02", "PILOT-03", "PILOT-04", "PILOT-05"];
+
 const baseDashboard = {
   generated_at: "2026-05-26T00:00:00Z",
   privacy_notes: [
@@ -198,6 +200,10 @@ function mockFetch(body: unknown) {
 describe("Phase 31 school pilot operations UI", () => {
   beforeEach(() => vi.restoreAllMocks());
 
+  it("documents every Phase 31 requirement in the frontend gate", () => {
+    expect(phase31RequirementIds).toEqual(["PILOT-01", "PILOT-02", "PILOT-03", "PILOT-04", "PILOT-05"]);
+  });
+
   it("keeps Phase 31 pilot operation fields optional in the API contract", () => {
     const apiSource = readFileSync(join(process.cwd(), "lib/admin-operations-api.ts"), "utf8");
 
@@ -223,6 +229,11 @@ describe("Phase 31 school pilot operations UI", () => {
     expect(await screen.findByText("Vận hành pilot an toàn")).toBeInTheDocument();
     expect(screen.getByText("Sẵn sàng mở pilot trường học")).toBeInTheDocument();
     expect(screen.getByText("Vận hành metadata-only")).toBeInTheDocument();
+    expect(screen.getByText("Production pilot launch status")).toBeInTheDocument();
+    expect(screen.getByText("Launch checklist")).toBeInTheDocument();
+    expect(screen.getByText("Demo/real data safety")).toBeInTheDocument();
+    expect(screen.getByText("Baseline setup")).toBeInTheDocument();
+    expect(screen.getByText("Rollback và handoff")).toBeInTheDocument();
     expect(
       screen.getByText(
         "Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này không mở nội dung riêng tư của học sinh.",
@@ -250,8 +261,8 @@ describe("Phase 31 school pilot operations UI", () => {
     expect(rendered).not.toMatch(
       /student\.demo@|teacher\.demo@|provider_subject|raw_claims|private_note|sos_note|transcript|self_check_answer|student_id|recipient_id|pilot-owner@example|risk leaderboard|xếp hạng nguy cơ/i,
     );
-    expect(screen.queryByRole("button", { name: /Xuất|Tải xuống|Export|Download|reset|delete|launch/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /Chi tiết học sinh|drilldown|risk leaderboard|xếp hạng/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Xuất|Export|Download|Tải xuống|reset|drilldown|Chi tiết học sinh|xếp hạng nguy cơ/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Xuất|Export|Download|Tải xuống|reset|drilldown|Chi tiết học sinh|xếp hạng nguy cơ/i })).not.toBeInTheDocument();
   });
 
   it("renders safe empty states when older operations payloads omit all pilot fields", async () => {

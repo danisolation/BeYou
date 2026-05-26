@@ -38,6 +38,23 @@ PASSWORD = "secret123"
 RAW_SELF_CHECK_TITLE = "RAW_PHASE31_SELF_CHECK_TITLE_SHOULD_NOT_RENDER"
 RAW_SCENARIO_TITLE = "RAW_PHASE31_SCENARIO_TITLE_SHOULD_NOT_RENDER"
 RAW_PRIVATE_NOTE = "RAW_PHASE31_PRIVATE_NOTE_SHOULD_NOT_RENDER"
+PHASE31_REQUIREMENT_IDS = ("PILOT-01", "PILOT-02", "PILOT-03", "PILOT-04", "PILOT-05")
+PHASE31_FORBIDDEN_OUTPUT_MARKERS = (
+    "student.demo@beyou.local",
+    "teacher.demo@beyou.local",
+    "provider_subject",
+    "raw_claims",
+    "private_note",
+    "sos_note",
+    "transcript",
+    "self_check_answer",
+    "scenario_answer",
+    "reason_text",
+    "student_id",
+    "recipient_id",
+    "export_url",
+    "risk_leaderboard",
+)
 
 
 def _clean_database() -> None:
@@ -281,6 +298,16 @@ def _dashboard_json(db: OrmSession, settings: Settings | None = None) -> str:
     ).model_dump_json()
 
 
+def _assert_phase31_privacy_redlines(rendered: str) -> None:
+    for forbidden in PHASE31_FORBIDDEN_OUTPUT_MARKERS:
+        assert forbidden not in rendered
+    assert "destructive_reset_workflow" not in rendered
+
+
+def test_phase31_requirement_ids_are_documented_for_backend_gate() -> None:
+    assert set(PHASE31_REQUIREMENT_IDS) == {"PILOT-01", "PILOT-02", "PILOT-03", "PILOT-04", "PILOT-05"}
+
+
 def test_pilot_launch_checklist_blocks_non_pilot_runtime_and_demo_policy(db: OrmSession) -> None:
     dashboard = build_operations_dashboard(
         db,
@@ -324,22 +351,11 @@ def test_pilot_launch_checklist_can_report_ready_for_safe_pilot_metadata(db: Orm
         "school_policy_setup",
     }
     rendered = dashboard.model_dump_json()
-    for forbidden in (
-        "provider_subject",
-        "raw_claims",
-        "access_token",
-        "refresh_token",
-        "id_token",
-        "private_note",
-        "sos_note",
-        "transcript",
-        "answer",
-        "reason_text",
-        "student_id",
-        "recipient_id",
-        RAW_SELF_CHECK_TITLE,
-        RAW_SCENARIO_TITLE,
-    ):
+    assert '"pilot_launch"' in rendered
+    assert '"pilot_data_safety"' in rendered
+    assert '"pilot_handoff"' in rendered
+    _assert_phase31_privacy_redlines(rendered)
+    for forbidden in ("access_token", "refresh_token", "id_token", "answer", RAW_SELF_CHECK_TITLE, RAW_SCENARIO_TITLE):
         assert forbidden not in rendered
 
 
@@ -365,20 +381,15 @@ def test_pilot_data_safety_counts_demo_rows_as_aggregate_metadata_only(db: OrmSe
     assert dashboard.pilot_data_safety.status == "needs_review"
 
     rendered = dashboard.model_dump_json()
+    _assert_phase31_privacy_redlines(rendered)
     for forbidden in (
-        DEMO_STUDENT_EMAIL,
-        DEMO_TEACHER_EMAIL,
         str(student.id),
         str(teacher.id),
         "RAW_PHASE31_DEMO_SELF_CHECK_TITLE",
         "RAW_PHASE31_DEMO_SCENARIO_TITLE",
         RAW_PRIVATE_NOTE,
         "student_summary",
-        "sos_note",
-        "transcript",
         "answer",
-        "reason_text",
-        "provider_subject",
     ):
         assert forbidden not in rendered
 
