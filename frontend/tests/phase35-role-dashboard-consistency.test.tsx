@@ -232,6 +232,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
         "Cổng quản trị chỉ hiển thị metadata vận hành, cấu hình và số lượng tổng hợp; không mở câu trả lời tự kiểm tra, ghi chú riêng tư, transcript chat, request body, provider claim hoặc lý do truy cập dạng tự do.",
       ),
     ).toBeInTheDocument();
+    expect(screen.getByText("Mở bảng vận hành metadata")).toBeInTheDocument();
+    expect(screen.getAllByText("Mở bảng metadata").length).toBeGreaterThanOrEqual(7);
     const controls = [...screen.getAllByRole("link"), ...screen.queryAllByRole("button")];
     for (const control of controls) {
       expect(control.textContent ?? "").not.toMatch(unsafeControlRegex);
@@ -261,6 +263,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
     expect(dashboardSources).toContain('sosCta="Xem trạng thái SOS"');
     expect(dashboardSources).toContain("/api/admin/users");
     expect(dashboardSources).toContain("/api/admin/links");
+    expect(source("app/(authenticated)/admin/page.tsx")).toContain("actionLabel");
     expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("Xem và cập nhật SOS");
 
     const adultListSource = source("components/adult-student-list.tsx");
