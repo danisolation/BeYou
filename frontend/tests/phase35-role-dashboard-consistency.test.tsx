@@ -120,6 +120,14 @@ const parentSupportOverview = [
 
 const unsafeControlRegex = /Export|Xuất|Download|Tải xuống|reset|drilldown|risk leaderboard|xếp hạng nguy cơ|Chi tiết học sinh|raw audit/;
 const rawAdultAdminLabelRegex = /raw self-check|private notes|chat transcripts|provider claims|request bodies|free-text access reasons/i;
+const PHASE35_REQUIREMENTS = ["ROLE-01", "ROLE-02", "ROLE-03"];
+const PHASE35_DASHBOARD_FILES = [
+  "app/(authenticated)/student/page.tsx",
+  "app/(authenticated)/teacher/page.tsx",
+  "app/(authenticated)/parent/page.tsx",
+  "app/(authenticated)/admin/page.tsx",
+  "components/adult-student-list.tsx",
+];
 
 describe("Phase 35 role dashboard consistency regression", () => {
   beforeEach(() => {
@@ -273,6 +281,66 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     for (const forbidden of ["localStorage.setItem", "sessionStorage.setItem", "access_token", "refresh_token", "id_token"]) {
       expect(dashboardSources).not.toContain(forbidden);
+    }
+  });
+
+  it("maps final Phase 35 requirements to exact dashboard strings and scope boundaries", () => {
+    expect(PHASE35_REQUIREMENTS).toEqual(["ROLE-01", "ROLE-02", "ROLE-03", "ROLE-04"]);
+
+    const studentSource = source("app/(authenticated)/student/page.tsx");
+    for (const required of [
+      "PageHeader",
+      "PrivacyBoundaryCard",
+      "Vai trò học sinh",
+      "Gửi SOS hỗ trợ",
+      "Chưa có tín hiệu SOS nào",
+    ]) {
+      expect(studentSource).toContain(required);
+    }
+
+    const adultSource = [
+      source("components/adult-student-list.tsx"),
+      source("app/(authenticated)/teacher/page.tsx"),
+      source("app/(authenticated)/parent/page.tsx"),
+    ].join("\n");
+    for (const required of [
+      "PrivacyBoundaryCard",
+      "Vai trò giáo viên",
+      "Vai trò phụ huynh",
+      "Xem và cập nhật SOS",
+      "Xem trạng thái SOS",
+      "đồng hành/read-only",
+    ]) {
+      expect(adultSource).toContain(required);
+    }
+
+    const adminSource = source("app/(authenticated)/admin/page.tsx");
+    for (const required of [
+      "Vai trò quản trị",
+      "Vận hành metadata-only",
+      "Mở bảng vận hành metadata",
+      "Mở bảng metadata",
+    ]) {
+      expect(adminSource).toContain(required);
+    }
+
+    const outOfScopeBoundaryStrings = [
+      "alembic",
+      "migration",
+      "CREATE INDEX",
+      "no-store",
+      "cache",
+      "revalidate",
+      "pagination",
+      "batching",
+      "SQL",
+      "schema push",
+    ];
+    for (const filePath of PHASE35_DASHBOARD_FILES) {
+      const fileSource = source(filePath);
+      for (const forbidden of outOfScopeBoundaryStrings) {
+        expect(fileSource, `${filePath} must not pull Phase 36/37 scope: ${forbidden}`).not.toContain(forbidden);
+      }
     }
   });
 
