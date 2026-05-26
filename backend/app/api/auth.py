@@ -15,7 +15,7 @@ from app.core.security import (
 from app.core.sessions import clear_session_cookie, create_session, require_same_site_mutation, revoke_session
 from app.db.models import AccountStatus, AuthSessionMethod, User
 from app.db.session import get_db
-from app.schemas.auth import LoginRequest, LoginResponse
+from app.schemas.auth import AuthCapabilitiesResponse, LoginRequest, LoginResponse
 from app.services.privacy import NOTICE_VERSION, privacy_acknowledgement_required
 
 router = APIRouter()
@@ -49,6 +49,19 @@ def _login_response(db: OrmSession, user: User) -> LoginResponse:
 def _origin_unsafe_for_production_pilot(origin: str) -> bool:
     normalized = origin.strip().lower()
     return "*" in normalized or "localhost" in normalized or "127.0.0.1" in normalized or not normalized.startswith("https://")
+
+
+@router.get("/capabilities", response_model=AuthCapabilitiesResponse)
+def capabilities(settings: Settings = Depends(get_settings)) -> AuthCapabilitiesResponse:
+    return AuthCapabilitiesResponse(
+        demo_login_enabled=settings.allow_demo_login and settings.is_demo_runtime,
+        public_demo_entry_enabled=settings.allow_demo_login and settings.is_demo_runtime,
+        email_password_enabled=True,
+        provider_login_enabled=settings.auth_provider_enabled,
+        provider_label=settings.auth_provider_label if settings.auth_provider_enabled else None,
+        provider_mode=settings.auth_provider_mode if settings.auth_provider_enabled else None,
+        production_pilot=settings.is_production_pilot,
+    )
 
 
 @router.post("/login", response_model=LoginResponse)

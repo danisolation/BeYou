@@ -29,3 +29,13 @@ class UserSessionResponse(BaseModel):
 
 class LoginResponse(UserSessionResponse):
     pass
+
+
+class AuthCapabilitiesResponse(BaseModel):
+    demo_login_enabled: bool
+    public_demo_entry_enabled: bool
+    email_password_enabled: bool = True
+    provider_login_enabled: bool
+    provider_label: str | None = None
+    provider_mode: str | None = None
+    production_pilot: bool
