@@ -120,7 +120,7 @@ const parentSupportOverview = [
 
 const unsafeControlRegex = /Export|Xuất|Download|Tải xuống|reset|drilldown|risk leaderboard|xếp hạng nguy cơ|Chi tiết học sinh|raw audit/;
 const rawAdultAdminLabelRegex = /raw self-check|private notes|chat transcripts|provider claims|request bodies|free-text access reasons/i;
-const PHASE35_REQUIREMENTS = ["ROLE-01", "ROLE-02", "ROLE-03"];
+const PHASE35_REQUIREMENTS = ["ROLE-01", "ROLE-02", "ROLE-03", "ROLE-04"];
 const PHASE35_DASHBOARD_FILES = [
   "app/(authenticated)/student/page.tsx",
   "app/(authenticated)/teacher/page.tsx",
