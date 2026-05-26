@@ -226,6 +226,10 @@ def _seed_demo_v1_4_state(db: OrmSession) -> User:
                     "private_note": PRIVATE_MARKER,
                     "access_reason_text": RAW_REASON,
                     "student_email": student.email,
+                    "safe_value": "student@example.edu",
+                    "details": "access_token=secret",
+                    "nested": {"safe_label": "login.school.edu"},
+                    "items": [{"safe_label": "raw_claims groups school class_name"}],
                 },
                 is_demo=True,
             )
@@ -323,6 +327,11 @@ def test_operations_dashboard_exposes_v1_4_counts_and_sanitizes_reason_content(
     assert "student.demo@beyou.local" not in rendered
     assert "access_reason_text" not in rendered
     assert "private_note" not in rendered
+    assert "student@example.edu" not in rendered
+    assert "access_token=secret" not in rendered
+    assert "login.school.edu" not in rendered
+    assert "raw_claims" not in rendered
+    assert "metadata_an_toan" in rendered
 
 
 def test_operations_dashboard_exposes_identity_auth_metadata_only(db: OrmSession) -> None:

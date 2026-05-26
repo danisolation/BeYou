@@ -113,10 +113,26 @@ describe("Phase 2 frontend auth foundation", () => {
     );
     render(<LoginPage />);
 
-    await userEvent.click(screen.getByRole("button", { name: "Học sinh" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Học sinh" }));
 
     expect(screen.getByLabelText("Email")).toHaveValue("student.demo@beyou.local");
     expect(screen.getByLabelText("Mật khẩu")).toHaveValue("BeYouDemo!2026");
+    expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
+  });
+
+  it("keeps demo role shortcuts hidden until capabilities are known", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("capabilities unavailable")));
+
+    render(<LoginPage />);
+
+    expect(screen.getByText("Đang kiểm tra cấu hình demo an toàn...")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText("Chưa xác minh được cấu hình demo. Hãy đăng nhập bằng email và mật khẩu được cấp."),
+      ).toBeInTheDocument();
+    });
+    expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
   });
 

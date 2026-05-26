@@ -11,6 +11,8 @@ import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 const DEMO_DISABLED_COPY =
   "Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên.";
 const PROVIDER_DISABLED_COPY = "Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.";
+const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình demo an toàn...";
+const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình demo. Hãy đăng nhập bằng email và mật khẩu được cấp.";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,8 +22,9 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [capabilities, setCapabilities] = useState<AuthCapabilities | null>(null);
+  const [capabilitiesLoaded, setCapabilitiesLoaded] = useState(false);
   const canSubmit = !isSubmitting;
-  const publicDemoEntryEnabled = capabilities?.public_demo_entry_enabled !== false;
+  const publicDemoEntryEnabled = capabilities?.public_demo_entry_enabled === true;
 
   useEffect(() => {
     let cancelled = false;
@@ -35,6 +38,11 @@ export default function LoginPage() {
       .catch(() => {
         if (!cancelled) {
           setCapabilities(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setCapabilitiesLoaded(true);
         }
       });
 
@@ -104,10 +112,12 @@ export default function LoginPage() {
           <section className="rounded-[2rem] bg-white p-5 shadow-xl shadow-[#12332E]/10 ring-1 ring-[#D7EFE8] sm:p-6 lg:p-8">
              <div className="rounded-3xl border border-[#CFE8E1] bg-secondary p-4">
                 <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
-               {publicDemoEntryEnabled ? (
-                 <>
-                   <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
-                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
+               {!capabilitiesLoaded ? (
+                 <p className="mt-1 text-label">{CAPABILITIES_LOADING_COPY}</p>
+               ) : publicDemoEntryEnabled ? (
+                  <>
+                    <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
                      {demoAccounts.map((account) => (
                        <button
                          key={account.email}
@@ -124,12 +134,12 @@ export default function LoginPage() {
                      ))}
                    </div>
                  </>
-               ) : (
-                 <div className="mt-3 space-y-2 rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
-                   <p>{DEMO_DISABLED_COPY}</p>
-                   {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
-                 </div>
-               )}
+                ) : (
+                  <div className="mt-3 space-y-2 rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+                    <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
+                    {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
+                  </div>
+                )}
              </div>
 
             <form className="mt-7 space-y-5" onSubmit={handleSubmit}>

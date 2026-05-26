@@ -280,15 +280,20 @@ def _safe_metadata(value: object) -> Any:
         safe: dict[str, Any] = {}
         for key, nested_value in value.items():
             normalized_key = str(key).lower()
-            if normalized_key in OPERATIONS_FORBIDDEN_METADATA_KEYS:
+            if normalized_key in OPERATIONS_FORBIDDEN_METADATA_KEYS or _unsafe_operation_text(str(key)):
                 continue
             safe[str(key)] = _safe_metadata(nested_value)
         return safe
     if isinstance(value, list):
         return [_safe_metadata(item) for item in value]
-    if isinstance(value, str | int | float | bool) or value is None:
+    if isinstance(value, str):
+        if _unsafe_operation_text(value):
+            return SAFE_TEXT_FALLBACK
         return value
-    return str(value)
+    if isinstance(value, int | float | bool) or value is None:
+        return value
+    rendered = str(value)
+    return SAFE_TEXT_FALLBACK if _unsafe_operation_text(rendered) else rendered
 
 
 def _audit_event_item(event: AuditEvent) -> AuditEventItem:
