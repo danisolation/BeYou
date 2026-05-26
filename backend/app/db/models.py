@@ -26,6 +26,19 @@ class AccountStatus(str, enum.Enum):
     DELETED = "deleted"
 
 
+class AuthSessionMethod(str, enum.Enum):
+    PASSWORD = "password"
+    DEMO_PASSWORD = "demo_password"
+    SSO = "sso"
+
+
+class ExternalIdentityStatus(str, enum.Enum):
+    LINKED = "linked"
+    PENDING_REVIEW = "pending_review"
+    DISABLED = "disabled"
+    DEPROVISIONED = "deprovisioned"
+
+
 class RelationshipType(str, enum.Enum):
     TEACHER = "teacher"
     PARENT = "parent"
@@ -147,8 +160,40 @@ class Session(Base):
     user_agent_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     ip_prefix_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    auth_method: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    auth_provider_key: Mapped[str | None] = mapped_column(String(96), nullable=True)
+    external_identity_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("external_identities.id"), nullable=True, index=True
+    )
 
     user: Mapped[User] = relationship(back_populates="sessions")
+
+
+class ExternalIdentity(Base):
+    __tablename__ = "external_identities"
+
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    provider_key: Mapped[str] = mapped_column(String(96), nullable=False, index=True)
+    provider_subject_hash: Mapped[str] = mapped_column(String(128), nullable=False)
+    linked_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    status: Mapped[str] = mapped_column(
+        String(32), default=ExternalIdentityStatus.PENDING_REVIEW.value, nullable=False
+    )
+    provider_label: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    email_verified: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    email_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    display_label: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
+    )
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint("provider_key", "provider_subject_hash", name="uq_external_identities_provider_subject"),
+        Index("ix_external_identities_status", "status"),
+        Index("ix_external_identities_linked_user_id", "linked_user_id"),
+    )
 
 
 class PrivacyAcknowledgement(Base):
