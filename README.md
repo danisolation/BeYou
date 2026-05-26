@@ -63,6 +63,42 @@ npm --prefix frontend run smoke:pilot
 - `smoke:pilot` validates production pilot readiness. It requires `/health/ready` status `ready`, `ALLOW_DEMO_SEED=false`, `ALLOW_DEMO_LOGIN=false`, exact HTTPS origins, secure cookies, current migrations, no placeholder secrets, and must not depend on demo users.
 - `smoke:production` remains a compatibility alias that delegates to demo smoke; do not treat it as production-pilot proof.
 
+## School pilot launch checklist
+
+Before opening Peerlight AI to a real school pilot, verify all launch items through admin-gated, metadata-only readiness and operations surfaces:
+
+- `RUNTIME_MODE=production_pilot`.
+- `ALLOW_DEMO_SEED=false`.
+- `ALLOW_DEMO_LOGIN=false`.
+- `/health/ready` returns `ready`.
+- Database migrations are at Alembic head.
+- Frontend origins are exact HTTPS origins with no wildcard or local origin in pilot config.
+- Session cookies are Secure with SameSite=None.
+- Auth provider readiness metadata is safe and does not expose provider subjects, claims, issuer URLs, callback URLs, client secrets, or tokens.
+- `npm --prefix frontend run guard:deploy` passes.
+- `npm --prefix frontend run smoke:pilot` passes.
+- Phase 31 admin operations shows no active demo-user dependency for pilot launch.
+
+The admin operations dashboard is authorization-gated and metadata-only: it shows statuses, counts, commands, and safe guidance, not raw student records, private notes, answers, transcripts, provider claims, exports, or per-student drilldowns. Public demo smoke is not production-pilot proof.
+
+### Baseline setup for a real pilot
+
+A real pilot should start from non-demo baseline self-check content, non-demo scenario content, mood/check-in configuration, school privacy policy defaults, in-app-only reminder channels, and a school handoff/support path documented outside raw operations metadata.
+
+Production pilot launch must not create or rely on public demo accounts, demo student-adult links, demo walkthrough content, demo mood configs, or demo note-sharing state. Broad active real-user counts can be reviewed as metadata, but zero real active users does not by itself prove launch unsafe because onboarding may happen after configuration approval.
+
+### Pilot rollback and handoff
+
+- Redeploy the last known good Vercel frontend and Render backend build.
+- Revert deployment environment variables to the last known good values.
+- Run /health/ready, npm --prefix frontend run guard:deploy, and npm --prefix frontend run smoke:pilot.
+- Notify the school or pilot owner if real users are affected.
+- Escalate incidents through the agreed school support path.
+- Do not use destructive database reset as the default rollback path.
+- Do not use raw data export as the default rollback path.
+
+The operations dashboard shows handoff metadata and static guidance only, not contact details or incident free text.
+
 Safe rollback for deployment incidents:
 
 1. Redeploy the last known good Vercel frontend and Render backend build.

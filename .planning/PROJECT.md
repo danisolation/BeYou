@@ -13,8 +13,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-30 complete, Phase 31 ready
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-30 complete, Phase 31 executing
 **Scope shipped:** 30 total phases; v1.5 Phases 28-30 have 12/12 plans executed and 17/28 requirements complete
+**Current execution:** Phase 31 school pilot operations are being prepared with metadata-only launch checklist, data-safety buckets, rollback guidance, and handoff metadata; do not mark complete until verification passes
 **Latest verification:** Phase 30 verification passed with OAuth/SSO-ready identity contracts, backend-owned session metadata, public-safe auth capabilities, metadata-only identity operations UI, code review fixes, and clean schema drift gate
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
