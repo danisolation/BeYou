@@ -18,8 +18,8 @@
 
 ## Phases
 
-- [x] **Phase 33: Cross-Role UI & Performance Baseline Audit** - Establish UI drift and privacy-safe performance baseline evidence before behavior changes. (completed 2026-05-26)
-- [x] **Phase 34: Shared UI Primitives & Role Shell Harmonization** - Align shared visual primitives, role entry, navigation, guidance, accessibility, and role-boundary copy. (completed 2026-05-26)
+- [x] **Phase 33: Cross-Role UI & Performance Baseline Audit** - Establish UI drift and privacy-safe performance baseline evidence before behavior changes. (completed 2026-05-26)
+- [x] **Phase 34: Shared UI Primitives & Role Shell Harmonization** - Align shared visual primitives, role entry, navigation, guidance, accessibility, and role-boundary copy. (completed 2026-05-26)
 - [ ] **Phase 35: Role Dashboard Consistency Pass** - Harmonize Student, Teacher, Parent, and Admin dashboards while preserving each role's data boundaries.
 - [ ] **Phase 36: Backend & DB Hot Path Optimization** - Optimize bounded backend/database paths without weakening authorization, reason gates, audit, or metadata-only operations.
 - [ ] **Phase 37: Frontend Data Loading & Render Optimization** - Reduce route waterfalls, duplicate requests, unsafe caching risk, and perceived slowness across role dashboards.
