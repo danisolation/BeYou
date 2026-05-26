@@ -249,13 +249,62 @@
 - Autonomous execution remained effective for tightly scoped privacy phases and a final gap-closure phase.
 - Most manual effort was archive normalization, live-demo environment debugging, and audit evidence synthesis.
 
+## Milestone: v1.5 - Production Pilot Readiness & Identity
+
+**Shipped:** 2026-05-26
+**Phases:** 5
+**Plans:** 22
+**Requirements:** 28/28 satisfied
+
+### What Was Built
+
+- Explicit runtime modes for `local_demo`, `public_demo`, and `production_pilot`, with strict pilot readiness checks, production-pilot demo seed no-op, and demo-login blocking.
+- Deployment guardrail CLI plus separate public-demo and production-pilot smoke profiles so demo success cannot be counted as pilot proof.
+- OAuth/SSO-ready identity contracts using provider+subject hash mapping, safe session auth metadata, and public-safe auth capabilities without browser token storage.
+- School pilot operations metadata for launch checklist, demo/real data safety, rollback guidance, and handoff support without raw student surveillance.
+- Phase 32 release gates across backend, Node scripts, frontend UI, docs, guardrail output, and final verification.
+
+### What Worked
+
+- Phase 28 runtime separation gave Phases 29-32 a stable safety contract to build deployment, identity, launch, and release gates on.
+- Keeping identity provider work contract-only avoided OAuth callback/token-exchange scope creep while still preparing database/session/auth surfaces.
+- Metadata-only operations constraints stayed consistent across backend schemas, frontend DOM, CLI guardrail output, README docs, and release tests.
+- The final release gates caught real sanitizer and test-runner drift before archive.
+
+### What Was Inefficient
+
+- Automatic milestone accomplishment extraction again returned none and required manual MILESTONES enrichment.
+- `gsd-tools milestone complete` archived core files but left ROADMAP/PROJECT/STATE normalization, phase-directory movement, and research archive movement to manual follow-up.
+- Full-suite frontend verification initially failed because Vitest collected Node `node:test` files and an older Phase 20 smoke test did not mock new auth capabilities.
+- Live `smoke:pilot` could not be run in this environment because safe production-pilot URLs/configuration and readiness `ready` were unavailable.
+
+### Patterns Established
+
+- Public demo readiness and production-pilot readiness are separate product states with separate smoke evidence.
+- Production-pilot launch evidence must distinguish deterministic local gates, public demo smoke, and live pilot smoke.
+- External identity claims never grant visibility; app-owned role, active relationship, and student-sent SOS remain authoritative.
+- Admin operations should add frontend defense-in-depth filtering even when backend sanitization already exists.
+
+### Key Lessons
+
+- Release-gate phases are valuable because they find integration drift that individual implementation phases can miss.
+- For pilot readiness, constrained external evidence should be recorded honestly instead of converted into a fake pass.
+- Contract-first identity work can safely prepare for SSO without weakening existing cookie/session and privacy boundaries.
+- Archive automation is still a first pass; final milestone closure needs deliberate living-doc and memory updates.
+
+### Cost Observations
+
+- Model mix and token cost were not tracked in this session.
+- Autonomous execution remained effective for heavily constrained production/privacy work.
+- Most manual effort was final archive normalization, audit synthesis, and maintaining accurate global memory.
+
 ## Cross-Milestone Trends
 
 | Theme | v1.0 Observation | Follow-up |
 |---|---|---|
-| Privacy defaults | Effective when decided before feature work | v1.4 showed saved policy defaults must be enforced by runtime consumers and audited with integration flows |
-| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.4; archive automation should be followed by manual living-doc normalization |
-| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.4 turned rebrand, Vietnamese labels, psychological demo content, and SOS-only adult visibility into verified product scope |
-| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.4 adds school privacy policy controls and metadata-only operations without raw content or raw identifiers |
-| Operations visibility | v1.0 avoided raw sensitive reports | v1.4 tightened metadata-only visibility further by removing raw `resource_id` from operations responses |
-| Integration audit | Phase tests catch local behavior | v1.4 confirmed cross-phase checks catch runtime policy wiring gaps after phase-level tests pass |
+| Privacy defaults | Effective when decided before feature work | v1.5 kept identity, launch, operations, and release gates tied to metadata-only and support-not-surveillance constraints |
+| GSD state drift | ROADMAP/STATE/REQUIREMENTS sometimes needed manual correction | Still true in v1.5; archive automation should be followed by manual living-doc normalization |
+| UX debt | v1.0 role nav/privacy redirect issues were non-blocking | v1.5 kept production identity UI fail-closed via backend auth capabilities before showing demo shortcuts |
+| Admin tooling | v1.0 backend supported richer nested content than MVP UI exposed | v1.5 adds pilot launch, data-safety, identity readiness, and smoke metadata panels without raw content or drilldowns |
+| Operations visibility | v1.0 avoided raw sensitive reports | v1.5 tightened metadata-only visibility across backend serialization, frontend DOM, CLI guardrail output, and docs |
+| Integration audit | Phase tests catch local behavior | v1.5 confirmed cross-phase checks can accept constrained external evidence while still blocking fake production-pilot proof |

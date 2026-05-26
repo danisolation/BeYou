@@ -1,5 +1,45 @@
 # Project Milestones: Peerlight AI
 
+## v1.5 Production Pilot Readiness & Identity (Shipped: 2026-05-26)
+
+**Delivered:** Production/demo runtime separation, deployment guardrails, split demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, school pilot operations metadata, and release gates for privacy/security boundaries.
+
+**Phases completed:** 28-32 (22 plans total, 57 tasks)
+
+**Key accomplishments:**
+
+- Added explicit `local_demo`, `public_demo`, and `production_pilot` runtime modes with production-pilot readiness checks, demo seed no-op behavior, demo-login blocking, and status-only/masked readiness responses.
+- Added deployment guardrails for Render/Vercel/API/CORS/cookie drift plus separate `smoke:demo` and `smoke:pilot` profiles so public-demo success cannot be mistaken for pilot proof.
+- Added OAuth/SSO-ready identity contracts with provider+subject hash mapping, safe session auth metadata, public-safe auth capabilities, and no browser token storage.
+- Added school pilot operations panels for launch checklist, demo/real data safety, rollback guidance, and handoff metadata without raw student surveillance, exports, destructive reset defaults, or risk drilldowns.
+- Added Phase 32 release-gate matrices across backend, Node scripts, frontend UI, README/docs, and final verification; deterministic gates passed and public demo smoke passed 16/16.
+- Audited v1.5 with 28/28 requirements satisfied, 5/5 phases verified, 8/8 integration flows wired, and 0 critical blockers.
+
+**Stats:**
+
+- 123 tracked files changed from `v1.4` through v1.5 audit
+- 18,442 insertions and 275 deletions during the v1.5 implementation/audit range
+- 37,249 backend/frontend tracked code lines after v1.5 (`21,437` Python, `14,575` TypeScript/TSX, `1,237` MJS)
+- 5 phases, 22 plans, 28 requirements
+- 107 commits from `v1.4` through milestone audit
+- 2 calendar days from first v1.5 post-v1.4 commit to audit
+
+**Git range:** `4b139f0` -> `c7e1806` before final archive commit
+
+**Verification:**
+
+- Milestone audit: tech debt status, 28/28 requirements satisfied, 5/5 phases verified, 8/8 integration flows wired, 0 critical gaps.
+- Phase 32 final regression: backend pytest `189 passed`, backend ruff passed, frontend Vitest `111 passed`, frontend lint/build passed, Node release gates passed, deployment guardrail passed, public demo smoke `DEMO_SMOKE_PASS 16/16`.
+
+**Known non-blocking tech debt:**
+
+- Live `smoke:pilot` was not run because safe production-pilot URLs/configuration and readiness `ready` were absent. Before a real school pilot launch, configure production-pilot env, confirm `/health/ready=ready`, run `npm --prefix frontend run smoke:pilot`, and record evidence.
+- The pilot launch checklist infers pilot-smoke readiness from readiness/demo-flag metadata; operators must attach or record actual live smoke evidence before launch.
+
+**What's next:** Define the next milestone with `/gsd-new-milestone`; likely candidates include live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, or richer launch automation.
+
+---
+
 ## v1.4 Consent-Based Notifications & Access Transparency (Shipped: 2026-05-25)
 
 **Delivered:** Consent-first in-app reminders, student-controlled mood-note sharing, reason-gated adult access, admin privacy policy controls, full Peerlight AI Vietnamese demo refresh, and SOS-only adult visibility.

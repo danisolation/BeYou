@@ -12,12 +12,12 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity audited with tech debt status; ready for milestone completion workflow
-**Scope shipped:** 32 total phases; v1.5 Phases 28-32 have 22/22 plans executed and 28/28 requirements complete
-**Current execution:** v1.5 milestone audit is complete; next action is complete/archive v1.5 milestone
+**Shipped version:** v1.5 Production Pilot Readiness & Identity archived as of 2026-05-26
+**Milestone status:** between milestones; next milestone requirements and roadmap are not defined yet
+**Scope shipped:** 32 total phases; v1.5 Phases 28-32 completed 22/22 plans and 28/28 requirements
+**Current execution:** v1.5 milestone archive is complete; next action is `/gsd-new-milestone`
 **Latest verification:** Phase 32 final verification constrained pass: backend `189 passed`, backend ruff passed, frontend `111 passed`, frontend lint/build passed, Node release gates passed, guardrail passed, public demo smoke `16/16`, live pilot smoke constrained
-**Latest audit:** `.planning/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
+**Latest audit:** `.planning/milestones/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
 
 ### Built Product
 
@@ -30,12 +30,13 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Latest Verification Snapshot
 
-- Backend full pytest: `129 passed`
+- Backend full pytest: `189 passed`
 - Backend ruff: passed
-- Frontend full Vitest: `20 test files passed`, `94 tests passed`
+- Frontend full Vitest: `22 test files passed`, `111 tests passed`
 - Frontend lint: passed
 - Frontend production build: passed
-- Production smoke: `SMOKE_PASS 16/16` before Phase 27
+- Public demo smoke: `DEMO_SMOKE_PASS 16/16` after Phase 32
+- Live production-pilot smoke: constrained until safe pilot URLs/configuration and `/health/ready=ready` exist
 - Phase 27 copy/privacy grep gates: passed for frontend app/components and backend app, allowing the legacy demo password only
 - Phase 28 verification: passed, including backend runtime/readiness/auth/seed regressions, frontend operations contract regressions, code review, and schema drift check
 - Phase 29 verification: passed, including guardrail/smoke Node tests, backend operations metadata tests, operations UI regressions, frontend lint/build, schema drift check, and clean code review/re-review
@@ -50,6 +51,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ### Planning Archives
 
+- v1.5 roadmap archive: `.planning/milestones/v1.5-ROADMAP.md`
+- v1.5 requirements archive: `.planning/milestones/v1.5-REQUIREMENTS.md`
+- v1.5 audit archive: `.planning/milestones/v1.5-MILESTONE-AUDIT.md`
+- v1.5 phase artifacts: `.planning/milestones/v1.5-phases/`
+- v1.5 research archive: `.planning/milestones/v1.5-research/`
 - v1.4 roadmap archive: `.planning/milestones/v1.4-ROADMAP.md`
 - v1.4 requirements archive: `.planning/milestones/v1.4-REQUIREMENTS.md`
 - v1.4 audit archive: `.planning/milestones/v1.4-MILESTONE-AUDIT.md`
@@ -65,9 +71,12 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.5 Production Pilot Readiness & Identity
+## Completed Milestone: v1.5 Production Pilot Readiness & Identity
 
 **Goal:** Move Peerlight AI from a public demo that is usable to a production-pilot-ready system that can safely support a real school pilot without demo data, unsafe deployment drift, or weak identity controls.
+
+**Archived:** 2026-05-26
+**Status:** Complete with accepted tech debt: live `smoke:pilot` must be run before a real school pilot launch.
 
 **Target features:**
 
@@ -155,9 +164,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] README Phase 32 release guidance now maps QA-01..QA-06 to exact commands and documents live `smoke:pilot` constraints plus privacy grep gates.
 - [x] Final Phase 32 verification records deterministic gates passed, public demo smoke passed, and live production-pilot smoke constrained with no high-severity deterministic privacy/security failures.
 
-### Active in v1.5
+### Active for Next Milestone
 
-- [x] Execute Phase 32 release gates so production, identity, operations, and privacy boundaries are proven before v1.5 ships.
+- Fresh requirements are not defined yet. Use `/gsd-new-milestone` to gather next-scope requirements.
 
 ### Out of Scope
 
@@ -267,7 +276,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.5 focuses on production pilot readiness and identity. Deferred candidates after v1.5 remain counselor handoff, external notification delivery channels with provider governance/retries, multi-school tenancy, and richer launch automation.
+Next milestone goals are not selected yet. Candidate themes from deferred scope: live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, and richer launch automation.
 
 ## Evolution
 
@@ -287,4 +296,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after Phase 32 verification*
+*Last updated: 2026-05-26 after v1.5 milestone archive*
