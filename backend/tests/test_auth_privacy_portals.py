@@ -1,13 +1,17 @@
 import pytest
+from datetime import timedelta
+from fastapi import Response
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.config import get_settings
 from app.core.security import LOGIN_RATE_LIMIT_MAX_ATTEMPTS, hash_password, reset_login_failures
+from app.core.sessions import create_session, hash_session_token, utc_now
 from app.db.models import (
     AccountStatus,
     AuditEvent,
+    AuthSessionMethod,
     SosAlert,
     SosStatusEvent,
     InAppNotification,
@@ -140,6 +144,32 @@ def _login(
     )
 
 
+def _session_cookie_for(
+    db: OrmSession,
+    user: User,
+    *,
+    token: str,
+    auth_method: str,
+    auth_provider_key: str = "local",
+    revoked: bool = False,
+) -> UserSession:
+    now = utc_now()
+    session = UserSession(
+        token_hash=hash_session_token(token),
+        user_id=user.id,
+        created_at=now,
+        expires_at=now + timedelta(hours=1),
+        revoked_at=now if revoked else None,
+        is_demo=user.is_demo,
+        auth_method=auth_method,
+        auth_provider_key=auth_provider_key,
+    )
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+    return session
+
+
 @pytest.mark.parametrize(
     ("role", "route"),
     [
@@ -161,11 +191,17 @@ def test_login_sets_dev_cookie_and_returns_role_dashboard(
 
     assert response.status_code == 200
     assert response.json()["dashboard_route"] == route
+    assert response.json()["privacy_acknowledgement_required"] == (role == UserRole.STUDENT.value)
+    assert response.json()["notice_version"] == NOTICE_VERSION
     cookie = response.headers["set-cookie"].lower()
     assert "beyou_session=" in cookie
     assert "httponly" in cookie
     assert "samesite=lax" in cookie
     assert "secure" not in cookie
+    sessions = db.scalars(select(UserSession).where(UserSession.user_id == user.id)).all()
+    assert len(sessions) == 1
+    assert sessions[0].auth_method == AuthSessionMethod.DEMO_PASSWORD.value
+    assert sessions[0].auth_provider_key == "local"
 
 
 def test_invalid_and_disabled_login_responses_are_generic_or_safe(
@@ -257,7 +293,135 @@ def test_production_pilot_allows_non_demo_login_session(
     sessions = db.scalars(select(UserSession).where(UserSession.user_id == pilot_user.id)).all()
     assert len(sessions) == 1
     assert sessions[0].is_demo is False
+    assert sessions[0].auth_method == AuthSessionMethod.PASSWORD.value
+    assert sessions[0].auth_provider_key == "local"
     get_settings.cache_clear()
+
+
+def test_create_session_accepts_future_sso_metadata_without_changing_cookie_contract(
+    db: OrmSession,
+) -> None:
+    settings = get_settings()
+    student = _user(
+        db,
+        email="sso-metadata@example.test",
+        role=UserRole.STUDENT.value,
+        full_name="SSO Metadata",
+        is_demo=False,
+    )
+    response = Response()
+
+    session = create_session(
+        db,
+        student,
+        response,
+        settings,
+        auth_method=AuthSessionMethod.SSO.value,
+        auth_provider_key="pilot_sso",
+    )
+
+    assert session.auth_method == AuthSessionMethod.SSO.value
+    assert session.auth_provider_key == "pilot_sso"
+    cookie = response.headers["set-cookie"].lower()
+    assert "httponly" in cookie
+    assert "access_token" not in response.headers["set-cookie"]
+    assert "refresh_token" not in response.headers["set-cookie"]
+
+
+@pytest.mark.parametrize(
+    ("auth_method", "auth_provider_key", "is_demo"),
+    [
+        (AuthSessionMethod.PASSWORD.value, "local", False),
+        (AuthSessionMethod.DEMO_PASSWORD.value, "local", True),
+        (AuthSessionMethod.SSO.value, "pilot_sso", False),
+    ],
+)
+def test_me_response_contract_is_shared_for_password_demo_and_sso_marked_sessions(
+    db: OrmSession,
+    auth_method: str,
+    auth_provider_key: str,
+    is_demo: bool,
+) -> None:
+    student = _user(
+        db,
+        email=f"{auth_method}-shared-contract@example.test",
+        role=UserRole.STUDENT.value,
+        full_name=f"{auth_method} Student",
+        is_demo=is_demo,
+    )
+    token = f"{auth_method}-session-token"
+    _session_cookie_for(
+        db,
+        student,
+        token=token,
+        auth_method=auth_method,
+        auth_provider_key=auth_provider_key,
+    )
+
+    with TestClient(app) as method_client:
+        method_client.cookies.set(get_settings().session_cookie_name, token)
+        response = method_client.get("/api/auth/me")
+
+    assert response.status_code == 200
+    assert response.json()["privacy_acknowledgement_required"] is True
+    assert response.json()["dashboard_route"] == "/student"
+    assert response.json()["notice_version"] == NOTICE_VERSION
+
+
+def test_revoked_session_is_denied_for_safe_auth_metadata(db: OrmSession) -> None:
+    student = _user(
+        db,
+        email="revoked-sso@example.test",
+        role=UserRole.STUDENT.value,
+        full_name="Revoked SSO",
+        is_demo=False,
+    )
+    token = "revoked-sso-token"
+    _session_cookie_for(
+        db,
+        student,
+        token=token,
+        auth_method=AuthSessionMethod.SSO.value,
+        auth_provider_key="pilot_sso",
+        revoked=True,
+    )
+
+    with TestClient(app) as revoked_client:
+        revoked_client.cookies.set(get_settings().session_cookie_name, token)
+        response = revoked_client.get("/api/auth/me")
+
+    assert response.status_code == 401
+
+
+@pytest.mark.parametrize("status_value", [AccountStatus.DISABLED.value, AccountStatus.DELETED.value])
+def test_inactive_or_deleted_users_cannot_keep_password_demo_or_sso_marked_sessions(
+    db: OrmSession,
+    status_value: str,
+) -> None:
+    student = _user(
+        db,
+        email=f"{status_value}-session@example.test",
+        role=UserRole.STUDENT.value,
+        full_name=f"{status_value} Student",
+        status=status_value,
+        is_demo=False,
+    )
+    token = f"{status_value}-sso-token"
+    session = _session_cookie_for(
+        db,
+        student,
+        token=token,
+        auth_method=AuthSessionMethod.SSO.value,
+        auth_provider_key="pilot_sso",
+    )
+
+    with TestClient(app) as inactive_client:
+        inactive_client.cookies.set(get_settings().session_cookie_name, token)
+        response = inactive_client.get("/api/auth/me")
+
+    assert response.status_code == 401
+    db.refresh(session)
+    assert session.revoked_at is not None
 
 
 def test_production_pilot_blocks_login_when_cookie_config_is_unsafe(
