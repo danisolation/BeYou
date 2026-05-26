@@ -12,6 +12,16 @@ export type AuthUser = {
   notice_version: string;
 };
 
+export type AuthCapabilities = {
+  demo_login_enabled: boolean;
+  public_demo_entry_enabled: boolean;
+  email_password_enabled: boolean;
+  provider_login_enabled: boolean;
+  provider_label: string | null;
+  provider_mode: string | null;
+  production_pilot: boolean;
+};
+
 export const INVALID_LOGIN_COPY = "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra lại thông tin đăng nhập.";
 export const DISABLED_ACCOUNT_COPY =
   "Tài khoản này đang bị tạm khóa. Hãy liên hệ quản trị viên hoặc người phụ trách demo.";
@@ -25,6 +35,10 @@ export async function login(email: string, password: string): Promise<AuthUser> 
 
 export async function getCurrentUser(): Promise<AuthUser> {
   return apiFetch<AuthUser>("/api/auth/me");
+}
+
+export async function getAuthCapabilities(): Promise<AuthCapabilities> {
+  return apiFetch<AuthCapabilities>("/api/auth/capabilities");
 }
 
 export async function acknowledgePrivacy(): Promise<void> {

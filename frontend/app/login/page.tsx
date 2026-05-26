@@ -1,12 +1,16 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { login, loginErrorCopy } from "@/lib/auth";
+import { AuthCapabilities, getAuthCapabilities, login, loginErrorCopy } from "@/lib/auth";
 import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
+
+const DEMO_DISABLED_COPY =
+  "Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên.";
+const PROVIDER_DISABLED_COPY = "Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,7 +19,29 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [capabilities, setCapabilities] = useState<AuthCapabilities | null>(null);
   const canSubmit = !isSubmitting;
+  const publicDemoEntryEnabled = capabilities?.public_demo_entry_enabled !== false;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    getAuthCapabilities()
+      .then((metadata) => {
+        if (!cancelled) {
+          setCapabilities(metadata);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCapabilities(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,26 +102,35 @@ export default function LoginPage() {
           </div>
 
           <section className="rounded-[2rem] bg-white p-5 shadow-xl shadow-[#12332E]/10 ring-1 ring-[#D7EFE8] sm:p-6 lg:p-8">
-            <div className="rounded-3xl border border-[#CFE8E1] bg-secondary p-4">
-               <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
-              <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                {demoAccounts.map((account) => (
-                  <button
-                    key={account.email}
-                    type="button"
-                    onClick={() => {
-                      setEmail(account.email);
-                      setPassword(DEMO_PASSWORD);
-                      setError("");
-                    }}
-                    className="min-h-11 rounded-2xl border border-[#CFE8E1] bg-white px-3 text-left text-label font-semibold text-[#27665B] hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
-                  >
-                    {account.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+             <div className="rounded-3xl border border-[#CFE8E1] bg-secondary p-4">
+                <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
+               {publicDemoEntryEnabled ? (
+                 <>
+                   <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
+                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                     {demoAccounts.map((account) => (
+                       <button
+                         key={account.email}
+                         type="button"
+                         onClick={() => {
+                           setEmail(account.email);
+                           setPassword(DEMO_PASSWORD);
+                           setError("");
+                         }}
+                         className="min-h-11 rounded-2xl border border-[#CFE8E1] bg-white px-3 text-left text-label font-semibold text-[#27665B] hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
+                       >
+                         {account.label}
+                       </button>
+                     ))}
+                   </div>
+                 </>
+               ) : (
+                 <div className="mt-3 space-y-2 rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+                   <p>{DEMO_DISABLED_COPY}</p>
+                   {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
+                 </div>
+               )}
+             </div>
 
             <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
               <div>
