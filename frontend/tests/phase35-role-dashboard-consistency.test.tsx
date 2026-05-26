@@ -181,6 +181,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     expect(await screen.findByText("Vai trò giáo viên")).toBeInTheDocument();
     expect(
       screen.getByText(
+        "Xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
         "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
       ),
     ).toBeInTheDocument();
@@ -198,6 +203,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     render(<ParentDashboardPage />);
 
     expect(await screen.findByText("Vai trò phụ huynh")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành/read-only.",
+      ),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         "Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên.",
@@ -235,9 +245,18 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     expect(dashboardSources).toContain("/api/student/profile");
     expect(dashboardSources).toContain("/api/teacher/students");
+    expect(dashboardSources).toContain("getTeacherSupportOverview");
+    expect(dashboardSources).toContain('summaryBasePath="/teacher/students"');
+    expect(dashboardSources).toContain('sosBasePath="/teacher/sos-alerts"');
+    expect(dashboardSources).toContain('sosCta="Xem và cập nhật SOS"');
     expect(dashboardSources).toContain("/api/parent/students");
+    expect(dashboardSources).toContain("getParentSupportOverview");
+    expect(dashboardSources).toContain('summaryBasePath="/parent/students"');
+    expect(dashboardSources).toContain('sosBasePath="/parent/sos-alerts"');
+    expect(dashboardSources).toContain('sosCta="Xem trạng thái SOS"');
     expect(dashboardSources).toContain("/api/admin/users");
     expect(dashboardSources).toContain("/api/admin/links");
+    expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("Xem và cập nhật SOS");
 
     const adultListSource = source("components/adult-student-list.tsx");
     expect(adultListSource).toContain("space-y-6");
