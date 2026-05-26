@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.6
 milestone_name: milestone
 status: planning
-last_updated: "2026-05-26T09:56:59.551Z"
+last_updated: "2026-05-26T10:04:38.438Z"
 progress:
   total_phases: 6
   completed_phases: 2
@@ -16,7 +16,7 @@ progress:
 
 **Initialized:** 2026-05-20
 **Last updated:** 2026-05-26 after Phase 35 context gathering
-**Status:** Phase 35 context gathered — ready for planning
+**Status:** Phase 35 UI-SPEC approved — ready for planning
 
 ## Project Reference
 
@@ -121,6 +121,7 @@ Progress: 2/6 phases complete
 - [Phase 34]: Adult Teacher/Parent shared presentation moved to neutral `frontend/components/adult-student-list.tsx`; route pages keep role-owned data fetching.
 - [Phase 34]: Student/Admin dashboards adopted representative primitives; Student/Teacher/Parent/Admin primary load failures now render explicit `ErrorState` instead of misleading empty/default states.
 - [Phase 35]: Phase 35 context gathered with autonomous dashboard consistency decisions covering Student, Teacher, Parent, Admin, state/accessibility gates, and privacy redlines.
+- [Phase 35]: Phase 35 UI-SPEC approved: manual Tailwind primitives, dashboard rhythm contract, role-specific Student/Teacher/Parent/Admin contracts, accessibility/responsive gates, and privacy redlines.
 
 ### TODOs
 
