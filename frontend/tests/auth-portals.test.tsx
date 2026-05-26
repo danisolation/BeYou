@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -12,6 +12,15 @@ import { roleToRoute } from "@/lib/routes";
 
 const push = vi.fn();
 const searchParams = new URLSearchParams("next=/student");
+const demoCapabilities = {
+  demo_login_enabled: true,
+  public_demo_entry_enabled: true,
+  email_password_enabled: true,
+  provider_login_enabled: false,
+  provider_label: null,
+  provider_mode: null,
+  production_pilot: false,
+};
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
@@ -93,12 +102,53 @@ describe("Phase 2 frontend auth foundation", () => {
   });
 
   it("fills demo credentials from role shortcuts", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify(demoCapabilities), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
     render(<LoginPage />);
 
     await userEvent.click(screen.getByRole("button", { name: "Học sinh" }));
 
     expect(screen.getByLabelText("Email")).toHaveValue("student.demo@beyou.local");
     expect(screen.getByLabelText("Mật khẩu")).toHaveValue("BeYouDemo!2026");
+    expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
+  });
+
+  it("hides demo role shortcuts when production pilot capabilities disable public demo entry", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            ...demoCapabilities,
+            demo_login_enabled: false,
+            public_demo_entry_enabled: false,
+            provider_login_enabled: false,
+            production_pilot: true,
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+
+    render(<LoginPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên."),
+      ).toBeInTheDocument();
+    });
+    expect(screen.getByText("Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Giáo viên" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Phụ huynh" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Quản trị" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
   });
 
