@@ -9,7 +9,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### UI Consistency
 
-- [ ] **UIC-01**: The app has a cross-role UI inventory that identifies drift in shell, navigation, spacing, cards, tables, forms, loading, error, empty, responsive, and accessibility patterns across Student, Teacher, Parent, and Admin surfaces.
+- [x] **UIC-01**: The app has a cross-role UI inventory that identifies drift in shell, navigation, spacing, cards, tables, forms, loading, error, empty, responsive, and accessibility patterns across Student, Teacher, Parent, and Admin surfaces.
 - [ ] **UIC-02**: Shared lightweight UI primitives exist for page headers, sections, cards, status badges, responsive table wrappers, loading states, error states, and empty states without importing role-specific business logic.
 - [ ] **UIC-03**: Student, Teacher, Parent, and Admin screens keep role-specific privacy boundary copy while using consistent Peerlight AI visual rhythm and Vietnamese support tone.
 - [ ] **UIC-04**: Cross-role UI changes preserve responsive behavior, keyboard focus, skip-link behavior, accessible status/error announcements, and SOS/high-risk color semantics.
@@ -26,7 +26,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 - [ ] **BASE-01**: v1.6 records a baseline for key role routes and APIs, including local/demo constraints, frontend route/build evidence, backend endpoint timings, payload sizes, and likely DB query hot spots.
 - [ ] **BASE-02**: Backend timing or query-count evidence is collected with aggregate-only metadata and never logs raw student content, emails, identifiers, private notes, transcripts, answers, provider claims, secrets, or raw request bodies.
-- [ ] **BASE-03**: The baseline distinguishes local deterministic evidence, public demo evidence, Render/Vercel cold or warm behavior where available, and unavailable live production-pilot constraints.
+- [x] **BASE-03**: The baseline distinguishes local deterministic evidence, public demo evidence, Render/Vercel cold or warm behavior where available, and unavailable live production-pilot constraints.
 
 ### Backend and Database Performance
 
@@ -91,7 +91,7 @@ Deferred to future milestones, not in v1.6 scope.
 
 | Requirement | Phase | Status |
 |---|---|---|
-| UIC-01 | Phase 33 | Pending |
+| UIC-01 | Phase 33 | Complete |
 | UIC-02 | Phase 34 | Pending |
 | UIC-03 | Phase 34 | Pending |
 | UIC-04 | Phase 34 | Pending |
@@ -102,7 +102,7 @@ Deferred to future milestones, not in v1.6 scope.
 | ROLE-05 | Phase 34 | Pending |
 | BASE-01 | Phase 33 | Pending |
 | BASE-02 | Phase 33 | Pending |
-| BASE-03 | Phase 33 | Pending |
+| BASE-03 | Phase 33 | Complete |
 | DBPERF-01 | Phase 36 | Pending |
 | DBPERF-02 | Phase 36 | Pending |
 | DBPERF-03 | Phase 36 | Pending |
