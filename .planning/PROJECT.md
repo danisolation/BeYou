@@ -13,9 +13,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 ready
-**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete
-**Current execution:** Phase 32 Privacy, Security & Release Gates is ready to discuss/plan
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 planned and ready to execute
+**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 5 verified plans ready
+**Current execution:** Phase 32 Privacy, Security & Release Gates is ready to execute
 **Latest verification:** Phase 31 verification passed with metadata-only launch checklist, data-safety buckets, operations UI panels, rollback/handoff docs, code review, backend/frontend/docs gates, and `31-VERIFICATION.md` score 5/5
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
@@ -143,10 +143,11 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Production pilot can disable public demo entry through public-safe auth capabilities while local/demo email-password flows continue.
 - [x] Identity readiness and operations expose only metadata-safe provider, mapping, and session buckets.
 - [x] School pilot operations expose safe launch checklist, demo/real data-safety metadata, rollback guidance, and handoff metadata without raw student surveillance.
+- [x] Phase 32 release-gate context, research, and 5 verified execution plans are ready for final v1.5 privacy/security validation.
 
 ### Active in v1.5
 
-- [ ] Privacy, security, and release gates prove production, identity, operations, and privacy boundaries still hold before v1.5 ships.
+- [ ] Execute Phase 32 release gates so production, identity, operations, and privacy boundaries are proven before v1.5 ships.
 
 ### Out of Scope
 
