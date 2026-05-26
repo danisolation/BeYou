@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -165,6 +165,19 @@ const forbiddenRawEvidenceFields = [
   "drilldown",
 ];
 
+const inventoryArtifactCandidates = [
+  join(process.cwd(), "../.planning/phases/33-cross-role-ui-performance-baseline-audit/33-UI-INVENTORY.md"),
+  join(process.cwd(), ".planning/phases/33-cross-role-ui-performance-baseline-audit/33-UI-INVENTORY.md"),
+];
+
+function readInventoryArtifact(): string {
+  const artifactPath = inventoryArtifactCandidates.find((candidate) => existsSync(candidate));
+  if (!artifactPath) {
+    throw new Error("Phase 33 UI inventory artifact was not found");
+  }
+  return readFileSync(artifactPath, "utf8");
+}
+
 describe("Phase 33 UI inventory coverage helper", () => {
   it("defines the selected cross-role route inventory and exact state/category rules", () => {
     expect(selectedRoutes.map((route) => route.route)).toEqual([
@@ -248,6 +261,27 @@ describe("Phase 33 UI inventory coverage helper", () => {
       expect(existsSync(join(process.cwd(), row.sourceFile))).toBe(true);
       expect(allowedSeverities).toContain(row.severity);
       expect(allowedCandidateFollowUpPhases).toContain(row.candidateFollowUpPhase);
+    }
+  });
+
+  it("validates the checked-in Phase 33 UI inventory artifact coverage markers", () => {
+    const inventoryArtifact = readInventoryArtifact();
+
+    for (const route of selectedRoutes) {
+      expect(inventoryArtifact).toContain(route.route === "shell" ? "Shell" : route.route);
+      expect(inventoryArtifact).toContain(route.sourceFile);
+    }
+    for (const state of requiredStates) {
+      expect(inventoryArtifact).toContain(state);
+    }
+    for (const patternCategory of requiredPatternCategories) {
+      expect(inventoryArtifact).toContain(patternCategory);
+    }
+    for (const severity of allowedSeverities) {
+      expect(inventoryArtifact).toContain(severity);
+    }
+    for (const candidateFollowUpPhase of allowedCandidateFollowUpPhases) {
+      expect(inventoryArtifact).toContain(candidateFollowUpPhase);
     }
   });
 
