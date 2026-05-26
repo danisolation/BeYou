@@ -45,6 +45,12 @@ const roleOptions = [
   { value: "parent", label: "Phụ huynh" },
 ];
 
+const forbiddenMetadataKeyPattern =
+  /email|student_id|recipient_id|private_note|sos_note|transcript|self_check_answer|scenario_answer|reason_text|access_reason_text|provider_subject|raw_claims|export_url|risk_leaderboard/i;
+const unsafeMetadataValuePattern =
+  /@|https?:\/\/|eyJ[A-Za-z0-9_-]{10,}|private_note|sos_note|transcript|self_check_answer|scenario_answer|provider_subject|raw_claims|risk leaderboard|xếp hạng nguy cơ/i;
+const safeMetadataFallback = "metadata_an_toan";
+
 function formatDate(value: string | null) {
   if (!value) {
     return "Chưa có";
@@ -53,11 +59,16 @@ function formatDate(value: string | null) {
 }
 
 function metadataText(metadata: Record<string, unknown>) {
-  const entries = Object.entries(metadata);
+  const entries = Object.entries(metadata)
+    .filter(([key]) => !forbiddenMetadataKeyPattern.test(key))
+    .map(([key, value]) => {
+      const rendered = String(value);
+      return [key, unsafeMetadataValuePattern.test(rendered) ? safeMetadataFallback : rendered] as const;
+    });
   if (entries.length === 0) {
     return "Không có metadata bổ sung.";
   }
-  return entries.map(([key, value]) => `${key}: ${String(value)}`).join(" · ");
+  return entries.map(([key, value]) => `${key}: ${value}`).join(" · ");
 }
 
 function toApiFilters(filters: FilterFormState): AdminOperationsFilters {
