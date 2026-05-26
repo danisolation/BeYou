@@ -1,6 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -11,6 +11,26 @@ import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
 
 function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
+}
+
+function componentSourceFiles(dir = "components"): string[] {
+  const absoluteDir = join(process.cwd(), dir);
+  return readdirSync(absoluteDir).flatMap((entry) => {
+    const relativePath = `${dir}/${entry}`;
+    const absolutePath = join(process.cwd(), relativePath);
+    const stats = statSync(absolutePath);
+    if (stats.isDirectory()) {
+      return componentSourceFiles(relativePath);
+    }
+    return /\.(ts|tsx)$/.test(entry) ? [relativePath] : [];
+  });
+}
+
+function sharedPresentationComponentFiles() {
+  const intentionallyRouteOwnedComponents = new Set([
+    "components/demo-role-entry.tsx",
+  ]);
+  return componentSourceFiles().filter((path) => !intentionallyRouteOwnedComponents.has(path));
 }
 
 function mockFetch(responses: Record<string, unknown>) {
@@ -192,10 +212,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
   });
 
   it("keeps shared presentation components free of route/auth imports and raw labels", () => {
-    const sharedSources = [
-      source("components/ui-primitives.tsx"),
-      source("components/adult-student-list.tsx"),
-    ];
+    const sharedSources = sharedPresentationComponentFiles().map((path) => [path, source(path)] as const);
     const forbiddenSharedImports = [
       "@/app/(authenticated)/student/page",
       "@/app/(authenticated)/teacher/page",
@@ -204,14 +221,37 @@ describe("Phase 35 role dashboard consistency regression", () => {
       "@/lib/auth",
     ];
 
-    for (const sharedSource of sharedSources) {
+    for (const [path, sharedSource] of sharedSources) {
       for (const forbidden of forbiddenSharedImports) {
-        expect(sharedSource).not.toContain(forbidden);
+        expect(sharedSource, path).not.toContain(forbidden);
       }
-      expect(sharedSource).not.toMatch(rawAdultAdminLabelRegex);
-      expect(sharedSource).not.toMatch(/localStorage.setItem|sessionStorage.setItem|access_token|refresh_token|id_token/);
+      expect(sharedSource, path).not.toMatch(rawAdultAdminLabelRegex);
+      expect(sharedSource, path).not.toMatch(/localStorage.setItem|sessionStorage.setItem|access_token|refresh_token|id_token/);
     }
     expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("@/app/(authenticated)/teacher/page");
+  });
+
+  it("keeps adult and admin presentation free of raw support-data labels", () => {
+    const adultAdminSources = [
+      source("components/adult-student-list.tsx"),
+      source("app/(authenticated)/teacher/page.tsx"),
+      source("app/(authenticated)/parent/page.tsx"),
+      source("app/(authenticated)/admin/page.tsx"),
+    ];
+    const forbiddenRawLabels = [
+      "raw self-check",
+      "private notes",
+      "chat transcripts",
+      "provider claims",
+      "request bodies",
+      "free-text access reasons",
+    ];
+
+    for (const fileSource of adultAdminSources) {
+      for (const forbidden of forbiddenRawLabels) {
+        expect(fileSource).not.toContain(forbidden);
+      }
+    }
   });
 
   it("preserves accessible loading and error primitives for Phase 35 dashboards", async () => {
