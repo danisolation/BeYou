@@ -179,6 +179,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     render(<TeacherDashboardPage />);
 
     expect(await screen.findByText("Vai trò giáo viên")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/sos-1");
     expect(document.body.textContent ?? "").not.toMatch(rawAdultAdminLabelRegex);
   });
@@ -193,6 +198,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     render(<ParentDashboardPage />);
 
     expect(await screen.findByText("Vai trò phụ huynh")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên.",
+      ),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute("href", "/parent/sos-alerts/sos-1");
     expect(screen.queryByRole("link", { name: "Xem và cập nhật SOS" })).not.toBeInTheDocument();
   });
@@ -228,6 +238,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     expect(dashboardSources).toContain("/api/parent/students");
     expect(dashboardSources).toContain("/api/admin/users");
     expect(dashboardSources).toContain("/api/admin/links");
+
+    const adultListSource = source("components/adult-student-list.tsx");
+    expect(adultListSource).toContain("space-y-6");
+    expect(adultListSource).toContain("PrivacyBoundaryCard");
+    expect(adultListSource).toContain("Chưa có học sinh được liên kết");
 
     for (const forbidden of ["localStorage.setItem", "sessionStorage.setItem", "access_token", "refresh_token", "id_token"]) {
       expect(dashboardSources).not.toContain(forbidden);
