@@ -73,6 +73,28 @@ class ConnectivitySummary(BaseModel):
     credentialed_cors_methods: list[str]
 
 
+class AuthProviderReadinessSummary(BaseModel):
+    enabled: bool
+    provider_key: str
+    provider_label: str
+    mode: str
+    status: ReadinessCheckStatus
+    last_check_status: str | None = None
+    remediation: str | None = None
+
+
+class IdentityMappingOperationsSummary(BaseModel):
+    by_status: list[OperationCountBucket]
+    pending_review_count: int
+    disabled_count: int
+    deprovisioned_count: int
+
+
+class SessionAuthOperationsSummary(BaseModel):
+    by_auth_method: list[OperationCountBucket]
+    by_provider: list[OperationCountBucket]
+
+
 class ProductionSmokeChecklistItem(BaseModel):
     key: str
     label: str
@@ -159,6 +181,9 @@ class AdminOperationsDashboardResponse(BaseModel):
     runtime: RuntimeModeSummary
     demo_seed: DemoSeedSummary
     connectivity: ConnectivitySummary
+    auth_provider: AuthProviderReadinessSummary | None = None
+    identity_mappings: IdentityMappingOperationsSummary | None = None
+    session_auth: SessionAuthOperationsSummary | None = None
     production_smoke: list[ProductionSmokeChecklistItem]
     deployment_guardrails: list[DeploymentGuardrailItem]
     smoke_profiles: list[SmokeProfileItem]

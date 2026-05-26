@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from datetime import datetime
 from typing import Any
@@ -13,6 +14,8 @@ from app.db.models import (
     AccountStatus,
     AuditEvent,
     ContentStatus,
+    ExternalIdentity,
+    ExternalIdentityStatus,
     LinkStatus,
     MoodCheckInConfig,
     MoodCheckinReminderState,
@@ -20,6 +23,7 @@ from app.db.models import (
     Scenario,
     SchoolPrivacyPolicyDefault,
     SelfCheckTest,
+    Session as UserSession,
     SosNotificationDelivery,
     StudentAdultLink,
     StudentNotificationPreference,
@@ -35,6 +39,7 @@ from app.seeds.demo_seed import (
 )
 from app.schemas.admin_operations import (
     AdminOperationsDashboardResponse,
+    AuthProviderReadinessSummary,
     AuditEventItem,
     AuditEventSummary,
     AuditFilterSummary,
@@ -42,11 +47,13 @@ from app.schemas.admin_operations import (
     DemoSeedRoleStatus,
     DemoSeedSummary,
     DeploymentGuardrailItem,
+    IdentityMappingOperationsSummary,
     OperationCountBucket,
     OperationReadinessAttentionCheck,
     OperationReadinessSummary,
     ProductionSmokeChecklistItem,
     RuntimeModeSummary,
+    SessionAuthOperationsSummary,
     SmokeProfileItem,
     SosEmailDeliveryItem,
     SosEmailDeliverySummary,
@@ -91,6 +98,23 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
     "access_reason_text",
     "reminder_message",
     "notification_body",
+    "raw_subject",
+    "provider_subject",
+    "raw_email",
+    "raw_claims",
+    "groups",
+    "school",
+    "class",
+    "class_name",
+    "client_id",
+    "client_secret",
+    "issuer_url",
+    "callback_url",
+    "tenant_url",
+    "access_token",
+    "refresh_token",
+    "id_token",
+    "password_hash",
 }
 
 PRIVACY_NOTES = [
@@ -98,6 +122,7 @@ PRIVACY_NOTES = [
     "Không hiển thị ghi chú SOS, câu trả lời test tâm lý, nội dung chatbot, email người nhận, secret hoặc danh sách học sinh theo nguy cơ.",
     "Support plan, mood check-in, adult summary và admin config chỉ hiển thị bằng count/status metadata an toàn.",
     "Dùng trang này để kiểm tra vận hành và xử lý sự cố, không dùng để giám sát từng học sinh.",
+    "Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng, liên kết đang hoạt động và SOS của học sinh quyết định.",
 ]
 
 V1_2_RESOURCE_LABELS = {
@@ -128,10 +153,52 @@ DEPLOY_GUARD_COMMAND = "npm --prefix frontend run guard:deploy"
 DEMO_SMOKE_COMMAND = "npm --prefix frontend run smoke:demo"
 PILOT_SMOKE_COMMAND = "npm --prefix frontend run smoke:pilot"
 PRODUCTION_SMOKE_COMMAND = "npm --prefix frontend run smoke:production"
+SAFE_OPERATION_VALUE_RE = re.compile(r"^[a-z][a-z0-9_]{0,95}$")
+SAFE_TEXT_FALLBACK = "metadata_an_toan"
+SAFE_REMEDIATION_FALLBACK = "Kiểm tra cấu hình provider bằng metadata an toàn."
 
 
 def _bucket(key: str, count: int, label_map: Mapping[str, str] | None = None) -> OperationCountBucket:
     return OperationCountBucket(key=key, label=(label_map or {}).get(key, key), count=count)
+
+
+def _unsafe_operation_text(value: str) -> bool:
+    normalized = value.strip().lower()
+    compact = normalized.replace("-", "_").replace(" ", "_")
+    if not normalized:
+        return False
+    if any(marker in compact for marker in OPERATIONS_FORBIDDEN_METADATA_KEYS):
+        return True
+    if any(symbol in normalized for symbol in ("://", "/", "\\", "@", "?", "#")):
+        return True
+    if re.search(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\b", normalized):
+        return True
+    return bool(
+        re.search(r"\$argon2(?:id|i|d)\$", normalized)
+        or re.search(r"\beyJ[A-Za-z0-9_-]{10,}\b", value)
+    )
+
+
+def _safe_operation_key(value: str | None, *, fallback: str = "disabled") -> str:
+    if value is None:
+        return fallback
+    normalized = value.strip().lower().replace("-", "_")
+    if normalized in {"password", "demo_password", "sso", "local", "disabled", "unknown"}:
+        return normalized
+    if not SAFE_OPERATION_VALUE_RE.fullmatch(normalized) or _unsafe_operation_text(normalized):
+        return fallback
+    return normalized
+
+
+def _safe_operation_text(value: str | None, *, fallback: str | None = SAFE_TEXT_FALLBACK) -> str | None:
+    if value is None:
+        return None
+    normalized = " ".join(value.strip().split())
+    if not normalized:
+        return fallback
+    if _unsafe_operation_text(normalized):
+        return fallback
+    return normalized
 
 
 def _count_buckets(
@@ -506,6 +573,73 @@ def _connectivity_summary(settings: Settings) -> ConnectivitySummary:
     )
 
 
+def _auth_provider_summary(settings: Settings) -> AuthProviderReadinessSummary:
+    enabled = settings.auth_provider_enabled
+    provider_key = _safe_operation_key(settings.auth_provider_key)
+    provider_label = _safe_operation_text(settings.auth_provider_label, fallback="Chưa cấu hình") or "Chưa cấu hình"
+    mode = _safe_operation_key(settings.auth_provider_mode)
+    last_check_status = _safe_operation_text(settings.auth_provider_last_check_status, fallback=None)
+    ready = enabled and provider_key != "disabled" and mode != "disabled"
+    if ready:
+        return AuthProviderReadinessSummary(
+            enabled=enabled,
+            provider_key=provider_key,
+            provider_label=provider_label,
+            mode=mode,
+            status="pass",
+            last_check_status=last_check_status,
+            remediation=None,
+        )
+    return AuthProviderReadinessSummary(
+        enabled=enabled,
+        provider_key=provider_key,
+        provider_label=provider_label,
+        mode=mode,
+        status="warn",
+        last_check_status=last_check_status,
+        remediation=_safe_operation_text(SAFE_REMEDIATION_FALLBACK),
+    )
+
+
+def _identity_mapping_summary(db: OrmSession) -> IdentityMappingOperationsSummary:
+    rows = db.execute(
+        select(ExternalIdentity.status, func.count()).select_from(ExternalIdentity).group_by(ExternalIdentity.status).order_by(ExternalIdentity.status)
+    ).all()
+    counts = {_safe_operation_key(status, fallback="unknown"): count for status, count in rows}
+    by_status = [_bucket(status, counts.get(status, 0)) for status in sorted(counts)]
+    return IdentityMappingOperationsSummary(
+        by_status=by_status,
+        pending_review_count=counts.get(ExternalIdentityStatus.PENDING_REVIEW.value, 0),
+        disabled_count=counts.get(ExternalIdentityStatus.DISABLED.value, 0),
+        deprovisioned_count=counts.get(ExternalIdentityStatus.DEPROVISIONED.value, 0),
+    )
+
+
+def _session_auth_summary(db: OrmSession) -> SessionAuthOperationsSummary:
+    method_rows = db.execute(
+        select(UserSession.auth_method, func.count())
+        .select_from(UserSession)
+        .where(UserSession.auth_method.is_not(None))
+        .group_by(UserSession.auth_method)
+        .order_by(UserSession.auth_method)
+    ).all()
+    provider_rows = db.execute(
+        select(UserSession.auth_provider_key, func.count())
+        .select_from(UserSession)
+        .where(UserSession.auth_provider_key.is_not(None))
+        .group_by(UserSession.auth_provider_key)
+        .order_by(UserSession.auth_provider_key)
+    ).all()
+    return SessionAuthOperationsSummary(
+        by_auth_method=[
+            _bucket(_safe_operation_key(method, fallback="unknown"), count) for method, count in method_rows
+        ],
+        by_provider=[
+            _bucket(_safe_operation_key(provider, fallback="unknown"), count) for provider, count in provider_rows
+        ],
+    )
+
+
 def _production_smoke_checklist() -> list[ProductionSmokeChecklistItem]:
     return [
         ProductionSmokeChecklistItem(
@@ -696,6 +830,9 @@ def build_operations_dashboard(
         runtime=_runtime_mode_summary(settings),
         demo_seed=_demo_seed_summary(db, settings),
         connectivity=_connectivity_summary(settings),
+        auth_provider=_auth_provider_summary(settings),
+        identity_mappings=_identity_mapping_summary(db),
+        session_auth=_session_auth_summary(db),
         production_smoke=_production_smoke_checklist(),
         deployment_guardrails=_deployment_guardrails(settings),
         smoke_profiles=_smoke_profiles(settings, readiness_report),
