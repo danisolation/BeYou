@@ -6,7 +6,15 @@ import { useEffect, useState } from "react";
 import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
-import { EntryCard, ErrorState, LoadingState, ResponsiveTable, SurfaceCard } from "@/components/ui-primitives";
+import {
+  EntryCard,
+  ErrorState,
+  LoadingState,
+  PageHeader,
+  PrivacyBoundaryCard,
+  ResponsiveTable,
+  SurfaceCard,
+} from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
 import {
   dismissMoodCheckInReminder,
@@ -131,24 +139,31 @@ export default function StudentDashboardPage() {
 
   return (
     <section className="space-y-6">
-      <SurfaceCard className="bg-secondary">
-        <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-display">Xin chào, {profile.full_name.split(" ")[0]}</h1>
-          {profile.is_demo ? <DemoBadge /> : null}
-        </div>
-        <p className="mt-3 max-w-3xl text-body">
-          Peerlight AI giúp em theo dõi trạng thái, luyện phản hồi thực tế và gọi người lớn tin tưởng khi cần.
-        </p>
-        <div className="mt-5 grid gap-3 text-body md:grid-cols-2">
+      <PageHeader
+        eyebrow="Vai trò học sinh"
+        title={`Xin chào, ${profile.full_name.split(" ")[0]}`}
+        description="Peerlight AI giúp em theo dõi trạng thái, luyện phản hồi thực tế và gọi người lớn tin tưởng khi cần."
+        actions={
+          <>
+            {profile.is_demo ? <DemoBadge /> : null}
+            <Link className="inline-flex min-h-11 items-center font-semibold text-accent" href="/privacy?review=true">
+              Ai có thể xem thông tin của em?
+            </Link>
+          </>
+        }
+      />
+
+      <PrivacyBoundaryCard
+        title="Thông tin của em là riêng tư theo mặc định"
+        description="Người lớn chỉ thấy thông tin trong phạm vi em cho phép hoặc khi có SOS cần hỗ trợ; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở."
+      >
+        <div className="grid gap-3 text-body md:grid-cols-2">
           <p><strong>Họ tên:</strong> {profile.full_name}</p>
           <p><strong>Email:</strong> {profile.email}</p>
           <p><strong>Trường:</strong> {profile.school ?? "Chưa cập nhật"}</p>
           <p><strong>Lớp:</strong> {profile.class_name ?? "Chưa cập nhật"}</p>
         </div>
-        <Link className="mt-5 inline-flex min-h-11 items-center font-semibold text-accent" href="/privacy?review=true">
-          Ai có thể xem thông tin của em?
-        </Link>
-      </SurfaceCard>
+      </PrivacyBoundaryCard>
 
       <DemoGuideCard
         title="Đi theo luồng học sinh trong 5 phút"
