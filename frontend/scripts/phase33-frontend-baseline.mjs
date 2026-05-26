@@ -169,7 +169,7 @@ export function collectFrontendBaseline() {
   });
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const baseline = collectFrontendBaseline();
   process.stdout.write(`${JSON.stringify(baseline, null, 2)}\n`);
 }

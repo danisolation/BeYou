@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import test from "node:test";
 
 import {
@@ -73,4 +74,15 @@ test("selected route source files exist for the local static baseline", () => {
 
 test("frontend helper does not import runtime logging or APM packages", () => {
   assertNoRuntimeApmImports();
+});
+
+test("frontend helper CLI prints aggregate JSON to stdout", () => {
+  const result = spawnSync(process.execPath, ["scripts/phase33-frontend-baseline.mjs"], {
+    cwd: process.cwd(),
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0);
+  const parsed = JSON.parse(result.stdout);
+  assert.ok(Array.isArray(parsed));
+  assert.ok(parsed.length >= 4);
 });
