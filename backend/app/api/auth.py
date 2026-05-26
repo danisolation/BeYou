@@ -13,7 +13,7 @@ from app.core.security import (
     verify_password,
 )
 from app.core.sessions import clear_session_cookie, create_session, require_same_site_mutation, revoke_session
-from app.db.models import AccountStatus, User
+from app.db.models import AccountStatus, AuthSessionMethod, User
 from app.db.session import get_db
 from app.schemas.auth import LoginRequest, LoginResponse
 from app.services.privacy import NOTICE_VERSION, privacy_acknowledgement_required
@@ -84,7 +84,8 @@ def login(
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=PRODUCTION_PILOT_AUTH_UNSAFE_DETAIL)
 
     reset_login_failures(payload.email, client_ip)
-    create_session(db, user, response, settings)
+    auth_method = AuthSessionMethod.DEMO_PASSWORD.value if user.is_demo else AuthSessionMethod.PASSWORD.value
+    create_session(db, user, response, settings, auth_method=auth_method, auth_provider_key="local")
     return _login_response(db, user)
 
 

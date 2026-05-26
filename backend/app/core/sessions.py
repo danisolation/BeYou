@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import secrets
+import uuid
 from datetime import datetime, timedelta, timezone
 
 from fastapi import Depends, HTTPException, Request, Response, status
@@ -9,7 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.config import Settings, get_settings
-from app.db.models import AccountStatus, Session as UserSession, User
+from app.db.models import AccountStatus, AuthSessionMethod, Session as UserSession, User
 from app.db.session import get_db
 
 SESSION_TOKEN_BYTES = 32
@@ -59,6 +60,10 @@ def create_session(
     user: User,
     response: Response,
     settings: Settings,
+    *,
+    auth_method: str = AuthSessionMethod.PASSWORD.value,
+    auth_provider_key: str = "local",
+    external_identity_id: uuid.UUID | None = None,
 ) -> UserSession:
     token = secrets.token_urlsafe(SESSION_TOKEN_BYTES)
     now = utc_now()
@@ -68,6 +73,9 @@ def create_session(
         created_at=now,
         expires_at=now + timedelta(seconds=settings.session_max_age_seconds),
         is_demo=user.is_demo,
+        auth_method=auth_method,
+        auth_provider_key=auth_provider_key,
+        external_identity_id=external_identity_id,
     )
     db.add(session)
     db.commit()
