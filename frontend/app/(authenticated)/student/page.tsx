@@ -13,6 +13,7 @@ import {
   PageHeader,
   PrivacyBoundaryCard,
   ResponsiveTable,
+  StatusBadge,
   SurfaceCard,
 } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
@@ -347,7 +348,7 @@ function MoodReminderCard({
   onOpen: () => Promise<void>;
 }) {
   return (
-    <section className="rounded-3xl border border-[#D7EFE8] bg-white p-5 shadow-sm sm:p-6">
+    <SurfaceCard className="p-5 sm:p-6">
       <p className="text-label font-semibold text-accent">Nhắc nhở tùy chọn</p>
       <h2 className="mt-2 text-heading">{reminder.title}</h2>
       <p className="mt-3 text-body">{reminder.body}</p>
@@ -387,7 +388,7 @@ function MoodReminderCard({
         </Link>
       </div>
       {actionMessage ? <p role="status" className="mt-4 text-body text-accent">{actionMessage}</p> : null}
-    </section>
+    </SurfaceCard>
   );
 }
 
@@ -456,7 +457,9 @@ function StudentSosStatusList({ alerts }: { alerts: SosAlert[] }) {
           <article key={alert.id} className="rounded-2xl border border-[#D7EFE8] p-4">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-semibold">{sosStatusLabels[alert.current_status]}</h3>
-              <span className="rounded-full bg-secondary px-3 py-1 text-label">{sosSeverityLabels[alert.severity]}</span>
+              <StatusBadge tone={alert.severity === "urgent" ? "sos" : "danger"}>
+                {sosSeverityLabels[alert.severity]}
+              </StatusBadge>
               {alert.is_demo ? <DemoBadge /> : null}
             </div>
             <p className="mt-2 text-label">Gửi lúc: {new Date(alert.created_at).toLocaleString("vi-VN")}</p>
@@ -508,7 +511,7 @@ function LinkedAdultGroup({ title, adults }: { title: string; adults: LinkedAdul
     return <EmptyState heading={title} body="Chưa có người lớn hỗ trợ được liên kết trong mục này." />;
   }
   return (
-    <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+    <SurfaceCard className="p-5 sm:p-6">
       <h2 className="text-heading">{title}</h2>
       <div className="mt-4 space-y-3">
         {adults.map((adult) => (
@@ -522,6 +525,6 @@ function LinkedAdultGroup({ title, adults }: { title: string; adults: LinkedAdul
           </article>
         ))}
       </div>
-    </section>
+    </SurfaceCard>
   );
 }
