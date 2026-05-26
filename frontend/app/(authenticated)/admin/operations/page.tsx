@@ -5,14 +5,17 @@ import { FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
 import {
   type AdminOperationsDashboard,
   type AdminOperationsFilters,
+  type AuthProviderReadinessSummary,
   type AuditEventItem,
   type ConnectivitySummary,
   type DemoSeedSummary,
   type DeploymentGuardrailItem,
+  type IdentityMappingOperationsSummary,
   getAdminOperationsDashboard,
   type OperationCountBucket,
   type ProductionSmokeChecklistItem,
   type RuntimeModeSummary,
+  type SessionAuthOperationsSummary,
   type SmokeProfileItem,
   type SosEmailDeliveryItem,
 } from "@/lib/admin-operations-api";
@@ -82,7 +85,7 @@ export default function AdminOperationsPage() {
       })
       .catch(() => {
         if (!cancelled) {
-          setError("Chưa tải được dữ liệu vận hành. Hãy thử lại từ cổng quản trị.");
+          setError("Chưa tải được metadata đăng nhập. Hãy thử lại từ cổng quản trị.");
         }
       })
       .finally(() => {
@@ -128,7 +131,11 @@ export default function AdminOperationsPage() {
           ))}
         </ul>
         <p className="mt-4 rounded-2xl bg-white p-4 text-label font-semibold text-accent">
-          Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ, không có drilldown hồ sơ học sinh.
+          Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ, không có đường mở hồ sơ học sinh.
+        </p>
+        <p className="mt-4 rounded-2xl bg-white p-4 text-label font-semibold text-accent">
+          Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng,
+          liên kết đang hoạt động và SOS của học sinh quyết định.
         </p>
       </section>
 
@@ -236,6 +243,32 @@ export default function AdminOperationsPage() {
             </Panel>
             <Panel title="Connectivity & session contract" description="Xác nhận frontend/backend, CORS credentialed và cookie session theo cấu hình đã mask.">
               <ConnectivityPanel connectivity={dashboard.connectivity} />
+            </Panel>
+          </section>
+          <Panel
+            title="Auth provider readiness"
+            description="Theo dõi cấu hình đăng nhập ngoài bằng metadata an toàn, không hiển thị client ID, issuer, callback URL hoặc secret."
+          >
+            <AuthProviderPanel provider={dashboard.auth_provider ?? null} />
+          </Panel>
+          <section className="grid gap-4 lg:grid-cols-2">
+            <Panel
+              title="Identity mapping buckets"
+              description="Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản."
+            >
+              <IdentityMappingPanel
+                mappings={dashboard.identity_mappings ?? null}
+                buckets={dashboard.identity_mappings?.by_status ?? []}
+              />
+            </Panel>
+            <Panel
+              title="Session auth methods"
+              description="Tóm tắt session backend-owned theo phương thức đăng nhập và provider an toàn; không lưu token trong trình duyệt."
+            >
+              <SessionAuthPanel
+                methodBuckets={dashboard.session_auth?.by_auth_method ?? []}
+                providerBuckets={dashboard.session_auth?.by_provider ?? []}
+              />
             </Panel>
           </section>
           <Panel title="Production smoke checklist" description="Các bước smoke production có thể chạy mà không xuất secret hoặc dữ liệu riêng tư.">
@@ -392,6 +425,100 @@ function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary
       <p className="text-label">
         Credentialed methods: {connectivity.credentialed_cors_methods.join(", ")}. Không hiển thị cookie value hoặc
         secret.
+      </p>
+    </div>
+  );
+}
+
+function AuthProviderPanel({ provider }: { provider: AuthProviderReadinessSummary | null }) {
+  if (!provider) {
+    return (
+      <div className="rounded-2xl bg-secondary p-4">
+        <h3 className="text-label font-semibold">Chưa có metadata danh tính.</h3>
+        <p className="mt-2 text-body">Hãy kiểm tra cấu hình provider và tải lại trang vận hành.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl bg-secondary p-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <StatusBadge status={provider.status} />
+        <h3 className="font-semibold">{provider.provider_label}</h3>
+      </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <p className="text-body">
+          <span className="font-semibold">Mode:</span> {provider.mode}
+        </p>
+        <p className="text-body">
+          <span className="font-semibold">Enabled:</span> {provider.enabled ? "yes" : "no"}
+        </p>
+        {provider.provider_key ? (
+          <p className="text-body">
+            <span className="font-semibold">Provider key:</span> {provider.provider_key}
+          </p>
+        ) : null}
+        {provider.last_check_status ? (
+          <p className="text-body">
+            <span className="font-semibold">Last check:</span> {provider.last_check_status}
+          </p>
+        ) : null}
+      </div>
+      {provider.remediation ? <p className="mt-3 text-label">{provider.remediation}</p> : null}
+    </div>
+  );
+}
+
+function IdentityMappingPanel({
+  mappings,
+  buckets,
+}: {
+  mappings: IdentityMappingOperationsSummary | null;
+  buckets: OperationCountBucket[];
+}) {
+  return (
+    <div className="space-y-4">
+      <BucketList
+        buckets={buckets}
+        emptyCopy="Chưa có metadata liên kết danh tính. Không có tài khoản nào được tự động cấp quyền từ claim bên ngoài."
+      />
+      <IdentityMappingMetrics mappings={mappings} />
+      {(mappings?.pending_review_count ?? 0) > 0 ? (
+        <p className="rounded-2xl bg-secondary p-4 text-body">
+          Một số liên kết danh tính đang chờ duyệt. Không có tài khoản nào được tự động cấp quyền.
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function IdentityMappingMetrics({ mappings }: { mappings: IdentityMappingOperationsSummary | null }) {
+  return (
+    <div className="grid gap-3 md:grid-cols-3">
+      <MetricCard title="Pending review" value={mappings?.pending_review_count ?? 0} description="Liên kết cần duyệt." />
+      <MetricCard title="Disabled" value={mappings?.disabled_count ?? 0} description="Liên kết đã tắt." />
+      <MetricCard title="Deprovisioned" value={mappings?.deprovisioned_count ?? 0} description="Liên kết đã thu hồi." />
+    </div>
+  );
+}
+
+function SessionAuthPanel({
+  methodBuckets,
+  providerBuckets,
+}: {
+  methodBuckets: SessionAuthOperationsSummary["by_auth_method"];
+  providerBuckets: SessionAuthOperationsSummary["by_provider"];
+}) {
+  return (
+    <div className="space-y-4">
+      <BucketList
+        title="Phương thức đăng nhập"
+        buckets={methodBuckets}
+        emptyCopy="Chưa có metadata session theo phương thức đăng nhập."
+      />
+      <BucketList title="Provider" buckets={providerBuckets} emptyCopy="Chưa có metadata session theo phương thức đăng nhập." />
+      <p className="rounded-2xl bg-secondary p-4 text-body">
+        Session vẫn dùng cookie HttpOnly do backend sở hữu; UI không đọc hoặc lưu access token.
       </p>
     </div>
   );

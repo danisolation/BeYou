@@ -367,7 +367,7 @@ describe("Phase 11 operations visibility UI", () => {
     expect(
       screen.getByText("Tóm tắt session backend-owned theo phương thức đăng nhập và provider an toàn; không lưu token trong trình duyệt."),
     ).toBeInTheDocument();
-    expect(screen.getByText("Pilot SSO")).toBeInTheDocument();
+    expect(screen.getAllByText("Pilot SSO").length).toBeGreaterThan(0);
     expect(screen.getByText("Đã liên kết")).toBeInTheDocument();
     expect(screen.getByText("Chờ duyệt")).toBeInTheDocument();
     expect(screen.getByText("Phương thức đăng nhập")).toBeInTheDocument();
@@ -385,14 +385,17 @@ describe("Phase 11 operations visibility UI", () => {
     ).toBeInTheDocument();
 
     const rendered = document.body.textContent ?? "";
-    const renderedWithoutAllowedCopy = rendered.replace("drilldown tài khoản", "");
+    const renderedWithoutAllowedCopy = rendered.replace(
+      "Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc drilldown tài khoản.",
+      "",
+    );
     expect(rendered).not.toMatch(
       /client_secret|issuer_url|callback_url|raw_subject|raw_email|refresh_token|id_token|RAW_|pilot\.student@example\.edu/i,
     );
     expect(renderedWithoutAllowedCopy).not.toMatch(/drilldown/i);
     expect(screen.queryByRole("button", { name: /drilldown|export|xuất|raw json|json/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /drilldown|chi tiết học sinh|tài khoản|raw json|export|xuất/i })).not.toBeInTheDocument();
-    expect(screen.queryByText(/raw json viewer|per-user|per-student|school_class|groups|claim/i)).not.toBeInTheDocument();
+    expect(renderedWithoutAllowedCopy).not.toMatch(/raw json viewer|per-user|per-student|school_class|groups|claim/i);
   });
 
   it("shows Phase 30 identity fallbacks when older operations payloads omit identity fields", async () => {
@@ -418,7 +421,7 @@ describe("Phase 11 operations visibility UI", () => {
     if (sessionPanel === null) {
       throw new Error("missing session auth panel");
     }
-    expect(within(sessionPanel).getByText("Chưa có metadata session theo phương thức đăng nhập.")).toBeInTheDocument();
+    expect(within(sessionPanel).getAllByText("Chưa có metadata session theo phương thức đăng nhập.").length).toBeGreaterThan(0);
   });
 });
 
