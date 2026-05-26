@@ -81,6 +81,7 @@ export default function AdminDashboardPage() {
           title="Vận hành metadata-only"
           description="Kiểm tra readiness, email SOS và audit metadata mà không mở dữ liệu riêng tư của học sinh."
           countLabel="Operations"
+          actionLabel="Mở bảng vận hành metadata"
         />
         <AdminEntryCard
           href="/admin/reports"
@@ -146,11 +147,13 @@ function AdminEntryCard({
   title,
   description,
   countLabel,
+  actionLabel = "Mở bảng metadata",
 }: {
   href: string;
   title: string;
   description: string;
   countLabel: ReactNode;
+  actionLabel?: string;
 }) {
   return (
     <Link href={href} className="block min-w-0 no-underline">
@@ -160,7 +163,7 @@ function AdminEntryCard({
         meta={<span className="font-semibold">{countLabel}</span>}
         className="h-full hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
       >
-        <span className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent">Mở bảng</span>
+        <span className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent">{actionLabel}</span>
       </EntryCard>
     </Link>
   );

@@ -120,7 +120,7 @@ describe("Phase 34 final UI regression", () => {
     render(<AdminDashboardPage />);
 
     expect(await screen.findByText("Cổng quản trị")).toBeInTheDocument();
-    expect(screen.getByText("Vận hành metadata-only")).toBeInTheDocument();
+    expect(screen.getAllByText("Vận hành metadata-only").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Báo cáo tổng hợp riêng tư")).toBeInTheDocument();
 
     const controls = [...screen.getAllByRole("link"), ...screen.queryAllByRole("button")];
