@@ -83,16 +83,23 @@ function countMatches(source, pattern) {
   return Array.from(source.matchAll(pattern)).length;
 }
 
-function localImportCandidates(source) {
+function localImportCandidates(source, fromRelativePath) {
   const imports = [];
   const importPattern = /from\s+["']([^"']+)["']/g;
+  const baseDir = path.dirname(fromRelativePath);
   for (const match of source.matchAll(importPattern)) {
     const importPath = match[1];
-    if (!importPath.startsWith("@/") && !importPath.startsWith("./") && !importPath.startsWith("../")) {
-      continue;
-    }
     if (importPath.startsWith("@/")) {
       imports.push(`${importPath.slice(2)}.ts`, `${importPath.slice(2)}.tsx`);
+      continue;
+    }
+    if (importPath.startsWith(".")) {
+      imports.push(
+        path.normalize(path.join(baseDir, `${importPath}.ts`)),
+        path.normalize(path.join(baseDir, `${importPath}.tsx`)),
+        path.normalize(path.join(baseDir, importPath, "index.ts")),
+        path.normalize(path.join(baseDir, importPath, "index.tsx")),
+      );
     }
   }
   return imports.filter((candidate) => existsSync(sourcePath(candidate)));
@@ -146,7 +153,7 @@ function routeAssetEvidence(route) {
 
 function fetchCandidateCountFor(entry) {
   const primarySource = readSource(entry.sourceFile);
-  const importedSources = localImportCandidates(primarySource).map(readSource);
+  const importedSources = localImportCandidates(primarySource, entry.sourceFile).map(readSource);
   const combinedSource = [primarySource, ...importedSources].join("\n");
   return countMatches(combinedSource, /\bapiFetch\s*\(/g) + countMatches(combinedSource, /\bfetch\s*\(/g);
 }
