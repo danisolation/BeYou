@@ -20,7 +20,7 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 - [ ] **ROLE-02**: The Teacher dashboard uses harmonized UI patterns while preserving SOS-only student visibility, active relationship checks, and teacher-specific SOS status actions.
 - [ ] **ROLE-03**: The Parent dashboard uses harmonized UI patterns while preserving read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
 - [ ] **ROLE-04**: The Admin dashboard and operations surfaces use harmonized metadata-only panels without adding raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
-- [ ] **ROLE-05**: Shared role-entry, dashboard navigation, and guidance patterns make it clear which role is active and what data boundaries apply.
+- [x] **ROLE-05**: Shared role-entry, dashboard navigation, and guidance patterns make it clear which role is active and what data boundaries apply.
 
 ### Production Performance Baseline
 
@@ -99,7 +99,7 @@ Deferred to future milestones, not in v1.6 scope.
 | ROLE-02 | Phase 35 | Pending |
 | ROLE-03 | Phase 35 | Pending |
 | ROLE-04 | Phase 35 | Pending |
-| ROLE-05 | Phase 34 | Pending |
+| ROLE-05 | Phase 34 | Complete |
 | BASE-01 | Phase 33 | Complete |
 | BASE-02 | Phase 33 | Complete |
 | BASE-03 | Phase 33 | Complete |
