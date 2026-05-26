@@ -84,6 +84,8 @@ describe("Phase 34 UI primitives", () => {
     expect(screen.getByText("Gợi ý demo")).toBeInTheDocument();
     const list = screen.getByRole("list");
     expect(within(list).getAllByRole("listitem")).toHaveLength(3);
-    expect(screen.getByRole("link", { name: "Mở cổng học sinh" })).toHaveAttribute("href", "/student");
+    const action = screen.getByRole("link", { name: "Mở cổng học sinh" });
+    expect(action).toHaveAttribute("href", "/student");
+    expect(action).toHaveClass("min-h-11");
   });
 });

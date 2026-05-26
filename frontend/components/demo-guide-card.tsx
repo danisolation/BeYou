@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { SurfaceCard } from "@/components/ui-primitives";
+
 type DemoGuideAction = {
   href: string;
   label: string;
@@ -15,7 +17,7 @@ type DemoGuideCardProps = {
 
 export function DemoGuideCard({ title, body, steps, actions = [] }: DemoGuideCardProps) {
   return (
-    <section className="rounded-3xl border border-[#D7EFE8] bg-white p-5 shadow-sm sm:p-6">
+    <SurfaceCard>
       <p className="text-label font-semibold uppercase tracking-[0.18em] text-accent">Gợi ý demo</p>
       <h2 className="mt-2 text-heading">{title}</h2>
       <p className="mt-3 text-body">{body}</p>
@@ -44,6 +46,6 @@ export function DemoGuideCard({ title, body, steps, actions = [] }: DemoGuideCar
           ))}
         </div>
       ) : null}
-    </section>
+    </SurfaceCard>
   );
 }
