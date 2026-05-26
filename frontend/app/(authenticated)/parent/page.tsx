@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+import { AdultStudentList, type AdultLinkedStudent } from "@/components/adult-student-list";
+import { LoadingState } from "@/components/ui-primitives";
 import { apiFetch } from "@/lib/api";
-import { RoleStudentList } from "@/app/(authenticated)/teacher/page";
 import {
   getNotifications,
   getParentSupportOverview,
@@ -11,26 +12,15 @@ import {
   type InAppNotification,
 } from "@/lib/sos-api";
 
-type LinkedStudent = {
-  id: string;
-  full_name: string;
-  email: string;
-  school: string | null;
-  class_name: string | null;
-  relationship_type: string;
-  link_status: string;
-  is_demo: boolean;
-};
-
 export default function ParentDashboardPage() {
-  const [students, setStudents] = useState<LinkedStudent[]>([]);
+  const [students, setStudents] = useState<AdultLinkedStudent[]>([]);
   const [supportOverview, setSupportOverview] = useState<AdultSupportOverviewItem[]>([]);
   const [notifications, setNotifications] = useState<InAppNotification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
-      apiFetch<LinkedStudent[]>("/api/parent/students"),
+      apiFetch<AdultLinkedStudent[]>("/api/parent/students"),
       getParentSupportOverview().catch(() => []),
       getNotifications().catch(() => []),
     ])
@@ -43,11 +33,12 @@ export default function ParentDashboardPage() {
   }, []);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <LoadingState />;
   }
 
   return (
-    <RoleStudentList
+    <AdultStudentList
+      roleContext="parent"
       title="Cổng phụ huynh"
       subtitle="Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị."
       summaryTitle="Tóm tắt hỗ trợ của con"
