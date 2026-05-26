@@ -37,13 +37,13 @@ function assertApprovedKeysOnly(value) {
     for (const [key, nested] of Object.entries(value)) {
       assert.equal(forbiddenKeys.has(key), false, `forbidden output key: ${key}`);
       if (APPROVED_OUTPUT_KEYS.includes(key)) {
+        assertApprovedKeysOnly(nested);
         continue;
       }
       if (["status", "source", "routeAssetCount", "routeAssetBytes"].includes(key)) {
         continue;
       }
       assert.fail(`unapproved output key: ${key}`);
-      assertApprovedKeysOnly(nested);
     }
   }
 }
