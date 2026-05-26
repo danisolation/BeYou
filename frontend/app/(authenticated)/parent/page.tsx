@@ -64,7 +64,7 @@ export default function ParentDashboardPage() {
     <AdultStudentList
       roleContext="parent"
       title="Cổng phụ huynh"
-      subtitle="Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị."
+      subtitle="Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành/read-only."
       summaryTitle="Tóm tắt hỗ trợ của con"
       summaryBasePath="/parent/students"
       summaryCta="Xem tóm tắt hỗ trợ"

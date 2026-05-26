@@ -64,7 +64,7 @@ export default function TeacherDashboardPage() {
     <AdultStudentList
       roleContext="teacher"
       title="Cổng giáo viên"
-      subtitle="Xem học sinh được liên kết và các thông tin được phép xem để hỗ trợ các em."
+      subtitle="Xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát."
       summaryTitle="Tóm tắt tự kiểm tra được phép xem"
       summaryBasePath="/teacher/students"
       summaryCta="Xem tóm tắt hỗ trợ"
