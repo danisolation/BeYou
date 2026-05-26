@@ -27,7 +27,7 @@
 
 - [x] Phase 28: Runtime Mode & Production Readiness Foundation (completed 2026-05-25)
 - [x] Phase 29: Deployment Guardrails & Smoke Profiles (completed 2026-05-25)
-- [ ] Phase 30: Identity Foundation & Auth Contracts
+- [x] Phase 30: Identity Foundation & Auth Contracts (completed 2026-05-26)
 - [ ] Phase 31: School Pilot Operations & Safe Launch
 - [ ] Phase 32: Privacy, Security & Release Gates
 
@@ -73,7 +73,7 @@
 **Depends on:** Phase 28
 **Requirements:** IDENT-01, IDENT-02, IDENT-03, IDENT-04, IDENT-05, IDENT-06, IDENT-07
 **UI hint:** yes
-**Status:** Pending
+**Status:** Complete
 
 **Success criteria:**
 1. Admin/operator can see auth provider readiness through metadata-only fields.
@@ -84,14 +84,14 @@
 6. External identity claims, school/class metadata, or provider groups never grant adult student visibility; active relationship plus student-sent SOS remains mandatory.
 7. Unknown, unlinked, disabled, or deprovisioned identities receive safe denial or pending-review behavior without privileged auto-creation.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [x] 30-01-PLAN.md — Backend identity/session schema and safe session metadata.
 - [x] 30-02-PLAN.md — External identity resolver contract and authorization boundary regressions.
 - [x] 30-03-PLAN.md — Backend provider readiness and admin operations identity metadata.
 - [x] 30-04-PLAN.md — Public-safe auth capabilities and production-pilot demo entry gating.
-- [ ] 30-05-PLAN.md — Admin operations UI panels for provider, mapping, and session auth metadata.
+- [x] 30-05-PLAN.md — Admin operations UI panels for provider, mapping, and session auth metadata.
 
 ### Phase 31: School Pilot Operations & Safe Launch
 
@@ -142,8 +142,8 @@ Plans:
 | DEPLOY-03 | Phase 29 | Complete |
 | DEPLOY-04 | Phase 29 | Complete |
 | DEPLOY-05 | Phase 29 | Complete |
-| IDENT-01 | Phase 30 | Pending |
-| IDENT-02 | Phase 30 | Pending |
+| IDENT-01 | Phase 30 | Complete |
+| IDENT-02 | Phase 30 | Complete |
 | IDENT-03 | Phase 30 | Complete |
 | IDENT-04 | Phase 30 | Complete |
 | IDENT-05 | Phase 30 | Complete |
@@ -175,4 +175,4 @@ Plans:
 - Runtime/deployment/identity changes must not weaken student-owned data, SOS-only adult visibility, reason gates, or metadata-only operations.
 
 ---
-*Last updated: 2026-05-26 after Phase 30 Plan 04 execution*
+*Last updated: 2026-05-26 after Phase 30 Plan 05 execution*
