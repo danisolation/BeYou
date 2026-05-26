@@ -126,4 +126,4 @@ Each v1.5 requirement maps to exactly one roadmap phase.
 
 ---
 *Requirements defined: 2026-05-25*
-*Last updated: 2026-05-26 after Phase 32 Plan 32-03 frontend gates*
+*Last updated: 2026-05-26 after Phase 32 Plan 32-04 docs gates*

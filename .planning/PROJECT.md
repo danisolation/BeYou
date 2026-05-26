@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.4 Consent-Based Notifications & Access Transparency archived as of 2026-05-25
-**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 executing with 3/5 plans complete
-**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 3/5 plans executed
-**Current execution:** Phase 32 Privacy, Security & Release Gates is executing; Plan 32-04 README release-gate documentation is next
-**Latest verification:** Phase 32 Plan 32-03 frontend release gates passed with 7 release-gate tests, 39 related UI regressions, and frontend lint
+**Milestone status:** v1.5 Production Pilot Readiness & Identity in progress; Phases 28-31 complete, Phase 32 executing with 4/5 plans complete
+**Scope shipped:** 31 total phases; v1.5 Phases 28-31 have 17/17 plans executed and 22/28 requirements complete; Phase 32 has 4/5 plans executed
+**Current execution:** Phase 32 Privacy, Security & Release Gates is executing; Plan 32-05 final verification evidence is next
+**Latest verification:** Phase 32 Plan 32-04 README release-gate docs passed required string checks and Node release gates
 **Latest audit:** `.planning/milestones/v1.4-MILESTONE-AUDIT.md` passed with 36/36 requirements, 7/7 phases, 7/7 integration flows, and 0 critical gaps
 
 ### Built Product
@@ -44,6 +44,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 32 Plan 32-01 verification: passed, including backend release gates for QA-01/QA-03/QA-04/QA-05, 72 related backend regressions, and backend ruff
 - Phase 32 Plan 32-02 verification: passed, including deterministic Node release gates, deploy guardrail tests, and smoke profile tests
 - Phase 32 Plan 32-03 verification: passed, including frontend no-token/privacy/operations release gates, related UI regressions, and frontend lint
+- Phase 32 Plan 32-04 verification: passed, including README release-gate matrix, live smoke constraints, privacy grep guidance, and Node release gates
 - v1.4 milestone audit: passed after 3-source cross-reference and integration checker
 
 ### Planning Archives
@@ -150,6 +151,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] Backend Phase 32 release gates now prove production-pilot readiness/seed blocking, no-callback/no-token identity scope, SOS-only adult visibility, and operations metadata redlines for QA-01, QA-03, QA-04, and QA-05.
 - [x] Node Phase 32 release gates now prove production-pilot deploy guardrails, demo/pilot smoke split, metadata-only guardrail output, and explicit live pilot smoke constraints for QA-02 and QA-06.
 - [x] Frontend Phase 32 release gates now prove no-token auth, privacy acknowledgement routing, and metadata-only operations DOM behavior for QA-03, QA-04, and QA-05.
+- [x] README Phase 32 release guidance now maps QA-01..QA-06 to exact commands and documents live `smoke:pilot` constraints plus privacy grep gates.
 
 ### Active in v1.5
 
@@ -252,6 +254,7 @@ Roles:
 | Fix release-gate sanitizer gaps immediately | Phase 32 Plan 32-01 expanded operations redlines when QA-05 caught answer/export/risk markers in serialized dashboard metadata | Validated in Phase 32 |
 | Keep live pilot smoke constraints explicit | Phase 32 Plan 32-02 adds deterministic Node gates and requires real safe pilot URLs/readiness before live `smoke:pilot` can count as evidence | Validated in Phase 32 |
 | Keep operations UI as a final redaction layer | Phase 32 Plan 32-03 filters unsafe audit metadata before rendering the admin operations DOM | Validated in Phase 32 |
+| Preserve release docs as support-not-surveillance guidance | Phase 32 Plan 32-04 documents release commands, constrained live smoke, and privacy grep gates without normalizing raw exports/reset/risk drilldowns | Validated in Phase 32 |
 
 ## Known Tech Debt
 
@@ -281,4 +284,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after Phase 32 Plan 32-03*
+*Last updated: 2026-05-26 after Phase 32 Plan 32-04*

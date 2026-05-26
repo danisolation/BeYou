@@ -132,3 +132,41 @@ Set-Location D:\BeYou; npm --prefix frontend run smoke:demo
 
 `/health/ready` may report `not_ready` on the public demo while demo seeding is intentionally enabled; use `smoke:pilot` only for production-pilot readiness.
 
+## Privacy, security, and release gates
+
+Phase 32 release must map every QA requirement to an executable local gate or an explicit constrained live-smoke note.
+
+| Requirement | Gate | Command |
+|---|---|---|
+| QA-01 | Backend runtime/readiness, seed blocking, and secret masking | `Set-Location D:\BeYou\backend; python -m pytest tests\test_phase32_release_gates.py tests\test_phase7_readiness.py tests\test_demo_seed.py -q` |
+| QA-02 | Deploy guardrails, smoke profiles, and deterministic Node release gates | `Set-Location D:\BeYou\frontend; npm run test:deploy-guardrails; npm run test:smoke-profiles; npm run test:release-gates` |
+| QA-03 | Backend auth/privacy plus frontend no-token auth gates | `Set-Location D:\BeYou\backend; python -m pytest tests\test_auth_privacy_portals.py tests\test_authorization_security.py tests\test_phase32_release_gates.py -q; Set-Location D:\BeYou\frontend; npm test -- tests\phase32-release-gates-ui.test.tsx tests\auth-portals.test.tsx` |
+| QA-04 | Cross-role privacy, reason gates, selective sharing, and privacy routing | `Set-Location D:\BeYou\backend; python -m pytest tests\test_phase24_reason_access.py tests\test_authorization_security.py tests\test_phase32_release_gates.py -q; Set-Location D:\BeYou\frontend; npm test -- tests\phase32-release-gates-ui.test.tsx tests\phase23-mood-note-sharing-ui.test.tsx tests\phase24-reason-access-ui.test.tsx` |
+| QA-05 | Operations/readiness metadata-only redlines and README privacy grep gates | `Set-Location D:\BeYou\backend; python -m pytest tests\test_phase32_release_gates.py tests\test_phase31_school_pilot_operations.py tests\test_phase25_admin_policy_operations.py -q; Set-Location D:\BeYou\frontend; npm test -- tests\phase32-release-gates-ui.test.tsx tests\phase31-school-pilot-operations-ui.test.tsx tests\phase25-admin-policy-operations-ui.test.tsx tests\phase11-operations-ui.test.tsx; Set-Location D:\BeYou; Select-String -Path README.md -Pattern "metadata-only","support-not-surveillance","no raw exports","no destructive database reset","no risk leaderboards","no per-student drilldowns"` |
+| QA-06 | Full backend/frontend quality gates plus Node guard/smoke release gates | `Set-Location D:\BeYou\backend; python -m pytest; python -m ruff check .; Set-Location D:\BeYou\frontend; npm test; npm run lint; npm run build; npm run test:deploy-guardrails; npm run test:smoke-profiles; npm run test:release-gates` |
+
+### Live smoke constraints
+
+smoke:pilot is constrained unless BEYOU_FRONTEND_URL, BEYOU_BACKEND_URL, NEXT_PUBLIC_API_BASE_URL, and a production_pilot deployment with /health/ready status ready are available.
+
+When those inputs are absent, Phase 32 verification records live pilot smoke as constrained instead of passed. Deterministic local substitutes are `npm run test:smoke-profiles`, `npm run test:release-gates`, backend readiness/admin metadata tests, and `npm --prefix frontend run guard:deploy`.
+
+Phase 32 verification does not require real student accounts, school domains, IdP credentials, or secrets. Never paste secrets, real student records, provider claims, or raw identifiers into release logs.
+
+### Privacy grep gates
+
+Use grep gates to keep release docs and operations guidance metadata-only and support-not-surveillance:
+
+```powershell
+Set-Location D:\BeYou
+Select-String -Path README.md -Pattern "metadata-only","support-not-surveillance","no raw exports","no destructive database reset","no risk leaderboards","no per-student drilldowns"
+```
+
+Also search app and docs surfaces for forbidden operational markers. Investigate any match outside explicit rejection/warning copy:
+
+```powershell
+Set-Location D:\BeYou
+Select-String -Path README.md,backend\app\**\*.py,frontend\app\**\*.tsx,frontend\lib\**\*.ts,frontend\tests\**\*.tsx -Pattern "raw export","destructive reset","risk leaderboard","xếp hạng nguy cơ","per-student drilldown","provider_subject","raw_claims","private_note","sos_note","transcript","self_check_answer","scenario_answer","access_token","refresh_token","id_token"
+```
+
+Release guidance must preserve metadata-only operations, support-not-surveillance framing, no raw exports, no destructive database reset, no risk leaderboards, and no per-student drilldowns.
