@@ -12,12 +12,12 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.5 Production Pilot Readiness & Identity archived as of 2026-05-26
-**Milestone status:** v1.6 Cross-Role UI Consistency & Production Performance in progress; Phase 36 backend/database hot-path optimization complete
-**Scope shipped:** 36 total phases; v1.5 Phases 28-32 completed 22/22 plans and 28/28 requirements; v1.6 Phases 33-36 completed 17/27 requirements
-**Current execution:** Phase 37 is next: Frontend Data Loading & Render Optimization
-**Latest verification:** Phase 36 verification passed: 15/15 must-haves verified, DBPERF-01..DBPERF-05 complete, focused backend pytest 56/56 passed, backend ruff passed, Alembic check reported no new upgrade operations, and code review was clean
-**Latest audit:** `.planning/milestones/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
+**Shipped version:** v1.6 Cross-Role UI Consistency & Production Performance archived as of 2026-05-27
+**Milestone status:** v1.7 UI Redesign to Match Stitch Mockups — defining requirements
+**Scope shipped:** 38 total phases; v1.6 Phases 33-38 completed 27/27 requirements
+**Current execution:** Defining v1.7 requirements and roadmap
+**Latest verification:** v1.6 milestone verified and archived
+**Latest audit:** `.planning/milestones/v1.6-MILESTONE-AUDIT.md` completed with constrained pass (Phase 34 visual walkthrough deferred, test timeout accepted)
 
 ### Built Product
 
@@ -73,17 +73,23 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.6 Cross-Role UI Consistency & Production Performance
+## Current Milestone: v1.7 UI Redesign to Match Stitch Mockups
 
-**Goal:** Make Student, Teacher, Parent, and Admin experiences feel like one cohesive Peerlight AI product while reducing production slowness across database, backend, and frontend paths.
+**Goal:** Rebuild all student-facing and teacher/parent pages to match Google Stitch mockup designs with consistent design language, synchronized UI components, and proper page structure across all roles.
 
 **Target features:**
 
-- Cross-role UI audit and harmonization for shell/navigation, spacing, cards, tables, forms, empty/loading/error states, Vietnamese support copy, responsive behavior, and accessibility.
-- Shared frontend patterns/components where they reduce drift without introducing large UI rewrites.
-- Production performance audit for PostgreSQL queries/indexes, backend endpoint latency, N+1 patterns, payload size, caching/pagination opportunities, and Render/Vercel runtime constraints.
-- Frontend performance improvements for data fetching, render waterfalls, bundle/runtime cost, route loading states, and perceived responsiveness on production.
-- Measurable performance and UI regression gates so improvements are verified without weakening privacy, role authorization, or metadata-only operations.
+- Student Homepage (About page) with card-based design, no duplicate sections, image+text blocks only
+- Login page with updated branding cards (Góc nhỏ bình yên, Nâng niu từng xao động, Điểm hẹn chữa lành)
+- Student Dashboard with circular/rounded cards, specific CTAs (Vào test, Vào check-in, Vào thực hành, Vào thiết lập), history moved inside feature pages
+- Peerlight AI chat with mobile hamburger menu sidebar
+- Test tâm lý with 3 sub-pages (list, taking test, results)
+- Check-in cảm xúc with privacy banner (4 points) and integrated history
+- Tình huống scenarios with 3 sub-pages (library, practice, results)
+- Người lớn tin tưởng (Trusted Adults) page matching mockup
+- SOS page with 2 states (confirmation + overlay)
+- Settings page combining check-in settings and SOS settings
+- Teacher/Parent portal: Peerlight AI chatbot, dashboard card redesign, SOS detail view
 
 ## Completed Milestone: v1.5 Production Pilot Readiness & Identity
 
@@ -178,13 +184,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - [x] README Phase 32 release guidance now maps QA-01..QA-06 to exact commands and documents live `smoke:pilot` constraints plus privacy grep gates.
 - [x] Final Phase 32 verification records deterministic gates passed, public demo smoke passed, and live production-pilot smoke constrained with no high-severity deterministic privacy/security failures.
 
-### Active in v1.6
+### Active in v1.6 (Archived)
 
 - [x] Establish a cross-role UI inventory and privacy-safe baseline evidence before UI/performance changes.
 - [x] Harmonize Student, Teacher, Parent, and Admin UI patterns into a cohesive Peerlight AI experience.
 - [x] Improve production performance across database and backend API hot paths.
-- [ ] Improve frontend rendering/data loading performance.
-- [ ] Add measurable UI/performance regression gates that preserve privacy, role authorization, and metadata-only operations boundaries.
+- [x] Improve frontend rendering/data loading performance.
+- [x] Add measurable UI/performance regression gates that preserve privacy, role authorization, and metadata-only operations boundaries.
+
+### Active in v1.7
+
+(Requirements being defined)
 
 ### Out of Scope
 
@@ -294,7 +304,7 @@ Roles:
 
 ## Next Milestone Goals
 
-v1.6 focuses on cross-role UI consistency and production performance. Deferred candidates after v1.6 remain live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, and richer launch automation.
+v1.7 focuses on rebuilding all student-facing and teacher/parent pages to match Google Stitch mockup designs. Deferred candidates after v1.7 remain live production-pilot evidence, provider-specific identity login, counselor handoff, external notification delivery governance, multi-school tenancy, and richer launch automation.
 
 ## Evolution
 
@@ -314,4 +324,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-26 after starting v1.6 milestone*
+*Last updated: 2026-05-27 after starting v1.7 milestone*

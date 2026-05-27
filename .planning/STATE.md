@@ -1,53 +1,85 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.6
-milestone_name: milestone
-status: complete
-last_updated: "2026-05-27T07:55:15Z"
+milestone: v1.7
+milestone_name: "UI Redesign to Match Stitch Mockups"
+status: planning
+last_updated: "2026-05-27T10:00:00Z"
 progress:
-  total_phases: 6
-  completed_phases: 6
-  total_plans: 27
-  completed_plans: 27
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-05-27 after milestone v1.6 completion
-**Status:** Milestone complete
+**Last updated:** 2026-05-27 after starting milestone v1.7
+**Status:** Defining requirements
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-27)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** Milestone v1.6 archived; awaiting next milestone planning
+**Current focus:** Milestone v1.7 — UI Redesign to Match Stitch Mockups
 
 ## Planning Artifacts
 
 | Artifact | Path | Status |
 |---|---|---|
-| Project context | `.planning/PROJECT.md` | Updated through v1.6 milestone completion |
+| Project context | `.planning/PROJECT.md` | Updated for v1.7 |
 | Workflow config | `.planning/config.json` | Current |
-| Milestone summary | `.planning/MILESTONES.md` | Current through v1.5 |
-| Active roadmap | `.planning/ROADMAP.md` | v1.6 archived; phases 33-38 complete |
-| Active requirements | `.planning/REQUIREMENTS.md` | 27 v1.6 requirements complete and archived |
-| Research | `.planning/research/` | v1.6 research archived |
-| Retrospective | `.planning/RETROSPECTIVE.md` | Updated through v1.5 |
+| Milestone summary | `.planning/MILESTONES.md` | Current through v1.6 |
+| Active roadmap | `.planning/ROADMAP.md` | v1.7 roadmap pending |
+| Active requirements | `.planning/REQUIREMENTS.md` | v1.7 requirements pending |
+| Research | `.planning/research/` | v1.7 UI feedback spec saved |
 
 ## Current Position
 
-Phase: Milestone v1.6 complete
-Plan: 27 of 27
-Status: milestone_complete
-Progress: 6/6 phases complete
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-27 — Milestone v1.7 started
 
 ## Roadmap Summary
 
-| Phase | Name | Status |
-|---|---|---|
+(Roadmap not yet created)
+
+## Accumulated Context
+
+### Decisions
+
+- UI must be synchronized across all pages (Stitch generates inconsistent designs per page)
+- History/logs belong INSIDE their respective feature pages, not on dashboard
+- Most homepage elements are image+text blocks, NOT links to other pages
+- AI chatbot named "Peerlight AI" (not "AI Assistant")
+- Content text from Word file will arrive later (questions/scenarios placeholder)
+
+### TODOs
+
+- Define v1.7 requirements from Stitch mockup feedback
+- Create v1.7 roadmap with phased page-by-page implementation
+- Preserve privacy-by-default, support-not-surveillance, and cookie-auth invariants
+
+### Blockers
+
+- None for roadmap creation
+- Content text for psychological tests and scenarios will arrive later (Word file)
+
+## Session Continuity
+
+### Next Recommended Command
+
+Define requirements → create roadmap → `/gsd-plan-phase 39`
+
+### Resume Notes
+
+Milestone v1.7 started. UI feedback spec saved at `.planning/research/v17-ui-feedback-spec.md`. Proceeding with requirements definition and roadmap creation.
+
+---
+*Last updated: 2026-05-27 after starting v1.7 milestone.*
 | 33 | Cross-Role UI & Performance Baseline Audit | Complete |
 | 34 | Shared UI Primitives & Role Shell Harmonization | Complete |
 | 35 | Role Dashboard Consistency Pass | Complete |
