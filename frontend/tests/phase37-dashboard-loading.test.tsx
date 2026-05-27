@@ -26,7 +26,7 @@ describe("Phase 37 dashboard loading", () => {
   });
 
   it("keeps dashboard reads credentialed and no-store", async () => {
-    const fetchMock = vi.fn(() =>
+    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
       Promise.resolve(
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
@@ -45,6 +45,33 @@ describe("Phase 37 dashboard loading", () => {
         cache: "no-store",
       }),
     );
+  });
+
+  it("enforces no-store even when callers request cached dashboard reads", async () => {
+    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+      Promise.resolve(
+        new Response(JSON.stringify({ ok: true }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await dashboardRead<unknown>("/api/teacher/students", {
+      cache: "force-cache",
+      headers: { "X-Dashboard-Test": "phase37" },
+    });
+
+    const fetchInit = fetchMock.mock.calls[0]?.[1];
+    expect(fetchInit).toEqual(
+      expect.objectContaining({
+        credentials: "include",
+        cache: "no-store",
+      }),
+    );
+    expect(fetchInit?.headers).toBeInstanceOf(Headers);
+    expect((fetchInit?.headers as Headers).get("X-Dashboard-Test")).toBe("phase37");
   });
 
   it("returns scoped unavailable results for optional dashboard reads", async () => {

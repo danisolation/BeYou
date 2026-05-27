@@ -3,7 +3,7 @@ import { apiFetch } from "@/lib/api";
 export const DASHBOARD_READ_INIT = Object.freeze({ cache: "no-store" }) satisfies Readonly<RequestInit>;
 
 export async function dashboardRead<T>(path: string, init: RequestInit = {}): Promise<T> {
-  return apiFetch<T>(path, { ...DASHBOARD_READ_INIT, ...init, headers: init.headers });
+  return apiFetch<T>(path, { ...init, ...DASHBOARD_READ_INIT, headers: init.headers });
 }
 
 export type OptionalDashboardResult<T> =
