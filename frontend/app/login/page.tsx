@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Leaf, Heart, Sunrise } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,24 @@ const DEMO_DISABLED_COPY =
 const PROVIDER_DISABLED_COPY = "Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.";
 const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình demo an toàn...";
 const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình demo. Hãy đăng nhập bằng email và mật khẩu được cấp.";
+
+const brandingCards = [
+  {
+    icon: Leaf,
+    title: "Góc nhỏ bình yên",
+    description: "Không gian an toàn để bạn là chính mình, không phán xét, không áp lực.",
+  },
+  {
+    icon: Heart,
+    title: "Nâng niu từng xao động",
+    description: "Mỗi cảm xúc đều có giá trị — chúng tôi lắng nghe và đồng hành cùng bạn.",
+  },
+  {
+    icon: Sunrise,
+    title: "Điểm hẹn chữa lành",
+    description: "Hành trình chữa lành bắt đầu từ bước đầu tiên — và bạn không đi một mình.",
+  },
+];
 
 export default function LoginPage() {
   const router = useRouter();
@@ -82,125 +100,138 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-dvh px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-6xl space-y-6">
-        <header className="flex items-center justify-between rounded-[1.75rem] bg-white/85 px-5 py-4 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur">
-          <Link href="/" className="text-heading font-bold text-accent no-underline">
-            Peerlight AI
+    <main className="min-h-dvh bg-background px-4 py-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-container-stitch space-y-6">
+        {/* Header */}
+        <header className="flex items-center justify-between rounded-card bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
+          <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+            <Leaf className="h-5 w-5" aria-hidden="true" />
+            BeYou
           </Link>
-          <Link href="/#about" className="font-semibold text-[#12332E] no-underline hover:text-accent">
-            Về chúng tôi
+          <Link href="/" className="font-semibold text-on-background no-underline hover:text-primary">
+            Trang chủ
           </Link>
         </header>
-        <div className="flex min-h-[calc(100dvh-8rem)] items-center">
-        <section className="grid w-full gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div className="rounded-[2rem] bg-white/75 p-6 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur sm:p-8 lg:p-10">
-            <p className="text-label font-semibold uppercase tracking-[0.22em] text-accent">Peerlight AI</p>
-            <h1 className="mt-3 max-w-xl text-display">Chào mừng đến với Peerlight AI</h1>
-            <p className="mt-4 max-w-2xl text-body">
-               Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.
-            </p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {["Riêng tư trước", "Hỗ trợ đúng vai trò", "Dữ liệu demo rõ ràng"].map((item) => (
-                <div key={item} className="rounded-2xl bg-secondary px-4 py-3 text-label font-semibold text-[#12332E]">
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <section className="rounded-[2rem] bg-white p-5 shadow-xl shadow-[#12332E]/10 ring-1 ring-[#D7EFE8] sm:p-6 lg:p-8">
-             <div className="rounded-3xl border border-[#CFE8E1] bg-secondary p-4">
-                <p className="text-label font-semibold text-[#27665B]">Tài khoản demo</p>
-               {!capabilitiesLoaded ? (
-                 <p className="mt-1 text-label">{CAPABILITIES_LOADING_COPY}</p>
-               ) : publicDemoEntryEnabled ? (
+        {/* Main content — split layout */}
+        <div className="flex min-h-[calc(100dvh-8rem)] items-center">
+          <section className="grid w-full gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
+            {/* Left: Login form */}
+            <div className="rounded-card bg-white p-6 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
+              <h1 className="text-headline-lg text-on-background">Đăng nhập</h1>
+              <p className="mt-2 text-body-md text-on-background/70">
+                Vào không gian hỗ trợ phù hợp với vai trò của bạn.
+              </p>
+
+              {/* Demo accounts section */}
+              <div className="mt-6 rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+                <p className="text-label-md font-semibold text-primary">Tài khoản demo</p>
+                {!capabilitiesLoaded ? (
+                  <p className="mt-1 text-label-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
+                ) : publicDemoEntryEnabled ? (
                   <>
-                    <p className="mt-1 text-label">Chọn một vai trò để Peerlight AI tự điền email và mật khẩu demo.</p>
+                    <p className="mt-1 text-label-md text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                     {demoAccounts.map((account) => (
-                       <button
-                         key={account.email}
-                         type="button"
-                         onClick={() => {
-                           setEmail(account.email);
-                           setPassword(DEMO_PASSWORD);
-                           setError("");
-                         }}
-                         className="min-h-11 rounded-2xl border border-[#CFE8E1] bg-white px-3 text-left text-label font-semibold text-[#27665B] hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
-                       >
-                         {account.label}
-                       </button>
-                     ))}
-                   </div>
-                 </>
+                      {demoAccounts.map((account) => (
+                        <button
+                          key={account.email}
+                          type="button"
+                          onClick={() => {
+                            setEmail(account.email);
+                            setPassword(DEMO_PASSWORD);
+                            setError("");
+                          }}
+                          className="min-h-11 rounded-button border border-outline-variant/40 bg-white px-3 text-left text-label-md font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+                        >
+                          {account.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
                 ) : (
-                  <div className="mt-3 space-y-2 rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+                  <div className="mt-3 space-y-2 rounded-button border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label-md text-[#6B4A00]">
                     <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
                     {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
                   </div>
                 )}
-             </div>
-
-            <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
-              <div>
-                <label className="block text-label font-semibold" htmlFor="email">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  className="mt-2 min-h-12 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4 outline-accent"
-                />
               </div>
 
-              <div>
-                <label className="block text-label font-semibold" htmlFor="password">
-                  Mật khẩu
-                </label>
-                <div className="mt-2 flex min-h-12 items-center rounded-2xl border border-[#CFE8E1] bg-white">
+              {/* Login form */}
+              <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+                <div>
+                  <label className="block text-label-md font-semibold text-on-background" htmlFor="email">
+                    Email
+                  </label>
                   <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
                     required
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    className="min-h-12 min-w-0 flex-1 rounded-2xl px-4 outline-accent"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    className="mt-2 min-h-12 w-full rounded-button border border-outline-variant/40 bg-white px-4 outline-primary"
                   />
-                  <button
-                    type="button"
-                    aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
-                    onClick={() => setShowPassword((current) => !current)}
-                    className="min-h-12 min-w-12 text-[#27665B]"
-                  >
-                    {showPassword ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
-                  </button>
                 </div>
-              </div>
 
-              {error ? (
-                <div role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
-                  {error}
+                <div>
+                  <label className="block text-label-md font-semibold text-on-background" htmlFor="password">
+                    Mật khẩu
+                  </label>
+                  <div className="mt-2 flex min-h-12 items-center rounded-button border border-outline-variant/40 bg-white">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      required
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      className="min-h-12 min-w-0 flex-1 rounded-button px-4 outline-primary"
+                    />
+                    <button
+                      type="button"
+                      aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      onClick={() => setShowPassword((current) => !current)}
+                      className="min-h-12 min-w-12 text-primary"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
+                    </button>
+                  </div>
                 </div>
-              ) : null}
 
-              <button
-                type="submit"
-                disabled={!canSubmit}
-                className="min-h-12 w-full rounded-2xl bg-accent px-4 font-semibold text-white shadow-sm hover:bg-[#238C78] disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Đăng nhập
-              </button>
-            </form>
+                {error ? (
+                  <div role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-label-md text-error">
+                    {error}
+                  </div>
+                ) : null}
+
+                <button
+                  type="submit"
+                  disabled={!canSubmit}
+                  className="min-h-12 w-full rounded-button bg-primary px-4 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+                </button>
+              </form>
+            </div>
+
+            {/* Right: 3 Branding cards */}
+            <div className="flex flex-col gap-4">
+              {brandingCards.map((card) => (
+                <div
+                  key={card.title}
+                  className="rounded-card bg-surface-container-low p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md"
+                >
+                  <div className="mb-3 inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                    <card.icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <h3 className="text-headline-md text-on-background">{card.title}</h3>
+                  <p className="mt-2 text-body-md text-on-background/70">{card.description}</p>
+                </div>
+              ))}
+            </div>
           </section>
-        </section>
         </div>
       </div>
     </main>
