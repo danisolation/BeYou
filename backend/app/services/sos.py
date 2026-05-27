@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.core.authorization import has_student_sos_signal, require_permission
+from app.core.authorization import require_permission
 from app.core.config import Settings
 from app.db.models import (
     InAppNotification,
@@ -30,6 +30,7 @@ from app.schemas.sos import (
     SosStatusUpdate,
     SosStudentContext,
 )
+from app.services.adult_visibility import list_sos_visible_linked_student_rows
 from app.services.audit import record_audit_event
 from app.services.sos_email import create_sos_email_deliveries
 
@@ -75,7 +76,16 @@ def _events(db: OrmSession, alert_id: uuid.UUID) -> list[SosStatusEvent]:
     )
 
 
-def _alert_response(db: OrmSession, alert: SosAlert, *, include_events: bool = True) -> SosAlertResponse:
+def _alert_response(
+    db: OrmSession,
+    alert: SosAlert,
+    *,
+    include_events: bool = True,
+    preloaded_events: list[SosStatusEvent] | None = None,
+) -> SosAlertResponse:
+    status_events = []
+    if include_events:
+        status_events = preloaded_events if preloaded_events is not None else _events(db, alert.id)
     return SosAlertResponse(
         id=alert.id,
         student=_student_context_from_alert(alert),
@@ -86,7 +96,7 @@ def _alert_response(db: OrmSession, alert: SosAlert, *, include_events: bool = T
         created_at=alert.created_at,
         updated_at=alert.updated_at,
         completed_at=alert.completed_at,
-        status_events=_events(db, alert.id) if include_events else [],
+        status_events=status_events,
         is_demo=alert.is_demo,
     )
 
@@ -486,12 +496,68 @@ def _latest_self_check(db: OrmSession, student_id: uuid.UUID) -> SelfCheckAttemp
     )
 
 
+def _latest_self_checks_by_student(
+    db: OrmSession,
+    student_ids: list[uuid.UUID],
+) -> dict[uuid.UUID, SelfCheckAttempt]:
+    if not student_ids:
+        return {}
+    ranked = (
+        select(
+            SelfCheckAttempt.id.label("attempt_id"),
+            func.row_number().over(
+                partition_by=SelfCheckAttempt.student_id,
+                order_by=(SelfCheckAttempt.completed_at.desc(), SelfCheckAttempt.id.desc()),
+            )
+            .label("row_number"),
+        )
+        .where(SelfCheckAttempt.student_id.in_(student_ids))
+        .subquery()
+    )
+    attempts = list(
+        db.scalars(
+            select(SelfCheckAttempt)
+            .join(ranked, ranked.c.attempt_id == SelfCheckAttempt.id)
+            .where(ranked.c.row_number == 1)
+        )
+    )
+    return {attempt.student_id: attempt for attempt in attempts}
+
+
 def _latest_sos(db: OrmSession, student_id: uuid.UUID) -> SosAlert | None:
     return db.scalar(
         select(SosAlert)
         .where(SosAlert.student_id == student_id)
         .order_by(SosAlert.created_at.desc(), SosAlert.id.desc())
     )
+
+
+def _latest_sos_alerts_by_student(
+    db: OrmSession,
+    student_ids: list[uuid.UUID],
+) -> dict[uuid.UUID, SosAlert]:
+    if not student_ids:
+        return {}
+    ranked = (
+        select(
+            SosAlert.id.label("alert_id"),
+            func.row_number().over(
+                partition_by=SosAlert.student_id,
+                order_by=(SosAlert.created_at.desc(), SosAlert.id.desc()),
+            )
+            .label("row_number"),
+        )
+        .where(SosAlert.student_id.in_(student_ids))
+        .subquery()
+    )
+    alerts = list(
+        db.scalars(
+            select(SosAlert)
+            .join(ranked, ranked.c.alert_id == SosAlert.id)
+            .where(ranked.c.row_number == 1)
+        )
+    )
+    return {alert.student_id: alert for alert in alerts}
 
 
 def _open_sos_count(db: OrmSession, student_id: uuid.UUID) -> int:
@@ -504,6 +570,36 @@ def _open_sos_count(db: OrmSession, student_id: uuid.UUID) -> int:
         )
         or 0
     )
+
+
+def _open_sos_counts_by_student(db: OrmSession, student_ids: list[uuid.UUID]) -> dict[uuid.UUID, int]:
+    if not student_ids:
+        return {}
+    rows = db.execute(
+        select(SosAlert.student_id, func.count(SosAlert.id))
+        .where(
+            SosAlert.student_id.in_(student_ids),
+            SosAlert.current_status.in_(ACTIVE_SOS_STATUSES),
+        )
+        .group_by(SosAlert.student_id)
+    ).all()
+    return {student_id: int(count) for student_id, count in rows}
+
+
+def _events_by_alert_id(db: OrmSession, alert_ids: list[uuid.UUID]) -> dict[uuid.UUID, list[SosStatusEvent]]:
+    if not alert_ids:
+        return {}
+    events_by_alert: dict[uuid.UUID, list[SosStatusEvent]] = {}
+    events = list(
+        db.scalars(
+            select(SosStatusEvent)
+            .where(SosStatusEvent.alert_id.in_(alert_ids))
+            .order_by(SosStatusEvent.alert_id, SosStatusEvent.created_at, SosStatusEvent.id)
+        )
+    )
+    for event in events:
+        events_by_alert.setdefault(event.alert_id, []).append(event)
+    return events_by_alert
 
 
 def _warning_group(latest_summary: SelfCheckAttempt | None, latest_alert: SosAlert | None) -> tuple[str, str]:
@@ -539,21 +635,17 @@ def get_support_overview(
     relationship_type: str | None = None,
 ) -> list[AdultSupportOverviewItem]:
     relationship = relationship_type or _relationship_type_for_role(adult.role)
-    students = _linked_students(db, adult, relationship)
+    rows = list_sos_visible_linked_student_rows(db, adult=adult, relationship_type=relationship)
+    students = [student for _, student in rows]
+    student_ids = [student.id for student in students]
+    latest_summaries = _latest_self_checks_by_student(db, student_ids)
+    latest_alerts = _latest_sos_alerts_by_student(db, student_ids)
+    open_sos_counts = _open_sos_counts_by_student(db, student_ids)
+    events_by_alert = _events_by_alert_id(db, [alert.id for alert in latest_alerts.values()])
     items: list[AdultSupportOverviewItem] = []
-    for student in students:
-        if not has_student_sos_signal(db, student.id):
-            continue
-        require_permission(
-            db,
-            adult,
-            resource_type="student_profile",
-            action="read",
-            purpose="support_not_surveillance",
-            student_id=student.id,
-        )
-        latest_summary = _latest_self_check(db, student.id)
-        latest_alert = _latest_sos(db, student.id)
+    for _, student in rows:
+        latest_summary = latest_summaries.get(student.id)
+        latest_alert = latest_alerts.get(student.id)
         group, label = _warning_group(latest_summary, latest_alert)
         if latest_summary is not None:
             record_audit_event(
@@ -589,8 +681,16 @@ def get_support_overview(
                 warning_group=group,
                 warning_group_label=label,
                 latest_self_check_summary=_summary_response(latest_summary),
-                latest_sos_alert=_alert_response(db, latest_alert) if latest_alert is not None else None,
-                open_sos_count=_open_sos_count(db, student.id),
+                latest_sos_alert=(
+                    _alert_response(
+                        db,
+                        latest_alert,
+                        preloaded_events=events_by_alert.get(latest_alert.id, []),
+                    )
+                    if latest_alert is not None
+                    else None
+                ),
+                open_sos_count=open_sos_counts.get(student.id, 0),
                 is_demo=student.is_demo,
             )
         )
