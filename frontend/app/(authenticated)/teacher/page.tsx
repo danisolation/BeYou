@@ -49,7 +49,7 @@ export default function TeacherDashboardPage() {
   }
 
   const studentCount = dashboardData.students.length;
-  const sosCount = dashboardData.notifications?.length ?? 0;
+  const sosCount = dashboardData.notifications.status === "ready" ? dashboardData.notifications.data.length : 0;
 
   return (
     <section className="space-y-6">
