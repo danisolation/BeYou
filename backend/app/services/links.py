@@ -4,7 +4,7 @@ import uuid
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.orm import Session as OrmSession
+from sqlalchemy.orm import Session as OrmSession, aliased
 
 from app.db.models import LinkStatus, RelationshipType, StudentAdultLink, User, UserRole, utc_now
 from app.services.audit import record_audit_event
@@ -19,6 +19,21 @@ def get_link_or_404(db: OrmSession, link_id: uuid.UUID) -> StudentAdultLink:
 
 def list_links(db: OrmSession) -> list[StudentAdultLink]:
     return list(db.scalars(select(StudentAdultLink).order_by(StudentAdultLink.created_at)).all())
+
+
+def list_links_with_users(
+    db: OrmSession, *, limit: int = 100, offset: int = 0
+) -> list[tuple[StudentAdultLink, User, User]]:
+    student_user = aliased(User)
+    adult_user = aliased(User)
+    rows = db.execute(
+        select(StudentAdultLink, student_user, adult_user)
+        .join(student_user, student_user.id == StudentAdultLink.student_id)
+        .join(adult_user, adult_user.id == StudentAdultLink.adult_id)
+        .order_by(StudentAdultLink.created_at, StudentAdultLink.id)
+        .limit(limit).offset(offset)
+    ).all()
+    return [(link, student, adult) for link, student, adult in rows]
 
 
 def validate_relationship_pair(student: User | None, adult: User | None, relationship_type: str) -> None:
