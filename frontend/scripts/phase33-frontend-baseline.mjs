@@ -102,7 +102,9 @@ function localImportCandidates(source, fromRelativePath) {
       );
     }
   }
-  return imports.filter((candidate) => existsSync(sourcePath(candidate)));
+  return imports
+    .map((candidate) => candidate.split(path.sep).join("/"))
+    .filter((candidate) => existsSync(sourcePath(candidate)));
 }
 
 export function assertNoRuntimeApmImports() {
@@ -151,11 +153,33 @@ function routeAssetEvidence(route) {
   };
 }
 
+function collectLocalSources(relativePath, maxDepth = 3, visited = new Set()) {
+  if (visited.has(relativePath)) {
+    return [];
+  }
+  visited.add(relativePath);
+  const source = readSource(relativePath);
+  if (!source) {
+    return [];
+  }
+  if (maxDepth <= 0) {
+    return [source];
+  }
+  const importedSources = localImportCandidates(source, relativePath).flatMap((candidate) =>
+    collectLocalSources(candidate, maxDepth - 1, visited),
+  );
+  return [source, ...importedSources];
+}
+
+const requestCallPatterns = [
+  /\bapiFetch\s*(?:<[\s\S]*?>)?\s*\(/g,
+  /\bdashboardRead\s*(?:<[\s\S]*?>)?\s*\(/g,
+  /\bfetch\s*\(/g,
+];
+
 function fetchCandidateCountFor(entry) {
-  const primarySource = readSource(entry.sourceFile);
-  const importedSources = localImportCandidates(primarySource, entry.sourceFile).map(readSource);
-  const combinedSource = [primarySource, ...importedSources].join("\n");
-  return countMatches(combinedSource, /\bapiFetch\s*\(/g) + countMatches(combinedSource, /\bfetch\s*\(/g);
+  const combinedSource = collectLocalSources(entry.sourceFile).join("\n");
+  return requestCallPatterns.reduce((count, pattern) => count + countMatches(combinedSource, pattern), 0);
 }
 
 export function collectFrontendBaseline() {

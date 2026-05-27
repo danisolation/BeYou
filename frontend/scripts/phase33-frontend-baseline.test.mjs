@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
@@ -85,4 +86,27 @@ test("frontend helper CLI prints aggregate JSON to stdout", () => {
   const parsed = JSON.parse(result.stdout);
   assert.ok(Array.isArray(parsed));
   assert.ok(parsed.length >= 4);
+});
+
+test("Phase 37 frontend helper counts generic dashboard request helpers", () => {
+  const helperSource = readFileSync("scripts/phase33-frontend-baseline.mjs", "utf8");
+
+  assert.match(helperSource, /dashboardRead/);
+  assert.match(helperSource, /apiFetch.*</s);
+  assert.match(helperSource, /visited/);
+  assert.match(helperSource, /maxDepth/);
+});
+
+test("Phase 37 selected role rows keep numeric aggregate counts only", () => {
+  const baseline = collectFrontendBaseline();
+  const selectedRoutes = new Set(["/student", "/teacher", "/parent", "/admin"]);
+  const rows = baseline.filter((row) => selectedRoutes.has(row.route));
+
+  assert.equal(rows.length, selectedRoutes.size);
+  for (const row of rows) {
+    assert.equal(typeof row.fetchCandidateCount, "number");
+    assert.equal(typeof row.waterfallCount, "number");
+    assert.deepEqual(Object.keys(row).sort(), APPROVED_OUTPUT_KEYS.toSorted());
+  }
+  assertApprovedKeysOnly(rows);
 });
