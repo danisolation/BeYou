@@ -16,10 +16,17 @@ import {
   StatusBadge,
   SurfaceCard,
 } from "@/components/ui-primitives";
-import { apiFetch } from "@/lib/api";
+import { type OptionalDashboardResult } from "@/lib/dashboard-loading";
+import {
+  loadStudentDashboard,
+  STUDENT_REMINDER_UNAVAILABLE_MESSAGE,
+  STUDENT_SOS_UNAVAILABLE_MESSAGE,
+  type LinkedAdult,
+  type StudentDashboardData,
+  type StudentProfile,
+} from "@/lib/student-dashboard-loader";
 import {
   dismissMoodCheckInReminder,
-  getMoodCheckInReminder,
   openMoodCheckInReminder,
   snoozeMoodCheckInReminder,
   type MoodCheckInReminder,
@@ -27,42 +34,29 @@ import {
 import { safeInternalHref } from "@/lib/safe-navigation";
 import {
   createStudentSosAlert,
-  listStudentSosAlerts,
   type SosAlert,
   type SosSeverity,
   sosSeverityLabels,
   sosStatusLabels,
 } from "@/lib/sos-api";
 
-type LinkedAdult = {
-  id: string;
-  full_name: string;
-  email: string;
-  relationship_type: "teacher" | "parent";
-  link_status: string;
-  is_demo: boolean;
-};
-
-type StudentProfile = {
-  id: string;
-  full_name: string;
-  email: string;
-  school: string | null;
-  class_name: string | null;
-  is_demo: boolean;
-  linked_adults: LinkedAdult[];
-};
-
+// Phase 37 keeps the primary Student profile trust gate in loadStudentDashboard: "/api/student/profile".
 export default function StudentDashboardPage() {
   const [profile, setProfile] = useState<StudentProfile | null>(null);
-  const [sosAlerts, setSosAlerts] = useState<SosAlert[]>([]);
+  const [sosAlertsResult, setSosAlertsResult] = useState<OptionalDashboardResult<SosAlert[]>>({
+    status: "ready",
+    data: [],
+  });
   const [showSosConfirm, setShowSosConfirm] = useState(false);
   const [sosSeverity, setSosSeverity] = useState<SosSeverity>("support");
   const [sosNote, setSosNote] = useState("");
   const [isSendingSos, setIsSendingSos] = useState(false);
   const [sosError, setSosError] = useState<string | null>(null);
   const [sosSuccessMessage, setSosSuccessMessage] = useState<string | null>(null);
-  const [moodReminder, setMoodReminder] = useState<MoodCheckInReminder | null>(null);
+  const [moodReminderResult, setMoodReminderResult] = useState<OptionalDashboardResult<MoodCheckInReminder | null>>({
+    status: "ready",
+    data: null,
+  });
   const [reminderActionMessage, setReminderActionMessage] = useState<string | null>(null);
   const [reminderActionError, setReminderActionError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -71,18 +65,14 @@ export default function StudentDashboardPage() {
   useEffect(() => {
     let isActive = true;
 
-    Promise.all([
-      apiFetch<StudentProfile>("/api/student/profile"),
-      listStudentSosAlerts().catch(() => []),
-      getMoodCheckInReminder().catch(() => null),
-    ])
-      .then(([studentProfile, alerts, reminder]) => {
+    loadStudentDashboard()
+      .then((dashboardData: StudentDashboardData) => {
         if (!isActive) {
           return;
         }
-        setProfile(studentProfile);
-        setSosAlerts(alerts);
-        setMoodReminder(reminder);
+        setProfile(dashboardData.profile);
+        setSosAlertsResult(dashboardData.sosAlerts);
+        setMoodReminderResult(dashboardData.moodReminder);
         setLoadFailed(false);
       })
       .catch(() => {
@@ -111,7 +101,10 @@ export default function StudentDashboardPage() {
         source: "student_dashboard",
         note: sosNote || null,
       });
-      setSosAlerts((current) => [alert, ...current]);
+      setSosAlertsResult((current) => ({
+        status: "ready",
+        data: [alert, ...(current.status === "ready" ? current.data : [])],
+      }));
       setShowSosConfirm(false);
       setSosNote("");
       setSosSeverity("support");
@@ -136,7 +129,7 @@ export default function StudentDashboardPage() {
   }
 
   if (isLoading) {
-    return <LoadingState />;
+    return <StudentDashboardSkeleton />;
   }
 
   if (loadFailed) {
@@ -149,6 +142,8 @@ export default function StudentDashboardPage() {
 
   const teachers = profile.linked_adults.filter((adult) => adult.relationship_type === "teacher");
   const parents = profile.linked_adults.filter((adult) => adult.relationship_type === "parent");
+  const sosAlerts = sosAlertsResult.status === "ready" ? sosAlertsResult.data : [];
+  const moodReminder = moodReminderResult.status === "ready" ? moodReminderResult.data : null;
 
   return (
     <section className="space-y-6">
@@ -193,6 +188,10 @@ export default function StudentDashboardPage() {
         ]}
       />
 
+      {moodReminderResult.status === "unavailable" ? (
+        <StudentOptionalUnavailableCard message={STUDENT_REMINDER_UNAVAILABLE_MESSAGE} />
+      ) : null}
+
       {moodReminder?.due ? (
         <MoodReminderCard
           reminder={moodReminder}
@@ -201,7 +200,7 @@ export default function StudentDashboardPage() {
           onDismiss={async () => {
             try {
               const result = await dismissMoodCheckInReminder();
-              setMoodReminder(result.reminder);
+              setMoodReminderResult({ status: "ready", data: result.reminder });
               setReminderSuccess("Đã ẩn nhắc nhở. Peerlight AI không gửi thông báo cho người lớn và không tạo SOS.");
             } catch {
               setReminderFailure();
@@ -210,7 +209,7 @@ export default function StudentDashboardPage() {
           onSnooze={async () => {
             try {
               const result = await snoozeMoodCheckInReminder(240);
-              setMoodReminder(result.reminder);
+              setMoodReminderResult({ status: "ready", data: result.reminder });
               setReminderSuccess("Đã nhắc lại sau. Việc tạm hoãn không bị xem là tín hiệu nguy cơ.");
             } catch {
               setReminderFailure();
@@ -355,6 +354,9 @@ export default function StudentDashboardPage() {
         ) : null}
       </section>
 
+      {sosAlertsResult.status === "unavailable" ? (
+        <StudentOptionalUnavailableCard message={STUDENT_SOS_UNAVAILABLE_MESSAGE} />
+      ) : null}
       <StudentSosStatusList alerts={sosAlerts} />
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -362,6 +364,39 @@ export default function StudentDashboardPage() {
         <LinkedAdultGroup title="Phụ huynh hỗ trợ" adults={parents} />
       </div>
     </section>
+  );
+}
+
+function StudentDashboardSkeleton() {
+  return (
+    <section className="space-y-6">
+      <span className="sr-only">Đang tải thông tin...</span>
+      <PageHeader
+        eyebrow="Vai trò học sinh"
+        title="Cổng học sinh"
+        description="Peerlight AI đang chuẩn bị cổng học sinh mà không đoán dữ liệu riêng tư."
+      />
+      <LoadingState message="Đang tải thông tin... Đang tải thông tin học sinh..." className="bg-white/80" />
+      <PrivacyBoundaryCard
+        title="Thông tin của em là riêng tư theo mặc định"
+        description="Peerlight AI đang chuẩn bị dữ liệu học sinh mà không đoán hoặc hiển thị thông tin riêng tư trước khi tải xong."
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
+        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
+      </div>
+    </section>
+  );
+}
+
+function StudentOptionalUnavailableCard({ message }: { message: string }) {
+  return (
+    <div role="status" aria-live="polite">
+      <SurfaceCard className="border border-amber-200 bg-amber-50 p-5 shadow-none">
+        <h2 className="text-heading">Mục này tạm thời chưa tải được</h2>
+        <p className="mt-2 text-body">{message}</p>
+      </SurfaceCard>
+    </div>
   );
 }
 
