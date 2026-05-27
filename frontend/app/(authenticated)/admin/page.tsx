@@ -1,16 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
+import {
+  Bot,
+  Heart,
+  FileText,
+  Link2,
+  Settings,
+  Shield,
+  Users,
+  Activity,
+} from "lucide-react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { EntryCard, LoadingState, PageHeader, PrivacyBoundaryCard } from "@/components/ui-primitives";
+import { LoadingState, PrivacyBoundaryCard } from "@/components/ui-primitives";
+import { StitchCard } from "@/components/stitch-card";
 import { listLinks, listUsers } from "@/lib/admin-api";
 
 export default function AdminDashboardPage() {
   const [previews, setPreviews] = useState({ users: 0, links: 0 });
-  const [previewUnavailable, setPreviewUnavailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -18,147 +26,114 @@ export default function AdminDashboardPage() {
 
     Promise.all([listUsers({ limit: 10 }), listLinks({ limit: 10 })])
       .then(([users, links]) => {
-        if (!isActive) {
-          return;
-        }
+        if (!isActive) return;
         setPreviews({ users: users.length, links: links.length });
-        setPreviewUnavailable(false);
       })
-      .catch(() => {
-        if (isActive) {
-          setPreviewUnavailable(true);
-        }
-      })
+      .catch(() => {})
       .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
+        if (isActive) setIsLoading(false);
       });
 
-    return () => {
-      isActive = false;
-    };
+    return () => { isActive = false; };
   }, []);
 
   return (
-    <section className="space-y-6">
-      <PageHeader
-        eyebrow="Vai trò quản trị"
-        title="Cổng quản trị"
-        description="Quản lý tài khoản, vai trò và liên kết học sinh-người lớn một cách an toàn."
-      />
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-headline-lg font-bold text-on-background">
+          Xin chào, quản trị viên!
+        </h1>
+        <p className="mt-2 text-body-lg text-on-background/70">
+          Quản lý hệ thống an toàn và hiệu quả
+        </p>
+      </div>
+
       <PrivacyBoundaryCard
         title="Vận hành metadata-only"
-        description="Cổng quản trị chỉ hiển thị metadata vận hành, cấu hình và số lượng tổng hợp; không mở câu trả lời tự kiểm tra, ghi chú riêng tư, transcript chat, request body, provider claim hoặc lý do truy cập dạng tự do."
+        description="Cổng quản trị chỉ hiển thị metadata vận hành và số lượng tổng hợp — không mở dữ liệu riêng tư của học sinh."
       />
+
       <DemoGuideCard
-        title="Đi theo luồng quản trị demo"
-        body="Dùng cổng quản trị để chứng minh Peerlight AI quản lý nội dung và vận hành bằng metadata, không mở dữ liệu riêng tư thô của học sinh."
+        title="Luồng quản trị demo"
+        body="Dùng cổng này để quản lý nội dung, vận hành và cấu hình hệ thống."
         steps={[
-          "Kiểm tra operations/readiness và báo cáo tổng hợp riêng tư.",
-          "Mở cấu hình chatbot hoặc mood check-in để thấy guardrails.",
-          "Xem tài khoản/liên kết demo để hiểu phân quyền học sinh-người lớn.",
+          "Kiểm tra operations và báo cáo tổng hợp.",
+          "Cấu hình chatbot hoặc mood check-in.",
+          "Quản lý tài khoản và liên kết.",
         ]}
         actions={[
           { href: "/admin/operations", label: "Mở operations", primary: true },
-          { href: "/admin/reports", label: "Báo cáo tổng hợp" },
-          { href: "/admin/users", label: "Tài khoản demo" },
+          { href: "/admin/reports", label: "Báo cáo" },
+          { href: "/admin/users", label: "Tài khoản" },
         ]}
       />
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <AdminEntryCard
-          href="/admin/operations"
-          title="Vận hành metadata-only"
-          description="Kiểm tra readiness, email SOS và audit metadata mà không mở dữ liệu riêng tư của học sinh."
-          countLabel="Operations"
-          actionLabel="Mở bảng vận hành metadata"
+
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <StitchCard
+          variant="circular"
+          icon={<Activity size={28} />}
+          title="Vận hành"
+          description="Readiness, email SOS và audit metadata"
+          ctaLabel="Mở bảng vận hành"
+          ctaHref="/admin/operations"
         />
-        <AdminEntryCard
-          href="/admin/reports"
-          title="Báo cáo tổng hợp riêng tư"
-          description="Xem xu hướng tổng hợp đã ẩn nhóm nhỏ, không xuất dữ liệu thô hoặc danh sách nguy cơ."
-          countLabel="Riêng tư theo nhóm"
+        <StitchCard
+          variant="circular"
+          icon={<Shield size={28} />}
+          title="Báo cáo tổng hợp"
+          description="Xu hướng tổng hợp đã ẩn nhóm nhỏ"
+          ctaLabel="Xem báo cáo"
+          ctaHref="/admin/reports"
         />
-        <AdminEntryCard
-          href="/admin/chatbot"
-          title="Cấu hình chatbot an toàn"
-          description="Quản lý từ khóa nguy cơ và lời nhắc hỗ trợ mà không hiển thị khóa API hay tắt lớp bảo vệ."
-          countLabel="Cài đặt an toàn"
+        <StitchCard
+          variant="circular"
+          icon={<Bot size={28} />}
+          title="Cấu hình chatbot"
+          description="Từ khóa nguy cơ và lời nhắc hỗ trợ"
+          ctaLabel="Cài đặt chatbot"
+          ctaHref="/admin/chatbot"
         />
-        <AdminEntryCard
-          href="/admin/mood-checkins"
-          title="Cấu hình mood check-in"
-          description="Quản lý nhãn, prompt và guidance không chẩn đoán cho check-in cảm xúc."
-          countLabel="Mood config"
+        <StitchCard
+          variant="circular"
+          icon={<Heart size={28} />}
+          title="Mood check-in"
+          description="Nhãn, prompt và guidance check-in"
+          ctaLabel="Cấu hình"
+          ctaHref="/admin/mood-checkins"
         />
-        <AdminEntryCard
-          href="/admin/content"
-          title="Nội dung tự kiểm tra và tình huống"
-          description="Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn."
-          countLabel="Quản lý nội dung"
+        <StitchCard
+          variant="circular"
+          icon={<FileText size={28} />}
+          title="Nội dung"
+          description="Tự kiểm tra, tình huống và bài test"
+          ctaLabel="Quản lý nội dung"
+          ctaHref="/admin/content"
         />
-        <AdminEntryCard
-          href="/admin/privacy-policy"
-          title="Chính sách riêng tư v1.4"
-          description="Cấu hình nhắc nhở, chia sẻ và lý do truy cập bằng mặc định an toàn, không mở dữ liệu thô."
-          countLabel="Privacy policy"
+        <StitchCard
+          variant="circular"
+          icon={<Settings size={28} />}
+          title="Chính sách riêng tư"
+          description="Cấu hình nhắc nhở và quyền truy cập"
+          ctaLabel="Mở chính sách"
+          ctaHref="/admin/privacy-policy"
         />
-        <AdminEntryCard
-          href="/admin/users"
-          title="Quản lý tài khoản"
-          description="Tạo, cập nhật, tạm khóa hoặc xóa tài khoản theo đúng phạm vi demo."
-          countLabel={
-            isLoading ? (
-              <LoadingState message="Đang tải metadata vận hành..." className="bg-transparent p-0 shadow-none ring-0" />
-            ) : previewUnavailable ? (
-              "Preview metadata tạm thời chưa tải được."
-            ) : (
-              `Preview ${previews.users} tài khoản demo`
-            )
-          }
+        <StitchCard
+          variant="circular"
+          icon={<Users size={28} />}
+          title="Tài khoản"
+          description={isLoading ? "Đang tải..." : `${previews.users} tài khoản demo`}
+          ctaLabel="Quản lý tài khoản"
+          ctaHref="/admin/users"
         />
-        <AdminEntryCard
-          href="/admin/links"
-          title="Liên kết học sinh và người lớn hỗ trợ"
-          description="Tạo hoặc thu hồi liên kết giữa học sinh với giáo viên/phụ huynh."
-          countLabel={
-            isLoading ? (
-              <LoadingState message="Đang tải metadata vận hành..." className="bg-transparent p-0 shadow-none ring-0" />
-            ) : previewUnavailable ? (
-              "Preview metadata tạm thời chưa tải được."
-            ) : (
-              `Preview ${previews.links} liên kết được phân trang`
-            )
-          }
+        <StitchCard
+          variant="circular"
+          icon={<Link2 size={28} />}
+          title="Liên kết"
+          description={isLoading ? "Đang tải..." : `${previews.links} liên kết hiện có`}
+          ctaLabel="Quản lý liên kết"
+          ctaHref="/admin/links"
         />
       </div>
-    </section>
-  );
-}
-
-function AdminEntryCard({
-  href,
-  title,
-  description,
-  countLabel,
-  actionLabel = "Mở bảng metadata",
-}: {
-  href: string;
-  title: string;
-  description: string;
-  countLabel: ReactNode;
-  actionLabel?: string;
-}) {
-  return (
-    <Link href={href} className="block min-w-0 no-underline">
-      <EntryCard
-        title={title}
-        description={description}
-        meta={<span className="font-semibold">{countLabel}</span>}
-        className="h-full hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
-      >
-        <span className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent">{actionLabel}</span>
-      </EntryCard>
-    </Link>
+    </div>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Bot, ShieldAlert, Users } from "lucide-react";
 
 import { StitchCard } from "@/components/stitch-card";
-import { ErrorState, LoadingState, PageHeader } from "@/components/ui-primitives";
+import { ErrorState, LoadingState } from "@/components/ui-primitives";
 import { loadParentDashboard, type AdultDashboardData } from "@/lib/adult-dashboard-loader";
 
 export default function ParentDashboardPage() {
@@ -31,40 +32,29 @@ export default function ParentDashboardPage() {
     return () => { isActive = false; };
   }, []);
 
-  if (isLoading) {
-    return (
-      <section className="space-y-6">
-        <PageHeader
-          eyebrow="Vai trò phụ huynh"
-          title="Cổng phụ huynh"
-          description="Đang tải thông tin..."
-        />
-        <LoadingState message="Đang tải thông tin..." className="bg-white/80" />
-      </section>
-    );
-  }
-
-  if (loadFailed || dashboardData === null) {
-    return <ErrorState />;
-  }
+  if (isLoading) return <LoadingState />;
+  if (loadFailed || dashboardData === null) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   const childCount = dashboardData.students.length;
   const sosCount = dashboardData.notifications.status === "ready" ? dashboardData.notifications.data.length : 0;
 
   return (
-    <section className="space-y-6">
-      <PageHeader
-        eyebrow="Vai trò phụ huynh"
-        title="Cổng phụ huynh"
-        description="Xem thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành."
-      />
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-headline-lg font-bold text-on-background">
+          Xin chào, phụ huynh!
+        </h1>
+        <p className="mt-2 text-body-lg text-on-background/70">
+          Cùng đồng hành với con hôm nay nhé
+        </p>
+      </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <StitchCard
           variant="circular"
           icon={<Users size={28} />}
           title="Con của bạn"
-          description={`${childCount} học sinh được liên kết`}
+          description={`${childCount} con đang được đồng hành`}
           ctaLabel="Xem thông tin"
           ctaHref="/parent/students"
         />
@@ -73,20 +63,31 @@ export default function ParentDashboardPage() {
           variant="circular"
           icon={<ShieldAlert size={28} />}
           title="Cảnh báo SOS"
-          description={sosCount > 0 ? `${sosCount} cảnh báo gần đây` : "Không có cảnh báo mới"}
+          description={sosCount > 0 ? `${sosCount} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
           ctaLabel="Xem cảnh báo"
           ctaHref="/parent/sos-alerts"
         />
-
-        <StitchCard
-          variant="circular"
-          icon={<Bot size={28} />}
-          title="Peerlight AI"
-          description="Trò chuyện với AI để được hướng dẫn đồng hành cùng con"
-          ctaLabel="Trò chuyện"
-          ctaHref="/parent/chat"
-        />
       </div>
-    </section>
+
+      <div className="rounded-[32px] bg-primary-container p-6">
+        <div className="flex items-center gap-4">
+          <Bot className="text-on-primary-container" size={32} />
+          <div className="flex-1">
+            <h3 className="text-headline-md font-semibold text-on-primary-container">
+              Peerlight AI
+            </h3>
+            <p className="text-body-md text-on-primary-container/80">
+              Hỏi AI cách đồng hành cùng con hiệu quả hơn
+            </p>
+          </div>
+          <Link
+            href="/parent/chat"
+            className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90"
+          >
+            Trò chuyện
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
