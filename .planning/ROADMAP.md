@@ -170,7 +170,7 @@
 | 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
 | 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
 | 35. Role Dashboard Consistency Pass | 5/5 | Complete    | 2026-05-27 |
-| 36. Backend & DB Hot Path Optimization | 5/5 | Complete   | 2026-05-27 |
+| 36. Backend & DB Hot Path Optimization | 5/5 | Complete    | 2026-05-27 |
 | 37. Frontend Data Loading & Render Optimization | 0/TBD | Not started | - |
 | 38. UI/Performance Release Gates | 0/TBD | Not started | - |
 

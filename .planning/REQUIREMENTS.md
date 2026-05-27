@@ -30,11 +30,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Backend and Database Performance
 
-- [ ] **DBPERF-01**: Admin user and student-adult link list paths are bounded or paginated and avoid N+1 user/link hydration.
-- [ ] **DBPERF-02**: Teacher and Parent linked-student/SOS visibility paths batch relationship, user, and SOS-signal checks instead of performing per-row queries where avoidable.
-- [ ] **DBPERF-03**: Adult summary, history, or dashboard endpoints push filtering, ordering, and limits into SQL instead of loading broad datasets and slicing in Python.
-- [ ] **DBPERF-04**: Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
-- [ ] **DBPERF-05**: Any new index or migration is tied to observed query predicates, keeps SQLAlchemy/Alembic schema metadata aligned, and passes schema drift and privacy regression checks.
+- [x] **DBPERF-01**: Admin user and student-adult link list paths are bounded or paginated and avoid N+1 user/link hydration.
+- [x] **DBPERF-02**: Teacher and Parent linked-student/SOS visibility paths batch relationship, user, and SOS-signal checks instead of performing per-row queries where avoidable.
+- [x] **DBPERF-03**: Adult summary, history, or dashboard endpoints push filtering, ordering, and limits into SQL instead of loading broad datasets and slicing in Python.
+- [x] **DBPERF-04**: Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
+- [x] **DBPERF-05**: Any new index or migration is tied to observed query predicates, keeps SQLAlchemy/Alembic schema metadata aligned, and passes schema drift and privacy regression checks.
 
 ### Frontend Performance
 
@@ -103,11 +103,11 @@ Deferred to future milestones, not in v1.6 scope.
 | BASE-01 | Phase 33 | Complete |
 | BASE-02 | Phase 33 | Complete |
 | BASE-03 | Phase 33 | Complete |
-| DBPERF-01 | Phase 36 | Pending |
-| DBPERF-02 | Phase 36 | Pending |
-| DBPERF-03 | Phase 36 | Pending |
-| DBPERF-04 | Phase 36 | Pending |
-| DBPERF-05 | Phase 36 | Pending |
+| DBPERF-01 | Phase 36 | Complete |
+| DBPERF-02 | Phase 36 | Complete |
+| DBPERF-03 | Phase 36 | Complete |
+| DBPERF-04 | Phase 36 | Complete |
+| DBPERF-05 | Phase 36 | Complete |
 | FEPERF-01 | Phase 37 | Pending |
 | FEPERF-02 | Phase 37 | Pending |
 | FEPERF-03 | Phase 37 | Pending |

@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v1.5 Production Pilot Readiness & Identity archived as of 2026-05-26
-**Milestone status:** v1.6 Cross-Role UI Consistency & Production Performance in progress; Phase 33 baseline audit complete
-**Scope shipped:** 33 total phases; v1.5 Phases 28-32 completed 22/22 plans and 28/28 requirements; v1.6 Phase 33 completed 3/3 plans and 4/27 requirements
-**Current execution:** Phase 34 is next: Shared UI Primitives & Role Shell Harmonization
-**Latest verification:** Phase 33 verification passed: UI inventory, performance baseline, artifact redline gate, frontend helper tests, and backend performance baseline pytest passed; code review found 4 advisory warnings and 0 critical findings
+**Milestone status:** v1.6 Cross-Role UI Consistency & Production Performance in progress; Phase 36 backend/database hot-path optimization complete
+**Scope shipped:** 36 total phases; v1.5 Phases 28-32 completed 22/22 plans and 28/28 requirements; v1.6 Phases 33-36 completed 17/27 requirements
+**Current execution:** Phase 37 is next: Frontend Data Loading & Render Optimization
+**Latest verification:** Phase 36 verification passed: 15/15 must-haves verified, DBPERF-01..DBPERF-05 complete, focused backend pytest 56/56 passed, backend ruff passed, Alembic check reported no new upgrade operations, and code review was clean
 **Latest audit:** `.planning/milestones/v1.5-MILESTONE-AUDIT.md` completed with tech debt status: 28/28 requirements, 5/5 phases, 8/8 integration flows, and 0 critical gaps; live `smoke:pilot` remains required before a real school pilot launch
 
 ### Built Product
@@ -49,6 +49,7 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - Phase 32 final verification: constrained pass, including full backend/frontend/lint/build/docs/guard/demo-smoke gates; live `smoke:pilot` remains constrained until safe production-pilot URLs/configuration and readiness `ready` exist
 - v1.5 milestone audit: tech debt status after 3-source cross-reference and integration checker; 28/28 requirements satisfied, 0 blockers, live `smoke:pilot` remains a pre-launch constraint
 - Phase 33 verification: passed, including `33-UI-INVENTORY.md`, `33-PERFORMANCE-BASELINE.md`, artifact redline gate, frontend UI inventory and baseline helper tests, backend performance baseline pytest, and aggregate-only privacy-safe evidence checks
+- Phase 36 verification: passed, including bounded Admin users/links, batched Teacher/Parent SOS visibility and support overview, SQL-side adult summaries, bounded metadata-only Admin operations, no-new-index DBPERF-05 decision, focused backend 56/56 tests, backend ruff passed, Alembic no-drift check, and clean code review
 
 ### Planning Archives
 
@@ -180,8 +181,9 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ### Active in v1.6
 
 - [x] Establish a cross-role UI inventory and privacy-safe baseline evidence before UI/performance changes.
-- [ ] Harmonize Student, Teacher, Parent, and Admin UI patterns into a cohesive Peerlight AI experience.
-- [ ] Improve production performance across database, backend APIs, and frontend rendering/data loading.
+- [x] Harmonize Student, Teacher, Parent, and Admin UI patterns into a cohesive Peerlight AI experience.
+- [x] Improve production performance across database and backend API hot paths.
+- [ ] Improve frontend rendering/data loading performance.
 - [ ] Add measurable UI/performance regression gates that preserve privacy, role authorization, and metadata-only operations boundaries.
 
 ### Out of Scope
