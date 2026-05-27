@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session as OrmSession
 
 from app.db.models import (
     AuditEvent,
-    LinkStatus,
     MoodCheckIn,
     MoodNoteShare,
     SchoolPrivacyPolicyDefault,

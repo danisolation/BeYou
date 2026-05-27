@@ -44,7 +44,6 @@ from app.db.models import (
     SupportPlanStatus,
     User,
     UserRole,
-    utc_now,
 )
 from app.db.session import SessionLocal, engine
 from app.main import app

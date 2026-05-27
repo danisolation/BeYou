@@ -9,7 +9,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.config import Settings
-from app.db.models import AccountStatus, AuditEvent, Session as UserSession, User, UserRole
+from app.db.models import AuditEvent, Session as UserSession, User, UserRole
 from app.db.session import SessionLocal, engine
 from app.schemas.readiness import ReadinessCheck, ReadinessReport
 from app.seeds.demo_seed import DEMO_ADMIN_EMAIL, DEMO_PARENT_EMAIL, DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL
