@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
@@ -62,7 +63,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
   }
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
   }
 
   if (hasError || scenario === null) {
@@ -71,28 +72,41 @@ export default function ScenarioDetailPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      {/* Breadcrumb */}
+      <Link
+        href="/student/scenarios"
+        className="inline-flex items-center gap-2 text-body-md font-semibold text-primary"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Quay lại danh sách
+      </Link>
+
+      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-display">{scenario.title}</h1>
+          <h1 className="text-headline-md font-semibold text-on-background">{scenario.title}</h1>
           {scenario.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-4 text-body">{scenario.situation}</p>
-        <p className="mt-4 inline-flex gap-1 rounded-full bg-white px-3 py-1 text-label">
-          <span>Kỹ năng liên quan</span>
-          <span>{scenario.skill_tag}</span>
-        </p>
+        <p className="mt-4 text-body-md text-on-background/80">{scenario.situation}</p>
+        {scenario.skill_tag ? (
+          <p className="mt-4 inline-flex gap-1 rounded-full bg-primary-container/20 px-3 py-1 text-body-md text-primary">
+            <span>Kỹ năng liên quan:</span>
+            <span className="font-semibold">{scenario.skill_tag}</span>
+          </p>
+        ) : null}
       </header>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">Em muốn thử cách phản hồi nào?</h2>
-        <div className="mt-6 space-y-4">
+      <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
+        <h2 className="text-body-md font-semibold text-on-background">Em muốn thử cách phản hồi nào?</h2>
+        <div className="mt-6 space-y-3">
           {scenario.choices.map((choice, index) => {
             const isSelected = selectedChoiceId === choice.id;
             return (
               <label
                 key={choice.id}
-                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border p-4 text-body ${
-                  isSelected ? "border-accent bg-secondary" : "border-[#CFE8E1] bg-white"
+                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-[16px] border p-4 text-body-md transition-colors ${
+                  isSelected
+                    ? "border-primary bg-primary-container/20 text-on-background"
+                    : "border-outline-variant bg-white text-on-background/80 hover:bg-surface-container-low"
                 }`}
               >
                 <input
@@ -108,7 +122,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
                 <span
                   aria-hidden="true"
                   className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-semibold ${
-                    isSelected ? "bg-accent text-white" : "bg-secondary text-[#12332E]"
+                    isSelected ? "bg-primary text-on-primary" : "bg-surface-container text-on-background"
                   }`}
                 >
                   {index + 1}
@@ -118,9 +132,11 @@ export default function ScenarioDetailPage({ params }: PageProps) {
             );
           })}
         </div>
-        {message ? <p className="mt-6 rounded-2xl border border-[#F59E0B] bg-white p-4 text-label">{message}</p> : null}
+        {message ? (
+          <p className="mt-6 rounded-[16px] border border-[#F59E0B] bg-white p-4 text-body-md text-on-background/80">{message}</p>
+        ) : null}
         <button
-          className="mt-6 min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white disabled:opacity-60"
+          className="mt-6 min-h-11 rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"
           disabled={isSubmitting}
           onClick={submitChoice}
           type="button"
@@ -131,35 +147,44 @@ export default function ScenarioDetailPage({ params }: PageProps) {
 
       {feedback ? (
         <section
-          className={`rounded-3xl bg-white p-6 shadow-sm ${
-            feedback.signal === "risky" ? "border border-[#F59E0B]" : "border border-accent"
+          className={`rounded-[32px] p-6 shadow-sm ${
+            feedback.signal === "risky"
+              ? "border border-amber-300 bg-surface-container-low"
+              : "border border-primary/30 bg-surface-container-low"
           }`}
         >
-          <h2 className="text-heading">Lời khuyên</h2>
-          <p className="mt-4 text-label">{signalLabel(feedback.signal)}</p>
+          <h2 className="text-body-md font-semibold text-on-background">Lời khuyên</h2>
+          <p className={`mt-3 text-body-md font-semibold ${feedback.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
+            {signalLabel(feedback.signal)}
+          </p>
           {feedback.selected_choice ? (
-            <p className="mt-4 text-body">
+            <p className="mt-4 text-body-md text-on-background/80">
               <span className="font-semibold">Lựa chọn của em: </span>
               {feedback.selected_choice}
             </p>
           ) : null}
-          {feedback.feedback ? <p className="mt-4 text-body">{feedback.feedback}</p> : null}
+          {feedback.feedback ? <p className="mt-3 text-body-md text-on-background/80">{feedback.feedback}</p> : null}
           <div className="mt-6 space-y-4">
-            <div className="rounded-2xl bg-secondary p-4">
-              <h3 className="text-heading">Lời khuyên nên thử</h3>
-              <p className="mt-2 text-body">{feedback.recommended_response}</p>
+            <div className="rounded-[16px] bg-surface-container p-4">
+              <h3 className="text-body-md font-semibold text-on-background">Lời khuyên nên thử</h3>
+              <p className="mt-2 text-body-md text-on-background/80">{feedback.recommended_response}</p>
             </div>
-            <div className="rounded-2xl bg-secondary p-4">
-              <h3 className="text-heading">Lời khuyên để nhớ</h3>
-              <p className="mt-2 text-body">{feedback.lesson}</p>
+            <div className="rounded-[16px] bg-surface-container p-4">
+              <h3 className="text-body-md font-semibold text-on-background">Lời khuyên để nhớ</h3>
+              <p className="mt-2 text-body-md text-on-background/80">{feedback.lesson}</p>
             </div>
-            <p className="text-label">
-              <span className="font-semibold">Kỹ năng liên quan</span>{" "}
-              {feedback.skill_tag}
-            </p>
+            {feedback.skill_tag ? (
+              <p className="text-body-md text-on-background/70">
+                <span className="font-semibold">Kỹ năng liên quan:</span>{" "}
+                {feedback.skill_tag}
+              </p>
+            ) : null}
           </div>
-          <Link className="mt-6 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/scenarios/history">
-            Xem lịch sử tình huống
+          <Link
+            className="mt-6 inline-flex min-h-11 items-center font-semibold text-primary"
+            href="/student/scenarios"
+          >
+            Thực hành tình huống khác
           </Link>
         </section>
       ) : null}
