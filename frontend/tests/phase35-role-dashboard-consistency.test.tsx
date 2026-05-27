@@ -216,7 +216,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByText("Vai trò giáo viên")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/sos-1");
+    expect(screen.getByText("Vai trò giáo viên")).toBeInTheDocument();
     expect(
       screen.getByText(
         "Xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
@@ -227,7 +228,6 @@ describe("Phase 35 role dashboard consistency regression", () => {
         "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/sos-1");
     expect(document.body.textContent ?? "").not.toMatch(rawAdultAdminLabelRegex);
   });
 
@@ -280,7 +280,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<ParentDashboardPage />);
 
-    expect(await screen.findByText("Vai trò phụ huynh")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute("href", "/parent/sos-alerts/sos-1");
+    expect(screen.getByText("Vai trò phụ huynh")).toBeInTheDocument();
     expect(
       screen.getByText(
         "Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành/read-only.",
@@ -291,7 +292,6 @@ describe("Phase 35 role dashboard consistency regression", () => {
         "Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên.",
       ),
     ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute("href", "/parent/sos-alerts/sos-1");
     expect(screen.queryByRole("link", { name: "Xem và cập nhật SOS" })).not.toBeInTheDocument();
   });
 
@@ -326,6 +326,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
       source("app/(authenticated)/parent/page.tsx"),
       source("app/(authenticated)/admin/page.tsx"),
       source("components/adult-student-list.tsx"),
+      source("lib/student-dashboard-loader.ts"),
+      source("lib/adult-dashboard-loader.ts"),
     ].join("\n");
 
     expect(dashboardSources).toContain("/api/student/profile");

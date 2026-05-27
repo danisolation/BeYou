@@ -4,6 +4,7 @@ import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { EntryCard, PageHeader, PrivacyBoundaryCard, StatusBadge, SurfaceCard } from "@/components/ui-primitives";
+import { type OptionalDashboardResult } from "@/lib/dashboard-loading";
 import { safeInternalHref } from "@/lib/safe-navigation";
 import { sosStatusLabels, type AdultSupportOverviewItem, type InAppNotification } from "@/lib/sos-api";
 
@@ -29,8 +30,8 @@ type AdultStudentListProps = {
   summaryCta: string;
   sosBasePath?: "/teacher/sos-alerts" | "/parent/sos-alerts";
   sosCta?: string;
-  supportOverview?: AdultSupportOverviewItem[];
-  notifications?: InAppNotification[];
+  supportOverviewState: OptionalDashboardResult<AdultSupportOverviewItem[]>;
+  notificationsState: OptionalDashboardResult<InAppNotification[]>;
 };
 
 export function AdultStudentList({
@@ -44,11 +45,13 @@ export function AdultStudentList({
   summaryCta,
   sosBasePath,
   sosCta,
-  supportOverview = [],
-  notifications = [],
+  supportOverviewState,
+  notificationsState,
 }: AdultStudentListProps) {
+  const supportOverview = supportOverviewState.status === "ready" ? supportOverviewState.data : [];
+  const supportUnavailable = supportOverviewState.status === "unavailable";
   const supportByStudent = new Map(supportOverview.map((item) => [item.student.id, item]));
-  const visibleStudents = students.filter((student) => supportByStudent.has(student.id));
+  const visibleStudents = supportUnavailable ? students : students.filter((student) => supportByStudent.has(student.id));
   const firstStudent = visibleStudents[0];
   const isParent = roleContext === "parent";
 
@@ -88,9 +91,14 @@ export function AdultStudentList({
             : []
         }
       />
-      <NotificationList notifications={notifications} />
-      {visibleStudents.length === 0 ? (
+      <NotificationList notificationsState={notificationsState} />
+      {students.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />
+      ) : visibleStudents.length === 0 ? (
+        <EmptyState
+          heading="Chưa có học sinh SOS được phép xem"
+          body="Khi có tín hiệu SOS hoặc tóm tắt hỗ trợ được phép xem, mục này sẽ hiển thị tại đây."
+        />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {visibleStudents.map((student) => (
@@ -106,6 +114,7 @@ export function AdultStudentList({
               <p className="mt-3 text-label">Trạng thái liên kết: {student.link_status}</p>
               <SupportOverviewCard
                 support={supportByStudent.get(student.id)}
+                unavailableMessage={supportOverviewState.status === "unavailable" ? supportOverviewState.message : undefined}
                 sosBasePath={sosBasePath}
                 sosCta={sosCta}
               />
@@ -157,7 +166,20 @@ function AdultPrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "p
   );
 }
 
-function NotificationList({ notifications }: { notifications: InAppNotification[] }) {
+function NotificationList({ notificationsState }: { notificationsState: OptionalDashboardResult<InAppNotification[]> }) {
+  if (notificationsState.status === "unavailable") {
+    return (
+      <div role="status" aria-live="polite">
+        <SurfaceCard>
+          <h2 className="text-heading">Thông báo hỗ trợ</h2>
+          <p className="mt-3 text-body">Thông báo hỗ trợ tạm thời chưa tải được.</p>
+        </SurfaceCard>
+      </div>
+    );
+  }
+
+  const notifications = notificationsState.data;
+
   return (
     <SurfaceCard>
       <h2 className="text-heading">Thông báo hỗ trợ</h2>
@@ -198,13 +220,24 @@ function supportTone(support: AdultSupportOverviewItem): "safe" | "warning" | "d
 
 function SupportOverviewCard({
   support,
+  unavailableMessage,
   sosBasePath,
   sosCta,
 }: {
   support?: AdultSupportOverviewItem;
+  unavailableMessage?: string;
   sosBasePath?: "/teacher/sos-alerts" | "/parent/sos-alerts";
   sosCta?: string;
 }) {
+  if (unavailableMessage) {
+    return (
+      <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
+        <h3 className="text-heading">Tóm tắt hỗ trợ tạm thời chưa tải được</h3>
+        <p className="mt-2 text-body">{unavailableMessage}</p>
+      </SurfaceCard>
+    );
+  }
+
   if (!support) {
     return (
       <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
