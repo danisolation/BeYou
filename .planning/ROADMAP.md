@@ -20,7 +20,7 @@
 
 - [x] **Phase 33: Cross-Role UI & Performance Baseline Audit** - Establish UI drift and privacy-safe performance baseline evidence before behavior changes. (completed 2026-05-26)
 - [x] **Phase 34: Shared UI Primitives & Role Shell Harmonization** - Align shared visual primitives, role entry, navigation, guidance, accessibility, and role-boundary copy. (completed 2026-05-26)
-- [ ] **Phase 35: Role Dashboard Consistency Pass** - Harmonize Student, Teacher, Parent, and Admin dashboards while preserving each role's data boundaries.
+- [x] **Phase 35: Role Dashboard Consistency Pass** - Harmonize Student, Teacher, Parent, and Admin dashboards while preserving each role's data boundaries. (completed 2026-05-27)
 - [ ] **Phase 36: Backend & DB Hot Path Optimization** - Optimize bounded backend/database paths without weakening authorization, reason gates, audit, or metadata-only operations.
 - [ ] **Phase 37: Frontend Data Loading & Render Optimization** - Reduce route waterfalls, duplicate requests, unsafe caching risk, and perceived slowness across role dashboards.
 - [ ] **Phase 38: UI/Performance Release Gates** - Prove UI consistency, performance improvement evidence, privacy redlines, and documented constraints before milestone closure.
@@ -65,7 +65,7 @@
 **Depends on:** Phase 34
 **Requirements:** ROLE-01, ROLE-02, ROLE-03, ROLE-04
 **UI hint:** yes
-**Status:** Ready to execute
+**Status:** Complete
 
 **Success criteria:**
 1. Student can use a dashboard with harmonized shell, cards, status surfaces, and loading/error/empty patterns while still seeing student-first privacy and support copy.
@@ -73,7 +73,7 @@
 3. Parent can use harmonized dashboard patterns while retaining read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
 4. Admin can use harmonized operations surfaces that remain metadata-only and do not add raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
 
-**Plans:** 5 plans ready
+**Plans:** 5/5 plans complete
 
 ### Phase 36: Backend & DB Hot Path Optimization
 
@@ -134,10 +134,10 @@
 | UIC-02 | Phase 34 | Complete |
 | UIC-03 | Phase 34 | Complete |
 | UIC-04 | Phase 34 | Complete |
-| ROLE-01 | Phase 35 | Pending |
-| ROLE-02 | Phase 35 | Pending |
-| ROLE-03 | Phase 35 | Pending |
-| ROLE-04 | Phase 35 | Pending |
+| ROLE-01 | Phase 35 | Complete |
+| ROLE-02 | Phase 35 | Complete |
+| ROLE-03 | Phase 35 | Complete |
+| ROLE-04 | Phase 35 | Complete |
 | ROLE-05 | Phase 34 | Complete |
 | BASE-01 | Phase 33 | Complete |
 | BASE-02 | Phase 33 | Complete |
@@ -169,7 +169,7 @@
 |---|---|---|---|
 | 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
 | 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
-| 35. Role Dashboard Consistency Pass | 0/5 | Ready to execute | - |
+| 35. Role Dashboard Consistency Pass | 5/5 | Complete    | 2026-05-27 |
 | 36. Backend & DB Hot Path Optimization | 0/TBD | Not started | - |
 | 37. Frontend Data Loading & Render Optimization | 0/TBD | Not started | - |
 | 38. UI/Performance Release Gates | 0/TBD | Not started | - |

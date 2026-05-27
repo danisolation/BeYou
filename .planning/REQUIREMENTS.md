@@ -16,10 +16,10 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Role Dashboards
 
-- [ ] **ROLE-01**: The Student dashboard uses the harmonized shell, cards, status surfaces, and loading/error/empty patterns while preserving student-first privacy and support copy.
-- [ ] **ROLE-02**: The Teacher dashboard uses harmonized UI patterns while preserving SOS-only student visibility, active relationship checks, and teacher-specific SOS status actions.
-- [ ] **ROLE-03**: The Parent dashboard uses harmonized UI patterns while preserving read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
-- [ ] **ROLE-04**: The Admin dashboard and operations surfaces use harmonized metadata-only panels without adding raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
+- [x] **ROLE-01**: The Student dashboard uses the harmonized shell, cards, status surfaces, and loading/error/empty patterns while preserving student-first privacy and support copy.
+- [x] **ROLE-02**: The Teacher dashboard uses harmonized UI patterns while preserving SOS-only student visibility, active relationship checks, and teacher-specific SOS status actions.
+- [x] **ROLE-03**: The Parent dashboard uses harmonized UI patterns while preserving read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
+- [x] **ROLE-04**: The Admin dashboard and operations surfaces use harmonized metadata-only panels without adding raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
 - [x] **ROLE-05**: Shared role-entry, dashboard navigation, and guidance patterns make it clear which role is active and what data boundaries apply.
 
 ### Production Performance Baseline
@@ -95,10 +95,10 @@ Deferred to future milestones, not in v1.6 scope.
 | UIC-02 | Phase 34 | Complete |
 | UIC-03 | Phase 34 | Complete |
 | UIC-04 | Phase 34 | Complete |
-| ROLE-01 | Phase 35 | Pending |
-| ROLE-02 | Phase 35 | Pending |
-| ROLE-03 | Phase 35 | Pending |
-| ROLE-04 | Phase 35 | Pending |
+| ROLE-01 | Phase 35 | Complete |
+| ROLE-02 | Phase 35 | Complete |
+| ROLE-03 | Phase 35 | Complete |
+| ROLE-04 | Phase 35 | Complete |
 | ROLE-05 | Phase 34 | Complete |
 | BASE-01 | Phase 33 | Complete |
 | BASE-02 | Phase 33 | Complete |
