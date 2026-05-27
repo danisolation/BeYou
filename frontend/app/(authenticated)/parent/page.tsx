@@ -40,20 +40,38 @@ export default function ParentDashboardPage() {
   const sosCount = dashboardData.notifications.status === "ready" ? dashboardData.notifications.data.length : 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="animate-fade-in">
-        <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
-          Xin chào, phụ huynh!
+        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
+          Xin chào, phụ huynh! 👋
         </h1>
-        <p className="mt-2 text-body-lg text-on-background/70">
+        <p className="mt-1 text-sm text-on-background/60">
           Cùng đồng hành với con hôm nay nhé
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="animate-fade-in rounded-2xl bg-primary/5 p-4 border border-primary/10">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <Bot className="text-primary" size={20} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-semibold text-on-background">Peerlight AI</h3>
+            <p className="text-xs text-on-background/60">Hỏi AI cách đồng hành cùng con hiệu quả hơn</p>
+          </div>
+          <Link
+            href="/parent/chat"
+            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90"
+          >
+            Chat
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StitchCard
           variant="circular"
-          icon={<Users size={28} />}
+          icon={<Users size={22} />}
           title="Con của bạn"
           description={`${childCount} con đang được đồng hành`}
           ctaLabel="Xem thông tin"
@@ -63,33 +81,13 @@ export default function ParentDashboardPage() {
 
         <StitchCard
           variant="circular"
-          icon={<ShieldAlert size={28} />}
+          icon={<ShieldAlert size={22} />}
           title="Cảnh báo SOS"
           description={sosCount > 0 ? `${sosCount} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
           ctaLabel="Xem cảnh báo"
           ctaHref="/parent/sos-alerts"
           className="animate-fade-in-up delay-200"
         />
-      </div>
-
-      <div className="animate-fade-in delay-300 rounded-[32px] bg-primary-container p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <Bot className="text-on-primary-container" size={32} />
-          <div className="flex-1">
-            <h3 className="text-headline-md font-semibold text-on-primary-container">
-              Peerlight AI
-            </h3>
-            <p className="text-body-md text-on-primary-container/80">
-              Hỏi AI cách đồng hành cùng con hiệu quả hơn
-            </p>
-          </div>
-          <Link
-            href="/parent/chat"
-            className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90 sm:w-auto"
-          >
-            Trò chuyện
-          </Link>
-        </div>
       </div>
     </div>
   );

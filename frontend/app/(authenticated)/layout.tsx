@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
+import { LogOut } from "lucide-react";
 
 import { ErrorState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
 import { LayoutSkeleton } from "@/components/skeletons";
@@ -24,20 +25,6 @@ const roleLabels: Record<AuthUser["role"], string> = {
   parent: "Phụ huynh",
   admin: "Quản trị",
 };
-
-const roleBoundaryCopy: Record<AuthUser["role"], string> = {
-  student: "Không gian riêng tư của em; chỉ chia sẻ theo xác nhận và quyền phù hợp.",
-  teacher: "Hỗ trợ học sinh theo liên kết được phép, tập trung SOS và không giám sát dữ liệu riêng tư thô.",
-  parent: "Đồng hành ở chế độ đọc tóm tắt được phép xem, không mở nội dung riêng tư thô của con.",
-  admin: "Chỉ vận hành metadata an toàn; không mở dữ liệu riêng tư thô, xuất dữ liệu, hoặc bảng xếp hạng nguy cơ.",
-};
-
-const roleNav: Array<{ role: AuthUser["role"]; href: string; label: string }> = [
-  { role: "student", href: "/student", label: "Học sinh" },
-  { role: "teacher", href: "/teacher", label: "Giáo viên" },
-  { role: "parent", href: "/parent", label: "Phụ huynh" },
-  { role: "admin", href: "/admin", label: "Quản trị" },
-];
 
 function expectedRoleFromPath(pathname: string): AuthUser["role"] | null {
   const segment = pathname.split("/").filter(Boolean)[0];
@@ -119,12 +106,10 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const wrongRole = expectedRole !== null && user.role !== expectedRole;
   const privacyRedirectRequired =
     user.role === "student" && user.privacy_acknowledgement_required && studentPathRequiresPrivacy(pathname);
-  const navigationItems = roleNav.filter((item) => item.role === user.role);
   const isStudentShell = user.role === "student" && !wrongRole && !privacyRedirectRequired;
   const isTeacherShell = user.role === "teacher" && !wrongRole;
   const isParentShell = user.role === "parent" && !wrongRole;
   const isAdminShell = user.role === "admin" && !wrongRole;
-  const hasRoleShell = isStudentShell || isTeacherShell || isParentShell || isAdminShell;
 
   return (
     <div className="min-h-dvh bg-background">
@@ -134,43 +119,29 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       >
         Bỏ qua điều hướng
       </a>
-      <header role="banner" className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur dark:bg-[#1a2940]/95 sm:px-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="min-w-0 overflow-hidden">
-            <p className="text-label font-semibold uppercase tracking-[0.2em] text-primary">Peerlight AI</p>
-            <p className="truncate text-body font-semibold">{user.full_name}</p>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
-              <StatusBadge tone="safe">{roleLabels[user.role]}</StatusBadge>
-              <p className="line-clamp-2 max-w-2xl text-label sm:line-clamp-1">{roleBoundaryCopy[user.role]}</p>
-            </div>
+
+      {/* Slim header — one row */}
+      <header role="banner" className="sticky top-0 z-30 border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href={user.dashboard_route} className="flex items-center gap-2 no-underline">
+            <span className="text-lg font-bold tracking-tight text-primary">Peerlight AI</span>
+          </Link>
+          <div className="flex items-center gap-3">
+            <span className="hidden text-sm font-medium text-on-background/70 sm:block">{user.full_name}</span>
+            <StatusBadge tone="safe">{roleLabels[user.role]}</StatusBadge>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 transition-colors hover:bg-outline-variant/20 hover:text-on-background"
+              aria-label="Đăng xuất"
+            >
+              <LogOut size={18} aria-hidden="true" />
+            </button>
           </div>
-          {!hasRoleShell ? (
-            <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label="Điều hướng vai trò">
-              <div className="flex min-w-max gap-2">
-                {navigationItems.map((item) => (
-                  <Link
-                    key={item.role}
-                    href={item.href}
-                    className="flex min-h-11 shrink-0 items-center rounded-2xl px-4 text-label font-semibold text-on-background hover:bg-secondary"
-                    aria-current={pathname === item.href ? "page" : undefined}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="min-h-11 shrink-0 rounded-2xl border border-outline-variant px-4 text-label font-semibold hover:border-primary hover:bg-secondary"
-                >
-                  Đăng xuất
-                </button>
-              </div>
-            </nav>
-          ) : null}
         </div>
       </header>
 
-      <main id="main-content" role="main" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <main id="main-content" role="main" className="mx-auto max-w-7xl px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
         {privacyRedirectRequired ? (
           <PrivacyBoundaryCard
             title="Cần xác nhận quyền riêng tư trước khi vào cổng học sinh."
@@ -191,7 +162,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
           />
         ) : (
           isStudentShell ? (
-            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
               <StudentSidebar
                 pathname={pathname}
                 collapsed={studentMenuCollapsed}
@@ -202,7 +173,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isTeacherShell ? (
-            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
               <TeacherSidebar
                 pathname={pathname}
                 collapsed={teacherMenuCollapsed}
@@ -213,7 +184,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isParentShell ? (
-            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
               <ParentSidebar
                 pathname={pathname}
                 collapsed={parentMenuCollapsed}
@@ -224,7 +195,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isAdminShell ? (
-            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
               <AdminSidebar
                 pathname={pathname}
                 collapsed={adminMenuCollapsed}

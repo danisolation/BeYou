@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { PrivacyBoundaryCard } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
 import { StitchCard } from "@/components/stitch-card";
 import { listLinks, listUsers } from "@/lib/admin-api";
@@ -41,20 +40,15 @@ export default function AdminDashboardPage() {
   if (isLoading) return <DashboardSkeleton cards={8} />;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="animate-fade-in">
-        <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
-          Xin chào, quản trị viên!
+        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
+          Quản trị hệ thống
         </h1>
-        <p className="mt-2 text-body-lg text-on-background/70">
+        <p className="mt-1 text-sm text-on-background/60">
           Quản lý hệ thống an toàn và hiệu quả
         </p>
       </div>
-
-      <PrivacyBoundaryCard
-        title="Vận hành metadata-only"
-        description="Cổng quản trị chỉ hiển thị metadata vận hành và số lượng tổng hợp — không mở dữ liệu riêng tư của học sinh."
-      />
 
       <DemoGuideCard
         title="Luồng quản trị demo"
@@ -71,10 +65,10 @@ export default function AdminDashboardPage() {
         ]}
       />
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StitchCard
           variant="circular"
-          icon={<Activity size={28} />}
+          icon={<Activity size={22} />}
           title="Vận hành"
           description="Readiness, email SOS và audit metadata"
           ctaLabel="Mở bảng vận hành"
@@ -83,7 +77,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Shield size={28} />}
+          icon={<Shield size={22} />}
           title="Báo cáo tổng hợp"
           description="Xu hướng tổng hợp đã ẩn nhóm nhỏ"
           ctaLabel="Xem báo cáo"
@@ -92,7 +86,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Bot size={28} />}
+          icon={<Bot size={22} />}
           title="Cấu hình chatbot"
           description="Từ khóa nguy cơ và lời nhắc hỗ trợ"
           ctaLabel="Cài đặt chatbot"
@@ -101,7 +95,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Heart size={28} />}
+          icon={<Heart size={22} />}
           title="Mood check-in"
           description="Nhãn, prompt và guidance check-in"
           ctaLabel="Cấu hình"
@@ -110,7 +104,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<FileText size={28} />}
+          icon={<FileText size={22} />}
           title="Nội dung"
           description="Tự kiểm tra, tình huống và bài test"
           ctaLabel="Quản lý nội dung"
@@ -119,7 +113,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Settings size={28} />}
+          icon={<Settings size={22} />}
           title="Chính sách riêng tư"
           description="Cấu hình nhắc nhở và quyền truy cập"
           ctaLabel="Mở chính sách"
@@ -128,7 +122,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Users size={28} />}
+          icon={<Users size={22} />}
           title="Tài khoản"
           description={`${previews.users} tài khoản demo`}
           ctaLabel="Quản lý tài khoản"
@@ -137,7 +131,7 @@ export default function AdminDashboardPage() {
         />
         <StitchCard
           variant="circular"
-          icon={<Link2 size={28} />}
+          icon={<Link2 size={22} />}
           title="Liên kết"
           description={`${previews.links} liên kết hiện có`}
           ctaLabel="Quản lý liên kết"

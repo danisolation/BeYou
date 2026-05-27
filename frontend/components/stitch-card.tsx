@@ -6,12 +6,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const cardVariants = cva(
-  "rounded-[32px] p-6 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 dark:bg-[#1a2940]",
+  "rounded-2xl p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 border border-outline-variant/30 bg-white dark:bg-[#1a2940] dark:border-outline-variant/20",
   {
     variants: {
       variant: {
-        rounded: "bg-surface-container",
-        circular: "bg-surface-container",
+        rounded: "",
+        circular: "",
       },
     },
     defaultVariants: {
@@ -45,22 +45,22 @@ export function StitchCard({
       {/* Icon area */}
       {variant === "circular" ? (
         <div className="mb-4 flex items-center justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-container text-on-primary-container">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
             {icon}
           </div>
         </div>
       ) : (
-        <div className="mb-4 inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+        <div className="mb-3 inline-flex items-center justify-center rounded-xl bg-primary/10 p-2.5 text-primary">
           {icon}
         </div>
       )}
 
       {/* Title */}
-      <h3 className="text-headline-md font-semibold text-on-background">{title}</h3>
+      <h3 className="text-base font-semibold text-on-background">{title}</h3>
 
       {/* Description */}
       {description ? (
-        <p className="mt-2 text-body-md text-on-background/70">{description}</p>
+        <p className="mt-1.5 text-sm text-on-background/60">{description}</p>
       ) : null}
 
       {/* CTA */}
@@ -69,7 +69,7 @@ export function StitchCard({
           {ctaHref ? (
             <Link
               href={ctaHref}
-              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline transition-all duration-150 hover:opacity-90 active:scale-95"
+              className="inline-flex items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary no-underline transition-all duration-150 hover:opacity-90 active:scale-[0.97]"
             >
               {ctaLabel}
             </Link>
@@ -77,7 +77,7 @@ export function StitchCard({
             <button
               type="button"
               onClick={onCtaClick}
-              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary transition-all duration-150 hover:opacity-90 active:scale-95"
+              className="inline-flex items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-all duration-150 hover:opacity-90 active:scale-[0.97]"
             >
               {ctaLabel}
             </button>

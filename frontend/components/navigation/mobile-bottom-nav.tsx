@@ -67,7 +67,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-surface px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant/50 bg-white/95 px-2 py-1.5 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg dark:bg-[#0d1c2e]/95 lg:hidden"
         aria-label="Điều hướng học sinh"
       >
         {visibleItems.map((item) => {

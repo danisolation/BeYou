@@ -27,19 +27,19 @@ interface ParentSidebarProps {
 export function ParentSidebar({ pathname, collapsed, onToggleCollapse, onLogout }: ParentSidebarProps) {
   return (
     <aside
-      className={`sticky top-28 hidden h-[calc(100dvh-8rem)] rounded-[2rem] border border-outline-variant bg-surface-container-low p-4 shadow-sm dark:bg-[#1a2940] lg:flex lg:flex-col ${
-        collapsed ? "w-24" : "w-64"
+      className={`sticky top-[4.5rem] hidden h-[calc(100dvh-5.5rem)] rounded-2xl border border-outline-variant/50 bg-white p-3 shadow-sm dark:bg-[#1a2940] lg:flex lg:flex-col ${
+        collapsed ? "w-20" : "w-56"
       }`}
     >
       <button
         type="button"
         aria-label={collapsed ? "Mở rộng menu" : "Thu gọn menu"}
         onClick={onToggleCollapse}
-        className="mb-4 inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant text-primary hover:bg-secondary"
+        className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 hover:bg-outline-variant/20 hover:text-primary"
       >
-        <Menu aria-hidden="true" />
+        <Menu aria-hidden="true" size={18} />
       </button>
-      <nav className="space-y-2" aria-label="Điều hướng phụ huynh">
+      <nav className="space-y-1" aria-label="Điều hướng phụ huynh">
         {parentNav.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || (item.href !== "/parent" && pathname.startsWith(`${item.href}/`));
@@ -47,24 +47,24 @@ export function ParentSidebar({ pathname, collapsed, onToggleCollapse, onLogout 
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold no-underline ${
-                active ? "bg-primary text-on-primary" : "text-on-background hover:bg-secondary"
+              className={`flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium no-underline transition-colors ${
+                active ? "bg-primary/10 text-primary font-semibold" : "text-on-background/70 hover:bg-outline-variant/15 hover:text-on-background"
               }`}
               aria-current={active ? "page" : undefined}
             >
-              <Icon aria-hidden="true" size={20} />
+              <Icon aria-hidden="true" size={18} />
               {collapsed ? <span className="sr-only">{item.label}</span> : <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
-      <div className="mt-auto space-y-2 border-t border-outline-variant pt-4">
+      <div className="mt-auto space-y-1 border-t border-outline-variant/40 pt-3">
         <button
           type="button"
           onClick={onLogout}
-          className="flex min-h-11 w-full items-center gap-3 rounded-2xl px-3 font-semibold text-on-background hover:bg-secondary"
+          className="flex h-10 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium text-on-background/70 hover:bg-outline-variant/15 hover:text-on-background"
         >
-          <LogOut aria-hidden="true" size={20} />
+          <LogOut aria-hidden="true" size={18} />
           {collapsed ? <span className="sr-only">Đăng xuất</span> : <span>Đăng xuất</span>}
         </button>
       </div>
