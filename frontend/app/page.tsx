@@ -65,23 +65,23 @@ export default function HomePage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-label-md font-semibold text-primary">
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
-            <h1 className="mt-6 text-display-stitch text-on-background">
+            <h1 className="mt-6 text-3xl font-bold leading-tight text-on-background md:text-display-stitch">
               BeYou — Bến đỗ an toàn cho tâm hồn học đường
             </h1>
             <p className="mt-4 max-w-xl text-body-lg text-on-background/70">
               Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm, 
               và nhanh chóng kết nối người lớn tin tưởng khi cần hỗ trợ.
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
               <Link
                 href="/login"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-button bg-primary px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
+                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-button bg-primary px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container sm:w-auto"
               >
                 Bắt đầu ngay <ChevronRight className="h-4 w-4" />
               </Link>
               <a
                 href="#mission"
-                className="inline-flex min-h-12 items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-surface-container"
+                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-surface-container sm:w-auto"
               >
                 Tìm hiểu thêm
               </a>
@@ -129,9 +129,9 @@ export default function HomePage() {
       <section id="features" className="bg-surface-container-low px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
         <div className="mx-auto max-w-container-stitch">
           <h2 className="text-center text-headline-lg text-on-background">Công cụ thông minh</h2>
-          <div className="mt-10 grid gap-4 md:grid-cols-12">
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-12">
             {/* Large card: AI assistant */}
-            <div className="rounded-card bg-primary/10 p-8 md:col-span-8">
+            <div className="rounded-card bg-primary/10 p-6 sm:col-span-2 sm:p-8 md:col-span-8">
               <div className="inline-flex items-center justify-center rounded-2xl bg-primary/20 p-3 text-primary">
                 <MessageCircle className="h-7 w-7" aria-hidden="true" />
               </div>
@@ -143,7 +143,7 @@ export default function HomePage() {
             </div>
 
             {/* Small card: Emotion diary */}
-            <div className="rounded-card bg-surface-container p-6 md:col-span-4">
+            <div className="rounded-card bg-surface-container p-6 sm:col-span-1 md:col-span-4">
               <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
                 <BookHeart className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -154,7 +154,7 @@ export default function HomePage() {
             </div>
 
             {/* Small card: SOS */}
-            <div className="rounded-card bg-error-container p-6 md:col-span-4">
+            <div className="rounded-card bg-error-container p-6 sm:col-span-1 md:col-span-4">
               <div className="inline-flex items-center justify-center rounded-2xl bg-error/10 p-3 text-error">
                 <AlertTriangle className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -165,7 +165,7 @@ export default function HomePage() {
             </div>
 
             {/* Wide card: Privacy */}
-            <div className="rounded-card bg-surface-container p-8 md:col-span-8">
+            <div className="rounded-card bg-surface-container p-6 sm:col-span-2 sm:p-8 md:col-span-8">
               <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
                 <Shield className="h-7 w-7" aria-hidden="true" />
               </div>
@@ -205,16 +205,16 @@ export default function HomePage() {
           <p className="mt-4 text-body-lg text-on-primary/80">
             Chỉ cần vài bước đơn giản, bạn đã có một không gian an toàn để chia sẻ và được hỗ trợ.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/login"
-              className="inline-flex min-h-12 items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-surface-container"
+              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-surface-container sm:w-auto"
             >
               Bắt đầu ngay
             </Link>
             <a
               href="#mission"
-              className="inline-flex min-h-12 items-center justify-center rounded-button border border-on-primary/30 px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-on-primary/10"
+              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-on-primary/30 px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-on-primary/10 sm:w-auto"
             >
               Tìm hiểu thêm
             </a>
