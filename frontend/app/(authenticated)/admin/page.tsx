@@ -5,34 +5,28 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { EntryCard, ErrorState, LoadingState, PageHeader, PrivacyBoundaryCard } from "@/components/ui-primitives";
-import { apiFetch } from "@/lib/api";
-
-type AdminUser = { id: string };
-type AdminLink = { id: string };
+import { EntryCard, LoadingState, PageHeader, PrivacyBoundaryCard } from "@/components/ui-primitives";
+import { listLinks, listUsers } from "@/lib/admin-api";
 
 export default function AdminDashboardPage() {
-  const [counts, setCounts] = useState({ users: 0, links: 0 });
+  const [previews, setPreviews] = useState({ users: 0, links: 0 });
+  const [previewUnavailable, setPreviewUnavailable] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     let isActive = true;
 
-    Promise.all([
-      apiFetch<AdminUser[]>("/api/admin/users"),
-      apiFetch<AdminLink[]>("/api/admin/links"),
-    ])
+    Promise.all([listUsers({ limit: 10 }), listLinks({ limit: 10 })])
       .then(([users, links]) => {
         if (!isActive) {
           return;
         }
-        setCounts({ users: users.length, links: links.length });
-        setLoadFailed(false);
+        setPreviews({ users: users.length, links: links.length });
+        setPreviewUnavailable(false);
       })
       .catch(() => {
         if (isActive) {
-          setLoadFailed(true);
+          setPreviewUnavailable(true);
         }
       })
       .finally(() => {
@@ -45,10 +39,6 @@ export default function AdminDashboardPage() {
       isActive = false;
     };
   }, []);
-
-  if (loadFailed) {
-    return <ErrorState />;
-  }
 
   return (
     <section className="space-y-6">
@@ -119,9 +109,11 @@ export default function AdminDashboardPage() {
           description="Tạo, cập nhật, tạm khóa hoặc xóa tài khoản theo đúng phạm vi demo."
           countLabel={
             isLoading ? (
-              <LoadingState message="Đang tải thông tin..." className="bg-transparent p-0 shadow-none ring-0" />
+              <LoadingState message="Đang tải metadata vận hành..." className="bg-transparent p-0 shadow-none ring-0" />
+            ) : previewUnavailable ? (
+              "Preview metadata tạm thời chưa tải được."
             ) : (
-              `${counts.users} tài khoản`
+              `Preview ${previews.users} tài khoản demo`
             )
           }
         />
@@ -131,9 +123,11 @@ export default function AdminDashboardPage() {
           description="Tạo hoặc thu hồi liên kết giữa học sinh với giáo viên/phụ huynh."
           countLabel={
             isLoading ? (
-              <LoadingState message="Đang tải thông tin..." className="bg-transparent p-0 shadow-none ring-0" />
+              <LoadingState message="Đang tải metadata vận hành..." className="bg-transparent p-0 shadow-none ring-0" />
+            ) : previewUnavailable ? (
+              "Preview metadata tạm thời chưa tải được."
             ) : (
-              `${counts.links} liên kết`
+              `Preview ${previews.links} liên kết được phân trang`
             )
           }
         />
