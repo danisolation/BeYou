@@ -2,38 +2,24 @@
 
 import { useEffect, useState } from "react";
 
-import { AdultStudentList, type AdultLinkedStudent } from "@/components/adult-student-list";
-import { ErrorState, LoadingState } from "@/components/ui-primitives";
-import { apiFetch } from "@/lib/api";
-import {
-  getNotifications,
-  getTeacherSupportOverview,
-  type AdultSupportOverviewItem,
-  type InAppNotification,
-} from "@/lib/sos-api";
+import { AdultStudentList } from "@/components/adult-student-list";
+import { ErrorState, LoadingState, PageHeader, PrivacyBoundaryCard, SurfaceCard } from "@/components/ui-primitives";
+import { loadTeacherDashboard, type AdultDashboardData } from "@/lib/adult-dashboard-loader";
 
 export default function TeacherDashboardPage() {
-  const [students, setStudents] = useState<AdultLinkedStudent[]>([]);
-  const [supportOverview, setSupportOverview] = useState<AdultSupportOverviewItem[]>([]);
-  const [notifications, setNotifications] = useState<InAppNotification[]>([]);
+  const [dashboardData, setDashboardData] = useState<AdultDashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     let isActive = true;
 
-    Promise.all([
-      apiFetch<AdultLinkedStudent[]>("/api/teacher/students"),
-      getTeacherSupportOverview(),
-      getNotifications().catch(() => []),
-    ])
-      .then(([linkedStudents, overviewItems, notificationItems]) => {
+    loadTeacherDashboard()
+      .then((data) => {
         if (!isActive) {
           return;
         }
-        setStudents(linkedStudents);
-        setSupportOverview(overviewItems);
-        setNotifications(notificationItems);
+        setDashboardData(data);
         setLoadFailed(false);
       })
       .catch(() => {
@@ -53,10 +39,10 @@ export default function TeacherDashboardPage() {
   }, []);
 
   if (isLoading) {
-    return <LoadingState />;
+    return <AdultDashboardSkeleton roleContext="teacher" />;
   }
 
-  if (loadFailed) {
+  if (loadFailed || dashboardData === null) {
     return <ErrorState />;
   }
 
@@ -70,10 +56,32 @@ export default function TeacherDashboardPage() {
       summaryCta="Xem tóm tắt hỗ trợ"
       sosBasePath="/teacher/sos-alerts"
       sosCta="Xem và cập nhật SOS"
-      supportOverview={supportOverview}
-      notifications={notifications}
-      students={students}
+      supportOverviewState={dashboardData.supportOverview}
+      notificationsState={dashboardData.notifications}
+      students={dashboardData.students}
       emptyBody="Khi quản trị viên tạo liên kết, học sinh được phép hỗ trợ sẽ hiển thị tại đây."
     />
+  );
+}
+
+function AdultDashboardSkeleton({ roleContext }: { roleContext: "teacher" }) {
+  const roleLabel = roleContext === "teacher" ? "giáo viên" : "người lớn";
+  return (
+    <section className="space-y-6">
+      <PageHeader
+        eyebrow="Vai trò giáo viên"
+        title="Cổng giáo viên"
+        description={`Peerlight AI đang tải phạm vi học sinh được liên kết và tóm tắt hỗ trợ được phép xem cho ${roleLabel}.`}
+      />
+      <LoadingState message="Đang tải thông tin... Đang tải tóm tắt hỗ trợ..." className="bg-white/80" />
+      <PrivacyBoundaryCard
+        title="Ranh giới hỗ trợ của giáo viên"
+        description="Thông tin chỉ mở trong phạm vi học sinh được liên kết và tín hiệu SOS/tóm tắt được phép xem."
+      />
+      <div className="grid gap-4 sm:grid-cols-2">
+        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
+        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
+      </div>
+    </section>
   );
 }
