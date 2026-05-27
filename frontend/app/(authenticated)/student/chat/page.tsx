@@ -209,7 +209,7 @@ export default function StudentChatPage() {
             <button
               type="submit"
               disabled={isSending}
-              className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60"
+              className="min-h-[44px] w-full rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60 sm:w-auto"
             >
               {isSending ? "Đang gửi..." : "Gửi chia sẻ"}
             </button>

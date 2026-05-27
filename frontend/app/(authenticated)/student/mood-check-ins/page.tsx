@@ -233,7 +233,7 @@ export default function StudentMoodCheckInPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="min-h-11 rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"
+          className="min-h-[44px] w-full rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
         >
           {isSubmitting ? "Đang lưu..." : "Lưu check-in"}
         </button>

@@ -172,7 +172,7 @@ export default function StudentSettingsPage() {
           </span>
         </label>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-3">
+        <div className="mt-5 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
           <label className="block text-label" htmlFor="cadence">
             Tần suất
             <select
