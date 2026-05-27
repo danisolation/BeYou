@@ -1,129 +1,114 @@
-# Requirements: Peerlight AI v1.6 Cross-Role UI Consistency & Production Performance
+# Requirements: Peerlight AI v1.7 UI Redesign to Match Stitch Mockups
 
-**Defined:** 2026-05-26
-**Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
+**Created:** 2026-05-27
+**Milestone:** v1.7
+**Source:** Google Stitch mockup feedback + user specifications
+**Total:** 20 requirements
 
-## v1.6 Requirements
+## v1.7 Requirements
 
-Requirements for the current milestone. Each requirement maps to exactly one roadmap phase.
+### Student Homepage (HOME)
 
-### UI Consistency
+- [ ] **HOME-01**: Student sees a card-based About/Homepage with synchronized design language (no duplicate sections, image+text blocks only)
+- [ ] **HOME-02**: Student sees "Bắt đầu" as the only navigation CTA on the homepage
 
-- [x] **UIC-01**: The app has a cross-role UI inventory that identifies drift in shell, navigation, spacing, cards, tables, forms, loading, error, empty, responsive, and accessibility patterns across Student, Teacher, Parent, and Admin surfaces.
-- [x] **UIC-02**: Shared lightweight UI primitives exist for page headers, sections, cards, status badges, responsive table wrappers, loading states, error states, and empty states without importing role-specific business logic.
-- [x] **UIC-03**: Student, Teacher, Parent, and Admin screens keep role-specific privacy boundary copy while using consistent Peerlight AI visual rhythm and Vietnamese support tone.
-- [x] **UIC-04**: Cross-role UI changes preserve responsive behavior, keyboard focus, skip-link behavior, accessible status/error announcements, and SOS/high-risk color semantics.
+### Login (AUTH)
 
-### Role Dashboards
+- [ ] **AUTH-01**: Student sees updated login page with 3 branding cards (Góc nhỏ bình yên, Nâng niu từng xao động, Điểm hẹn chữa lành)
+- [ ] **AUTH-02**: Login page loads without slow circle animation issue
 
-- [x] **ROLE-01**: The Student dashboard uses the harmonized shell, cards, status surfaces, and loading/error/empty patterns while preserving student-first privacy and support copy.
-- [x] **ROLE-02**: The Teacher dashboard uses harmonized UI patterns while preserving SOS-only student visibility, active relationship checks, and teacher-specific SOS status actions.
-- [x] **ROLE-03**: The Parent dashboard uses harmonized UI patterns while preserving read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
-- [x] **ROLE-04**: The Admin dashboard and operations surfaces use harmonized metadata-only panels without adding raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
-- [x] **ROLE-05**: Shared role-entry, dashboard navigation, and guidance patterns make it clear which role is active and what data boundaries apply.
+### Student Dashboard (DASH)
 
-### Production Performance Baseline
+- [ ] **DASH-01**: Student dashboard uses circular/rounded cards with specific CTAs (Vào test, Vào check-in, Vào thực hành, Vào thiết lập)
+- [ ] **DASH-02**: Dashboard does not show history sections (history lives inside each feature page)
+- [ ] **DASH-03**: Dashboard does not show privacy blocks or reminder settings inline
 
-- [x] **BASE-01**: v1.6 records a baseline for key role routes and APIs, including local/demo constraints, frontend route/build evidence, backend endpoint timings, payload sizes, and likely DB query hot spots.
-- [x] **BASE-02**: Backend timing or query-count evidence is collected with aggregate-only metadata and never logs raw student content, emails, identifiers, private notes, transcripts, answers, provider claims, secrets, or raw request bodies.
-- [x] **BASE-03**: The baseline distinguishes local deterministic evidence, public demo evidence, Render/Vercel cold or warm behavior where available, and unavailable live production-pilot constraints.
+### Peerlight AI Chat (CHAT)
 
-### Backend and Database Performance
+- [ ] **CHAT-01**: Mobile chat view has a hamburger menu (≡) for sidebar navigation
+- [ ] **CHAT-02**: Chat is consistently named "Peerlight AI" everywhere
 
-- [x] **DBPERF-01**: Admin user and student-adult link list paths are bounded or paginated and avoid N+1 user/link hydration.
-- [x] **DBPERF-02**: Teacher and Parent linked-student/SOS visibility paths batch relationship, user, and SOS-signal checks instead of performing per-row queries where avoidable.
-- [x] **DBPERF-03**: Adult summary, history, or dashboard endpoints push filtering, ordering, and limits into SQL instead of loading broad datasets and slicing in Python.
-- [x] **DBPERF-04**: Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
-- [x] **DBPERF-05**: Any new index or migration is tied to observed query predicates, keeps SQLAlchemy/Alembic schema metadata aligned, and passes schema drift and privacy regression checks.
+### Psychological Tests (TEST)
 
-### Frontend Performance
+- [ ] **TEST-01**: Student can browse a list of available tests
+- [ ] **TEST-02**: Student can take a test (question-by-question sub-page)
+- [ ] **TEST-03**: Student can view test results after completion
 
-- [x] **FEPERF-01**: Role dashboards reduce avoidable fetch waterfalls and duplicate requests while keeping credentialed API calls cookie-based.
-- [x] **FEPERF-02**: Role dashboards provide consistent perceived responsiveness through scoped loading states, skeletons or placeholders, and clear error/empty states.
-- [x] **FEPERF-03**: Sensitive role data remains no-store or uses explicitly scoped cache keys and invalidation that respect user, role, resource, reason, policy, relationship, runtime, and logout boundaries.
-- [x] **FEPERF-04**: Shared UI primitives do not cause route bundle bloat or cross-role page imports; Next build output is reviewed for affected routes.
-- [x] **FEPERF-05**: Frontend performance work preserves privacy acknowledgement routing, no browser token storage, role dashboard routing, and existing auth capabilities behavior.
+### Emotional Check-in (CHECKIN)
 
-### Regression and Release Gates
+- [ ] **CHECKIN-01**: Check-in page shows privacy banner with 4 specific reassurance points
+- [ ] **CHECKIN-02**: Check-in history is displayed inside the check-in page (not on dashboard)
 
-- [x] **QA-01**: Backend tests and lint verify optimized DB/backend paths, bounded results, query/index changes, authorization checks, reason gates, audit semantics, and metadata sanitization.
-- [x] **QA-02**: Frontend tests, lint, and build verify cross-role UI consistency, responsive behavior, accessibility-critical states, loading/error/empty patterns, and role-specific privacy boundaries.
-- [x] **QA-03**: Performance evidence gates compare baseline and post-optimization behavior for selected backend/frontend paths or record explicit accepted external constraints.
-- [x] **QA-04**: Privacy redline gates reject raw identifiers, emails, notes, transcripts, answers, secrets, provider claims, free-text reasons, exports, destructive reset controls, risk leaderboards, per-student drilldowns, and browser token storage in new UI/performance surfaces.
-- [x] **QA-05**: Documentation records v1.6 UI/performance evidence, commands run, remaining production constraints, and the requirement that live `smoke:pilot` remains separate from public demo proof.
+### Scenarios (SCENARIO)
+
+- [ ] **SCENARIO-01**: Student can browse a library of scenarios
+- [ ] **SCENARIO-02**: Student can practice a scenario (interactive sub-page)
+- [ ] **SCENARIO-03**: Student can view scenario results/feedback
+
+### Trusted Adults (TRUST)
+
+- [ ] **TRUST-01**: Trusted Adults page matches the Stitch mockup design
+
+### SOS (SOS)
+
+- [ ] **SOS-01**: SOS page shows initial confirmation state before activation
+- [ ] **SOS-02**: After pressing "Đúng, tôi cần giúp ngay", SOS shows activated overlay
+
+### Settings (SETTINGS)
+
+- [ ] **SETTINGS-01**: Settings page combines check-in settings and SOS settings in one view
+
+### Teacher/Parent Portal (ADULT)
+
+- [ ] **ADULT-01**: Teacher/Parent portal includes Peerlight AI chatbot (same design as student)
+- [ ] **ADULT-02**: Teacher/Parent dashboard uses card-based layout matching student design
+- [ ] **ADULT-03**: Teacher/Parent SOS profile view shows only the student SOS detail section
+
+### UI Consistency (UICONS)
+
+- [ ] **UICONS-01**: All pages share consistent design tokens (colors, typography, spacing, card styles) from one synchronized Tailwind config
+- [ ] **UICONS-02**: Navigation is consistent: desktop sidebar + mobile bottom nav across all student pages
 
 ## Future Requirements
 
-Deferred to future milestones, not in v1.6 scope.
-
-### Production Pilot Launch Evidence
-
-- **FUTURE-PILOT-01**: Configure safe production-pilot URLs/environment, confirm `/health/ready=ready`, run `npm --prefix frontend run smoke:pilot`, and record live pilot evidence when a real pilot environment exists.
-
-### Identity Provider Integration
-
-- **FUTURE-IDENT-01**: Implement provider-specific OAuth/OIDC/SAML login after a pilot school selects provider details, claims, issuer, redirect URI, and provisioning requirements.
-
-### Support Operations
-
-- **FUTURE-SUPPORT-01**: Add counselor handoff workflow after UI/performance stability and pilot launch evidence are stable.
-- **FUTURE-SUPPORT-02**: Add external Zalo/SMS/push delivery only after provider governance, consent, retries, dead-letter handling, and message privacy review are designed.
-
-### Scale and Governance
-
-- **FUTURE-SCALE-01**: Add multi-school tenancy after single-school pilot safety and performance are proven.
-- **FUTURE-OBS-01**: Add deeper APM or observability only if it can remain aggregate-only and privacy-safe.
+- Content text update from Word file (psychological test questions, scenario scripts)
+- Teacher/Parent full portal redesign beyond dashboard+SOS
+- Admin portal redesign (not covered in this feedback)
 
 ## Out of Scope
 
-| Feature | Reason |
-|---|---|
-| Full design-system rewrite or new UI framework | v1.6 should harmonize existing surfaces without a risky rewrite. |
-| Browser-stored access tokens or OAuth token handling | Violates backend-owned session and no-token browser contract. |
-| Raw performance logs containing student data, emails, IDs, notes, transcripts, answers, provider claims, secrets, or request bodies | Violates privacy-by-default and metadata-only operations boundaries. |
-| Generic client caching of sensitive role data without scoped keys and invalidation | Risks cross-role/user/relationship leakage. |
-| Raw exports, risk leaderboards, per-student risk drilldowns, or raw audit browsers | Violates support-not-surveillance boundaries. |
-| Removing authorization, privacy acknowledgement, reason gates, audit events, or safety copy to improve speed | Performance must preserve safety and privacy invariants. |
-| Provider-specific SSO implementation | v1.6 optimizes existing product quality; school IdP details are still required. |
-| Multi-school tenancy | Deferred until single-school pilot UX/performance are stable. |
+- Backend API changes (this milestone is frontend-only UI redesign)
+- New features or flows (only redesigning existing ones to match mockups)
+- Mobile native app
+- Content authoring (questions/scenarios come from Word file later)
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|---|---|---|
-| UIC-01 | Phase 33 | Complete |
-| UIC-02 | Phase 34 | Complete |
-| UIC-03 | Phase 34 | Complete |
-| UIC-04 | Phase 34 | Complete |
-| ROLE-01 | Phase 35 | Complete |
-| ROLE-02 | Phase 35 | Complete |
-| ROLE-03 | Phase 35 | Complete |
-| ROLE-04 | Phase 35 | Complete |
-| ROLE-05 | Phase 34 | Complete |
-| BASE-01 | Phase 33 | Complete |
-| BASE-02 | Phase 33 | Complete |
-| BASE-03 | Phase 33 | Complete |
-| DBPERF-01 | Phase 36 | Complete |
-| DBPERF-02 | Phase 36 | Complete |
-| DBPERF-03 | Phase 36 | Complete |
-| DBPERF-04 | Phase 36 | Complete |
-| DBPERF-05 | Phase 36 | Complete |
-| FEPERF-01 | Phase 37 | Complete |
-| FEPERF-02 | Phase 37 | Complete |
-| FEPERF-03 | Phase 37 | Complete |
-| FEPERF-04 | Phase 37 | Complete |
-| FEPERF-05 | Phase 37 | Complete |
-| QA-01 | Phase 38 | Pending |
-| QA-02 | Phase 38 | Pending |
-| QA-03 | Phase 38 | Pending |
-| QA-04 | Phase 38 | Pending |
-| QA-05 | Phase 38 | Pending |
-
-**Coverage:**
-- v1.6 requirements: 27 total
-- Mapped to phases: 27
-- Unmapped: 0
-
----
-*Requirements defined: 2026-05-26*
-*Last updated: 2026-05-26 after v1.6 roadmap creation*
+| REQ-ID | Phase | Plan |
+|--------|-------|------|
+| HOME-01 | — | — |
+| HOME-02 | — | — |
+| AUTH-01 | — | — |
+| AUTH-02 | — | — |
+| DASH-01 | — | — |
+| DASH-02 | — | — |
+| DASH-03 | — | — |
+| CHAT-01 | — | — |
+| CHAT-02 | — | — |
+| TEST-01 | — | — |
+| TEST-02 | — | — |
+| TEST-03 | — | — |
+| CHECKIN-01 | — | — |
+| CHECKIN-02 | — | — |
+| SCENARIO-01 | — | — |
+| SCENARIO-02 | — | — |
+| SCENARIO-03 | — | — |
+| TRUST-01 | — | — |
+| SOS-01 | — | — |
+| SOS-02 | — | — |
+| SETTINGS-01 | — | — |
+| ADULT-01 | — | — |
+| ADULT-02 | — | — |
+| ADULT-03 | — | — |
+| UICONS-01 | — | — |
+| UICONS-02 | — | — |
