@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, Query, Request, Response, status
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission, require_role
@@ -44,11 +44,13 @@ def _user_response(user: User) -> AdminUserResponse:
 
 @router.get("", response_model=list[AdminUserResponse])
 def get_admin_users(
+    limit: int = Query(default=100, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
     current_user: User = Depends(get_current_user),
     db: OrmSession = Depends(get_db),
 ) -> list[AdminUserResponse]:
     _require_admin(db, current_user)
-    return [_user_response(user) for user in list_users(db)]
+    return [_user_response(user) for user in list_users(db, limit=limit, offset=offset)]
 
 
 @router.post("", response_model=AdminUserResponse, status_code=status.HTTP_201_CREATED)

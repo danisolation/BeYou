@@ -40,8 +40,10 @@ def get_user_or_404(db: OrmSession, user_id: uuid.UUID) -> User:
     return user
 
 
-def list_users(db: OrmSession) -> list[User]:
-    return list(db.scalars(select(User).order_by(User.created_at, User.email)).all())
+def list_users(db: OrmSession, *, limit: int = 100, offset: int = 0) -> list[User]:
+    return list(
+        db.scalars(select(User).order_by(User.created_at, User.email).limit(limit).offset(offset)).all()
+    )
 
 
 def create_user(db: OrmSession, payload: AdminUserCreateRequest) -> User:
