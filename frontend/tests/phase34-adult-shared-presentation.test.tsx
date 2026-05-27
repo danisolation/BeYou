@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -85,12 +85,17 @@ describe("Phase 34 adult shared presentation", () => {
   it("keeps Parent from importing shared presentation through the Teacher route", () => {
     const parentSource = source("app/(authenticated)/parent/page.tsx");
     const teacherSource = source("app/(authenticated)/teacher/page.tsx");
+    const loaderSource = source("lib/adult-dashboard-loader.ts");
 
     expect(parentSource).not.toContain("@/app/(authenticated)/teacher/page");
-    expect(parentSource).toContain("/api/parent/students");
-    expect(parentSource).toContain("getParentSupportOverview");
-    expect(teacherSource).toContain("/api/teacher/students");
-    expect(teacherSource).toContain("getTeacherSupportOverview");
+    // After Phase 37 refactoring, API paths live in adult-dashboard-loader.ts
+    expect(loaderSource).toContain("/api/parent/students");
+    expect(loaderSource).toContain("getParentSupportOverview");
+    expect(loaderSource).toContain("/api/teacher/students");
+    expect(loaderSource).toContain("getTeacherSupportOverview");
+    // Pages use the typed loader
+    expect(parentSource).toContain("loadParentDashboard");
+    expect(teacherSource).toContain("loadTeacherDashboard");
   });
 
   it("renders distinct teacher and parent adult boundaries without raw private content markers", async () => {
@@ -102,15 +107,19 @@ describe("Phase 34 adult shared presentation", () => {
       "/api/notifications": [],
     });
 
-    render(
+    const { container } = render(
       <>
         <TeacherDashboardPage />
         <ParentDashboardPage />
       </>,
     );
 
-    expect(await screen.findByText("Ranh giới hỗ trợ của giáo viên")).toBeInTheDocument();
-    expect(screen.getByText("Ranh giới hỗ trợ của phụ huynh")).toBeInTheDocument();
+    // Wait for async loaders to complete and components to re-render
+    await waitFor(() => {
+      expect(container.textContent).toContain("Ranh giới hỗ trợ của giáo viên");
+    }, { timeout: 3000 });
+
+    expect(container.textContent).toContain("Ranh giới hỗ trợ của phụ huynh");
     expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute(
       "href",
       "/teacher/sos-alerts/sos-1",
@@ -119,7 +128,7 @@ describe("Phase 34 adult shared presentation", () => {
       "href",
       "/parent/sos-alerts/sos-1",
     );
-    expect(screen.getByText(/hỗ trợ\/read-only/)).toBeInTheDocument();
+    expect(container.textContent).toContain("hỗ trợ/read-only");
 
     const renderedText = document.body.textContent ?? "";
     for (const forbidden of [

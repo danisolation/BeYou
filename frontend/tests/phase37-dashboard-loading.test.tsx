@@ -26,7 +26,7 @@ describe("Phase 37 dashboard loading", () => {
   });
 
   it("keeps dashboard reads credentialed and no-store", async () => {
-    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+    const fetchMock = vi.fn(() =>
       Promise.resolve(
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
@@ -48,7 +48,7 @@ describe("Phase 37 dashboard loading", () => {
   });
 
   it("enforces no-store even when callers request cached dashboard reads", async () => {
-    const fetchMock = vi.fn((_input: RequestInfo | URL, _init?: RequestInit) =>
+    const fetchMock = vi.fn(() =>
       Promise.resolve(
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
