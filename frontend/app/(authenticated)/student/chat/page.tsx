@@ -141,7 +141,7 @@ export default function StudentChatPage() {
 
         {/* Mobile drawer */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-label="Lịch sử trò chuyện">
             <div
               className="absolute inset-0 bg-black/40"
               onClick={() => setSidebarOpen(false)}

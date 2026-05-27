@@ -21,8 +21,8 @@ export function AdminMobileNav({ pathname, onLogout }: AdminMobileNavProps) {
     <>
       {/* More menu overlay */}
       {showMore ? (
-        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)}>
-          <div className="absolute inset-0 bg-on-background/20" />
+        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)} role="dialog" aria-label="Menu mở rộng">
+          <div className="absolute inset-0 bg-on-background/20" aria-hidden="true" />
           <div
             className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-surface p-4 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940]"
             onClick={(e) => e.stopPropagation()}
