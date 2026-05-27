@@ -16,7 +16,7 @@ import {
 
 export const studentNav = [
   { href: "/student", label: "Bảng điều khiển", icon: BarChart3 },
-  { href: "/student/chat", label: "Trò chuyện AI", icon: Bot },
+  { href: "/student/chat", label: "Peerlight AI", icon: Bot },
   { href: "/student/self-checks", label: "Test tâm lý", icon: Brain },
   { href: "/student/mood-check-ins", label: "Check-in cảm xúc", icon: CalendarCheck },
   { href: "/student/scenarios", label: "Tình huống xử lý thực tế", icon: MessageCircle },
@@ -66,7 +66,7 @@ export function StudentSidebar({ pathname, collapsed, onToggleCollapse, onLogout
       </nav>
       <div className="mt-auto space-y-2 border-t border-outline-variant pt-4">
         <Link
-          href="/student#peerlight-sos"
+          href="/student/sos"
           className="flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold text-red-700 no-underline hover:bg-red-50"
         >
           <ShieldAlert aria-hidden="true" size={20} />

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import {
@@ -27,6 +28,7 @@ export default function StudentChatPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -118,51 +120,66 @@ export default function StudentChatPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Trò chuyện với Peerlight AI</h1>
+      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+        <h1 className="text-display">Peerlight AI</h1>
         <p className="mt-3 max-w-3xl text-body">{INTRO_COPY}</p>
         <p className="mt-2 max-w-3xl text-label">{IMMEDIATE_SUPPORT_COPY}</p>
         <p className="mt-2 max-w-3xl text-label">{PRIVATE_CHAT_COPY}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
-        <aside className="rounded-3xl bg-white p-4 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-heading">Lịch sử</h2>
-            <button
-              type="button"
-              onClick={() => {
-                setThreadId(null);
-                setMessages([]);
-                setError("");
-              }}
-              className="rounded-2xl border border-[#CFE8E1] px-3 py-2 text-label font-semibold hover:bg-secondary"
-            >
-              Cuộc trò chuyện mới
-            </button>
-          </div>
-          <div className="mt-4 space-y-2">
-            {threads.length === 0 ? (
-              <p className="rounded-2xl bg-secondary p-3 text-label">Chưa có lịch sử. Tin nhắn mới sẽ xuất hiện ở đây.</p>
-            ) : (
-              threads.map((thread) => (
-                <button
-                  key={thread.id}
-                  type="button"
-                  onClick={() => void handleSelectThread(thread.id)}
-                  className={`w-full rounded-2xl px-3 py-3 text-left text-label font-semibold ${
-                    thread.id === threadId ? "bg-accent text-white" : "bg-secondary text-[#12332E] hover:bg-[#DDF1EA]"
-                  }`}
-                >
-                  <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>
-                </button>
-              ))
-            )}
-          </div>
+        {/* Desktop sidebar */}
+        <aside className="hidden rounded-card border border-outline-variant bg-surface p-4 shadow-sm lg:block">
+          <SidebarContent
+            threads={threads}
+            threadId={threadId}
+            onSelectThread={handleSelectThread}
+            onNewThread={() => { setThreadId(null); setMessages([]); setError(""); }}
+          />
         </aside>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <h2 className="text-heading">Cuộc trò chuyện của em</h2>
+        {/* Mobile drawer */}
+        {sidebarOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div
+              className="absolute inset-0 bg-black/40"
+              onClick={() => setSidebarOpen(false)}
+              aria-hidden="true"
+            />
+            <aside className="absolute inset-y-0 left-0 w-72 bg-surface p-4 shadow-lg">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-heading">Lịch sử</h2>
+                <button
+                  type="button"
+                  aria-label="Đóng menu"
+                  onClick={() => setSidebarOpen(false)}
+                  className="rounded-2xl p-2 hover:bg-secondary"
+                >
+                  <X size={20} aria-hidden="true" />
+                </button>
+              </div>
+              <SidebarContent
+                threads={threads}
+                threadId={threadId}
+                onSelectThread={(id) => { void handleSelectThread(id); setSidebarOpen(false); }}
+                onNewThread={() => { setThreadId(null); setMessages([]); setError(""); setSidebarOpen(false); }}
+              />
+            </aside>
+          </div>
+        )}
+
+        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Mở lịch sử trò chuyện"
+              onClick={() => setSidebarOpen(true)}
+              className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant px-3 text-primary hover:bg-secondary lg:hidden"
+            >
+              <Menu size={20} aria-hidden="true" />
+            </button>
+            <h2 className="text-heading">Cuộc trò chuyện của em</h2>
+          </div>
           {isLoading ? <p className="mt-4 text-body">Đang tải cuộc trò chuyện...</p> : null}
           {!isLoading && messages.length === 0 ? (
             <p className="mt-4 rounded-2xl bg-secondary p-4 text-body">
@@ -220,7 +237,7 @@ function ChatBubble({ message }: { message: ChatMessage }) {
         <p className="mt-3 text-label">
           Nếu có người lớn tin tưởng ở gần em, hãy nói với họ rằng em cần được ở cùng và được lắng nghe ngay bây giờ.
         </p>
-        <Link className="mt-4 inline-flex min-h-11 items-center rounded-2xl bg-red-600 px-4 font-semibold text-white" href="/student#peerlight-sos">
+        <Link className="mt-4 inline-flex min-h-11 items-center rounded-2xl bg-red-600 px-4 font-semibold text-white" href="/student/sos">
           Đi tới SOS hỗ trợ
         </Link>
       </article>
@@ -240,5 +257,59 @@ function ChatBubble({ message }: { message: ChatMessage }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function SidebarContent({
+  threads,
+  threadId,
+  onSelectThread,
+  onNewThread,
+}: {
+  threads: ChatThread[];
+  threadId: string | null;
+  onSelectThread: (id: string) => void;
+  onNewThread: () => void;
+}) {
+  return (
+    <>
+      <div className="hidden items-center justify-between gap-3 lg:flex">
+        <h2 className="text-heading">Lịch sử</h2>
+        <button
+          type="button"
+          onClick={onNewThread}
+          className="rounded-2xl border border-outline-variant px-3 py-2 text-label font-semibold hover:bg-secondary"
+        >
+          Cuộc trò chuyện mới
+        </button>
+      </div>
+      <div className="flex items-center justify-between gap-3 lg:hidden">
+        <button
+          type="button"
+          onClick={onNewThread}
+          className="rounded-2xl border border-outline-variant px-3 py-2 text-label font-semibold hover:bg-secondary"
+        >
+          Cuộc trò chuyện mới
+        </button>
+      </div>
+      <div className="mt-4 space-y-2">
+        {threads.length === 0 ? (
+          <p className="rounded-2xl bg-secondary p-3 text-label">Chưa có lịch sử. Tin nhắn mới sẽ xuất hiện ở đây.</p>
+        ) : (
+          threads.map((thread) => (
+            <button
+              key={thread.id}
+              type="button"
+              onClick={() => onSelectThread(thread.id)}
+              className={`w-full rounded-2xl px-3 py-3 text-left text-label font-semibold ${
+                thread.id === threadId ? "bg-primary text-on-primary" : "bg-secondary text-on-background hover:bg-surface-container"
+              }`}
+            >
+              <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>
+            </button>
+          ))
+        )}
+      </div>
+    </>
   );
 }
