@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const cardVariants = cva(
-  "rounded-[32px] p-6 shadow-sm transition-shadow hover:shadow-md",
+  "rounded-[32px] p-6 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1a2940]",
   {
     variants: {
       variant: {

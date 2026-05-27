@@ -33,7 +33,7 @@ interface StudentSidebarProps {
 export function StudentSidebar({ pathname, collapsed, onToggleCollapse, onLogout }: StudentSidebarProps) {
   return (
     <aside
-      className={`sticky top-28 hidden h-[calc(100dvh-8rem)] rounded-[2rem] border border-outline-variant bg-surface-container-low p-4 shadow-sm lg:flex lg:flex-col ${
+      className={`sticky top-28 hidden h-[calc(100dvh-8rem)] rounded-[2rem] border border-outline-variant bg-surface-container-low p-4 shadow-sm dark:bg-[#1a2940] lg:flex lg:flex-col ${
         collapsed ? "w-24" : "w-64"
       }`}
     >
@@ -67,7 +67,7 @@ export function StudentSidebar({ pathname, collapsed, onToggleCollapse, onLogout
       <div className="mt-auto space-y-2 border-t border-outline-variant pt-4">
         <Link
           href="/student/sos"
-          className="flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold text-red-700 no-underline hover:bg-red-50"
+          className="flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold text-red-700 no-underline hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
         >
           <ShieldAlert aria-hidden="true" size={20} />
           {collapsed ? <span className="sr-only">SOS</span> : <span>SOS</span>}

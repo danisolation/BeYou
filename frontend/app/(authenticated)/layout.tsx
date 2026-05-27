@@ -122,11 +122,11 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     <div className="min-h-dvh bg-background">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-accent focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-accent focus:shadow-lg dark:focus:bg-[#1a2940]"
       >
         Bỏ qua điều hướng
       </a>
-      <header className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
+      <header className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur dark:bg-[#1a2940]/95 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0">
             <p className="text-label font-semibold uppercase tracking-[0.2em] text-primary">Peerlight AI</p>

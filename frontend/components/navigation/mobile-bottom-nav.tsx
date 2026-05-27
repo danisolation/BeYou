@@ -23,7 +23,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)}>
           <div className="absolute inset-0 bg-on-background/20" />
           <div
-            className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-surface p-4 pb-[env(safe-area-inset-bottom)]"
+            className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-surface p-4 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940]"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="grid grid-cols-3 gap-3" aria-label="Thêm điều hướng">
@@ -67,7 +67,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-surface px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-surface px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940] lg:hidden"
         aria-label="Điều hướng học sinh"
       >
         {visibleItems.map((item) => {
