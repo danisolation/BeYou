@@ -77,31 +77,31 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center gap-0.5 no-underline ${
+              className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 no-underline ${
                 active ? "text-primary" : "text-on-background/60"
               }`}
               aria-current={active ? "page" : undefined}
             >
               <Icon aria-hidden="true" size={20} />
-              <span className="text-label-sm">{item.label}</span>
+              <span className="truncate text-label-sm">{item.label}</span>
             </Link>
           );
         })}
         <Link
           href="/student#peerlight-sos"
-          className="flex flex-col items-center gap-0.5 text-red-700 no-underline"
+          className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 text-red-700 no-underline"
         >
           <ShieldAlert aria-hidden="true" size={20} />
-          <span className="text-label-sm">SOS</span>
+          <span className="truncate text-label-sm">SOS</span>
         </Link>
         <button
           type="button"
           onClick={() => setShowMore((v) => !v)}
-          className="flex flex-col items-center gap-0.5 text-on-background/60"
+          className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 text-on-background/60"
           aria-label="Thêm"
         >
           <MoreHorizontal aria-hidden="true" size={20} />
-          <span className="text-label-sm">Thêm</span>
+          <span className="truncate text-label-sm">Thêm</span>
         </button>
       </nav>
     </>

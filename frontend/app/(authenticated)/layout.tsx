@@ -136,12 +136,12 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       </a>
       <header className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur dark:bg-[#1a2940]/95 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div className="min-w-0">
+          <div className="min-w-0 overflow-hidden">
             <p className="text-label font-semibold uppercase tracking-[0.2em] text-primary">Peerlight AI</p>
             <p className="truncate text-body font-semibold">{user.full_name}</p>
             <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
               <StatusBadge tone="safe">{roleLabels[user.role]}</StatusBadge>
-              <p className="max-w-2xl text-label">{roleBoundaryCopy[user.role]}</p>
+              <p className="line-clamp-2 max-w-2xl text-label sm:line-clamp-1">{roleBoundaryCopy[user.role]}</p>
             </div>
           </div>
           {!hasRoleShell ? (
