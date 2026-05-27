@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brain, Heart, MessageCircle, Settings, Bot } from "lucide-react";
 import { StitchCard } from "@/components/stitch-card";
-import { LoadingState, ErrorState } from "@/components/ui-primitives";
+import { ErrorState } from "@/components/ui-primitives";
+import { DashboardSkeleton } from "@/components/skeletons";
 import { apiFetch } from "@/lib/api";
 
 interface ProfileData {
@@ -28,7 +29,7 @@ export default function StudentDashboardPage() {
       });
   }, []);
 
-  if (loading) return <LoadingState />;
+  if (loading) return <DashboardSkeleton cards={4} />;
   if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   return (
