@@ -271,6 +271,15 @@ def _delivery_item(delivery: SosNotificationDelivery, position: int) -> SosEmail
 
 def _delivery_summary(db: OrmSession, *, limit: int) -> SosEmailDeliverySummary:
     total = db.scalar(select(func.count()).select_from(SosNotificationDelivery)) or 0
+    if total == 0:
+        return SosEmailDeliverySummary(
+            total=0,
+            by_status=[],
+            by_provider=[],
+            by_error_code=[],
+            recent=[],
+        )
+
     recent = list(
         db.scalars(
             select(SosNotificationDelivery)
@@ -392,9 +401,12 @@ def _v1_4_audit_buckets(db: OrmSession) -> list[OperationCountBucket]:
 
 
 def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
+    expected_emails = [email for _, email in EXPECTED_DEMO_ROLES]
+    demo_users = list(db.scalars(select(User).where(User.email.in_(expected_emails))))
+    users_by_email = {user.email: user for user in demo_users}
     roles: list[DemoSeedRoleStatus] = []
     for role, email in EXPECTED_DEMO_ROLES:
-        user = db.scalar(select(User).where(User.email == email))
+        user = users_by_email.get(email)
         roles.append(
             DemoSeedRoleStatus(
                 role=role,
@@ -935,8 +947,8 @@ def _derive_pilot_launch_status(items: list[PilotLaunchChecklistItem]) -> str:
     return "ready"
 
 
-def _baseline_content_status(db: OrmSession, settings: Settings) -> PilotLaunchChecklistItem:
-    counts = _non_demo_content_counts(db)
+def _baseline_content_status(content_counts: dict[str, int], settings: Settings) -> PilotLaunchChecklistItem:
+    counts = content_counts
     ready = all(count > 0 for count in counts.values())
     status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
     return _pilot_launch_item(
@@ -953,8 +965,7 @@ def _baseline_content_status(db: OrmSession, settings: Settings) -> PilotLaunchC
     )
 
 
-def _school_policy_setup_status(db: OrmSession, settings: Settings) -> PilotLaunchChecklistItem:
-    safe_policy_count = _safe_school_policy_count(db)
+def _school_policy_setup_status(safe_policy_count: int, settings: Settings) -> PilotLaunchChecklistItem:
     ready = safe_policy_count > 0
     status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
     return _pilot_launch_item(
@@ -975,6 +986,8 @@ def _pilot_launch_summary(
     deployment_guardrails: list[DeploymentGuardrailItem],
     smoke_profiles: list[SmokeProfileItem],
     auth_provider: AuthProviderReadinessSummary,
+    content_counts: dict[str, int],
+    safe_policy_count: int,
 ) -> PilotLaunchSummary:
     runtime_status = "pass" if settings.is_production_pilot else "fail"
     readiness_status = (
@@ -1076,8 +1089,8 @@ def _pilot_launch_summary(
             "phase31_privacy_regression_gate=covered_by_targeted_tests",
             command=PRIVACY_REGRESSION_COMMAND,
         ),
-        _baseline_content_status(db, settings),
-        _school_policy_setup_status(db, settings),
+        _baseline_content_status(content_counts, settings),
+        _school_policy_setup_status(safe_policy_count, settings),
     ]
     return PilotLaunchSummary(
         status=_derive_pilot_launch_status(checklist),
@@ -1257,9 +1270,12 @@ def _baseline_item_status(count: int, settings: Settings) -> str:
     return "fail" if settings.is_production_pilot else "warn"
 
 
-def _pilot_handoff_summary(db: OrmSession, settings: Settings) -> PilotHandoffSummary:
-    content_counts = _non_demo_content_counts(db)
-    safe_policy_count = _safe_school_policy_count(db)
+def _pilot_handoff_summary(
+    settings: Settings,
+    *,
+    content_counts: dict[str, int],
+    safe_policy_count: int,
+) -> PilotHandoffSummary:
     demo_seed_status = (
         "pass"
         if settings.is_production_pilot and not settings.allow_demo_seed
@@ -1420,6 +1436,8 @@ def build_operations_dashboard(
     auth_provider = _auth_provider_summary(settings)
     deployment_guardrails = _deployment_guardrails(settings)
     smoke_profiles = _smoke_profiles(settings, readiness_report)
+    content_counts = _non_demo_content_counts(db)
+    safe_policy_count = _safe_school_policy_count(db)
     return AdminOperationsDashboardResponse(
         generated_at=utc_now(),
         privacy_notes=PRIVACY_NOTES,
@@ -1437,9 +1455,15 @@ def build_operations_dashboard(
             deployment_guardrails=deployment_guardrails,
             smoke_profiles=smoke_profiles,
             auth_provider=auth_provider,
+            content_counts=content_counts,
+            safe_policy_count=safe_policy_count,
         ),
         pilot_data_safety=_pilot_data_safety_summary(db, settings),
-        pilot_handoff=_pilot_handoff_summary(db, settings),
+        pilot_handoff=_pilot_handoff_summary(
+            settings,
+            content_counts=content_counts,
+            safe_policy_count=safe_policy_count,
+        ),
         production_smoke=_production_smoke_checklist(),
         deployment_guardrails=deployment_guardrails,
         smoke_profiles=smoke_profiles,
