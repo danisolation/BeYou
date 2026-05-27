@@ -8,6 +8,12 @@ import { ErrorState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-pr
 import { LayoutSkeleton } from "@/components/skeletons";
 import { StudentSidebar } from "@/components/navigation/student-sidebar";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
+import { TeacherSidebar } from "@/components/navigation/teacher-sidebar";
+import { TeacherMobileNav } from "@/components/navigation/teacher-mobile-nav";
+import { ParentSidebar } from "@/components/navigation/parent-sidebar";
+import { ParentMobileNav } from "@/components/navigation/parent-mobile-nav";
+import { AdminSidebar } from "@/components/navigation/admin-sidebar";
+import { AdminMobileNav } from "@/components/navigation/admin-mobile-nav";
 import { LayoutShell } from "@/components/layout-shell";
 import { apiFetch } from "@/lib/api";
 import { AuthUser, getCurrentUser } from "@/lib/auth";
@@ -53,6 +59,9 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const [loadFailed, setLoadFailed] = useState(false);
   const expectedRole = useMemo(() => expectedRoleFromPath(pathname), [pathname]);
   const [studentMenuCollapsed, setStudentMenuCollapsed] = useState(false);
+  const [teacherMenuCollapsed, setTeacherMenuCollapsed] = useState(false);
+  const [parentMenuCollapsed, setParentMenuCollapsed] = useState(false);
+  const [adminMenuCollapsed, setAdminMenuCollapsed] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -112,6 +121,10 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     user.role === "student" && user.privacy_acknowledgement_required && studentPathRequiresPrivacy(pathname);
   const navigationItems = roleNav.filter((item) => item.role === user.role);
   const isStudentShell = user.role === "student" && !wrongRole && !privacyRedirectRequired;
+  const isTeacherShell = user.role === "teacher" && !wrongRole;
+  const isParentShell = user.role === "parent" && !wrongRole;
+  const isAdminShell = user.role === "admin" && !wrongRole;
+  const hasRoleShell = isStudentShell || isTeacherShell || isParentShell || isAdminShell;
 
   return (
     <div className="min-h-dvh bg-background">
@@ -131,7 +144,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <p className="max-w-2xl text-label">{roleBoundaryCopy[user.role]}</p>
             </div>
           </div>
-          {!isStudentShell ? (
+          {!hasRoleShell ? (
             <nav className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" aria-label="Điều hướng vai trò">
               <div className="flex min-w-max gap-2">
                 {navigationItems.map((item) => (
@@ -186,6 +199,39 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
                 onLogout={handleLogout}
               />
               <MobileBottomNav pathname={pathname} onLogout={handleLogout} />
+              <LayoutShell>{children}</LayoutShell>
+            </div>
+          ) : isTeacherShell ? (
+            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+              <TeacherSidebar
+                pathname={pathname}
+                collapsed={teacherMenuCollapsed}
+                onToggleCollapse={() => setTeacherMenuCollapsed((current) => !current)}
+                onLogout={handleLogout}
+              />
+              <TeacherMobileNav pathname={pathname} onLogout={handleLogout} />
+              <LayoutShell>{children}</LayoutShell>
+            </div>
+          ) : isParentShell ? (
+            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+              <ParentSidebar
+                pathname={pathname}
+                collapsed={parentMenuCollapsed}
+                onToggleCollapse={() => setParentMenuCollapsed((current) => !current)}
+                onLogout={handleLogout}
+              />
+              <ParentMobileNav pathname={pathname} onLogout={handleLogout} />
+              <LayoutShell>{children}</LayoutShell>
+            </div>
+          ) : isAdminShell ? (
+            <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+              <AdminSidebar
+                pathname={pathname}
+                collapsed={adminMenuCollapsed}
+                onToggleCollapse={() => setAdminMenuCollapsed((current) => !current)}
+                onLogout={handleLogout}
+              />
+              <AdminMobileNav pathname={pathname} onLogout={handleLogout} />
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : (
