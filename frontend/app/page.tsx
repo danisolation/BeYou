@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Leaf, Shield, Brain, Heart, Lock, Eye, MessageCircle, BookHeart, AlertTriangle, ChevronRight } from "lucide-react";
 
 import { DemoRoleEntry } from "@/components/demo-role-entry";
+import { ScrollReveal } from "@/components/scroll-reveal";
 
 const coreValues = [
   {
@@ -61,7 +62,7 @@ export default function HomePage() {
         <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-tertiary/5 blur-3xl" aria-hidden="true" />
 
         <div className="relative mx-auto grid max-w-container-stitch items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
-          <div>
+          <div className="animate-fade-in">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-label-md font-semibold text-primary">
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
@@ -90,7 +91,7 @@ export default function HomePage() {
 
           {/* Hero image placeholder */}
           <div className="hidden lg:block">
-            <div className="aspect-square rounded-hero bg-gradient-to-br from-primary/10 via-surface-container to-primary/5 ring-1 ring-outline-variant/20" />
+            <div className="animate-scale-in delay-200 aspect-square rounded-hero bg-gradient-to-br from-primary/10 via-surface-container to-primary/5 ring-1 ring-outline-variant/20" />
           </div>
         </div>
       </section>
@@ -112,14 +113,16 @@ export default function HomePage() {
         <div className="mx-auto max-w-container-stitch">
           <h2 className="text-center text-headline-lg text-on-background">Giá trị cốt lõi</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {coreValues.map((value) => (
-              <div key={value.title} className="rounded-card bg-surface-container-low p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md">
-                <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
-                  <value.icon className="h-6 w-6" aria-hidden="true" />
+            {coreValues.map((value, index) => (
+              <ScrollReveal key={value.title} delay={index * 100}>
+                <div className="rounded-card bg-surface-container-low p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md">
+                  <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                    <value.icon className="h-6 w-6" aria-hidden="true" />
+                  </div>
+                  <h3 className="mt-4 text-headline-md text-on-background">{value.title}</h3>
+                  <p className="mt-2 text-body-md text-on-background/70">{value.description}</p>
                 </div>
-                <h3 className="mt-4 text-headline-md text-on-background">{value.title}</h3>
-                <p className="mt-2 text-body-md text-on-background/70">{value.description}</p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -131,49 +134,57 @@ export default function HomePage() {
           <h2 className="text-center text-headline-lg text-on-background">Công cụ thông minh</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-12">
             {/* Large card: AI assistant */}
-            <div className="rounded-card bg-primary/10 p-6 sm:col-span-2 sm:p-8 md:col-span-8">
-              <div className="inline-flex items-center justify-center rounded-2xl bg-primary/20 p-3 text-primary">
-                <MessageCircle className="h-7 w-7" aria-hidden="true" />
+            <ScrollReveal className="sm:col-span-2 md:col-span-8">
+              <div className="rounded-card bg-primary/10 p-6 sm:p-8">
+                <div className="inline-flex items-center justify-center rounded-2xl bg-primary/20 p-3 text-primary">
+                  <MessageCircle className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-headline-md text-on-background">Trợ lý AI thấu cảm</h3>
+                <p className="mt-2 max-w-lg text-body-md text-on-background/70">
+                  Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét. 
+                  Phát hiện tín hiệu nguy cơ và hướng dẫn tìm giúp đỡ kịp thời.
+                </p>
               </div>
-              <h3 className="mt-4 text-headline-md text-on-background">Trợ lý AI thấu cảm</h3>
-              <p className="mt-2 max-w-lg text-body-md text-on-background/70">
-                Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét. 
-                Phát hiện tín hiệu nguy cơ và hướng dẫn tìm giúp đỡ kịp thời.
-              </p>
-            </div>
+            </ScrollReveal>
 
             {/* Small card: Emotion diary */}
-            <div className="rounded-card bg-surface-container p-6 sm:col-span-1 md:col-span-4">
-              <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
-                <BookHeart className="h-6 w-6" aria-hidden="true" />
+            <ScrollReveal className="sm:col-span-1 md:col-span-4" delay={100}>
+              <div className="rounded-card bg-surface-container p-6">
+                <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                  <BookHeart className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-headline-md text-on-background">Nhật ký cảm xúc</h3>
+                <p className="mt-2 text-body-md text-on-background/70">
+                  Ghi lại và theo dõi cảm xúc hàng ngày một cách riêng tư.
+                </p>
               </div>
-              <h3 className="mt-4 text-headline-md text-on-background">Nhật ký cảm xúc</h3>
-              <p className="mt-2 text-body-md text-on-background/70">
-                Ghi lại và theo dõi cảm xúc hàng ngày một cách riêng tư.
-              </p>
-            </div>
+            </ScrollReveal>
 
             {/* Small card: SOS */}
-            <div className="rounded-card bg-error-container p-6 sm:col-span-1 md:col-span-4">
-              <div className="inline-flex items-center justify-center rounded-2xl bg-error/10 p-3 text-error">
-                <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+            <ScrollReveal className="sm:col-span-1 md:col-span-4" delay={200}>
+              <div className="rounded-card bg-error-container p-6">
+                <div className="inline-flex items-center justify-center rounded-2xl bg-error/10 p-3 text-error">
+                  <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-headline-md text-on-background">Hỗ trợ SOS</h3>
+                <p className="mt-2 text-body-md text-on-background/70">
+                  Gửi tín hiệu khẩn cấp đến người lớn tin tưởng chỉ trong một bước.
+                </p>
               </div>
-              <h3 className="mt-4 text-headline-md text-on-background">Hỗ trợ SOS</h3>
-              <p className="mt-2 text-body-md text-on-background/70">
-                Gửi tín hiệu khẩn cấp đến người lớn tin tưởng chỉ trong một bước.
-              </p>
-            </div>
+            </ScrollReveal>
 
             {/* Wide card: Privacy */}
-            <div className="rounded-card bg-surface-container p-6 sm:col-span-2 sm:p-8 md:col-span-8">
-              <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
-                <Shield className="h-7 w-7" aria-hidden="true" />
+            <ScrollReveal className="sm:col-span-2 md:col-span-8" delay={300}>
+              <div className="rounded-card bg-surface-container p-6 sm:p-8">
+                <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                  <Shield className="h-7 w-7" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-headline-md text-on-background">An tâm tuyệt đối</h3>
+                <p className="mt-2 max-w-lg text-body-md text-on-background/70">
+                  Dữ liệu của bạn thuộc về bạn. Không ai có thể đọc nhật ký hay trò chuyện mà không có sự đồng ý.
+                </p>
               </div>
-              <h3 className="mt-4 text-headline-md text-on-background">An tâm tuyệt đối</h3>
-              <p className="mt-2 max-w-lg text-body-md text-on-background/70">
-                Dữ liệu của bạn thuộc về bạn. Không ai có thể đọc nhật ký hay trò chuyện mà không có sự đồng ý.
-              </p>
-            </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -199,7 +210,8 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-primary px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+      <ScrollReveal>
+        <section className="bg-primary px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-headline-lg text-on-primary">Bắt đầu hành trình chữa lành của bạn</h2>
           <p className="mt-4 text-body-lg text-on-primary/80">
@@ -221,6 +233,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* Demo Role Entry — for evaluators */}
       <section className="bg-surface-container-low px-margin-mobile py-12 lg:px-margin-desktop">
