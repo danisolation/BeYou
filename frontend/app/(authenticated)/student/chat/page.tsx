@@ -187,7 +187,7 @@ export default function StudentChatPage() {
               Chưa có tin nhắn nào. Em có thể bắt đầu bằng một điều nhỏ đang làm em bận lòng.
             </p>
           ) : null}
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 space-y-4" aria-live="polite" aria-relevant="additions">
             {messages.map((message) => (
               <ChatBubble key={message.id} message={message} />
             ))}

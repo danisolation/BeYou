@@ -130,7 +130,7 @@ export function ResponsiveTable({ children, className }: PrimitiveProps) {
 
 export function LoadingState({ message = "Đang tải thông tin...", className }: LoadingStateProps) {
   return (
-    <div role="status" aria-live="polite" className={cn("rounded-3xl bg-white p-6 text-body shadow-sm ring-1 ring-outline-variant", className)}>
+    <div role="status" aria-live="polite" aria-busy="true" className={cn("rounded-3xl bg-white p-6 text-body shadow-sm ring-1 ring-outline-variant", className)}>
       {message}
     </div>
   );
@@ -142,7 +142,7 @@ export function ErrorState({
   className,
 }: ErrorStateProps) {
   return (
-    <div role="alert" className={cn("rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
+    <div role="alert" aria-live="assertive" className={cn("rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
       <h2 className="text-heading text-red-700">{title}</h2>
       <p className="mt-3 text-body text-red-700">{message}</p>
     </div>

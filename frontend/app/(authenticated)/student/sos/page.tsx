@@ -31,7 +31,7 @@ export default function StudentSosPage() {
   // State 2: Activated overlay
   if (state === "activated") {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-error-container/95 p-6">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-error-container/95 p-6" role="alert" aria-live="assertive">
         <div className="max-w-md space-y-6 text-center">
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-surface">
             <CheckCircle size={48} className="text-primary" aria-hidden="true" />
