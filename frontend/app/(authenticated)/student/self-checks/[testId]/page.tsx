@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
@@ -40,6 +42,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   const questions = useMemo(() => test?.questions ?? [], [test]);
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
+  const progress = questions.length > 0 ? ((currentIndex + 1) / questions.length) * 100 : 0;
 
   function requireCurrentAnswer() {
     if (!currentQuestion || answers[currentQuestion.id]) {
@@ -82,7 +85,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   }
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
   }
 
   if (hasError || test === null || currentQuestion === undefined) {
@@ -91,30 +94,52 @@ export default function SelfCheckTakePage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      {/* Breadcrumb */}
+      <Link
+        href="/student/self-checks"
+        className="inline-flex items-center gap-2 text-body-md font-semibold text-primary"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Quay lại danh sách
+      </Link>
+
+      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-display">{test.title}</h1>
+          <h1 className="text-headline-md font-semibold text-on-background">{test.title}</h1>
           {test.is_demo ? <DemoBadge /> : null}
         </div>
-        {test.description ? <p className="mt-3 text-body">{test.description}</p> : null}
-        <p className="mt-4 text-label">
+        {test.description ? <p className="mt-3 text-body-md text-on-background/70">{test.description}</p> : null}
+        <p className="mt-4 text-body-md text-on-background/60">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
       </header>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <p className="text-label">
-          Câu {currentIndex + 1} / {questions.length}
-        </p>
-        <h2 className="mt-4 text-heading">{currentQuestion.text}</h2>
-        <div className="mt-6 space-y-4">
+      {/* Progress indicator */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-body-md text-on-background/70">
+          <span>Câu {currentIndex + 1} / {questions.length}</span>
+          <span>{Math.round(progress)}%</span>
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container-low">
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
+        <h2 className="text-headline-md font-semibold text-on-background">{currentQuestion.text}</h2>
+        <div className="mt-6 space-y-3">
           {currentQuestion.choices.map((choice) => {
             const isSelected = answers[currentQuestion.id] === choice.id;
             return (
               <label
                 key={choice.id}
-                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-2xl border p-4 text-body ${
-                  isSelected ? "border-accent bg-secondary" : "border-[#CFE8E1] bg-white"
+                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-[16px] border p-4 text-body-md transition-colors ${
+                  isSelected
+                    ? "border-primary bg-primary-container/20 text-on-background"
+                    : "border-outline-variant bg-white text-on-background/80 hover:bg-surface-container-low"
                 }`}
               >
                 <input
@@ -125,6 +150,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
                     setValidationMessage("");
                   }}
                   type="radio"
+                  className="accent-primary"
                 />
                 <span>{choice.text}</span>
               </label>
@@ -132,11 +158,11 @@ export default function SelfCheckTakePage({ params }: PageProps) {
           })}
         </div>
         {validationMessage ? (
-          <p className="mt-6 rounded-2xl border border-[#F59E0B] bg-white p-4 text-label">{validationMessage}</p>
+          <p className="mt-6 rounded-[16px] border border-[#F59E0B] bg-white p-4 text-body-md text-on-background/80">{validationMessage}</p>
         ) : null}
         <div className="mt-6 flex flex-wrap gap-3">
           <button
-            className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+            className="min-h-11 rounded-[16px] border border-outline-variant px-5 py-3 font-semibold text-on-background disabled:opacity-40"
             disabled={currentIndex === 0 || isSubmitting}
             onClick={goBack}
             type="button"
@@ -145,7 +171,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
           </button>
           {isLastQuestion ? (
             <button
-              className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white disabled:opacity-60"
+              className="min-h-11 rounded-[16px] bg-primary px-5 py-3 font-semibold text-on-primary disabled:opacity-60"
               disabled={isSubmitting}
               onClick={submitAnswers}
               type="button"
@@ -153,7 +179,11 @@ export default function SelfCheckTakePage({ params }: PageProps) {
               {isSubmitting ? "Đang gửi..." : "Gửi câu trả lời"}
             </button>
           ) : (
-            <button className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white" onClick={goNext} type="button">
+            <button
+              className="min-h-11 rounded-[16px] bg-primary px-5 py-3 font-semibold text-on-primary"
+              onClick={goNext}
+              type="button"
+            >
               Tiếp tục
             </button>
           )}

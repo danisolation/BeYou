@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
@@ -35,7 +36,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
   }, [params]);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
   }
 
   if (hasError || attempt === null) {
@@ -44,34 +45,51 @@ export default function SelfCheckResultPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      {/* Breadcrumb */}
+      <Link
+        href="/student/self-checks"
+        className="inline-flex items-center gap-2 text-body-md font-semibold text-primary"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Quay lại danh sách
+      </Link>
+
+      <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="text-label">{attempt.test_title}</p>
+          <p className="text-body-md text-on-background/60">{attempt.test_title}</p>
           {attempt.is_demo ? <DemoBadge /> : null}
         </div>
-        <h1 className="mt-3 text-display">{attempt.supportive_headline}</h1>
-        <p className="mt-4 inline-flex min-h-11 items-center rounded-full bg-secondary px-4 text-heading">{displayRiskLabel(attempt.state_label)}</p>
-        {attempt.suggested_next_action ? <p className="mt-4 text-body">{attempt.suggested_next_action}</p> : null}
-        <div className="mt-6 space-y-3 text-body">
+        <h1 className="mt-3 text-headline-md font-semibold text-on-background">{attempt.supportive_headline}</h1>
+        <p className="mt-4 inline-flex min-h-11 items-center rounded-full bg-primary-container/20 px-4 text-body-md font-semibold text-primary">
+          {displayRiskLabel(attempt.state_label)}
+        </p>
+        {attempt.suggested_next_action ? (
+          <p className="mt-4 text-body-md text-on-background/80">{attempt.suggested_next_action}</p>
+        ) : null}
+        <div className="mt-6 space-y-3 text-body-md text-on-background/80">
           {attempt.short_comment ? <p>{attempt.short_comment}</p> : null}
           {attempt.advice_summary ? <p>{attempt.advice_summary}</p> : null}
           {attempt.support_suggestion ? <p>{attempt.support_suggestion}</p> : null}
           {attempt.positive_content ? <p>{attempt.positive_content}</p> : null}
         </div>
-        <div className="mt-6 rounded-2xl bg-secondary p-4">
-          <p className="text-label">Điểm tham khảo: {attempt.score}</p>
-          <p className="mt-2 text-label">Điểm này chỉ giúp Peerlight AI chọn gợi ý phù hợp, không phải chẩn đoán.</p>
+        <div className="mt-6 rounded-[16px] bg-surface-container p-4">
+          <p className="text-body-md text-on-background/70">Điểm tham khảo: {attempt.score}</p>
+          <p className="mt-2 text-body-md text-on-background/60">Điểm này chỉ giúp Peerlight AI chọn gợi ý phù hợp, không phải chẩn đoán.</p>
         </div>
       </section>
+
       <nav className="flex flex-wrap gap-3">
-        <Link className="inline-flex min-h-11 items-center rounded-2xl bg-accent px-4 font-semibold text-white" href="/student/self-checks">
-          Làm test tâm lý khác
+        <Link
+          className="inline-flex min-h-11 items-center rounded-[16px] bg-primary px-5 py-3 font-semibold text-on-primary"
+          href="/student/self-checks"
+        >
+          Quay lại danh sách
         </Link>
-        <Link className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold" href="/student/scenarios">
+        <Link
+          className="inline-flex min-h-11 items-center rounded-[16px] border border-outline-variant px-5 py-3 font-semibold text-on-background"
+          href="/student/scenarios"
+        >
           Xem tình huống xử lý thực tế
-        </Link>
-        <Link className="inline-flex min-h-11 items-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold" href="/student/self-checks/history">
-          Xem lịch sử test tâm lý
         </Link>
       </nav>
     </main>
