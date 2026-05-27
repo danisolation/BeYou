@@ -6,7 +6,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const cardVariants = cva(
-  "rounded-[32px] p-6 shadow-sm transition-shadow hover:shadow-md dark:bg-[#1a2940]",
+  "rounded-[32px] p-6 shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-1 dark:bg-[#1a2940]",
   {
     variants: {
       variant: {
@@ -69,7 +69,7 @@ export function StitchCard({
           {ctaHref ? (
             <Link
               href={ctaHref}
-              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90"
+              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline transition-all duration-150 hover:opacity-90 active:scale-95"
             >
               {ctaLabel}
             </Link>
@@ -77,7 +77,7 @@ export function StitchCard({
             <button
               type="button"
               onClick={onCtaClick}
-              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary hover:opacity-90"
+              className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary transition-all duration-150 hover:opacity-90 active:scale-95"
             >
               {ctaLabel}
             </button>

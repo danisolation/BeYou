@@ -53,7 +53,7 @@ export function StudentSidebar({ pathname, collapsed, onToggleCollapse, onLogout
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold no-underline ${
+              className={`flex min-h-11 items-center gap-3 rounded-2xl px-3 font-semibold no-underline transition-colors duration-150 ${
                 active ? "bg-primary text-on-primary" : "text-on-background hover:bg-secondary"
               }`}
               aria-current={active ? "page" : undefined}
