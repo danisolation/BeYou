@@ -2,604 +2,103 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Brain, Heart, MessageCircle, Settings, Bot } from "lucide-react";
+import { StitchCard } from "@/components/stitch-card";
+import { LoadingState, ErrorState } from "@/components/ui-primitives";
+import { apiFetch } from "@/lib/api";
 
-import { DemoBadge } from "@/components/demo-badge";
-import { DemoGuideCard } from "@/components/demo-guide-card";
-import { EmptyState } from "@/components/empty-state";
-import {
-  EntryCard,
-  ErrorState,
-  LoadingState,
-  PageHeader,
-  PrivacyBoundaryCard,
-  ResponsiveTable,
-  StatusBadge,
-  SurfaceCard,
-} from "@/components/ui-primitives";
-import { type OptionalDashboardResult } from "@/lib/dashboard-loading";
-import {
-  loadStudentDashboard,
-  STUDENT_REMINDER_UNAVAILABLE_MESSAGE,
-  STUDENT_SOS_UNAVAILABLE_MESSAGE,
-  type LinkedAdult,
-  type StudentDashboardData,
-  type StudentProfile,
-} from "@/lib/student-dashboard-loader";
-import {
-  dismissMoodCheckInReminder,
-  openMoodCheckInReminder,
-  snoozeMoodCheckInReminder,
-  type MoodCheckInReminder,
-} from "@/lib/notification-preferences-api";
-import { safeInternalHref } from "@/lib/safe-navigation";
-import {
-  createStudentSosAlert,
-  type SosAlert,
-  type SosSeverity,
-  sosSeverityLabels,
-  sosStatusLabels,
-} from "@/lib/sos-api";
+interface ProfileData {
+  full_name?: string;
+}
 
-// Phase 37 keeps the primary Student profile trust gate in loadStudentDashboard: "/api/student/profile".
 export default function StudentDashboardPage() {
-  const [profile, setProfile] = useState<StudentProfile | null>(null);
-  const [sosAlertsResult, setSosAlertsResult] = useState<OptionalDashboardResult<SosAlert[]>>({
-    status: "ready",
-    data: [],
-  });
-  const [showSosConfirm, setShowSosConfirm] = useState(false);
-  const [sosSeverity, setSosSeverity] = useState<SosSeverity>("support");
-  const [sosNote, setSosNote] = useState("");
-  const [isSendingSos, setIsSendingSos] = useState(false);
-  const [sosError, setSosError] = useState<string | null>(null);
-  const [sosSuccessMessage, setSosSuccessMessage] = useState<string | null>(null);
-  const [moodReminderResult, setMoodReminderResult] = useState<OptionalDashboardResult<MoodCheckInReminder | null>>({
-    status: "ready",
-    data: null,
-  });
-  const [reminderActionMessage, setReminderActionMessage] = useState<string | null>(null);
-  const [reminderActionError, setReminderActionError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    let isActive = true;
-
-    loadStudentDashboard()
-      .then((dashboardData: StudentDashboardData) => {
-        if (!isActive) {
-          return;
-        }
-        setProfile(dashboardData.profile);
-        setSosAlertsResult(dashboardData.sosAlerts);
-        setMoodReminderResult(dashboardData.moodReminder);
-        setLoadFailed(false);
+    apiFetch<ProfileData>("/api/student/profile")
+      .then((data) => {
+        setName(data.full_name || "bạn");
+        setLoading(false);
       })
       .catch(() => {
-        if (isActive) {
-          setLoadFailed(true);
-        }
-      })
-      .finally(() => {
-        if (isActive) {
-          setIsLoading(false);
-        }
+        setError(true);
+        setLoading(false);
       });
-
-    return () => {
-      isActive = false;
-    };
   }, []);
 
-  async function handleSendSos() {
-    setIsSendingSos(true);
-    setSosError(null);
-    setSosSuccessMessage(null);
-    try {
-      const alert = await createStudentSosAlert({
-        severity: sosSeverity,
-        source: "student_dashboard",
-        note: sosNote || null,
-      });
-      setSosAlertsResult((current) => ({
-        status: "ready",
-        data: [alert, ...(current.status === "ready" ? current.data : [])],
-      }));
-      setShowSosConfirm(false);
-      setSosNote("");
-      setSosSeverity("support");
-      setSosSuccessMessage(
-        "Đã gửi SOS hỗ trợ. Người lớn được liên kết sẽ thấy tín hiệu trong Peerlight AI; nếu em đang không an toàn, hãy ở gần người lớn tin tưởng hoặc nguồn hỗ trợ tại nơi em sống.",
-      );
-    } catch {
-      setSosError("Chưa gửi được SOS. Hãy thử lại hoặc tìm người lớn tin tưởng ở gần em.");
-    } finally {
-      setIsSendingSos(false);
-    }
-  }
-
-  function setReminderSuccess(message: string) {
-    setReminderActionError(false);
-    setReminderActionMessage(message);
-  }
-
-  function setReminderFailure() {
-    setReminderActionError(true);
-    setReminderActionMessage("Chưa cập nhật được nhắc nhở. Hãy thử lại.");
-  }
-
-  if (isLoading) {
-    return <StudentDashboardSkeleton />;
-  }
-
-  if (loadFailed) {
-    return <ErrorState />;
-  }
-
-  if (profile === null) {
-    return <EmptyState />;
-  }
-
-  const teachers = profile.linked_adults.filter((adult) => adult.relationship_type === "teacher");
-  const parents = profile.linked_adults.filter((adult) => adult.relationship_type === "parent");
-  const sosAlerts = sosAlertsResult.status === "ready" ? sosAlertsResult.data : [];
-  const moodReminder = moodReminderResult.status === "ready" ? moodReminderResult.data : null;
+  if (loading) return <LoadingState />;
+  if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   return (
-    <section className="space-y-6">
-      <PageHeader
-        eyebrow="Vai trò học sinh"
-        title={`Xin chào, ${profile.full_name.split(" ")[0]}`}
-        description="Peerlight AI giúp em theo dõi trạng thái, luyện phản hồi thực tế và gọi người lớn tin tưởng khi cần."
-        actions={
-          <>
-            {profile.is_demo ? <DemoBadge /> : null}
-            <Link className="inline-flex min-h-11 items-center font-semibold text-accent" href="/privacy?review=true">
-              Ai có thể xem thông tin của em?
-            </Link>
-          </>
-        }
-      />
-
-      <PrivacyBoundaryCard
-        title="Thông tin của em là riêng tư theo mặc định"
-        description="Người lớn chỉ thấy thông tin trong phạm vi em cho phép hoặc khi có SOS cần hỗ trợ; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở."
-      >
-        <div className="grid gap-3 text-body md:grid-cols-2">
-          <p><strong>Họ tên:</strong> {profile.full_name}</p>
-          <p><strong>Email:</strong> {profile.email}</p>
-          <p><strong>Trường:</strong> {profile.school ?? "Chưa cập nhật"}</p>
-          <p><strong>Lớp:</strong> {profile.class_name ?? "Chưa cập nhật"}</p>
-        </div>
-      </PrivacyBoundaryCard>
-
-      <DemoGuideCard
-        title="Đi theo luồng học sinh trong 5 phút"
-        body="Bắt đầu bằng quyền riêng tư, sau đó thử một check-in hoặc test tâm lý, mở người lớn tin tưởng, trò chuyện với Peerlight AI và xem cách SOS cần xác nhận rõ ràng."
-        steps={[
-          "Xem ranh giới quyền riêng tư để biết ai thấy gì.",
-          "Ghi một check-in hoặc mở test tâm lý.",
-          "Mở kế hoạch hỗ trợ, trò chuyện AI hoặc SOS để thấy cách Peerlight AI ưu tiên an toàn.",
-        ]}
-        actions={[
-          { href: "/privacy?review=true", label: "Xem quyền riêng tư" },
-          { href: "/student/mood-check-ins", label: "Thử check-in", primary: true },
-          { href: "/student/support-plan", label: "Kế hoạch hỗ trợ" },
-        ]}
-      />
-
-      {moodReminderResult.status === "unavailable" ? (
-        <StudentOptionalUnavailableCard message={STUDENT_REMINDER_UNAVAILABLE_MESSAGE} />
-      ) : null}
-
-      {moodReminder?.due ? (
-        <MoodReminderCard
-          reminder={moodReminder}
-          actionMessage={reminderActionMessage}
-          actionMessageTone={reminderActionError ? "error" : "status"}
-          onDismiss={async () => {
-            try {
-              const result = await dismissMoodCheckInReminder();
-              setMoodReminderResult({ status: "ready", data: result.reminder });
-              setReminderSuccess("Đã ẩn nhắc nhở. Peerlight AI không gửi thông báo cho người lớn và không tạo SOS.");
-            } catch {
-              setReminderFailure();
-            }
-          }}
-          onSnooze={async () => {
-            try {
-              const result = await snoozeMoodCheckInReminder(240);
-              setMoodReminderResult({ status: "ready", data: result.reminder });
-              setReminderSuccess("Đã nhắc lại sau. Việc tạm hoãn không bị xem là tín hiệu nguy cơ.");
-            } catch {
-              setReminderFailure();
-            }
-          }}
-          onOpen={async () => {
-            const href = safeInternalHref(moodReminder.href);
-            if (!href) {
-              setReminderActionError(true);
-              setReminderActionMessage("Không mở được đường dẫn check-in an toàn. Hãy mở Check-in cảm xúc từ bảng điều khiển.");
-              return;
-            }
-            try {
-              await openMoodCheckInReminder();
-              window.location.assign(href);
-            } catch {
-              setReminderFailure();
-            }
-          }}
-        />
-      ) : null}
-
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <ChatEntryCard />
-        <WellbeingEntryCard
-          title="Test tâm lý"
-          body="Chọn bài test ngắn về stress, trầm cảm, lo âu, ADHD hoặc tự kỷ để hiểu trạng thái hiện tại. Kết quả không phải chẩn đoán."
-          href="/student/self-checks"
-          historyHref="/student/self-checks/history"
-          historyLabel="Xem lịch sử test tâm lý"
-        />
-        <WellbeingEntryCard
-          title="Check-in cảm xúc"
-          body="Tính năng phụ để ghi nhanh cảm xúc, năng lượng, căng thẳng và một ghi chú riêng tư nếu em muốn."
-          href="/student/mood-check-ins"
-          historyHref="/student/mood-check-ins/history"
-          historyLabel="Xem lịch sử check-in"
-          secondaryHref="/student/notification-preferences"
-          secondaryLabel="Cài đặt nhắc nhở"
-        />
-        <WellbeingEntryCard
-          title="Tình huống xử lý thực tế"
-          body="Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn."
-          href="/student/scenarios"
-          historyHref="/student/scenarios/history"
-          historyLabel="Xem lịch sử tình huống"
-        />
-        <WellbeingEntryCard
-          title="Người lớn tin tưởng"
-          body="Chuẩn bị trước điều em muốn chia sẻ và chọn người lớn đã liên kết để hỗ trợ đúng cách."
-          href="/student/support-plan"
-          historyHref="/student/support-plan"
-          historyLabel="Mở kế hoạch hỗ trợ"
-        />
-      </div>
-
-      <QuickWellbeingTable />
-
-      <section id="peerlight-sos" className="rounded-3xl border-2 border-[#F3C0C0] bg-white p-5 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
-            <p className="text-label font-semibold text-red-700">SOS</p>
-            <h2 className="mt-2 text-heading">Gửi tín hiệu hỗ trợ</h2>
-            <p className="mt-3 text-body">Gửi tín hiệu để người lớn tin tưởng biết em cần hỗ trợ.</p>
-            <p className="mt-3 text-label">Peerlight AI không tự động gọi dịch vụ khẩn cấp bên ngoài.</p>
-            <p className="mt-2 text-label">
-              Nếu em đang thấy không an toàn ngay lúc này, hãy tìm một người lớn tin tưởng ở gần em hoặc liên hệ nguồn hỗ trợ phù hợp tại nơi em sống.
-            </p>
-            <p className="mt-2 text-label">
-              SOS là tín hiệu xin hỗ trợ, không phải bài kiểm tra hay đánh giá lỗi của em.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              setSosError(null);
-              setSosSuccessMessage(null);
-              setShowSosConfirm(true);
-            }}
-            className="min-h-11 w-full rounded-2xl bg-red-600 px-5 font-semibold text-white hover:bg-red-700 sm:w-auto"
-          >
-            Gửi SOS hỗ trợ
-          </button>
-        </div>
-
-        {showSosConfirm ? (
-          <div className="mt-5 rounded-3xl bg-secondary p-5">
-            <h3 className="text-heading">Xác nhận gửi tín hiệu hỗ trợ</h3>
-            <p className="mt-3 text-body">
-              Em có muốn gửi tín hiệu hỗ trợ ngay bây giờ không? Người lớn tin tưởng được liên kết với em sẽ nhận thông báo trong Peerlight AI.
-            </p>
-            <p className="mt-2 text-label">
-              Chỉ gửi phần ghi chú em nhập ở đây; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở.
-            </p>
-            <fieldset className="mt-4 space-y-3">
-              <legend className="text-label font-semibold">Mức hỗ trợ em cần</legend>
-              {(["support", "urgent"] as SosSeverity[]).map((severity) => (
-                <label key={severity} className="flex items-center gap-3 rounded-2xl bg-white p-3">
-                  <input
-                    type="radio"
-                    name="sos-severity"
-                    checked={sosSeverity === severity}
-                    onChange={() => setSosSeverity(severity)}
-                  />
-                  <span>{sosSeverityLabels[severity]}</span>
-                </label>
-              ))}
-            </fieldset>
-            <label className="mt-4 block text-label" htmlFor="sos-note">
-              Điều em muốn người lớn biết lúc này (không bắt buộc)
-            </label>
-            <textarea
-              id="sos-note"
-              value={sosNote}
-              onChange={(event) => setSosNote(event.target.value)}
-              className="mt-2 min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
-            />
-            {sosError ? <p role="alert" className="mt-3 text-body text-red-700">{sosError}</p> : null}
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <button
-                type="button"
-                onClick={handleSendSos}
-                disabled={isSendingSos}
-                className="min-h-11 rounded-2xl bg-red-600 px-4 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
-              >
-                {isSendingSos ? "Đang gửi..." : "Xác nhận gửi SOS"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowSosConfirm(false)}
-                className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
-              >
-                Ở lại trang này
-              </button>
-            </div>
-          </div>
-        ) : null}
-        {sosSuccessMessage ? (
-          <p role="status" className="mt-5 rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-body">
-            {sosSuccessMessage}
-          </p>
-        ) : null}
-      </section>
-
-      {sosAlertsResult.status === "unavailable" ? (
-        <StudentOptionalUnavailableCard message={STUDENT_SOS_UNAVAILABLE_MESSAGE} />
-      ) : null}
-      <StudentSosStatusList alerts={sosAlerts} />
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <LinkedAdultGroup title="Giáo viên hỗ trợ" adults={teachers} />
-        <LinkedAdultGroup title="Phụ huynh hỗ trợ" adults={parents} />
-      </div>
-    </section>
-  );
-}
-
-function StudentDashboardSkeleton() {
-  return (
-    <section className="space-y-6">
-      <span className="sr-only">Đang tải thông tin...</span>
-      <PageHeader
-        eyebrow="Vai trò học sinh"
-        title="Cổng học sinh"
-        description="Peerlight AI đang chuẩn bị cổng học sinh mà không đoán dữ liệu riêng tư."
-      />
-      <LoadingState message="Đang tải thông tin... Đang tải thông tin học sinh..." className="bg-white/80" />
-      <PrivacyBoundaryCard
-        title="Thông tin của em là riêng tư theo mặc định"
-        description="Peerlight AI đang chuẩn bị dữ liệu học sinh mà không đoán hoặc hiển thị thông tin riêng tư trước khi tải xong."
-      />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
-        <SurfaceCard className="min-h-36 animate-pulse bg-white/80" />
-      </div>
-    </section>
-  );
-}
-
-function StudentOptionalUnavailableCard({ message }: { message: string }) {
-  return (
-    <div role="status" aria-live="polite">
-      <SurfaceCard className="border border-amber-200 bg-amber-50 p-5 shadow-none">
-        <h2 className="text-heading">Mục này tạm thời chưa tải được</h2>
-        <p className="mt-2 text-body">{message}</p>
-      </SurfaceCard>
-    </div>
-  );
-}
-
-function MoodReminderCard({
-  reminder,
-  actionMessage,
-  actionMessageTone,
-  onDismiss,
-  onSnooze,
-  onOpen,
-}: {
-  reminder: MoodCheckInReminder;
-  actionMessage: string | null;
-  actionMessageTone: "status" | "error";
-  onDismiss: () => Promise<void>;
-  onSnooze: () => Promise<void>;
-  onOpen: () => Promise<void>;
-}) {
-  return (
-    <SurfaceCard className="p-5 sm:p-6">
-      <p className="text-label font-semibold text-accent">Nhắc nhở tùy chọn</p>
-      <h2 className="mt-2 text-heading">{reminder.title}</h2>
-      <p className="mt-3 text-body">{reminder.body}</p>
-      <p className="mt-2 text-label">
-        Em có thể bỏ qua hoặc tạm hoãn; Peerlight AI không gửi cho người lớn và không tự tạo SOS từ nhắc nhở này.
-      </p>
-      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <button
-          type="button"
-          onClick={() => {
-            void onOpen();
-          }}
-          className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
-        >
-          Mở check-in
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            void onSnooze();
-          }}
-          className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
-        >
-          Nhắc lại sau
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            void onDismiss();
-          }}
-          className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
-        >
-          Bỏ qua hôm nay
-        </button>
-        <Link className="inline-flex min-h-11 items-center font-semibold text-accent" href="/student/notification-preferences">
-          Cài đặt nhắc nhở
-        </Link>
-      </div>
-      {actionMessage ? (
-        <p
-          role={actionMessageTone === "error" ? "alert" : "status"}
-          className={`mt-4 text-body ${actionMessageTone === "error" ? "text-red-700" : "text-accent"}`}
-        >
-          {actionMessage}
+    <div className="space-y-8">
+      {/* Welcome header */}
+      <div>
+        <h1 className="text-headline-lg font-bold text-on-background">
+          Chào {name}!
+        </h1>
+        <p className="mt-2 text-body-lg text-on-background/70">
+          Hôm nay em muốn làm gì?
         </p>
-      ) : null}
-    </SurfaceCard>
-  );
-}
-
-function ChatEntryCard() {
-  return (
-    <EntryCard title="Trò chuyện với Peerlight AI" className="hover:-translate-y-0.5 hover:ring-[#D7EFE8]">
-      <p className="mt-3 text-body">Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.</p>
-      <p className="mt-3 text-label">Peerlight AI không thay thế chuyên gia tư vấn hay bác sĩ.</p>
-      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student/chat">
-        Trò chuyện với Peerlight AI
-      </Link>
-    </EntryCard>
-  );
-}
-
-function QuickWellbeingTable() {
-  const rows = [
-    ["Test tâm lý", "Nên làm khi em muốn hiểu rõ hơn về một dấu hiệu kéo dài.", "Kết quả: Bình thường / Cần quan tâm / Nguy cơ cao"],
-    ["Check-in cảm xúc", "Ghi nhanh trong ngày, không cần chia sẻ nếu em chưa muốn.", "Riêng tư theo mặc định"],
-    ["Tình huống xử lý thực tế", "Luyện cách phản hồi với bạn bè, gia đình, áp lực học tập.", "Có Lời khuyên sau mỗi lựa chọn"],
-  ];
-  return (
-    <section className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-[#D7EFE8]">
-      <div className="border-b border-[#D7EFE8] p-5 sm:p-6">
-        <p className="text-label font-semibold uppercase tracking-[0.16em] text-accent">Theo dõi nhanh</p>
-        <h2 className="mt-2 text-heading">Bảng trạng thái hỗ trợ của em</h2>
       </div>
-      <ResponsiveTable className="rounded-none ring-0">
-        <table className="w-full text-left text-body">
-          <thead className="bg-secondary text-label uppercase tracking-[0.12em]">
-            <tr>
-              <th className="px-5 py-3">Mục</th>
-              <th className="px-5 py-3">Khi nào dùng</th>
-              <th className="px-5 py-3">Ghi chú</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([feature, when, note]) => (
-              <tr key={feature} className="border-t border-[#D7EFE8]">
-                <td className="px-5 py-4 font-semibold">{feature}</td>
-                <td className="px-5 py-4">{when}</td>
-                <td className="px-5 py-4">{note}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </ResponsiveTable>
-    </section>
-  );
-}
 
-function StudentSosStatusList({ alerts }: { alerts: SosAlert[] }) {
-  if (alerts.length === 0) {
-    return (
-      <EmptyState
-        heading="Chưa có tín hiệu SOS nào"
-        body="Khi cần, em có thể gửi tín hiệu để người lớn tin tưởng biết em cần hỗ trợ."
-      />
-    );
-  }
-  return (
-    <SurfaceCard>
-      <h2 className="text-heading">Tiến trình SOS của em</h2>
-      <div className="mt-4 space-y-3">
-        {alerts.slice(0, 5).map((alert) => (
-          <article key={alert.id} className="rounded-2xl border border-[#D7EFE8] p-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-semibold">{sosStatusLabels[alert.current_status]}</h3>
-              <StatusBadge tone={alert.severity === "urgent" ? "sos" : "danger"}>
-                {sosSeverityLabels[alert.severity]}
-              </StatusBadge>
-              {alert.is_demo ? <DemoBadge /> : null}
-            </div>
-            <p className="mt-2 text-label">Gửi lúc: {new Date(alert.created_at).toLocaleString("vi-VN")}</p>
-            {alert.note ? <p className="mt-2 text-body">{alert.note}</p> : null}
-          </article>
-        ))}
+      {/* 4 Feature Cards Grid */}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <StitchCard
+          variant="circular"
+          icon={<Brain size={28} />}
+          title="Test tâm lý"
+          description="Kiểm tra sức khỏe tâm lý qua các bài test ngắn"
+          ctaLabel="Vào test"
+          ctaHref="/student/self-checks"
+        />
+        <StitchCard
+          variant="circular"
+          icon={<Heart size={28} />}
+          title="Check-in cảm xúc"
+          description="Ghi nhận cảm xúc mỗi ngày, theo dõi xu hướng tâm trạng"
+          ctaLabel="Vào check-in"
+          ctaHref="/student/mood-check-ins"
+        />
+        <StitchCard
+          variant="circular"
+          icon={<MessageCircle size={28} />}
+          title="Tình huống xử lý"
+          description="Luyện tập xử lý các tình huống thực tế ở trường"
+          ctaLabel="Vào thực hành"
+          ctaHref="/student/scenarios"
+        />
+        <StitchCard
+          variant="circular"
+          icon={<Settings size={28} />}
+          title="Cài đặt"
+          description="Tùy chỉnh thông báo, quyền riêng tư và cài đặt SOS"
+          ctaLabel="Vào thiết lập"
+          ctaHref="/student/notification-preferences"
+        />
       </div>
-    </SurfaceCard>
-  );
-}
 
-function WellbeingEntryCard({
-  title,
-  body,
-  href,
-  historyHref,
-  historyLabel,
-  secondaryHref,
-  secondaryLabel,
-}: {
-  title: string;
-  body: string;
-  href: string;
-  historyHref: string;
-  historyLabel: string;
-  secondaryHref?: string;
-  secondaryLabel?: string;
-}) {
-  return (
-    <EntryCard title={title} className="hover:-translate-y-0.5 hover:ring-[#D7EFE8]">
-      <p className="mt-3 text-body">{body}</p>
-      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={href}>
-        {title}
-      </Link>
-      <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href={historyHref}>
-        {historyLabel}
-      </Link>
-      {secondaryHref && secondaryLabel ? (
-        <Link className="mt-2 inline-flex min-h-11 items-center font-semibold text-accent" href={secondaryHref}>
-          {secondaryLabel}
-        </Link>
-      ) : null}
-    </EntryCard>
-  );
-}
-
-function LinkedAdultGroup({ title, adults }: { title: string; adults: LinkedAdult[] }) {
-  if (adults.length === 0) {
-    return <EmptyState heading={title} body="Chưa có người lớn hỗ trợ được liên kết trong mục này." />;
-  }
-  return (
-    <SurfaceCard className="p-5 sm:p-6">
-      <h2 className="text-heading">{title}</h2>
-      <div className="mt-4 space-y-3">
-        {adults.map((adult) => (
-          <article key={adult.id} className="rounded-2xl border border-[#D7EFE8] p-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-semibold">{adult.full_name}</h3>
-              {adult.is_demo ? <DemoBadge /> : null}
-            </div>
-            <p className="text-label">{adult.email}</p>
-            <p className="text-label">Trạng thái liên kết: {adult.link_status}</p>
-          </article>
-        ))}
+      {/* Peerlight AI Quick Access */}
+      <div className="rounded-[32px] bg-primary-container p-6">
+        <div className="flex items-center gap-4">
+          <Bot className="text-on-primary-container" size={32} />
+          <div className="flex-1">
+            <h3 className="text-headline-md font-semibold text-on-primary-container">
+              Peerlight AI
+            </h3>
+            <p className="text-body-md text-on-primary-container/80">
+              Trò chuyện cùng AI hỗ trợ 24/7
+            </p>
+          </div>
+          <Link
+            href="/student/chat"
+            className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90"
+          >
+            Trò chuyện
+          </Link>
+        </div>
       </div>
-    </SurfaceCard>
+    </div>
   );
 }
