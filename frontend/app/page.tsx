@@ -1,84 +1,275 @@
 "use client";
 
 import Link from "next/link";
+import { Leaf, Shield, Brain, Heart, Lock, Eye, MessageCircle, BookHeart, AlertTriangle, ChevronRight } from "lucide-react";
 
 import { DemoRoleEntry } from "@/components/demo-role-entry";
 
-const boundaries = [
-  "Học sinh sở hữu dữ liệu nhạy cảm của mình.",
-  "Người lớn chỉ thấy tóm tắt hỗ trợ trong phạm vi liên kết.",
-  "Peerlight AI không thay thế chuyên gia tư vấn, bác sĩ hoặc dịch vụ khẩn cấp.",
+const coreValues = [
+  {
+    icon: Lock,
+    title: "Sự riêng tư tuyệt đối",
+    description: "Dữ liệu được mã hóa, không ai ngoài bạn có thể đọc nhật ký hay lịch sử trò chuyện.",
+  },
+  {
+    icon: Brain,
+    title: "Hỗ trợ từ chuyên gia",
+    description: "Nội dung và kịch bản được xây dựng bởi chuyên gia tâm lý học đường Việt Nam.",
+  },
+  {
+    icon: Heart,
+    title: "Luyện tập kỹ năng sống",
+    description: "Thực hành xử lý tình huống thực tế, rèn luyện cách quản lý cảm xúc hàng ngày.",
+  },
+];
+
+const privacyFeatures = [
+  "Mã hóa đầu cuối cho dữ liệu nhạy cảm",
+  "Tùy chọn ẩn danh hoàn toàn",
+  "Tuân thủ quy định bảo vệ dữ liệu trẻ em",
+  "Không chia sẻ dữ liệu với bên thứ ba",
 ];
 
 export default function HomePage() {
   return (
-    <main className="min-h-dvh px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <header className="flex items-center justify-between rounded-[1.75rem] bg-white/85 px-5 py-4 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur">
-          <Link href="/" className="text-heading font-bold text-accent no-underline">
-            Peerlight AI
+    <main className="min-h-dvh bg-background">
+      {/* Sticky Navbar */}
+      <header className="sticky top-0 z-50 border-b border-outline-variant/20 bg-white/90 backdrop-blur-md">
+        <nav className="mx-auto flex max-w-container-stitch items-center justify-between px-margin-mobile py-3 lg:px-margin-desktop">
+          <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+            <Leaf className="h-5 w-5" aria-hidden="true" />
+            BeYou
           </Link>
+          <div className="hidden items-center gap-6 md:flex">
+            <a href="#mission" className="text-body-md text-on-background/70 no-underline hover:text-primary">Sứ mệnh</a>
+            <a href="#features" className="text-body-md text-on-background/70 no-underline hover:text-primary">Tính năng</a>
+            <a href="#support" className="text-body-md text-on-background/70 no-underline hover:text-primary">Hỗ trợ</a>
+          </div>
           <Link
             href="/login"
-            className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 font-semibold text-white no-underline hover:bg-[#238C78]"
+            className="inline-flex min-h-11 items-center justify-center rounded-button bg-primary px-5 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
           >
             Bắt đầu
           </Link>
-        </header>
+        </nav>
+      </header>
 
-        <section className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-          <div className="rounded-[2rem] bg-white/80 p-6 shadow-sm ring-1 ring-[#D7EFE8] backdrop-blur sm:p-8 lg:p-10">
-            <p className="text-label font-semibold uppercase tracking-[0.22em] text-accent">Peerlight AI demo live</p>
-            <h1 className="mt-3 max-w-3xl text-display">Không gian hỗ trợ học sinh THPT trước khi căng thẳng leo thang.</h1>
-            <p className="mt-4 max-w-3xl text-body">
-              Peerlight AI giúp học sinh tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI hỗ trợ, chuẩn bị người lớn tin tưởng và gửi SOS trong app khi cần.
+      {/* Hero Section */}
+      <section className="relative overflow-hidden px-margin-mobile py-16 lg:px-margin-desktop lg:py-24">
+        {/* Decorative shapes */}
+        <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-tertiary/5 blur-3xl" aria-hidden="true" />
+
+        <div className="relative mx-auto grid max-w-container-stitch items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-label-md font-semibold text-primary">
+              <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
+            </span>
+            <h1 className="mt-6 text-display-stitch text-on-background">
+              BeYou — Bến đỗ an toàn cho tâm hồn học đường
+            </h1>
+            <p className="mt-4 max-w-xl text-body-lg text-on-background/70">
+              Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm, 
+              và nhanh chóng kết nối người lớn tin tưởng khi cần hỗ trợ.
             </p>
-            <Link
-              href="/login"
-              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-2xl bg-accent px-6 font-semibold text-white no-underline hover:bg-[#238C78]"
-            >
-              Bắt đầu
-            </Link>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link
+                href="/login"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-button bg-primary px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
+              >
+                Bắt đầu ngay <ChevronRight className="h-4 w-4" />
+              </Link>
+              <a
+                href="#mission"
+                className="inline-flex min-h-12 items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-surface-container"
+              >
+                Tìm hiểu thêm
+              </a>
+            </div>
           </div>
 
-          <section id="demo-roles" className="rounded-[2rem] bg-secondary p-5 shadow-sm ring-1 ring-[#D7EFE8] sm:p-6 lg:p-8">
-            <p className="text-label font-semibold text-[#27665B]">Vào demo trong một bước</p>
-            <h2 className="mt-2 text-heading">Chọn vai trò để Peerlight AI tự đăng nhập bằng dữ liệu seed.</h2>
-            <p className="mt-3 text-body">
-              Các tài khoản này chỉ là hồ sơ demo. Không nhập dữ liệu học sinh thật trong bản giới thiệu.
+          {/* Hero image placeholder */}
+          <div className="hidden lg:block">
+            <div className="aspect-square rounded-hero bg-gradient-to-br from-primary/10 via-surface-container to-primary/5 ring-1 ring-outline-variant/20" />
+          </div>
+        </div>
+      </section>
+
+      {/* Safe Harbor Philosophy */}
+      <section id="mission" className="bg-surface-container-low px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-headline-lg text-on-background">Triết lý Safe Harbor</h2>
+          <p className="mt-4 text-body-lg text-on-background/70">
+            BeYou xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe, 
+            được bảo vệ, và được trao quyền tự chăm sóc sức khỏe tinh thần. 
+            Mọi tính năng đều đặt sự riêng tư và cảm xúc của học sinh lên hàng đầu.
+          </p>
+        </div>
+      </section>
+
+      {/* Core Values */}
+      <section className="px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <div className="mx-auto max-w-container-stitch">
+          <h2 className="text-center text-headline-lg text-on-background">Giá trị cốt lõi</h2>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {coreValues.map((value) => (
+              <div key={value.title} className="rounded-card bg-surface-container-low p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md">
+                <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                  <value.icon className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-headline-md text-on-background">{value.title}</h3>
+                <p className="mt-2 text-body-md text-on-background/70">{value.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Smart Tools Bento Grid */}
+      <section id="features" className="bg-surface-container-low px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <div className="mx-auto max-w-container-stitch">
+          <h2 className="text-center text-headline-lg text-on-background">Công cụ thông minh</h2>
+          <div className="mt-10 grid gap-4 md:grid-cols-12">
+            {/* Large card: AI assistant */}
+            <div className="rounded-card bg-primary/10 p-8 md:col-span-8">
+              <div className="inline-flex items-center justify-center rounded-2xl bg-primary/20 p-3 text-primary">
+                <MessageCircle className="h-7 w-7" aria-hidden="true" />
+              </div>
+              <h3 className="mt-4 text-headline-md text-on-background">Trợ lý AI thấu cảm</h3>
+              <p className="mt-2 max-w-lg text-body-md text-on-background/70">
+                Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét. 
+                Phát hiện tín hiệu nguy cơ và hướng dẫn tìm giúp đỡ kịp thời.
+              </p>
+            </div>
+
+            {/* Small card: Emotion diary */}
+            <div className="rounded-card bg-surface-container p-6 md:col-span-4">
+              <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                <BookHeart className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h3 className="mt-4 text-headline-md text-on-background">Nhật ký cảm xúc</h3>
+              <p className="mt-2 text-body-md text-on-background/70">
+                Ghi lại và theo dõi cảm xúc hàng ngày một cách riêng tư.
+              </p>
+            </div>
+
+            {/* Small card: SOS */}
+            <div className="rounded-card bg-error-container p-6 md:col-span-4">
+              <div className="inline-flex items-center justify-center rounded-2xl bg-error/10 p-3 text-error">
+                <AlertTriangle className="h-6 w-6" aria-hidden="true" />
+              </div>
+              <h3 className="mt-4 text-headline-md text-on-background">Hỗ trợ SOS</h3>
+              <p className="mt-2 text-body-md text-on-background/70">
+                Gửi tín hiệu khẩn cấp đến người lớn tin tưởng chỉ trong một bước.
+              </p>
+            </div>
+
+            {/* Wide card: Privacy */}
+            <div className="rounded-card bg-surface-container p-8 md:col-span-8">
+              <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                <Shield className="h-7 w-7" aria-hidden="true" />
+              </div>
+              <h3 className="mt-4 text-headline-md text-on-background">An tâm tuyệt đối</h3>
+              <p className="mt-2 max-w-lg text-body-md text-on-background/70">
+                Dữ liệu của bạn thuộc về bạn. Không ai có thể đọc nhật ký hay trò chuyện mà không có sự đồng ý.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Privacy */}
+      <section id="support" className="px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <div className="mx-auto max-w-container-stitch">
+          <div className="rounded-card bg-white/80 p-8 shadow-lg ring-1 ring-outline-variant/20 backdrop-blur lg:p-12">
+            <div className="flex items-center gap-3">
+              <Eye className="h-7 w-7 text-primary" aria-hidden="true" />
+              <h2 className="text-headline-lg text-on-background">Quyền riêng tư & Tin tưởng</h2>
+            </div>
+            <ul className="mt-6 space-y-3">
+              {privacyFeatures.map((feature) => (
+                <li key={feature} className="flex items-start gap-3 text-body-lg text-on-background/80">
+                  <Shield className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" aria-hidden="true" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-primary px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <h2 className="text-headline-lg text-on-primary">Bắt đầu hành trình chữa lành của bạn</h2>
+          <p className="mt-4 text-body-lg text-on-primary/80">
+            Chỉ cần vài bước đơn giản, bạn đã có một không gian an toàn để chia sẻ và được hỗ trợ.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/login"
+              className="inline-flex min-h-12 items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-surface-container"
+            >
+              Bắt đầu ngay
+            </Link>
+            <a
+              href="#mission"
+              className="inline-flex min-h-12 items-center justify-center rounded-button border border-on-primary/30 px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-on-primary/10"
+            >
+              Tìm hiểu thêm
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Demo Role Entry — for evaluators */}
+      <section className="bg-surface-container-low px-margin-mobile py-12 lg:px-margin-desktop">
+        <div className="mx-auto max-w-container-stitch">
+          <div className="rounded-card bg-white p-6 shadow-sm ring-1 ring-outline-variant/20 sm:p-8">
+            <p className="text-label-md font-semibold text-primary">Dành cho người đánh giá</p>
+            <h2 className="mt-2 text-headline-md text-on-background">Vào demo trong một bước</h2>
+            <p className="mt-2 text-body-md text-on-background/70">
+              Chọn vai trò để tự đăng nhập bằng dữ liệu seed. Không nhập dữ liệu học sinh thật.
             </p>
             <div className="mt-5">
               <DemoRoleEntry />
             </div>
-          </section>
-        </section>
-
-        <section id="about" className="grid gap-4 md:grid-cols-3">
-          {boundaries.map((item) => (
-            <article key={item} className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-[#D7EFE8] sm:p-6">
-              <p className="text-label font-semibold text-accent">Ranh giới an toàn</p>
-              <p className="mt-2 text-body">{item}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-[#D7EFE8] sm:p-6">
-          <h2 className="text-heading">Luồng demo đề xuất</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-4">
-            {[
-              "Học sinh: quyền riêng tư, check-in cảm xúc, người lớn tin tưởng, AI, SOS.",
-              "Giáo viên: danh sách tín hiệu SOS và hỗ trợ đúng phạm vi.",
-              "Phụ huynh: xem hỗ trợ trong phạm vi được liên kết.",
-              "Quản trị: nội dung, báo cáo tổng hợp, vận hành metadata-only.",
-            ].map((step, index) => (
-              <div key={step} className="rounded-2xl bg-secondary p-4 text-body">
-                <span className="block text-label font-semibold text-accent">Vai {index + 1}</span>
-                {step}
-              </div>
-            ))}
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-outline-variant/20 bg-white px-margin-mobile py-12 lg:px-margin-desktop">
+        <div className="mx-auto grid max-w-container-stitch gap-8 md:grid-cols-3">
+          <div>
+            <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+              <Leaf className="h-5 w-5" aria-hidden="true" />
+              BeYou
+            </Link>
+            <p className="mt-3 text-body-md text-on-background/60">
+              Bến đỗ an toàn cho tâm hồn học đường. Giúp học sinh THPT chăm sóc sức khỏe tinh thần.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-label-md font-semibold text-on-background">Về chúng tôi</h4>
+            <ul className="mt-3 space-y-2 text-body-md text-on-background/60">
+              <li><a href="#mission" className="no-underline hover:text-primary">Sứ mệnh</a></li>
+              <li><a href="#features" className="no-underline hover:text-primary">Tính năng</a></li>
+              <li><a href="#support" className="no-underline hover:text-primary">Hỗ trợ</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-label-md font-semibold text-on-background">Pháp lý</h4>
+            <ul className="mt-3 space-y-2 text-body-md text-on-background/60">
+              <li>Chính sách bảo mật</li>
+              <li>Điều khoản sử dụng</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mx-auto mt-8 max-w-container-stitch border-t border-outline-variant/20 pt-6 text-center text-label-sm text-on-background/50">
+          © 2024 BeYou. Mọi quyền được bảo lưu.
+        </div>
+      </footer>
     </main>
   );
 }
