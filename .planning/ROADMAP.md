@@ -1,11 +1,11 @@
-# Roadmap: Peerlight AI v1.6 Cross-Role UI Consistency & Production Performance
+# Roadmap: Peerlight AI v1.7 UI Redesign to Match Stitch Mockups
 
-**Created:** 2026-05-26
-**Milestone:** v1.6 Cross-Role UI Consistency & Production Performance
+**Created:** 2026-05-27
+**Milestone:** v1.7 UI Redesign to Match Stitch Mockups
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 **Granularity:** coarse
-**Phase range:** 33-38
-**Coverage:** 27/27 v1.6 requirements mapped, 0 unmapped
+**Phase range:** 39-44
+**Coverage:** 20/20 v1.7 requirements mapped, 0 unmapped
 
 ## Completed Milestones
 
@@ -19,163 +19,99 @@
 
 ## Phases
 
-- [x] **Phase 33: Cross-Role UI & Performance Baseline Audit** - Establish UI drift and privacy-safe performance baseline evidence before behavior changes. (completed 2026-05-26)
-- [x] **Phase 34: Shared UI Primitives & Role Shell Harmonization** - Align shared visual primitives, role entry, navigation, guidance, accessibility, and role-boundary copy. (completed 2026-05-26)
-- [x] **Phase 35: Role Dashboard Consistency Pass** - Harmonize Student, Teacher, Parent, and Admin dashboards while preserving each role's data boundaries. (completed 2026-05-27)
-- [x] **Phase 36: Backend & DB Hot Path Optimization** - Optimize bounded backend/database paths without weakening authorization, reason gates, audit, or metadata-only operations.
- (completed 2026-05-27)
-- [x] **Phase 37: Frontend Data Loading & Render Optimization** - Reduce route waterfalls, duplicate requests, unsafe caching risk, and perceived slowness across role dashboards.
- (completed 2026-05-27)
-- [x] **Phase 38: UI/Performance Release Gates** - Prove UI consistency, performance improvement evidence, privacy redlines, and documented constraints before milestone closure. (completed 2026-05-27)
+- [ ] **Phase 39: Design System & Shared UI Foundation** - Establish synchronized Tailwind config, shared components (cards, nav, layout), and design tokens matching Stitch mockups.
+- [ ] **Phase 40: Login & Homepage Redesign** - Rebuild login page and student homepage to match Stitch mockups with consistent branding.
+- [ ] **Phase 41: Student Dashboard & Navigation** - Rebuild student dashboard with circular cards, specific CTAs, and consistent sidebar/mobile navigation.
+- [ ] **Phase 42: Feature Pages (Tests, Check-in, Scenarios)** - Redesign Test tâm lý, Check-in cảm xúc, and Tình huống pages with sub-pages and integrated history.
+- [ ] **Phase 43: Chat, SOS, Trusted Adults & Settings** - Redesign Peerlight AI chat (mobile hamburger), SOS (2-state), Trusted Adults, and Settings pages.
+- [ ] **Phase 44: Teacher/Parent Portal Updates** - Add Peerlight AI chatbot, card-based dashboard, and SOS detail view to teacher/parent portal.
 
 ## Phase Details
 
-### Phase 33: Cross-Role UI & Performance Baseline Audit
+### Phase 39: Design System & Shared UI Foundation
 
-**Goal:** Operators and builders can see where cross-role UI drift and production performance risks exist before optimization begins.
-**Depends on:** Phase 32
-**Requirements:** UIC-01, BASE-01, BASE-02, BASE-03
-**UI hint:** yes
-**Status:** Complete
-
-**Success criteria:**
-1. Builder can review a cross-role UI inventory covering Student, Teacher, Parent, and Admin shell, navigation, spacing, cards, tables, forms, loading, error, empty, responsive, and accessibility patterns.
-2. Builder can review baseline evidence for key role routes and APIs, including local/demo constraints, frontend route/build evidence, backend endpoint timings, payload sizes, and likely DB hot spots.
-3. Operator can distinguish local deterministic evidence, public demo evidence, Render/Vercel cold or warm behavior when available, and unavailable live production-pilot constraints.
-4. Performance evidence remains aggregate-only and does not expose raw student content, emails, identifiers, private notes, transcripts, answers, provider claims, secrets, or raw request bodies.
-
-**Plans:** 3/3 plans complete
-
-### Phase 34: Shared UI Primitives & Role Shell Harmonization
-
-**Goal:** Student, Teacher, Parent, and Admin surfaces share a cohesive Peerlight AI visual rhythm without sharing role-specific business logic or erasing privacy boundaries.
-**Depends on:** Phase 33
-**Requirements:** UIC-02, UIC-03, UIC-04, ROLE-05
-**UI hint:** yes
-**Status:** Complete
-
-**Success criteria:**
-1. Builder can use shared lightweight UI primitives for page headers, sections, cards, status badges, responsive table wrappers, loading states, error states, and empty states without importing role-specific business logic.
-2. Student, Teacher, Parent, and Admin screens preserve role-specific privacy boundary copy while using consistent Peerlight AI visual rhythm and Vietnamese support tone.
-3. User can navigate role-entry and dashboard shell patterns that clearly show which role is active and what data boundaries apply.
-4. Keyboard focus, skip-link behavior, accessible status/error announcements, responsive behavior, and SOS/high-risk color semantics remain intact across shared UI changes.
-
-**Plans:** 4/4 plans complete
-
-### Phase 35: Role Dashboard Consistency Pass
-
-**Goal:** Each role dashboard feels like part of one product while preserving Student privacy, SOS-only adult visibility, Parent read-only posture, Teacher SOS handling, and Admin metadata-only operations.
-**Depends on:** Phase 34
-**Requirements:** ROLE-01, ROLE-02, ROLE-03, ROLE-04
-**UI hint:** yes
-**Status:** Complete
-
-**Success criteria:**
-1. Student can use a dashboard with harmonized shell, cards, status surfaces, and loading/error/empty patterns while still seeing student-first privacy and support copy.
-2. Teacher can use harmonized dashboard patterns while only seeing SOS-eligible linked student information through active relationship checks and teacher-specific SOS status actions.
-3. Parent can use harmonized dashboard patterns while retaining read-only support posture, SOS-only student visibility, and summary-only privacy boundaries.
-4. Admin can use harmonized operations surfaces that remain metadata-only and do not add raw exports, risk leaderboards, per-student drilldowns, raw audit browsers, or destructive reset controls.
-
-**Plans:** 5/5 plans complete
-
-### Phase 36: Backend & DB Hot Path Optimization
-
-**Goal:** Key backend and database paths become bounded, batched, and query-efficient while preserving safety, authorization, audit, sanitizer, and schema integrity.
-**Depends on:** Phase 33
-**Requirements:** DBPERF-01, DBPERF-02, DBPERF-03, DBPERF-04, DBPERF-05
+**Goal:** All pages can draw from one consistent set of design tokens, card components, navigation patterns, and layout primitives that match the Stitch mockup aesthetic.
+**Depends on:** Phase 38
+**Requirements:** UICONS-01, UICONS-02
 **UI hint:** yes
 **Status:** Not started
 
 **Success criteria:**
-1. Admin user and student-adult link list paths return bounded or paginated results without N+1 user/link hydration.
-2. Teacher and Parent linked-student/SOS visibility paths batch relationship, user, and SOS-signal checks while preserving active relationship and SOS-only visibility rules.
-3. Adult summary, history, and dashboard endpoints apply filtering, ordering, and limits in SQL instead of loading broad datasets and slicing in Python.
-4. Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
-5. Any new index or migration is tied to observed query predicates and passes SQLAlchemy/Alembic metadata alignment, schema drift, and privacy regression checks.
+1. Tailwind config has all Stitch mockup colors, typography, spacing, and border-radius tokens.
+2. Shared card component supports circular/rounded variants with icon, title, description, and CTA button.
+3. Desktop sidebar navigation component exists and works across student pages.
+4. Mobile bottom navigation component exists with consistent icons.
+5. Layout wrapper applies consistent page structure (header, content area, responsive behavior).
 
-**Plans:** 5/5 plans complete
+### Phase 40: Login & Homepage Redesign
 
-### Phase 37: Frontend Data Loading & Render Optimization
-
-**Goal:** Role dashboards feel faster and more predictable without unsafe browser tokens, cross-role imports, sensitive data leakage, or weakened auth/privacy routing.
-**Depends on:** Phase 34, Phase 35, Phase 36
-**Requirements:** FEPERF-01, FEPERF-02, FEPERF-03, FEPERF-04, FEPERF-05
+**Goal:** Login and homepage match the Stitch mockups with updated branding cards, no loading issues, and proper content layout.
+**Depends on:** Phase 39
+**Requirements:** HOME-01, HOME-02, AUTH-01, AUTH-02
 **UI hint:** yes
 **Status:** Not started
 
 **Success criteria:**
-1. Student, Teacher, Parent, and Admin dashboards avoid unnecessary fetch waterfalls and duplicate requests while keeping credentialed API calls cookie-based.
-2. User sees consistent scoped loading, skeleton or placeholder, error, and empty states while dashboard data loads or fails.
-3. Sensitive role data remains no-store or uses explicitly scoped cache keys and invalidation across user, role, resource, reason, policy, relationship, runtime, and logout boundaries.
-4. Shared UI primitives do not cause route bundle bloat or cross-role page imports, and affected Next build route output is reviewed.
-5. Privacy acknowledgement routing, no browser token storage, role dashboard routing, and existing auth capability behavior remain unchanged.
+1. Login page shows 3 branding cards (Góc nhỏ bình yên, Nâng niu từng xao động, Điểm hẹn chữa lành) without slow circle animation.
+2. Homepage displays card-based sections with image+text blocks, no duplicate sections.
+3. "Bắt đầu" is the only navigational CTA on the homepage.
+4. Both pages use Phase 39 design tokens and shared components consistently.
 
-**Plans:** 5/5 plans complete
+### Phase 41: Student Dashboard & Navigation
 
-### Phase 38: UI/Performance Release Gates
-
-**Goal:** v1.6 closes only when UI consistency, backend/frontend performance evidence, privacy redlines, and production constraints are verified and documented.
-**Depends on:** Phase 33, Phase 34, Phase 35, Phase 36, Phase 37
-**Requirements:** QA-01, QA-02, QA-03, QA-04, QA-05
+**Goal:** Student dashboard uses circular/rounded cards with specific CTAs and descriptions, without history or privacy blocks on the main page.
+**Depends on:** Phase 39
+**Requirements:** DASH-01, DASH-02, DASH-03
 **UI hint:** yes
 **Status:** Not started
 
 **Success criteria:**
-1. Backend tests and lint verify optimized DB/backend paths, bounded results, query/index changes, authorization checks, reason gates, audit semantics, and metadata sanitization.
-2. Frontend tests, lint, and build verify cross-role UI consistency, responsive behavior, accessibility-critical states, loading/error/empty patterns, and role-specific privacy boundaries.
-3. Operator can compare baseline and post-optimization behavior for selected backend/frontend paths or see explicit accepted external constraints.
-4. Privacy redline gates reject raw identifiers, emails, notes, transcripts, answers, secrets, provider claims, free-text reasons, exports, destructive reset controls, risk leaderboards, per-student drilldowns, and browser token storage in new UI/performance surfaces.
-5. Documentation records v1.6 UI/performance evidence, commands run, remaining production constraints, and that live `smoke:pilot` remains separate from public demo proof.
+1. Dashboard shows circular/rounded cards for each feature (Test, Check-in, Scenarios, Settings).
+2. Each card has specific CTA text (Vào test, Vào check-in, Vào thực hành, Vào thiết lập).
+3. No history sections appear on the dashboard.
+4. No privacy blocks or reminder settings appear inline on dashboard.
+5. Navigation sidebar (desktop) and bottom nav (mobile) are functional.
 
-**Plans:** TBD
+### Phase 42: Feature Pages (Tests, Check-in, Scenarios)
 
-## Traceability
+**Goal:** Test tâm lý, Check-in cảm xúc, and Tình huống pages have proper sub-page structure, integrated history, and privacy banners matching Stitch mockups.
+**Depends on:** Phase 41
+**Requirements:** TEST-01, TEST-02, TEST-03, CHECKIN-01, CHECKIN-02, SCENARIO-01, SCENARIO-02, SCENARIO-03
+**UI hint:** yes
+**Status:** Not started
 
-| Requirement | Phase | Status |
-|---|---|---|
-| UIC-01 | Phase 33 | Complete |
-| UIC-02 | Phase 34 | Complete |
-| UIC-03 | Phase 34 | Complete |
-| UIC-04 | Phase 34 | Complete |
-| ROLE-01 | Phase 35 | Complete |
-| ROLE-02 | Phase 35 | Complete |
-| ROLE-03 | Phase 35 | Complete |
-| ROLE-04 | Phase 35 | Complete |
-| ROLE-05 | Phase 34 | Complete |
-| BASE-01 | Phase 33 | Complete |
-| BASE-02 | Phase 33 | Complete |
-| BASE-03 | Phase 33 | Complete |
-| DBPERF-01 | Phase 36 | Pending |
-| DBPERF-02 | Phase 36 | Pending |
-| DBPERF-03 | Phase 36 | Pending |
-| DBPERF-04 | Phase 36 | Pending |
-| DBPERF-05 | Phase 36 | Pending |
-| FEPERF-01 | Phase 37 | Pending |
-| FEPERF-02 | Phase 37 | Pending |
-| FEPERF-03 | Phase 37 | Pending |
-| FEPERF-04 | Phase 37 | Pending |
-| FEPERF-05 | Phase 37 | Pending |
-| QA-01 | Phase 38 | Complete |
-| QA-02 | Phase 38 | Complete |
-| QA-03 | Phase 38 | Complete |
-| QA-04 | Phase 38 | Complete |
-| QA-05 | Phase 38 | Complete |
+**Success criteria:**
+1. Test tâm lý has 3 sub-pages: test list, test-taking (question-by-question), and results.
+2. Check-in cảm xúc shows privacy banner with 4 reassurance points and integrated history section.
+3. Tình huống has 3 sub-pages: scenario library, practice (interactive), and results/feedback.
+4. All sub-pages use consistent design tokens and shared card components.
+5. History is displayed within each feature page (not on dashboard).
 
-**Coverage Summary:**
-- v1.6 requirements: 27 total
-- Mapped to phases: 27
-- Unmapped: 0
+### Phase 43: Chat, SOS, Trusted Adults & Settings
 
-## Progress
+**Goal:** Peerlight AI chat has mobile hamburger menu, SOS has 2-state flow, Trusted Adults matches mockup, Settings combines check-in + SOS settings.
+**Depends on:** Phase 41
+**Requirements:** CHAT-01, CHAT-02, SOS-01, SOS-02, TRUST-01, SETTINGS-01
+**UI hint:** yes
+**Status:** Not started
 
-| Phase | Plans Complete | Status | Completed |
-|---|---|---|---|
-| 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
-| 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
-| 35. Role Dashboard Consistency Pass | 5/5 | Complete    | 2026-05-27 |
-| 36. Backend & DB Hot Path Optimization | 5/5 | Complete    | 2026-05-27 |
-| 37. Frontend Data Loading & Render Optimization | 5/5 | Complete   | 2026-05-27 |
-| 38. UI/Performance Release Gates | 5/5 | Complete    | 2026-05-27 |
+**Success criteria:**
+1. Peerlight AI chat shows hamburger menu (≡) on mobile for sidebar navigation.
+2. Chat is named "Peerlight AI" in all visible locations.
+3. SOS shows initial confirmation state; after "Đúng, tôi cần giúp ngay" shows activated overlay.
+4. Trusted Adults page matches the Stitch mockup design.
+5. Settings page shows both check-in settings and SOS settings in one unified view.
 
----
-*Roadmap created: 2026-05-26 for v1.6 milestone initialization.*
+### Phase 44: Teacher/Parent Portal Updates
+
+**Goal:** Teacher/Parent portal gets Peerlight AI chatbot, card-based dashboard matching student design, and simplified SOS detail view.
+**Depends on:** Phase 43
+**Requirements:** ADULT-01, ADULT-02, ADULT-03
+**UI hint:** yes
+**Status:** Not started
+
+**Success criteria:**
+1. Teacher/Parent portal includes Peerlight AI chatbot with same design as student version.
+2. Teacher/Parent dashboard uses card-based layout matching student dashboard card design.
+3. SOS profile view shows only the student SOS detail section (not full profile).
+4. Portal uses the same design tokens and shared components as student pages.
