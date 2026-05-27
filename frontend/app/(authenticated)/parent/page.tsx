@@ -42,7 +42,7 @@ export default function ParentDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-headline-lg font-bold text-on-background">
+        <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
           Xin chào, phụ huynh!
         </h1>
         <p className="mt-2 text-body-lg text-on-background/70">
@@ -71,7 +71,7 @@ export default function ParentDashboardPage() {
       </div>
 
       <div className="rounded-[32px] bg-primary-container p-6">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <Bot className="text-on-primary-container" size={32} />
           <div className="flex-1">
             <h3 className="text-headline-md font-semibold text-on-primary-container">
@@ -83,7 +83,7 @@ export default function ParentDashboardPage() {
           </div>
           <Link
             href="/parent/chat"
-            className="inline-flex items-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90"
+            className="inline-flex min-h-[44px] w-full items-center justify-center rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary no-underline hover:opacity-90 sm:w-auto"
           >
             Trò chuyện
           </Link>

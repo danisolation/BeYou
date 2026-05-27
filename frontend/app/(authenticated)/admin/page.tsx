@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-headline-lg font-bold text-on-background">
+        <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
           Xin chào, quản trị viên!
         </h1>
         <p className="mt-2 text-body-lg text-on-background/70">
