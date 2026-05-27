@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
+import { ChatSkeleton } from "@/components/skeletons";
 import {
   type ChatMessage,
   type ChatThread,
@@ -180,7 +181,7 @@ export default function StudentChatPage() {
             </button>
             <h2 className="text-heading">Cuộc trò chuyện của em</h2>
           </div>
-          {isLoading ? <p className="mt-4 text-body">Đang tải cuộc trò chuyện...</p> : null}
+          {isLoading ? <ChatSkeleton /> : null}
           {!isLoading && messages.length === 0 ? (
             <p className="mt-4 rounded-2xl bg-secondary p-4 text-body">
               Chưa có tin nhắn nào. Em có thể bắt đầu bằng một điều nhỏ đang làm em bận lòng.

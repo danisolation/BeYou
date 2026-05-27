@@ -6,6 +6,7 @@ import { MessageCircle, Clock } from "lucide-react";
 
 import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import { StitchCard } from "@/components/stitch-card";
 import { listScenarios, listScenarioHistory, type ScenarioListItem, type ScenarioHistoryItem } from "@/lib/wellbeing-api";
 
@@ -35,7 +36,7 @@ export default function ScenarioListPage() {
   }, []);
 
   if (isLoading) {
-    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError) {

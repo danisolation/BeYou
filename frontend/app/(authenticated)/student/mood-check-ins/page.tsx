@@ -5,6 +5,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Heart, Shield, Clock } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import {
   getMoodCheckInOptions,
   getMoodCheckInHistory,
@@ -75,7 +76,7 @@ export default function StudentMoodCheckInPage() {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-body-md text-on-background/70">Đang tải check-in cảm xúc...</p>;
+    return <PageSkeleton />;
   }
 
   if (options === null) {
