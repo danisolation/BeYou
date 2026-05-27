@@ -4,14 +4,19 @@ import uuid
 from datetime import timedelta
 
 from fastapi import HTTPException, status
-from sqlalchemy import func, select
+from sqlalchemy import case, exists, func, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
 from app.db.models import (
+    LinkStatus,
     MoodCheckIn,
+    MoodNoteShare,
+    MoodNoteShareScope,
     SchoolPrivacyPolicyDefault,
     SelfCheckAttempt,
+    SosAlert,
+    StudentAdultLink,
     StudentSupportPlan,
     StudentSupportPlanAdult,
     SupportPlanStatus,
@@ -28,9 +33,9 @@ from app.schemas.adult_summaries import (
     AdultSupportPlanSummary,
     AdultSupportSummaryResponse,
 )
+from app.schemas.mood_note_shares import AdultSharedMoodNote
 from app.schemas.privacy_controls import ACCESS_REASON_LABELS, access_reason_options, normalize_reason_codes
 from app.services.audit import record_audit_event
-from app.services.mood_note_shares import list_active_shared_notes_for_adult
 from app.services.privacy_controls import get_or_create_school_privacy_policy
 
 RECENT_SUMMARY_LIMIT = 5
@@ -290,44 +295,65 @@ def _adult_student_context(student: User) -> AdultStudentContext:
     )
 
 
+def _has_sos_visible_active_link(
+    db: OrmSession,
+    *,
+    adult_id: uuid.UUID,
+    student_id: uuid.UUID,
+    relationship_type: str,
+) -> bool:
+    return (
+        db.scalar(
+            select(StudentAdultLink.id)
+            .where(
+                StudentAdultLink.student_id == student_id,
+                StudentAdultLink.adult_id == adult_id,
+                StudentAdultLink.relationship_type == relationship_type,
+                StudentAdultLink.status == LinkStatus.ACTIVE.value,
+                exists(select(SosAlert.id).where(SosAlert.student_id == student_id)),
+            )
+            .limit(1)
+        )
+        is not None
+    )
+
+
 def _support_plan_summary(
     db: OrmSession,
     *,
     student_id: uuid.UUID,
     adult_id: uuid.UUID,
 ) -> AdultSupportPlanSummary:
-    plan = db.scalar(select(StudentSupportPlan).where(StudentSupportPlan.student_id == student_id))
-    if plan is None:
+    rows = list(
+        db.execute(
+            select(StudentSupportPlan, StudentSupportPlanAdult.adult_id)
+            .outerjoin(StudentSupportPlanAdult, StudentSupportPlanAdult.support_plan_id == StudentSupportPlan.id)
+            .where(StudentSupportPlan.student_id == student_id)
+        ).all()
+    )
+    if not rows:
         return AdultSupportPlanSummary(
             status=None,
             shared_with_viewer=False,
             selected_adult_count=0,
         )
 
-    selected_count = db.scalar(
-        select(func.count()).select_from(StudentSupportPlanAdult).where(
-            StudentSupportPlanAdult.support_plan_id == plan.id
-        )
-    )
-    selected_for_viewer = db.scalar(
-        select(StudentSupportPlanAdult).where(
-            StudentSupportPlanAdult.support_plan_id == plan.id,
-            StudentSupportPlanAdult.adult_id == adult_id,
-        )
-    )
-    shared_with_viewer = plan.status == SupportPlanStatus.ACTIVE.value and selected_for_viewer is not None
+    plan = rows[0][0]
+    selected_adult_ids = {selected_adult_id for _, selected_adult_id in rows if selected_adult_id is not None}
+    selected_count = len(selected_adult_ids)
+    shared_with_viewer = plan.status == SupportPlanStatus.ACTIVE.value and adult_id in selected_adult_ids
     if not shared_with_viewer:
         return AdultSupportPlanSummary(
             status=plan.status,
             shared_with_viewer=False,
-            selected_adult_count=selected_count or 0,
+            selected_adult_count=selected_count,
             updated_at=plan.updated_at,
         )
 
     return AdultSupportPlanSummary(
         status=plan.status,
         shared_with_viewer=True,
-        selected_adult_count=selected_count or 0,
+        selected_adult_count=selected_count,
         what_helps=plan.what_helps,
         what_does_not_help=plan.what_does_not_help,
         preferred_contact_method=plan.preferred_contact_method,
@@ -338,19 +364,30 @@ def _support_plan_summary(
 
 
 def _mood_summary(db: OrmSession, student_id: uuid.UUID) -> AdultMoodTrendSummary:
-    items = list(
-        db.scalars(
-            select(MoodCheckIn)
-            .where(MoodCheckIn.student_id == student_id)
+    cutoff = utc_now() - timedelta(days=RECENT_MOOD_DAYS)
+    latest = db.scalar(
+        select(MoodCheckIn)
+        .where(MoodCheckIn.student_id == student_id)
+        .order_by(MoodCheckIn.created_at.desc(), MoodCheckIn.id.desc())
+        .limit(1)
+    )
+    recent_rows = list(
+        db.execute(
+            select(
+                MoodCheckIn,
+                func.sum(case((MoodCheckIn.trend_label == "Cần hỗ trợ sớm", 1), else_=0))
+                .over()
+                .label("high_concern_count"),
+            )
+            .where(MoodCheckIn.student_id == student_id, MoodCheckIn.created_at >= cutoff)
             .order_by(MoodCheckIn.created_at.desc(), MoodCheckIn.id.desc())
             .limit(RECENT_SUMMARY_LIMIT)
-        )
+        ).all()
     )
-    cutoff = utc_now() - timedelta(days=RECENT_MOOD_DAYS)
-    recent_items = [item for item in items if item.created_at >= cutoff]
-    high_concern_count = sum(1 for item in recent_items if item.trend_label == "Cần hỗ trợ sớm")
+    recent_items = [checkin for checkin, _ in recent_rows]
+    high_concern_count = int(recent_rows[0].high_concern_count or 0) if recent_rows else 0
 
-    if not items:
+    if latest is None:
         return AdultMoodTrendSummary(
             recent_checkin_count=0,
             high_concern_count=0,
@@ -358,7 +395,6 @@ def _mood_summary(db: OrmSession, student_id: uuid.UUID) -> AdultMoodTrendSummar
             suggested_supportive_action="Chưa có check-in gần đây. Hãy tiếp tục tạo không gian để em chia sẻ khi sẵn sàng.",
         )
 
-    latest = items[0]
     if high_concern_count > 0:
         action = "Hỏi em cần được hỗ trợ thế nào hôm nay và nhắc em có thể dùng SOS nếu em chủ động xác nhận cần hỗ trợ ngay."
     elif latest.trend_label == "Cần quan tâm":
@@ -371,9 +407,81 @@ def _mood_summary(db: OrmSession, student_id: uuid.UUID) -> AdultMoodTrendSummar
         latest_trend_label=latest.trend_label,
         recent_checkin_count=len(recent_items),
         high_concern_count=high_concern_count,
-        recent_trend_labels=[item.trend_label for item in items],
+        recent_trend_labels=[item.trend_label for item in recent_items],
         suggested_supportive_action=action,
     )
+
+
+def _shared_mood_notes_for_authorized_adult(
+    db: OrmSession,
+    *,
+    adult: User,
+    student_id: uuid.UUID,
+    relationship_type: str,
+    access_reason_code: str | None,
+) -> list[AdultSharedMoodNote]:
+    rows = list(
+        db.execute(
+            select(MoodNoteShare, MoodCheckIn)
+            .join(MoodCheckIn, MoodCheckIn.id == MoodNoteShare.mood_checkin_id)
+            .where(
+                MoodNoteShare.student_id == student_id,
+                MoodNoteShare.adult_id == adult.id,
+                MoodNoteShare.relationship_type_snapshot == relationship_type,
+                MoodNoteShare.revoked_at.is_(None),
+                MoodCheckIn.student_id == student_id,
+            )
+            .order_by(MoodCheckIn.created_at.desc(), MoodNoteShare.created_at.desc())
+        ).all()
+    )
+    shared_notes: list[AdultSharedMoodNote] = []
+    share_ids: list[str] = []
+    share_scopes: list[str] = []
+    for share, checkin in rows:
+        content = (
+            checkin.private_note
+            if share.share_scope == MoodNoteShareScope.PRIVATE_NOTE.value
+            else share.student_summary
+        )
+        if content is None:
+            continue
+        share_ids.append(str(share.id))
+        share_scopes.append(share.share_scope)
+        shared_notes.append(
+            AdultSharedMoodNote(
+                id=share.id,
+                mood_checkin_id=share.mood_checkin_id,
+                shared_at=share.created_at,
+                mood_created_at=checkin.created_at,
+                share_scope=share.share_scope,
+                content=content,
+                relationship_type=share.relationship_type_snapshot,
+                is_demo=share.is_demo,
+            )
+        )
+
+    record_audit_event(
+        db,
+        actor=adult,
+        actor_role=adult.role,
+        action="mood_note_share_read",
+        resource_type="shared_mood_note",
+        resource_id=str(student_id),
+        status_value="allowed",
+        reason="student_consented_share_read",
+        metadata_summary={
+            "student_id": str(student_id),
+            "adult_id": str(adult.id),
+            "share_ids": share_ids,
+            "shared_note_count": len(shared_notes),
+            "share_scopes": sorted(set(share_scopes)),
+            "relationship_type": relationship_type,
+            "access_reason_code": access_reason_code,
+            "decision": "active_relationship_and_active_share_required",
+        },
+        is_demo=adult.is_demo,
+    )
+    return shared_notes
 
 
 def get_adult_support_summary(
@@ -388,16 +496,14 @@ def get_adult_support_summary(
     if student is None or student.role != UserRole.STUDENT.value:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh.")
     policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
-    try:
-        require_permission(
-            db,
-            adult,
-            resource_type="adult_support_summary",
-            action="read",
-            purpose="support_not_surveillance",
-            student_id=student_id,
-        )
-    except HTTPException:
+    student_context = _adult_student_context(student)
+    student_is_demo = student.is_demo
+    if adult.role != relationship_type or not _has_sos_visible_active_link(
+        db,
+        adult_id=adult.id,
+        student_id=student_id,
+        relationship_type=relationship_type,
+    ):
         _record_access_reason_event(
             db,
             adult=adult,
@@ -411,7 +517,7 @@ def get_adult_support_summary(
             decision="authorization_denied",
         )
         db.commit()
-        raise
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")
     access_reason, accepted_reason_code = _enforce_access_reason(
         db,
         adult=adult,
@@ -423,11 +529,11 @@ def get_adult_support_summary(
 
     support_plan = _support_plan_summary(db, student_id=student_id, adult_id=adult.id)
     mood_summary = _mood_summary(db, student_id)
-    shared_mood_notes = list_active_shared_notes_for_adult(
+    shared_mood_notes = _shared_mood_notes_for_authorized_adult(
         db,
-        adult,
-        student_id,
-        relationship_type,
+        adult=adult,
+        student_id=student_id,
+        relationship_type=relationship_type,
         access_reason_code=accepted_reason_code,
     )
     record_audit_event(
@@ -451,16 +557,16 @@ def get_adult_support_summary(
             "shared_mood_note_count": len(shared_mood_notes),
             "decision": "summary_with_student_consented_shared_notes",
         },
-        is_demo=student.is_demo,
+        is_demo=student_is_demo,
     )
     db.commit()
 
     return AdultSupportSummaryResponse(
-        student=_adult_student_context(student),
+        student=student_context,
         support_plan=support_plan,
         mood_summary=mood_summary,
         shared_mood_notes=shared_mood_notes,
         access_reason=access_reason,
         privacy_notes=ADULT_SUPPORT_PRIVACY_NOTES,
-        is_demo=student.is_demo,
+        is_demo=student_is_demo,
     )

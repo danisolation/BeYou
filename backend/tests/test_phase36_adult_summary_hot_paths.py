@@ -278,10 +278,11 @@ def test_adult_self_check_summaries_use_sql_side_recent_limit(db: OrmSession) ->
 def test_adult_support_mood_summary_uses_sql_cutoff_and_keeps_privacy(db: OrmSession) -> None:
     student, teacher = _seed_summary_graph(db)
     teacher_client = login_client(teacher.email)
+    student_id = student.id
 
     response, query_count = measure_queries(
         lambda: teacher_client.get(
-            f"/api/teacher/students/{student.id}/support-summary?reason_code={ALLOWED_REASON}"
+            f"/api/teacher/students/{student_id}/support-summary?reason_code={ALLOWED_REASON}"
         )
     )
 
