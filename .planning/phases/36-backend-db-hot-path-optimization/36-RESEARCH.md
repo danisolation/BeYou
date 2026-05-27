@@ -309,16 +309,16 @@ Threat patterns:
 | A2 | SQLAlchemy `aliased(User)` is the preferred way to join student/adult users in one query. | Planner may use Core aliases or explicit select columns instead. |
 | A3 | Candidate composite indexes may help listed predicates. | Planner must only add after observed need; speculative indexes violate D-16. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. Should Admin list endpoints expose `offset` now or only clamp default `limit` silently?
-   - Recommendation: add optional `limit`/`offset` with list body preserved.
+   - RESOLVED: add optional `limit`/`offset` with list body preserved.
 
 2. Should Phase 36 include index migrations?
-   - Recommendation: refactor queries/tests first; add indexes only if query predicates remain uncovered.
+   - RESOLVED: refactor queries/tests first; add indexes only if query predicates remain uncovered.
 
 3. What deterministic query-count ceilings should tests assert?
-   - Recommendation: assert relative boundedness using many seeded rows and "does not grow linearly," not production latency thresholds.
+   - RESOLVED: assert relative boundedness using many seeded rows and "does not grow linearly," not production latency thresholds.
 
 ## RESEARCH COMPLETE
 
