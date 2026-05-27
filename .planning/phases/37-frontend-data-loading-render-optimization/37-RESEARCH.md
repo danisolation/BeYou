@@ -281,19 +281,19 @@ export async function loadTeacherDashboard() {
 |---|---|---|---|
 | - | No unverified assumptions intentionally used. | - | - |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `apiFetch` default all GET-like reads to no-store or should dashboard loaders pass no-store?**  
    - What we know: Phase 37 allows either approach if mutations remain safe. [VERIFIED: 37-CONTEXT.md]  
-   - Recommendation: Prefer route/dashboard loader no-store first for smallest blast radius. [VERIFIED: api.ts, dashboard source]
+   - RESOLVED: Use neutral dashboard-loader helpers and per-dashboard read wrappers with `cache: "no-store"` first, rather than making every `apiFetch` call no-store globally. Mutations remain on `apiFetch` with existing methods.
 
 2. **Does Admin need exact total counts?**  
    - What we know: Existing endpoints are bounded with `limit` default 100 and max 200. [VERIFIED: backend admin routers]  
-   - Recommendation: Use honest preview wording unless planner creates a minimal explicit metadata dependency. [VERIFIED: 37-CONTEXT.md]
+   - RESOLVED: Phase 37 will not add backend count endpoints. Admin dashboard uses bounded `limit=10` previews and honest copy such as `Preview ... tài khoản demo`, `Preview ... liên kết được phân trang`, and `Preview metadata tạm thời chưa tải được.`
 
 3. **Should Phase 37 update Phase 33 helper or add a Phase 37 helper?**  
    - What we know: Context permits either if Phase 38 can compare aggregate-only results. [VERIFIED: 37-CONTEXT.md]  
-   - Recommendation: Add Phase 37-specific helper or update Phase 33 helper with tests; keep output schema aggregate-only. [VERIFIED: phase33 helper/test]
+   - RESOLVED: Update the existing Phase 33 frontend baseline helper and tests so Phase 38 can compare the same aggregate-only schema while counting generic and imported dashboard helper calls.
 
 ## Environment Availability
 
