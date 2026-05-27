@@ -21,7 +21,7 @@
 - [x] **Phase 33: Cross-Role UI & Performance Baseline Audit** - Establish UI drift and privacy-safe performance baseline evidence before behavior changes. (completed 2026-05-26)
 - [x] **Phase 34: Shared UI Primitives & Role Shell Harmonization** - Align shared visual primitives, role entry, navigation, guidance, accessibility, and role-boundary copy. (completed 2026-05-26)
 - [x] **Phase 35: Role Dashboard Consistency Pass** - Harmonize Student, Teacher, Parent, and Admin dashboards while preserving each role's data boundaries. (completed 2026-05-27)
-- [ ] **Phase 36: Backend & DB Hot Path Optimization** - Optimize bounded backend/database paths without weakening authorization, reason gates, audit, or metadata-only operations.
+- [x] **Phase 36: Backend & DB Hot Path Optimization** - Optimize bounded backend/database paths without weakening authorization, reason gates, audit, or metadata-only operations. (completed 2026-05-27)
 - [ ] **Phase 37: Frontend Data Loading & Render Optimization** - Reduce route waterfalls, duplicate requests, unsafe caching risk, and perceived slowness across role dashboards.
 - [ ] **Phase 38: UI/Performance Release Gates** - Prove UI consistency, performance improvement evidence, privacy redlines, and documented constraints before milestone closure.
 
@@ -90,7 +90,7 @@
 4. Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
 5. Any new index or migration is tied to observed query predicates and passes SQLAlchemy/Alembic metadata alignment, schema drift, and privacy regression checks.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 ### Phase 37: Frontend Data Loading & Render Optimization
 
@@ -170,7 +170,7 @@
 | 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
 | 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
 | 35. Role Dashboard Consistency Pass | 5/5 | Complete    | 2026-05-27 |
-| 36. Backend & DB Hot Path Optimization | 4/5 | In Progress|  |
+| 36. Backend & DB Hot Path Optimization | 5/5 | Complete   | 2026-05-27 |
 | 37. Frontend Data Loading & Render Optimization | 0/TBD | Not started | - |
 | 38. UI/Performance Release Gates | 0/TBD | Not started | - |
 
