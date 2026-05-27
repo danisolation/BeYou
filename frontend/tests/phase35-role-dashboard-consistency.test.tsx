@@ -182,13 +182,13 @@ describe("Phase 35 role dashboard consistency regression", () => {
           is_demo: true,
         },
       ],
-      "/api/notifications/mood-check-in/reminder": null,
+      "/api/student/reminders/mood-check-in": null,
     });
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Vai trò học sinh")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Xin chào, Nguyễn" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Xin chào, Nguyễn" })).toBeInTheDocument();
+    expect(screen.getByText("Vai trò học sinh")).toBeInTheDocument();
     expect(screen.getByText("Thông tin của em là riêng tư theo mặc định")).toBeInTheDocument();
     expect(
       screen.getByText(

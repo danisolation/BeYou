@@ -73,7 +73,7 @@ describe("Phase 34 final UI regression", () => {
     mockFetch({
       "/api/student/profile": studentProfile,
       "/api/student/sos-alerts": [],
-      "/api/notifications/mood-check-in/reminder": null,
+      "/api/student/reminders/mood-check-in": null,
     });
 
     render(<StudentDashboardPage />);
