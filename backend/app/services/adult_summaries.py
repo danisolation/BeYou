@@ -228,20 +228,26 @@ def get_adult_self_check_summaries(
     if student is None or student.role != UserRole.STUDENT.value:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh.")
 
-    attempts = list(
+    latest_attempt = db.scalar(
+        select(SelfCheckAttempt)
+        .where(SelfCheckAttempt.student_id == student_id)
+        .order_by(SelfCheckAttempt.completed_at.desc(), SelfCheckAttempt.id.desc())
+        .limit(1)
+    )
+    recent_cutoff = utc_now() - timedelta(days=RECENT_SUMMARY_DAYS)
+    recent_attempts = list(
         db.scalars(
             select(SelfCheckAttempt)
-            .where(SelfCheckAttempt.student_id == student_id)
+            .where(
+                SelfCheckAttempt.student_id == student_id,
+                SelfCheckAttempt.completed_at >= recent_cutoff,
+            )
             .order_by(SelfCheckAttempt.completed_at.desc(), SelfCheckAttempt.id.desc())
+            .limit(RECENT_SUMMARY_LIMIT)
         )
     )
-    latest_summary = _summary_item(attempts[0]) if attempts else None
-    recent_cutoff = utc_now() - timedelta(days=RECENT_SUMMARY_DAYS)
-    recent_summaries = [
-        _summary_item(attempt)
-        for attempt in attempts
-        if attempt.completed_at >= recent_cutoff
-    ][:RECENT_SUMMARY_LIMIT]
+    latest_summary = _summary_item(latest_attempt) if latest_attempt else None
+    recent_summaries = [_summary_item(attempt) for attempt in recent_attempts]
 
     record_audit_event(
         db,
