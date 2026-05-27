@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Bot, ShieldAlert, Users } from "lucide-react";
 
 import { StitchCard } from "@/components/stitch-card";
-import { ErrorState, LoadingState } from "@/components/ui-primitives";
+import { ErrorState } from "@/components/ui-primitives";
+import { DashboardSkeleton } from "@/components/skeletons";
 import { loadParentDashboard, type AdultDashboardData } from "@/lib/adult-dashboard-loader";
 
 export default function ParentDashboardPage() {
@@ -32,7 +33,7 @@ export default function ParentDashboardPage() {
     return () => { isActive = false; };
   }, []);
 
-  if (isLoading) return <LoadingState />;
+  if (isLoading) return <DashboardSkeleton cards={2} />;
   if (loadFailed || dashboardData === null) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   const childCount = dashboardData.students.length;

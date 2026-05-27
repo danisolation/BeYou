@@ -13,7 +13,8 @@ import {
 } from "lucide-react";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
-import { LoadingState, PrivacyBoundaryCard } from "@/components/ui-primitives";
+import { PrivacyBoundaryCard } from "@/components/ui-primitives";
+import { DashboardSkeleton } from "@/components/skeletons";
 import { StitchCard } from "@/components/stitch-card";
 import { listLinks, listUsers } from "@/lib/admin-api";
 
@@ -36,6 +37,8 @@ export default function AdminDashboardPage() {
 
     return () => { isActive = false; };
   }, []);
+
+  if (isLoading) return <DashboardSkeleton cards={8} />;
 
   return (
     <div className="space-y-8">
@@ -121,7 +124,7 @@ export default function AdminDashboardPage() {
           variant="circular"
           icon={<Users size={28} />}
           title="Tài khoản"
-          description={isLoading ? "Đang tải..." : `${previews.users} tài khoản demo`}
+          description={`${previews.users} tài khoản demo`}
           ctaLabel="Quản lý tài khoản"
           ctaHref="/admin/users"
         />
@@ -129,7 +132,7 @@ export default function AdminDashboardPage() {
           variant="circular"
           icon={<Link2 size={28} />}
           title="Liên kết"
-          description={isLoading ? "Đang tải..." : `${previews.links} liên kết hiện có`}
+          description={`${previews.links} liên kết hiện có`}
           ctaLabel="Quản lý liên kết"
           ctaHref="/admin/links"
         />
