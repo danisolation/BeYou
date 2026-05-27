@@ -117,7 +117,7 @@ export default function LoginPage() {
         <div className="flex min-h-[calc(100dvh-8rem)] items-center">
           <section className="grid w-full gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             {/* Left: Login form */}
-            <div className="rounded-card bg-white p-6 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
+            <div className="order-1 rounded-card bg-white p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
               <h1 className="text-headline-lg text-on-background">Đăng nhập</h1>
               <p className="mt-2 text-body-md text-on-background/70">
                 Vào không gian hỗ trợ phù hợp với vai trò của bạn.
@@ -217,7 +217,7 @@ export default function LoginPage() {
             </div>
 
             {/* Right: 3 Branding cards */}
-            <div className="flex flex-col gap-4">
+            <div className="order-2 hidden flex-col gap-4 md:flex">
               {brandingCards.map((card) => (
                 <div
                   key={card.title}
