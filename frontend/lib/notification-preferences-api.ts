@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api";
+import { dashboardRead } from "@/lib/dashboard-loading";
 
 export type ChannelBoundary = {
   key: string;
@@ -58,7 +59,7 @@ export type MoodReminderAction = {
 };
 
 export function getNotificationPreferences() {
-  return apiFetch<StudentNotificationPreference>("/api/student/notification-preferences");
+  return dashboardRead<StudentNotificationPreference>("/api/student/notification-preferences");
 }
 
 export function updateNotificationPreferences(payload: StudentNotificationPreferenceUpdate) {
@@ -69,7 +70,7 @@ export function updateNotificationPreferences(payload: StudentNotificationPrefer
 }
 
 export function getMoodCheckInReminder() {
-  return apiFetch<MoodCheckInReminder>("/api/student/reminders/mood-check-in");
+  return dashboardRead<MoodCheckInReminder>("/api/student/reminders/mood-check-in");
 }
 
 export function dismissMoodCheckInReminder() {

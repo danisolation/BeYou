@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api";
+import { dashboardRead } from "@/lib/dashboard-loading";
 
 export type SosSeverity = "support" | "urgent";
 export type SosSource = "student_dashboard" | "self_check_result" | "chatbot" | "demo_seed";
@@ -98,15 +99,15 @@ export function createStudentSosAlert(payload: CreateSosAlertPayload) {
 }
 
 export function listStudentSosAlerts() {
-  return apiFetch<SosAlert[]>("/api/student/sos-alerts");
+  return dashboardRead<SosAlert[]>("/api/student/sos-alerts");
 }
 
 export function getTeacherSosAlert(alertId: string) {
-  return apiFetch<SosAlert>(`/api/teacher/sos-alerts/${alertId}`);
+  return dashboardRead<SosAlert>(`/api/teacher/sos-alerts/${alertId}`);
 }
 
 export function getParentSosAlert(alertId: string) {
-  return apiFetch<SosAlert>(`/api/parent/sos-alerts/${alertId}`);
+  return dashboardRead<SosAlert>(`/api/parent/sos-alerts/${alertId}`);
 }
 
 export function updateTeacherSosStatus(alertId: string, payload: UpdateSosStatusPayload) {
@@ -117,15 +118,15 @@ export function updateTeacherSosStatus(alertId: string, payload: UpdateSosStatus
 }
 
 export function getTeacherSupportOverview() {
-  return apiFetch<AdultSupportOverviewItem[]>("/api/teacher/support-overview");
+  return dashboardRead<AdultSupportOverviewItem[]>("/api/teacher/support-overview");
 }
 
 export function getParentSupportOverview() {
-  return apiFetch<AdultSupportOverviewItem[]>("/api/parent/support-overview");
+  return dashboardRead<AdultSupportOverviewItem[]>("/api/parent/support-overview");
 }
 
 export function getNotifications() {
-  return apiFetch<InAppNotification[]>("/api/notifications");
+  return dashboardRead<InAppNotification[]>("/api/notifications");
 }
 
 export function markNotificationRead(notificationId: string) {

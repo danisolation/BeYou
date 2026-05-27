@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api";
+import { dashboardRead } from "@/lib/dashboard-loading";
 
 export type AdminUser = {
   id: string;
@@ -52,7 +53,7 @@ export type AdminLinkCreate = {
 };
 
 export function listUsers(): Promise<AdminUser[]> {
-  return apiFetch<AdminUser[]>("/api/admin/users");
+  return dashboardRead<AdminUser[]>("/api/admin/users");
 }
 
 export function createUser(payload: AdminUserCreate): Promise<AdminUser> {
@@ -74,7 +75,7 @@ export function deleteUser(userId: string): Promise<AdminUser | null> {
 }
 
 export function listLinks(): Promise<AdminLink[]> {
-  return apiFetch<AdminLink[]>("/api/admin/links");
+  return dashboardRead<AdminLink[]>("/api/admin/links");
 }
 
 export function createLink(payload: AdminLinkCreate): Promise<AdminLink> {
