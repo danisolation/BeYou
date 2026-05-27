@@ -35,7 +35,7 @@ export default function StudentDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Welcome header */}
-      <div>
+      <div className="animate-fade-in">
         <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
           Chào {name}!
         </h1>
@@ -53,6 +53,7 @@ export default function StudentDashboardPage() {
           description="Kiểm tra sức khỏe tâm lý qua các bài test ngắn"
           ctaLabel="Vào test"
           ctaHref="/student/self-checks"
+          className="animate-fade-in-up delay-100"
         />
         <StitchCard
           variant="circular"
@@ -61,6 +62,7 @@ export default function StudentDashboardPage() {
           description="Ghi nhận cảm xúc mỗi ngày, theo dõi xu hướng tâm trạng"
           ctaLabel="Vào check-in"
           ctaHref="/student/mood-check-ins"
+          className="animate-fade-in-up delay-200"
         />
         <StitchCard
           variant="circular"
@@ -69,6 +71,7 @@ export default function StudentDashboardPage() {
           description="Luyện tập xử lý các tình huống thực tế ở trường"
           ctaLabel="Vào thực hành"
           ctaHref="/student/scenarios"
+          className="animate-fade-in-up delay-300"
         />
         <StitchCard
           variant="circular"
@@ -77,11 +80,12 @@ export default function StudentDashboardPage() {
           description="Tùy chỉnh thông báo, quyền riêng tư và cài đặt SOS"
           ctaLabel="Vào thiết lập"
           ctaHref="/student/notification-preferences"
+          className="animate-fade-in-up delay-400"
         />
       </div>
 
       {/* Peerlight AI Quick Access */}
-      <div className="rounded-[32px] bg-primary-container p-6">
+      <div className="animate-fade-in delay-300 rounded-[32px] bg-primary-container p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <Bot className="text-on-primary-container" size={32} />
           <div className="flex-1">

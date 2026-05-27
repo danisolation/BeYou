@@ -42,7 +42,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
+      <div className="animate-fade-in">
         <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
           Xin chào, quản trị viên!
         </h1>
@@ -79,6 +79,7 @@ export default function AdminDashboardPage() {
           description="Readiness, email SOS và audit metadata"
           ctaLabel="Mở bảng vận hành"
           ctaHref="/admin/operations"
+          className="animate-fade-in-up delay-100"
         />
         <StitchCard
           variant="circular"
@@ -87,6 +88,7 @@ export default function AdminDashboardPage() {
           description="Xu hướng tổng hợp đã ẩn nhóm nhỏ"
           ctaLabel="Xem báo cáo"
           ctaHref="/admin/reports"
+          className="animate-fade-in-up delay-200"
         />
         <StitchCard
           variant="circular"
@@ -95,6 +97,7 @@ export default function AdminDashboardPage() {
           description="Từ khóa nguy cơ và lời nhắc hỗ trợ"
           ctaLabel="Cài đặt chatbot"
           ctaHref="/admin/chatbot"
+          className="animate-fade-in-up delay-300"
         />
         <StitchCard
           variant="circular"
@@ -103,6 +106,7 @@ export default function AdminDashboardPage() {
           description="Nhãn, prompt và guidance check-in"
           ctaLabel="Cấu hình"
           ctaHref="/admin/mood-checkins"
+          className="animate-fade-in-up delay-100"
         />
         <StitchCard
           variant="circular"
@@ -111,6 +115,7 @@ export default function AdminDashboardPage() {
           description="Tự kiểm tra, tình huống và bài test"
           ctaLabel="Quản lý nội dung"
           ctaHref="/admin/content"
+          className="animate-fade-in-up delay-200"
         />
         <StitchCard
           variant="circular"
@@ -119,6 +124,7 @@ export default function AdminDashboardPage() {
           description="Cấu hình nhắc nhở và quyền truy cập"
           ctaLabel="Mở chính sách"
           ctaHref="/admin/privacy-policy"
+          className="animate-fade-in-up delay-300"
         />
         <StitchCard
           variant="circular"
@@ -127,6 +133,7 @@ export default function AdminDashboardPage() {
           description={`${previews.users} tài khoản demo`}
           ctaLabel="Quản lý tài khoản"
           ctaHref="/admin/users"
+          className="animate-fade-in-up delay-100"
         />
         <StitchCard
           variant="circular"
@@ -135,6 +142,7 @@ export default function AdminDashboardPage() {
           description={`${previews.links} liên kết hiện có`}
           ctaLabel="Quản lý liên kết"
           ctaHref="/admin/links"
+          className="animate-fade-in-up delay-200"
         />
       </div>
     </div>
