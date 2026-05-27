@@ -56,7 +56,7 @@ export function PageHeader({ eyebrow, title, description, actions, children, cla
   return (
     <header className={cn("flex flex-col gap-6 rounded-3xl bg-secondary p-6 sm:p-8", className)}>
       <div className="max-w-3xl">
-        {eyebrow ? <p className="text-label font-semibold uppercase tracking-[0.18em] text-accent">{eyebrow}</p> : null}
+        {eyebrow ? <p className="text-label font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p> : null}
         <h1 className="mt-2 text-display">{title}</h1>
         {description ? <p className="mt-3 text-body">{description}</p> : null}
       </div>
@@ -67,7 +67,7 @@ export function PageHeader({ eyebrow, title, description, actions, children, cla
 
 export function Section({ title, description, actions, children, className }: SectionProps) {
   return (
-    <section className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-[#D7EFE8]", className)}>
+    <section className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>
       {title || description || actions ? (
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -83,15 +83,15 @@ export function Section({ title, description, actions, children, className }: Se
 }
 
 export function SurfaceCard({ children, className }: PrimitiveProps) {
-  return <div className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-[#D7EFE8]", className)}>{children}</div>;
+  return <div className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>{children}</div>;
 }
 
 export function EntryCard({ title, description, meta, badge, children, className }: EntryCardProps) {
   return (
-    <article className={cn("rounded-3xl bg-white p-5 shadow-sm ring-1 ring-[#D7EFE8]", className)}>
+    <article className={cn("rounded-3xl bg-white p-5 shadow-sm ring-1 ring-outline-variant", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          {meta ? <div className="mb-2 text-label text-accent">{meta}</div> : null}
+          {meta ? <div className="mb-2 text-label text-primary">{meta}</div> : null}
           <h3 className="text-heading">{title}</h3>
           {description ? <p className="mt-2 text-body">{description}</p> : null}
         </div>
@@ -125,12 +125,12 @@ export function StatusBadge({ tone = "neutral", className, children }: StatusBad
 }
 
 export function ResponsiveTable({ children, className }: PrimitiveProps) {
-  return <div className={cn("overflow-x-auto rounded-3xl ring-1 ring-[#D7EFE8]", className)}>{children}</div>;
+  return <div className={cn("overflow-x-auto rounded-3xl ring-1 ring-outline-variant", className)}>{children}</div>;
 }
 
 export function LoadingState({ message = "Đang tải thông tin...", className }: LoadingStateProps) {
   return (
-    <div role="status" aria-live="polite" className={cn("rounded-3xl bg-white p-6 text-body shadow-sm ring-1 ring-[#D7EFE8]", className)}>
+    <div role="status" aria-live="polite" className={cn("rounded-3xl bg-white p-6 text-body shadow-sm ring-1 ring-outline-variant", className)}>
       {message}
     </div>
   );
@@ -157,8 +157,8 @@ export function PrivacyBoundaryCard({
   className,
 }: PrivacyBoundaryCardProps) {
   return (
-    <aside className={cn("rounded-3xl bg-secondary p-6 ring-1 ring-[#BFE7D9]", className)}>
-      <p className="text-label font-semibold uppercase tracking-[0.18em] text-accent">Ranh giới quyền riêng tư</p>
+    <aside className={cn("rounded-3xl bg-secondary p-6 ring-1 ring-outline-variant", className)}>
+      <p className="text-label font-semibold uppercase tracking-[0.18em] text-primary">Ranh giới quyền riêng tư</p>
       <h2 className="mt-2 text-heading">{title}</h2>
       <p className="mt-3 text-body">{description}</p>
       {children ? <div className="mt-4">{children}</div> : null}
