@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Bell, Lock, ShieldAlert } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import {
@@ -31,7 +32,7 @@ function payloadFromState(preference: StudentNotificationPreference): StudentNot
   };
 }
 
-export default function StudentNotificationPreferencesPage() {
+export default function StudentSettingsPage() {
   const [preference, setPreference] = useState<StudentNotificationPreference | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -41,7 +42,7 @@ export default function StudentNotificationPreferencesPage() {
   useEffect(() => {
     getNotificationPreferences()
       .then(setPreference)
-      .catch(() => setErrorMessage("Chưa tải được cài đặt nhắc nhở. Hãy thử lại sau."))
+      .catch(() => setErrorMessage("Chưa tải được cài đặt. Hãy thử lại sau."))
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -54,18 +55,18 @@ export default function StudentNotificationPreferencesPage() {
       setPreference(saved);
       setSuccessMessage(message);
     } catch {
-      setErrorMessage("Chưa lưu được cài đặt nhắc nhở. Hãy kiểm tra lại và thử lần nữa.");
+      setErrorMessage("Chưa lưu được cài đặt. Hãy kiểm tra lại và thử lần nữa.");
     } finally {
       setIsSaving(false);
     }
   }
 
   if (isLoading) {
-    return <p>Đang tải cài đặt nhắc nhở...</p>;
+    return <p className="p-6 text-body">Đang tải cài đặt...</p>;
   }
 
   if (preference === null) {
-    return <EmptyState heading="Chưa mở được cài đặt nhắc nhở" body={errorMessage ?? undefined} />;
+    return <EmptyState heading="Chưa mở được cài đặt" body={errorMessage ?? undefined} />;
   }
 
   const remindersEnabled = preference.in_app_reminders_enabled && preference.mood_checkin_reminders_enabled;
@@ -73,25 +74,32 @@ export default function StudentNotificationPreferencesPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl bg-secondary p-5 shadow-sm sm:p-6">
-        <h1 className="text-display">Nhắc nhở check-in</h1>
-        <p className="mt-4 text-body">
-          Em kiểm soát việc Peerlight AI có nhắc check-in cảm xúc hay không. Nhắc nhở v1.4 chỉ hiện trong Peerlight AI, không gửi cho
-          người lớn, không chấm điểm nguy cơ và không tự tạo SOS.
+      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+        <h1 className="text-display">Cài đặt</h1>
+        <p className="mt-3 text-body">
+          Quản lý nhắc nhở, cài đặt SOS và quyền riêng tư của em tại đây.
         </p>
-        <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent" href="/student">
-          Quay lại bảng điều khiển
+        <Link className="mt-4 inline-flex min-h-11 items-center font-semibold text-primary no-underline hover:underline" href="/student">
+          ← Quay lại bảng điều khiển
         </Link>
       </div>
 
+      {/* Section 1: Notifications & Reminders */}
       <form
-        className="space-y-5 rounded-3xl bg-white p-5 shadow-sm sm:p-6"
+        className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm"
         onSubmit={(event) => {
           event.preventDefault();
-          void save(preference, "Đã lưu cài đặt nhắc nhở của em.");
+          void save(preference, "Đã lưu cài đặt nhắc nhở.");
         }}
       >
-        <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+            <Bell size={18} className="text-primary" aria-hidden="true" />
+          </div>
+          <h2 className="text-heading">Thông báo & Nhắc nhở</h2>
+        </div>
+
+        <label className="mt-5 flex items-start gap-3 rounded-card border border-outline-variant p-4">
           <input
             type="checkbox"
             checked={remindersEnabled}
@@ -107,14 +115,14 @@ export default function StudentNotificationPreferencesPage() {
             className="mt-1"
           />
           <span>
-            <span className="block font-semibold">Bật nhắc nhở check-in trong Peerlight AI</span>
-            <span className="mt-1 block text-label">
+            <span className="block font-semibold text-on-background">Bật nhắc nhở check-in trong Peerlight AI</span>
+            <span className="mt-1 block text-label text-on-surface-variant">
               Em có thể tắt hoặc tạm dừng bất cứ lúc nào. Việc bỏ qua nhắc nhở không bị xem là tín hiệu nguy cơ.
             </span>
           </span>
         </label>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="mt-5 grid gap-4 md:grid-cols-3">
           <label className="block text-label" htmlFor="cadence">
             Tần suất
             <select
@@ -126,7 +134,7 @@ export default function StudentNotificationPreferencesPage() {
                   reminder_cadence: event.target.value as StudentNotificationPreference["reminder_cadence"],
                 })
               }
-              className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-surface px-4"
             >
               <option value="weekly">Hàng tuần</option>
               <option value="daily">Hàng ngày</option>
@@ -140,7 +148,7 @@ export default function StudentNotificationPreferencesPage() {
               type="time"
               value={preference.quiet_hours_start ?? ""}
               onChange={(event) => setPreference({ ...preference, quiet_hours_start: event.target.value || null })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-surface px-4"
             />
           </label>
           <label className="block text-label" htmlFor="quiet-end">
@@ -150,34 +158,20 @@ export default function StudentNotificationPreferencesPage() {
               type="time"
               value={preference.quiet_hours_end ?? ""}
               onChange={(event) => setPreference({ ...preference, quiet_hours_end: event.target.value || null })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-surface px-4"
             />
           </label>
         </div>
 
-        <section className="rounded-3xl bg-secondary p-4">
-          <h2 className="text-heading">Kênh nhắc nhở</h2>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            {preference.channel_boundaries.map((channel) => (
-              <article key={channel.key} className="rounded-2xl bg-white p-4">
-                <p className="font-semibold">{channel.label}</p>
-                <p className="mt-1 text-label">
-                  {channel.available ? "Đang hỗ trợ trong v1.4" : "Đang hoãn để cần thêm đồng ý và vận hành an toàn"}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-[#D7EFE8] p-4">
-          <h2 className="text-heading">Tạm dừng</h2>
-          <p className="mt-2 text-body">
-            Trạng thái hiện tại: {paused ? `đang tạm dừng đến ${new Date(preference.paused_until ?? "").toLocaleString("vi-VN")}` : "không tạm dừng"}.
+        <div className="mt-5 rounded-card border border-outline-variant bg-surface-container p-4">
+          <h3 className="text-label font-semibold">Tạm dừng nhắc nhở</h3>
+          <p className="mt-2 text-body text-on-surface-variant">
+            {paused ? `Đang tạm dừng đến ${new Date(preference.paused_until ?? "").toLocaleString("vi-VN")}` : "Không tạm dừng"}
           </p>
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="mt-3 flex flex-wrap gap-3">
             <button
               type="button"
-              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
+              className="min-h-11 rounded-2xl border border-outline-variant px-4 font-semibold hover:bg-secondary"
               onClick={() =>
                 void save(
                   { ...preference, paused_until: pauseUntil(1), pause_reason_code: "student_pause_one_day" },
@@ -186,11 +180,11 @@ export default function StudentNotificationPreferencesPage() {
               }
               disabled={isSaving || !remindersEnabled}
             >
-              Tạm dừng 1 ngày
+              1 ngày
             </button>
             <button
               type="button"
-              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
+              className="min-h-11 rounded-2xl border border-outline-variant px-4 font-semibold hover:bg-secondary"
               onClick={() =>
                 void save(
                   { ...preference, paused_until: pauseUntil(7), pause_reason_code: "student_pause_one_week" },
@@ -199,34 +193,89 @@ export default function StudentNotificationPreferencesPage() {
               }
               disabled={isSaving || !remindersEnabled}
             >
-              Tạm dừng 7 ngày
+              7 ngày
             </button>
             <button
               type="button"
-              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-secondary"
+              className="min-h-11 rounded-2xl border border-outline-variant px-4 font-semibold hover:bg-secondary"
               onClick={() =>
                 void save(
                   { ...preference, paused_until: null, pause_reason_code: null },
-                  "Đã tiếp tục nhắc nhở khi đủ điều kiện.",
+                  "Đã tiếp tục nhắc nhở.",
                 )
               }
               disabled={isSaving}
             >
-              Tiếp tục nhắc nhở
+              Tiếp tục
             </button>
           </div>
-        </section>
+        </div>
 
-        {errorMessage ? <p role="alert" className="text-body text-red-700">{errorMessage}</p> : null}
-        {successMessage ? <p role="status" className="text-body text-accent">{successMessage}</p> : null}
+        {errorMessage ? <p role="alert" className="mt-4 text-body text-error">{errorMessage}</p> : null}
+        {successMessage ? <p role="status" className="mt-4 text-body text-primary">{successMessage}</p> : null}
         <button
           type="submit"
           disabled={isSaving}
-          className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60"
+          className="mt-5 min-h-11 rounded-2xl bg-primary px-5 font-semibold text-on-primary disabled:opacity-60"
         >
-          {isSaving ? "Đang lưu..." : "Lưu cài đặt"}
+          {isSaving ? "Đang lưu..." : "Lưu cài đặt nhắc nhở"}
         </button>
       </form>
+
+      {/* Section 2: SOS Settings */}
+      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-error-container">
+            <ShieldAlert size={18} className="text-error" aria-hidden="true" />
+          </div>
+          <h2 className="text-heading">Cài đặt SOS</h2>
+        </div>
+        <div className="mt-4 space-y-4">
+          <div className="rounded-card border border-outline-variant bg-surface-container p-4">
+            <h3 className="text-label font-semibold">Khi em gửi SOS</h3>
+            <ul className="mt-2 space-y-1 text-body text-on-surface-variant">
+              <li>• Tất cả người lớn tin tưởng được liên kết sẽ nhận thông báo</li>
+              <li>• Thông tin được gửi qua hệ thống Peerlight AI an toàn</li>
+              <li>• Em không cần giải thích chi tiết nếu chưa sẵn sàng</li>
+            </ul>
+          </div>
+          <div className="rounded-card border border-outline-variant bg-surface-container p-4">
+            <h3 className="text-label font-semibold">Quản lý người nhận SOS</h3>
+            <p className="mt-2 text-body text-on-surface-variant">
+              Danh sách người nhận SOS dựa trên người lớn tin tưởng em đã chọn trong kế hoạch hỗ trợ.
+            </p>
+            <Link
+              href="/student/support-plan"
+              className="mt-3 inline-flex min-h-11 items-center font-semibold text-primary no-underline hover:underline"
+            >
+              Quản lý người lớn tin tưởng →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Section 3: Privacy */}
+      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+            <Lock size={18} className="text-primary" aria-hidden="true" />
+          </div>
+          <h2 className="text-heading">Quyền riêng tư</h2>
+        </div>
+        <div className="mt-4 space-y-3">
+          <p className="text-body text-on-surface-variant">
+            Peerlight AI bảo vệ quyền riêng tư của em. Nội dung trò chuyện không được chia sẻ với người lớn trừ khi em chọn chia sẻ hoặc trong trường hợp SOS khẩn cấp.
+          </p>
+          <p className="text-body text-on-surface-variant">
+            Dữ liệu check-in cảm xúc chỉ hiển thị xu hướng tổng quát cho người lớn, không hiển thị nội dung chi tiết.
+          </p>
+          <p className="text-label">
+            <a href="/privacy-policy" className="font-semibold text-primary no-underline hover:underline">
+              Đọc chính sách quyền riêng tư đầy đủ →
+            </a>
+          </p>
+        </div>
+      </section>
     </section>
   );
 }
