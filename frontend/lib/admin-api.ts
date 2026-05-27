@@ -52,8 +52,13 @@ export type AdminLinkCreate = {
   relationship_type: "teacher" | "parent";
 };
 
-export function listUsers(): Promise<AdminUser[]> {
-  return dashboardRead<AdminUser[]>("/api/admin/users");
+type AdminPreviewListOptions = {
+  limit?: number;
+};
+
+export function listUsers(options: AdminPreviewListOptions = {}): Promise<AdminUser[]> {
+  const limit = options.limit ?? 10;
+  return dashboardRead<AdminUser[]>(`/api/admin/users?limit=${limit}`);
 }
 
 export function createUser(payload: AdminUserCreate): Promise<AdminUser> {
@@ -74,8 +79,9 @@ export function deleteUser(userId: string): Promise<AdminUser | null> {
   return apiFetch<AdminUser | null>(`/api/admin/users/${userId}`, { method: "DELETE" });
 }
 
-export function listLinks(): Promise<AdminLink[]> {
-  return dashboardRead<AdminLink[]>("/api/admin/links");
+export function listLinks(options: AdminPreviewListOptions = {}): Promise<AdminLink[]> {
+  const limit = options.limit ?? 10;
+  return dashboardRead<AdminLink[]>(`/api/admin/links?limit=${limit}`);
 }
 
 export function createLink(payload: AdminLinkCreate): Promise<AdminLink> {
