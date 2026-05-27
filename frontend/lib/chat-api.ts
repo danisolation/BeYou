@@ -98,3 +98,37 @@ export function updateAdminChatbotConfig(payload: ChatbotSafetyConfigUpdate) {
     body: JSON.stringify(payload),
   });
 }
+
+// ---------------------------------------------------------------------------
+// Adult (teacher/parent) chat API helpers
+// ---------------------------------------------------------------------------
+
+export function sendTeacherChatMessage(payload: SendChatMessagePayload) {
+  return apiFetch<ChatSendResponse>("/api/teacher/chat/messages", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listTeacherChatThreads() {
+  return apiFetch<ChatThread[]>("/api/teacher/chat/threads");
+}
+
+export function getTeacherChatTranscript(threadId: string) {
+  return apiFetch<ChatTranscript>(`/api/teacher/chat/threads/${threadId}/messages`);
+}
+
+export function sendParentChatMessage(payload: SendChatMessagePayload) {
+  return apiFetch<ChatSendResponse>("/api/parent/chat/messages", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function listParentChatThreads() {
+  return apiFetch<ChatThread[]>("/api/parent/chat/threads");
+}
+
+export function getParentChatTranscript(threadId: string) {
+  return apiFetch<ChatTranscript>(`/api/parent/chat/threads/${threadId}/messages`);
+}

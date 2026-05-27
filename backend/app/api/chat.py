@@ -20,8 +20,11 @@ from app.schemas.chat import (
 )
 from app.services.chat import (
     get_admin_safety_config,
+    get_adult_chat_transcript,
     get_student_chat_transcript,
+    list_adult_chat_threads,
     list_student_chat_threads,
+    send_adult_chat_message,
     send_chat_message,
     update_admin_safety_config,
 )
@@ -86,3 +89,85 @@ def patch_chatbot_config(
     require_same_site_mutation(request, settings)
     require_role(current_user, UserRole.ADMIN)
     return update_admin_safety_config(db, actor=current_user, payload=payload, settings=settings)
+
+
+# ---------------------------------------------------------------------------
+# Teacher chat endpoints
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/teacher/chat/messages",
+    response_model=ChatSendResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_teacher_chat_message(
+    payload: ChatMessageCreate,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> ChatSendResponse:
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.TEACHER)
+    return send_adult_chat_message(db, user=current_user, payload=payload, settings=settings)
+
+
+@router.get("/teacher/chat/threads", response_model=list[ChatThreadResponse])
+def get_teacher_chat_threads(
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> list[ChatThreadResponse]:
+    require_role(current_user, UserRole.TEACHER)
+    return list_adult_chat_threads(db, user=current_user)
+
+
+@router.get("/teacher/chat/threads/{thread_id}/messages", response_model=ChatTranscriptResponse)
+def get_teacher_chat_messages(
+    thread_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> ChatTranscriptResponse:
+    require_role(current_user, UserRole.TEACHER)
+    return get_adult_chat_transcript(db, user=current_user, thread_id=thread_id)
+
+
+# ---------------------------------------------------------------------------
+# Parent chat endpoints
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/parent/chat/messages",
+    response_model=ChatSendResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def post_parent_chat_message(
+    payload: ChatMessageCreate,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> ChatSendResponse:
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.PARENT)
+    return send_adult_chat_message(db, user=current_user, payload=payload, settings=settings)
+
+
+@router.get("/parent/chat/threads", response_model=list[ChatThreadResponse])
+def get_parent_chat_threads(
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> list[ChatThreadResponse]:
+    require_role(current_user, UserRole.PARENT)
+    return list_adult_chat_threads(db, user=current_user)
+
+
+@router.get("/parent/chat/threads/{thread_id}/messages", response_model=ChatTranscriptResponse)
+def get_parent_chat_messages(
+    thread_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+) -> ChatTranscriptResponse:
+    require_role(current_user, UserRole.PARENT)
+    return get_adult_chat_transcript(db, user=current_user, thread_id=thread_id)
