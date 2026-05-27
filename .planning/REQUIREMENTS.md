@@ -38,11 +38,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Frontend Performance
 
-- [ ] **FEPERF-01**: Role dashboards reduce avoidable fetch waterfalls and duplicate requests while keeping credentialed API calls cookie-based.
+- [x] **FEPERF-01**: Role dashboards reduce avoidable fetch waterfalls and duplicate requests while keeping credentialed API calls cookie-based.
 - [ ] **FEPERF-02**: Role dashboards provide consistent perceived responsiveness through scoped loading states, skeletons or placeholders, and clear error/empty states.
-- [ ] **FEPERF-03**: Sensitive role data remains no-store or uses explicitly scoped cache keys and invalidation that respect user, role, resource, reason, policy, relationship, runtime, and logout boundaries.
-- [ ] **FEPERF-04**: Shared UI primitives do not cause route bundle bloat or cross-role page imports; Next build output is reviewed for affected routes.
-- [ ] **FEPERF-05**: Frontend performance work preserves privacy acknowledgement routing, no browser token storage, role dashboard routing, and existing auth capabilities behavior.
+- [x] **FEPERF-03**: Sensitive role data remains no-store or uses explicitly scoped cache keys and invalidation that respect user, role, resource, reason, policy, relationship, runtime, and logout boundaries.
+- [x] **FEPERF-04**: Shared UI primitives do not cause route bundle bloat or cross-role page imports; Next build output is reviewed for affected routes.
+- [x] **FEPERF-05**: Frontend performance work preserves privacy acknowledgement routing, no browser token storage, role dashboard routing, and existing auth capabilities behavior.
 
 ### Regression and Release Gates
 
@@ -108,11 +108,11 @@ Deferred to future milestones, not in v1.6 scope.
 | DBPERF-03 | Phase 36 | Complete |
 | DBPERF-04 | Phase 36 | Complete |
 | DBPERF-05 | Phase 36 | Complete |
-| FEPERF-01 | Phase 37 | Pending |
+| FEPERF-01 | Phase 37 | Complete |
 | FEPERF-02 | Phase 37 | Pending |
-| FEPERF-03 | Phase 37 | Pending |
-| FEPERF-04 | Phase 37 | Pending |
-| FEPERF-05 | Phase 37 | Pending |
+| FEPERF-03 | Phase 37 | Complete |
+| FEPERF-04 | Phase 37 | Complete |
+| FEPERF-05 | Phase 37 | Complete |
 | QA-01 | Phase 38 | Pending |
 | QA-02 | Phase 38 | Pending |
 | QA-03 | Phase 38 | Pending |
