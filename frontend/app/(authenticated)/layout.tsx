@@ -134,7 +134,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       >
         Bỏ qua điều hướng
       </a>
-      <header className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur dark:bg-[#1a2940]/95 sm:px-6">
+      <header role="banner" className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur dark:bg-[#1a2940]/95 sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0 overflow-hidden">
             <p className="text-label font-semibold uppercase tracking-[0.2em] text-primary">Peerlight AI</p>
@@ -170,7 +170,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
         </div>
       </header>
 
-      <main id="main-content" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <main id="main-content" role="main" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         {privacyRedirectRequired ? (
           <PrivacyBoundaryCard
             title="Cần xác nhận quyền riêng tư trước khi vào cổng học sinh."
