@@ -44,7 +44,7 @@ export default function SelfCheckHistoryPage() {
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Xem lịch sử test tâm lý</h1>
+        <h1 className="text-2xl font-bold">Xem lịch sử test tâm lý</h1>
         <p className="mt-3 text-body">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>

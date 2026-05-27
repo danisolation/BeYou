@@ -83,7 +83,7 @@ export function AdultSummaryDetail({
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-display">Tóm tắt được phép xem</h1>
+          <h1 className="text-2xl font-bold">Tóm tắt được phép xem</h1>
           {summary.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-body">{sectionTitle}</p>

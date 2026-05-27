@@ -66,7 +66,7 @@ export function SosAlertDetail({
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-display">Trạng thái SOS</h1>
           {alert.is_demo ? <DemoBadge /> : null}
@@ -78,7 +78,7 @@ export function SosAlertDetail({
       </header>
 
       {/* Status and severity */}
-      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <SosStatusBadge status={alert.current_status} />
           <span className="rounded-full border border-outline-variant px-3 py-2 text-label">
@@ -95,7 +95,7 @@ export function SosAlertDetail({
       </section>
 
       {/* Progress timeline */}
-      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
         <h2 className="text-heading">Tiến trình hỗ trợ</h2>
         <div className="mt-4 space-y-3">
           {alert.status_events.length === 0 ? (
@@ -114,7 +114,7 @@ export function SosAlertDetail({
 
       {/* Teacher status update controls */}
       {mode === "teacher" && next ? (
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <h2 className="text-heading">Cập nhật trạng thái</h2>
           <label className="mt-4 block text-label" htmlFor="sos-update-note">
             Ghi chú hỗ trợ (không bắt buộc)
@@ -139,7 +139,7 @@ export function SosAlertDetail({
       ) : null}
 
       {mode === "teacher" && !next ? (
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <p className="text-body">SOS này đã hoàn tất. Hãy tiếp tục hỗ trợ học sinh theo kế hoạch phù hợp.</p>
         </section>
       ) : null}

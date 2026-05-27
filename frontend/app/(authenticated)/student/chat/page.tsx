@@ -121,8 +121,8 @@ export default function StudentChatPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
-        <h1 className="text-display">Peerlight AI</h1>
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <h1 className="text-2xl font-bold">Peerlight AI</h1>
         <p className="mt-3 max-w-3xl text-body">{INTRO_COPY}</p>
         <p className="mt-2 max-w-3xl text-label">{IMMEDIATE_SUPPORT_COPY}</p>
         <p className="mt-2 max-w-3xl text-label">{PRIVATE_CHAT_COPY}</p>
@@ -130,7 +130,7 @@ export default function StudentChatPage() {
 
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-card border border-outline-variant bg-surface p-4 shadow-sm lg:block">
+        <aside className="hidden rounded-2xl border border-outline-variant bg-surface p-4 shadow-sm lg:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -169,7 +169,7 @@ export default function StudentChatPage() {
           </div>
         )}
 
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -226,7 +226,7 @@ function ChatBubble({ message }: { message: ChatMessage }) {
   const paragraphs = message.content.split("\n").filter(Boolean);
   if (message.safety_flagged && !isStudent) {
     return (
-      <article className="rounded-3xl border-2 border-[#F3C0C0] bg-white p-4">
+      <article className="rounded-2xl border-2 border-red-200 bg-white dark:bg-red-950/20 dark:border-red-800/40 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-heading">Mình muốn ưu tiên sự an toàn của em ngay lúc này</h2>
           {message.is_demo ? <DemoBadge /> : null}

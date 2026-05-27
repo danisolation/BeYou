@@ -76,8 +76,8 @@ export default function StudentSettingsPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
-        <h1 className="text-display">Cài đặt</h1>
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <h1 className="text-2xl font-bold">Cài đặt</h1>
         <p className="mt-3 text-body">
           Quản lý nhắc nhở, cài đặt SOS và quyền riêng tư của em tại đây.
         </p>
@@ -87,7 +87,7 @@ export default function StudentSettingsPage() {
       </div>
 
       {/* Section: Appearance */}
-      <section className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
             <Sun size={18} className="text-primary" aria-hidden="true" />
@@ -136,7 +136,7 @@ export default function StudentSettingsPage() {
 
       {/* Section 1: Notifications & Reminders */}
       <form
-        className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm"
+        className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm"
         onSubmit={(event) => {
           event.preventDefault();
           void save(preference, "Đã lưu cài đặt nhắc nhở.");
@@ -149,7 +149,7 @@ export default function StudentSettingsPage() {
           <h2 className="text-heading">Thông báo & Nhắc nhở</h2>
         </div>
 
-        <label className="mt-5 flex items-start gap-3 rounded-card border border-outline-variant p-4">
+        <label className="mt-5 flex items-start gap-3 rounded-2xl border border-outline-variant p-4">
           <input
             type="checkbox"
             checked={remindersEnabled}
@@ -213,7 +213,7 @@ export default function StudentSettingsPage() {
           </label>
         </div>
 
-        <div className="mt-5 rounded-card border border-outline-variant bg-surface-container p-4">
+        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
           <h3 className="text-label font-semibold">Tạm dừng nhắc nhở</h3>
           <p className="mt-2 text-body text-on-surface-variant">
             {paused ? `Đang tạm dừng đến ${new Date(preference.paused_until ?? "").toLocaleString("vi-VN")}` : "Không tạm dừng"}
@@ -273,7 +273,7 @@ export default function StudentSettingsPage() {
       </form>
 
       {/* Section 2: SOS Settings */}
-      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-error-container">
             <ShieldAlert size={18} className="text-error" aria-hidden="true" />
@@ -281,7 +281,7 @@ export default function StudentSettingsPage() {
           <h2 className="text-heading">Cài đặt SOS</h2>
         </div>
         <div className="mt-4 space-y-4">
-          <div className="rounded-card border border-outline-variant bg-surface-container p-4">
+          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
             <h3 className="text-label font-semibold">Khi em gửi SOS</h3>
             <ul className="mt-2 space-y-1 text-body text-on-surface-variant">
               <li>• Tất cả người lớn tin tưởng được liên kết sẽ nhận thông báo</li>
@@ -289,7 +289,7 @@ export default function StudentSettingsPage() {
               <li>• Em không cần giải thích chi tiết nếu chưa sẵn sàng</li>
             </ul>
           </div>
-          <div className="rounded-card border border-outline-variant bg-surface-container p-4">
+          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
             <h3 className="text-label font-semibold">Quản lý người nhận SOS</h3>
             <p className="mt-2 text-body text-on-surface-variant">
               Danh sách người nhận SOS dựa trên người lớn tin tưởng em đã chọn trong kế hoạch hỗ trợ.
@@ -305,7 +305,7 @@ export default function StudentSettingsPage() {
       </section>
 
       {/* Section 3: Privacy */}
-      <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
             <Lock size={18} className="text-primary" aria-hidden="true" />

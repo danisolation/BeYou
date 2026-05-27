@@ -116,7 +116,7 @@ export default function AdminUsersPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-display">Quản lý tài khoản</h1>
+        <h1 className="text-2xl font-bold">Quản lý tài khoản</h1>
         <p className="mt-3 text-body">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
         <p className="mt-2 text-label">
           Thao tác tài khoản chỉ thay đổi quyền truy cập; không mở câu trả lời tự kiểm tra, chat riêng tư hoặc mood note của học sinh.

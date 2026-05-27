@@ -130,12 +130,12 @@ export default function StudentSupportPlanPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Users size={20} className="text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-display">Người lớn tin tưởng</h1>
+          <h1 className="text-2xl font-bold">Người lớn tin tưởng</h1>
           {data.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-4 text-body">
@@ -144,7 +144,7 @@ export default function StudentSupportPlanPage() {
         <p className="mt-3 text-label">
           Kế hoạch này giúp em nói trước điều mình cần; em vẫn quyết định người lớn nào được chọn để xem phần chia sẻ.
         </p>
-        <div className="mt-5 rounded-card border border-outline-variant bg-surface p-5">
+        <div className="mt-5 rounded-2xl border border-outline-variant bg-surface p-5">
           <h2 className="text-heading">Ranh giới chia sẻ</h2>
           <ul className="mt-3 space-y-2 text-body">
             {data.privacy_notes.map((note) => (
@@ -155,7 +155,7 @@ export default function StudentSupportPlanPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <h2 className="text-heading">Chọn người lớn tin tưởng</h2>
           <p className="mt-3 text-body">
             Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
@@ -163,7 +163,7 @@ export default function StudentSupportPlanPage() {
           {hasLinkedAdults ? (
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {data.available_adults.map((adult) => (
-                <label key={adult.id} className="flex gap-3 rounded-card border border-outline-variant p-4 transition-colors hover:bg-surface-container">
+                <label key={adult.id} className="flex gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-surface-container">
                   <input
                     type="checkbox"
                     checked={selectedAdultIds.includes(adult.id)}
@@ -190,7 +190,7 @@ export default function StudentSupportPlanPage() {
           ) : null}
         </section>
 
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <h2 className="text-heading">Điều em muốn chia sẻ</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <TextAreaField
@@ -226,7 +226,7 @@ export default function StudentSupportPlanPage() {
           />
         </section>
 
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <label className="text-label font-semibold" htmlFor="support-plan-status">
             Trạng thái chia sẻ
           </label>

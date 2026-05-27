@@ -45,7 +45,7 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-display">{attempt.test_title}</h1>
+          <h1 className="text-2xl font-bold">{attempt.test_title}</h1>
           {attempt.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-body">Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý.</p>

@@ -44,16 +44,16 @@ export default function ScenarioListPage() {
   }
 
   return (
-    <main className="mx-auto max-w-[960px] space-y-8">
+    <main className="mx-auto max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+          <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <MessageCircle className="h-6 w-6" />
           </div>
-          <h1 className="text-headline-md font-semibold text-on-background">Tình huống xử lý thực tế</h1>
+          <h1 className="text-lg font-semibold text-on-background">Tình huống xử lý thực tế</h1>
         </div>
-        <p className="mt-3 text-body-md text-on-background/70">
+        <p className="mt-3 text-sm text-on-background/70">
           Chọn một tình huống gần với đời sống học đường để thử cách phản hồi an toàn hơn.
         </p>
       </header>
@@ -73,7 +73,7 @@ export default function ScenarioListPage() {
                 ctaHref={`/student/scenarios/${scenario.id}`}
               />
               {scenario.skill_tag ? (
-                <span className="absolute right-4 top-4 rounded-full bg-primary-container/20 px-3 py-1 text-sm text-primary">
+                <span className="absolute right-4 top-4 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
                   {scenario.skill_tag}
                 </span>
               ) : null}
@@ -91,11 +91,11 @@ export default function ScenarioListPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
-          <h2 className="text-headline-md font-semibold text-on-background">Lịch sử tình huống</h2>
+          <h2 className="text-lg font-semibold text-on-background">Lịch sử tình huống</h2>
         </div>
 
         {history.length === 0 ? (
-          <p className="rounded-[32px] bg-surface-container-low p-5 text-body-md text-on-background/70">
+          <p className="rounded-2xl bg-white dark:bg-[#1e2d40] border border-outline-variant/20 p-4 text-sm text-on-background/70">
             Sau khi chọn cách phản hồi trong một tình huống, lịch sử luyện tập sẽ hiển thị ở đây.
           </p>
         ) : (
@@ -103,20 +103,20 @@ export default function ScenarioListPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.attempt_id}
-                className="rounded-[32px] border border-outline-variant bg-surface-container-low p-5"
+                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-body-md font-semibold text-on-background">{item.scenario_title}</h3>
+                  <h3 className="text-sm font-semibold text-on-background">{item.scenario_title}</h3>
                   {item.is_demo ? <DemoBadge /> : null}
                 </div>
-                <p className="mt-1 text-body-md text-on-background/60">{formatDate(item.completed_at)}</p>
+                <p className="mt-1 text-sm text-on-background/60">{formatDate(item.completed_at)}</p>
                 {item.signal ? (
-                  <p className={`mt-2 text-body-md ${item.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
+                  <p className={`mt-2 text-sm ${item.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
                     {signalLabel(item.signal)}
                   </p>
                 ) : null}
                 {item.selected_choice ? (
-                  <p className="mt-1 text-body-md text-on-background/70">Lựa chọn: {item.selected_choice}</p>
+                  <p className="mt-1 text-sm text-on-background/70">Lựa chọn: {item.selected_choice}</p>
                 ) : null}
               </article>
             ))}

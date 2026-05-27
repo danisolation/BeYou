@@ -52,16 +52,16 @@ export default function SelfCheckListPage() {
   }
 
   return (
-    <main className="mx-auto max-w-[960px] space-y-8">
+    <main className="mx-auto max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+          <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <Brain className="h-6 w-6" />
           </div>
-          <h1 className="text-headline-md font-semibold text-on-background">Test tâm lý</h1>
+          <h1 className="text-lg font-semibold text-on-background">Test tâm lý</h1>
         </div>
-        <p className="mt-3 text-body-md text-on-background/70">
+        <p className="mt-3 text-sm text-on-background/70">
           Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán.
         </p>
       </header>
@@ -92,11 +92,11 @@ export default function SelfCheckListPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
-          <h2 className="text-headline-md font-semibold text-on-background">Lịch sử test tâm lý</h2>
+          <h2 className="text-lg font-semibold text-on-background">Lịch sử test tâm lý</h2>
         </div>
 
         {history.length === 0 ? (
-          <p className="rounded-[32px] bg-surface-container-low p-5 text-body-md text-on-background/70">
+          <p className="rounded-2xl bg-white dark:bg-[#1e2d40] border border-outline-variant/20 p-4 text-sm text-on-background/70">
             Sau khi hoàn thành một bài, kết quả và gợi ý của em sẽ xuất hiện ở đây.
           </p>
         ) : (
@@ -104,17 +104,17 @@ export default function SelfCheckListPage() {
             {history.slice(0, 5).map((item) => (
               <Link
                 key={item.attempt_id}
-                className="block rounded-[32px] border border-outline-variant bg-surface-container-low p-5 transition-shadow hover:shadow-md"
+                className="block rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-shadow hover:shadow-md"
                 href={`/student/self-checks/history/${item.attempt_id}`}
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-body-md font-semibold text-on-background">{item.test_title}</h3>
+                  <h3 className="text-sm font-semibold text-on-background">{item.test_title}</h3>
                   {item.is_demo ? <DemoBadge /> : null}
                 </div>
-                <p className="mt-1 text-body-md text-on-background/60">{formatDate(item.completed_at)}</p>
-                <p className="mt-2 text-body-md text-on-background/80">{displayRiskLabel(item.state_label)}</p>
+                <p className="mt-1 text-sm text-on-background/60">{formatDate(item.completed_at)}</p>
+                <p className="mt-2 text-sm text-on-background/80">{displayRiskLabel(item.state_label)}</p>
                 {item.supportive_headline ? (
-                  <p className="mt-1 text-body-md text-on-background/70">{item.supportive_headline}</p>
+                  <p className="mt-1 text-sm text-on-background/70">{item.supportive_headline}</p>
                 ) : null}
               </Link>
             ))}

@@ -103,7 +103,7 @@ export default function LoginPage() {
     <main className="min-h-dvh bg-background px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-container-stitch space-y-6">
         {/* Header */}
-        <header className="flex items-center justify-between rounded-card bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
+        <header className="flex items-center justify-between rounded-2xl bg-white/85 dark:bg-[#0d1c2e]/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
           <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
             Peerlight AI
@@ -117,14 +117,14 @@ export default function LoginPage() {
         <div className="flex min-h-[calc(100dvh-8rem)] items-center">
           <section className="grid w-full gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             {/* Left: Login form */}
-            <div className="order-1 rounded-card bg-white p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
-              <h1 className="text-headline-lg text-on-background">Đăng nhập</h1>
-              <p className="mt-2 text-body-md text-on-background/70">
+            <div className="order-1 rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
+              <h1 className="text-2xl text-on-background">Đăng nhập</h1>
+              <p className="mt-2 text-sm text-on-background/70">
                 Vào không gian hỗ trợ phù hợp với vai trò của bạn.
               </p>
 
               {/* Demo accounts section */}
-              <div className="mt-6 rounded-3xl border border-outline-variant/40 bg-surface-container-low p-4">
+              <div className="mt-6 rounded-3xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
                 <p className="text-label-md font-semibold text-primary">Tài khoản demo</p>
                 {!capabilitiesLoaded ? (
                   <p className="mt-1 text-label-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
@@ -225,13 +225,13 @@ export default function LoginPage() {
               {brandingCards.map((card) => (
                 <div
                   key={card.title}
-                  className="rounded-card bg-surface-container-low p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md"
+                  className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md"
                 >
-                  <div className="mb-3 inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+                  <div className="mb-3 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                     <card.icon className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <h3 className="text-headline-md text-on-background">{card.title}</h3>
-                  <p className="mt-2 text-body-md text-on-background/70">{card.description}</p>
+                  <h3 className="text-lg text-on-background">{card.title}</h3>
+                  <p className="mt-2 text-sm text-on-background/70">{card.description}</p>
                 </div>
               ))}
             </div>

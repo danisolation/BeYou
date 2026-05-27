@@ -130,7 +130,7 @@ export default function AdminOperationsPage() {
     <section className="space-y-6">
       <header className="rounded-3xl bg-white p-6 shadow-sm">
         <p className="text-label font-semibold text-accent">Vận hành pilot an toàn</p>
-        <h1 className="mt-2 text-display">Sẵn sàng mở pilot trường học</h1>
+        <h1 className="mt-2 text-2xl font-bold">Sẵn sàng mở pilot trường học</h1>
         <p className="mt-3 max-w-3xl text-body">
           Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này
           không mở nội dung riêng tư của học sinh.
@@ -480,7 +480,7 @@ function PilotDataSafetyBucketCard({ bucket }: { bucket: PilotDataSafetyBucket }
         <h3 className="font-semibold">{bucket.label}</h3>
         <StatusBadge status={bucket.status} />
       </div>
-      <p className="mt-2 text-display">{bucket.count}</p>
+      <p className="mt-2 text-2xl font-bold">{bucket.count}</p>
       <p className="mt-2 text-label">Blocking: {bucket.blocking ? "yes" : "no"}</p>
       <p className="mt-2 text-body">{bucket.evidence}</p>
       {bucket.remediation ? <p className="mt-2 text-label">{bucket.remediation}</p> : null}
@@ -800,7 +800,7 @@ function MetricCard({ title, value, description }: { title: string; value: strin
   return (
     <article className="rounded-3xl bg-white p-6 shadow-sm">
       <p className="text-label font-semibold text-accent">{title}</p>
-      <p className="mt-2 text-display">{value}</p>
+      <p className="mt-2 text-2xl font-bold">{value}</p>
       <p className="mt-3 text-body">{description}</p>
     </article>
   );

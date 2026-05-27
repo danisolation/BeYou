@@ -20,7 +20,7 @@ export function Skeleton({ className = "" }: SkeletonProps) {
 /** Matches StitchCard layout: circle icon + title + description + button */
 export function CardSkeleton() {
   return (
-    <div className="flex flex-col gap-4 rounded-[32px] bg-outline-variant/20 p-6 dark:bg-outline-variant/30">
+    <div className="flex flex-col gap-4 rounded-2xl bg-outline-variant/20 p-6 dark:bg-outline-variant/30">
       {/* Circle icon */}
       <div className="h-12 w-12 animate-pulse rounded-full bg-outline-variant/30 dark:bg-outline-variant/40" />
       {/* Title */}
@@ -31,7 +31,7 @@ export function CardSkeleton() {
         <div className="h-4 w-4/5 animate-pulse rounded-lg bg-outline-variant/30 dark:bg-outline-variant/40" />
       </div>
       {/* CTA button */}
-      <div className="mt-2 h-10 w-28 animate-pulse rounded-[16px] bg-outline-variant/30 dark:bg-outline-variant/40" />
+      <div className="mt-2 h-10 w-28 animate-pulse rounded-xl bg-outline-variant/30 dark:bg-outline-variant/40" />
     </div>
   );
 }
@@ -56,7 +56,7 @@ export function PageSkeleton() {
   return (
     <div className="mx-auto max-w-[960px] space-y-8" aria-hidden="true">
       {/* Header area */}
-      <header className="space-y-3 rounded-[32px] bg-outline-variant/10 p-6">
+      <header className="space-y-3 rounded-2xl bg-outline-variant/10 p-6">
         <div className="h-7 w-2/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
         <div className="h-4 w-3/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
       </header>
@@ -87,13 +87,13 @@ export function DashboardSkeleton({ cards = 4 }: { cards?: number }) {
         ))}
       </div>
       {/* Banner skeleton (Peerlight AI) */}
-      <div className="flex items-center gap-4 rounded-[32px] bg-outline-variant/10 p-6">
+      <div className="flex items-center gap-4 rounded-2xl bg-outline-variant/10 p-6">
         <div className="h-8 w-8 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
         <div className="flex-1 space-y-2">
           <div className="h-5 w-32 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
           <div className="h-4 w-48 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
         </div>
-        <div className="h-10 w-24 animate-pulse rounded-[16px] bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-10 w-24 animate-pulse rounded-xl bg-outline-variant/20 dark:bg-outline-variant/30" />
       </div>
     </div>
   );

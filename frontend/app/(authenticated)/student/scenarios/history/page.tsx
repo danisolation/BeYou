@@ -40,7 +40,7 @@ export default function ScenarioHistoryPage() {
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Xem lịch sử tình huống</h1>
+        <h1 className="text-2xl font-bold">Xem lịch sử tình huống</h1>
         <p className="mt-3 text-body">Những lựa chọn em đã thử được lưu riêng trong không gian học tập của em.</p>
       </header>
 

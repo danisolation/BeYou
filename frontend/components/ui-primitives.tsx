@@ -83,12 +83,12 @@ export function Section({ title, description, actions, children, className }: Se
 }
 
 export function SurfaceCard({ children, className }: PrimitiveProps) {
-  return <div className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>{children}</div>;
+  return <div className={cn("rounded-2xl bg-white dark:bg-[#1a2940] p-5 border border-outline-variant/30", className)}>{children}</div>;
 }
 
 export function EntryCard({ title, description, meta, badge, children, className }: EntryCardProps) {
   return (
-    <article className={cn("rounded-3xl bg-white p-5 shadow-sm ring-1 ring-outline-variant", className)}>
+    <article className={cn("rounded-2xl bg-white dark:bg-[#1a2940] p-5 border border-outline-variant/30", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           {meta ? <div className="mb-2 text-label text-primary">{meta}</div> : null}
@@ -104,17 +104,17 @@ export function EntryCard({ title, description, meta, badge, children, className
 
 export function StatusBadge({ tone = "neutral", className, children }: StatusBadgeProps) {
   const toneClass: Record<StatusTone, string> = {
-    safe: "border-[#BFE7D9] bg-secondary text-accent",
-    neutral: "border-[#D7EFE8] bg-white text-slate-700",
-    warning: "border-amber-200 bg-amber-50 text-amber-700",
-    danger: "border-red-200 bg-red-50 text-red-700",
+    safe: "border-primary/20 bg-primary/10 text-primary dark:border-primary/30 dark:bg-primary/15",
+    neutral: "border-outline-variant/40 bg-outline-variant/10 text-on-background/70",
+    warning: "border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-700/30 dark:bg-amber-900/20 dark:text-amber-400",
+    danger: "border-red-200 bg-red-50 text-red-700 dark:border-red-700/30 dark:bg-red-900/20 dark:text-red-400",
     sos: "border-red-300 bg-red-600 text-white",
   };
 
   return (
     <span
       className={cn(
-        "inline-flex min-h-11 items-center rounded-full border px-4 py-2 text-label font-semibold",
+        "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-medium",
         toneClass[tone],
         className,
       )}
@@ -157,12 +157,12 @@ export function PrivacyBoundaryCard({
   className,
 }: PrivacyBoundaryCardProps) {
   return (
-    <aside className={cn("rounded-3xl bg-secondary p-6 ring-1 ring-outline-variant", className)}>
-      <p className="text-label font-semibold uppercase tracking-[0.18em] text-primary">Ranh giới quyền riêng tư</p>
+    <aside className={cn("rounded-2xl bg-primary/5 dark:bg-primary/10 p-5 border border-primary/10", className)}>
+      <p className="text-xs font-semibold uppercase tracking-widest text-primary">Ranh giới quyền riêng tư</p>
       <h2 className="mt-2 text-heading">{title}</h2>
-      <p className="mt-3 text-body">{description}</p>
+      <p className="mt-2 text-sm text-on-background/70">{description}</p>
       {children ? <div className="mt-4">{children}</div> : null}
-      {actions ? <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">{actions}</div> : null}
+      {actions ? <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">{actions}</div> : null}
     </aside>
   );
 }

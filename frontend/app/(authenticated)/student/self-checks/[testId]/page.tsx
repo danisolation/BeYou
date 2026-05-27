@@ -85,7 +85,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
+    return <p className="p-6 text-sm text-on-background/70">Đang tải thông tin...</p>;
   }
 
   if (hasError || test === null || currentQuestion === undefined) {
@@ -97,30 +97,30 @@ export default function SelfCheckTakePage({ params }: PageProps) {
       {/* Breadcrumb */}
       <Link
         href="/student/self-checks"
-        className="inline-flex items-center gap-2 text-body-md font-semibold text-primary"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
       >
         <ArrowLeft className="h-4 w-4" />
         Quay lại danh sách
       </Link>
 
-      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-headline-md font-semibold text-on-background">{test.title}</h1>
+          <h1 className="text-lg font-semibold text-on-background">{test.title}</h1>
           {test.is_demo ? <DemoBadge /> : null}
         </div>
-        {test.description ? <p className="mt-3 text-body-md text-on-background/70">{test.description}</p> : null}
-        <p className="mt-4 text-body-md text-on-background/60">
+        {test.description ? <p className="mt-3 text-sm text-on-background/70">{test.description}</p> : null}
+        <p className="mt-4 text-sm text-on-background/60">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
       </header>
 
       {/* Progress indicator */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-body-md text-on-background/70">
+        <div className="flex items-center justify-between text-sm text-on-background/70">
           <span>Câu {currentIndex + 1} / {questions.length}</span>
           <span>{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container-low">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-white dark:bg-[#1e2d40]">
           <div
             className="h-full rounded-full bg-primary transition-all duration-300"
             style={{ width: `${progress}%` }}
@@ -128,18 +128,18 @@ export default function SelfCheckTakePage({ params }: PageProps) {
         </div>
       </div>
 
-      <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
-        <h2 className="text-headline-md font-semibold text-on-background">{currentQuestion.text}</h2>
+      <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-on-background">{currentQuestion.text}</h2>
         <div className="mt-6 space-y-3">
           {currentQuestion.choices.map((choice) => {
             const isSelected = answers[currentQuestion.id] === choice.id;
             return (
               <label
                 key={choice.id}
-                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-[16px] border p-4 text-body-md transition-colors ${
+                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm transition-colors ${
                   isSelected
-                    ? "border-primary bg-primary-container/20 text-on-background"
-                    : "border-outline-variant bg-white text-on-background/80 hover:bg-surface-container-low"
+                    ? "border-primary bg-primary/10 text-on-background"
+                    : "border-outline-variant bg-white text-on-background/80 hover:bg-white dark:bg-[#1e2d40]"
                 }`}
               >
                 <input
@@ -158,11 +158,11 @@ export default function SelfCheckTakePage({ params }: PageProps) {
           })}
         </div>
         {validationMessage ? (
-          <p className="mt-6 rounded-[16px] border border-[#F59E0B] bg-white p-4 text-body-md text-on-background/80">{validationMessage}</p>
+          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white p-4 text-sm text-on-background/80">{validationMessage}</p>
         ) : null}
         <div className="mt-6 flex flex-wrap gap-3">
           <button
-            className="min-h-11 rounded-[16px] border border-outline-variant px-5 py-3 font-semibold text-on-background disabled:opacity-40"
+            className="min-h-11 rounded-xl border border-outline-variant px-5 py-3 font-semibold text-on-background disabled:opacity-40"
             disabled={currentIndex === 0 || isSubmitting}
             onClick={goBack}
             type="button"
@@ -171,7 +171,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
           </button>
           {isLastQuestion ? (
             <button
-              className="min-h-11 rounded-[16px] bg-primary px-5 py-3 font-semibold text-on-primary disabled:opacity-60"
+              className="min-h-11 rounded-xl bg-primary px-5 py-3 font-semibold text-on-primary disabled:opacity-60"
               disabled={isSubmitting}
               onClick={submitAnswers}
               type="button"
@@ -180,7 +180,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
             </button>
           ) : (
             <button
-              className="min-h-11 rounded-[16px] bg-primary px-5 py-3 font-semibold text-on-primary"
+              className="min-h-11 rounded-xl bg-primary px-5 py-3 font-semibold text-on-primary"
               onClick={goNext}
               type="button"
             >

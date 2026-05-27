@@ -84,28 +84,28 @@ export default function StudentMoodCheckInPage() {
   }
 
   return (
-    <section className="mx-auto max-w-[960px] space-y-8">
+    <section className="mx-auto max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex items-center gap-3">
-          <div className="inline-flex items-center justify-center rounded-2xl bg-primary-container/20 p-3 text-primary">
+          <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <Heart className="h-6 w-6" />
           </div>
-          <h1 className="text-headline-md font-semibold text-on-background">Check-in cảm xúc</h1>
+          <h1 className="text-lg font-semibold text-on-background">Check-in cảm xúc</h1>
         </div>
-        <p className="mt-3 text-body-md text-on-background/70">
+        <p className="mt-3 text-sm text-on-background/70">
           {options.student_prompt ??
             "Dành một phút để gọi tên cảm xúc hiện tại. Peerlight AI dùng thông tin này để gợi ý bước hỗ trợ nhẹ nhàng cho em."}
         </p>
       </header>
 
       {/* Privacy banner */}
-      <div className="rounded-[32px] border border-outline-variant bg-surface-container-low p-5">
+      <div className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4">
         <div className="flex items-center gap-3">
           <Shield className="h-5 w-5 shrink-0 text-primary" />
-          <h2 className="text-body-md font-semibold text-on-background">Ranh giới riêng tư</h2>
+          <h2 className="text-sm font-semibold text-on-background">Ranh giới riêng tư</h2>
         </div>
-        <ul className="mt-3 space-y-2 text-body-md text-on-background/80">
+        <ul className="mt-3 space-y-2 text-sm text-on-background/80">
           <li className="flex items-start gap-2">
             <span className="mt-0.5 text-primary">•</span>
             Chỉ em mới thấy nhật ký cảm xúc này
@@ -126,17 +126,17 @@ export default function StudentMoodCheckInPage() {
       </div>
 
       {/* Check-in form */}
-      <form className="space-y-6 rounded-[32px] bg-surface-container-low p-6 shadow-sm" onSubmit={handleSubmit}>
+      <form className="space-y-6 rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm" onSubmit={handleSubmit}>
         <fieldset>
-          <legend className="text-body-md font-semibold text-on-background">Hôm nay em thấy thế nào?</legend>
+          <legend className="text-sm font-semibold text-on-background">Hôm nay em thấy thế nào?</legend>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {options.mood_options.map((option) => (
               <label
                 key={option.key}
-                className={`flex gap-3 rounded-[16px] border p-4 transition-colors ${
+                className={`flex gap-3 rounded-xl border p-4 transition-colors ${
                   moodLabel === option.key
-                    ? "border-primary bg-primary-container/20"
-                    : "border-outline-variant bg-white hover:bg-surface-container-low"
+                    ? "border-primary bg-primary/10"
+                    : "border-outline-variant bg-white hover:bg-white dark:bg-[#1e2d40]"
                 }`}
               >
                 <input
@@ -148,7 +148,7 @@ export default function StudentMoodCheckInPage() {
                 />
                 <span>
                   <span className="block font-semibold text-on-background">{option.label}</span>
-                  <span className="block text-body-md text-on-background/60">{option.helper}</span>
+                  <span className="block text-sm text-on-background/60">{option.helper}</span>
                 </span>
               </label>
             ))}
@@ -156,13 +156,13 @@ export default function StudentMoodCheckInPage() {
         </fieldset>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="block text-body-md text-on-background/80" htmlFor="energy-level">
+          <label className="block text-sm text-on-background/80" htmlFor="energy-level">
             Năng lượng của em
             <select
               id="energy-level"
               value={energyLevel}
               onChange={(event) => setEnergyLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-[16px] border border-outline-variant bg-white px-4 text-on-background"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white px-4 text-on-background"
             >
               {[1, 2, 3, 4, 5].map((value) => (
                 <option key={value} value={value}>
@@ -173,13 +173,13 @@ export default function StudentMoodCheckInPage() {
             <span className="mt-2 block text-on-background/60">{options.energy_scale_label}</span>
           </label>
 
-          <label className="block text-body-md text-on-background/80" htmlFor="stress-level">
+          <label className="block text-sm text-on-background/80" htmlFor="stress-level">
             Mức căng thẳng
             <select
               id="stress-level"
               value={stressLevel}
               onChange={(event) => setStressLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-[16px] border border-outline-variant bg-white px-4 text-on-background"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white px-4 text-on-background"
             >
               {[1, 2, 3, 4, 5].map((value) => (
                 <option key={value} value={value}>
@@ -192,14 +192,14 @@ export default function StudentMoodCheckInPage() {
         </div>
 
         <fieldset>
-          <legend className="text-body-md font-semibold text-on-background">Điều gì liên quan tới cảm xúc này?</legend>
+          <legend className="text-sm font-semibold text-on-background">Điều gì liên quan tới cảm xúc này?</legend>
           <div className="mt-3 flex flex-wrap gap-3">
             {options.context_tags.map((tag) => (
               <label
                 key={tag.key}
-                className={`flex items-center gap-2 rounded-[16px] border px-4 py-3 transition-colors ${
+                className={`flex items-center gap-2 rounded-xl border px-4 py-3 transition-colors ${
                   contextTags.includes(tag.key)
-                    ? "border-primary bg-primary-container/20"
+                    ? "border-primary bg-primary/10"
                     : "border-outline-variant bg-white"
                 }`}
               >
@@ -209,16 +209,16 @@ export default function StudentMoodCheckInPage() {
                   onChange={() => toggleContext(tag.key)}
                   className="accent-primary"
                 />
-                <span className="text-body-md text-on-background">{tag.label}</span>
+                <span className="text-sm text-on-background">{tag.label}</span>
               </label>
             ))}
           </div>
         </fieldset>
 
-        <label className="block text-body-md font-semibold text-on-background" htmlFor="private-note">
+        <label className="block text-sm font-semibold text-on-background" htmlFor="private-note">
           Ghi chú riêng tư cho chính em (không bắt buộc)
         </label>
-        <p id="private-note-helper" className="mt-1 text-body-md text-on-background/60">
+        <p id="private-note-helper" className="mt-1 text-sm text-on-background/60">
           Viết điều em muốn nhớ cho chính mình; ghi chú này không tự động gửi cho người lớn.
         </p>
         <textarea
@@ -226,14 +226,14 @@ export default function StudentMoodCheckInPage() {
           aria-describedby="private-note-helper"
           value={privateNote}
           onChange={(event) => setPrivateNote(event.target.value)}
-          className="mt-2 min-h-28 w-full rounded-[16px] border border-outline-variant p-4 text-body-md text-on-background"
+          className="mt-2 min-h-28 w-full rounded-xl border border-outline-variant p-4 text-sm text-on-background"
         />
 
-        {errorMessage ? <p role="alert" className="text-body-md text-red-700">{errorMessage}</p> : null}
+        {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : null}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="min-h-[44px] w-full rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
+          className="min-h-[44px] w-full rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
         >
           {isSubmitting ? "Đang lưu..." : "Lưu check-in"}
         </button>
@@ -246,11 +246,11 @@ export default function StudentMoodCheckInPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
-          <h2 className="text-headline-md font-semibold text-on-background">Lịch sử check-in</h2>
+          <h2 className="text-lg font-semibold text-on-background">Lịch sử check-in</h2>
         </div>
 
         {history.length === 0 ? (
-          <p className="rounded-[32px] bg-surface-container-low p-5 text-body-md text-on-background/70">
+          <p className="rounded-2xl bg-white dark:bg-[#1e2d40] border border-outline-variant/20 p-4 text-sm text-on-background/70">
             Khi em có check-in cảm xúc, lịch sử sẽ hiển thị ở đây.
           </p>
         ) : (
@@ -258,21 +258,21 @@ export default function StudentMoodCheckInPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.id}
-                className="rounded-[32px] border border-outline-variant bg-surface-container-low p-5"
+                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-body-md font-semibold text-on-background">
+                  <span className="text-sm font-semibold text-on-background">
                     {moodLabelFallbacks[item.mood_label]}
                   </span>
-                  <span className="text-body-md text-on-background/60">
+                  <span className="text-sm text-on-background/60">
                     {new Date(item.created_at).toLocaleString("vi-VN")}
                   </span>
                 </div>
-                <div className="mt-2 flex gap-4 text-body-md text-on-background/70">
+                <div className="mt-2 flex gap-4 text-sm text-on-background/70">
                   <span>Năng lượng: {item.energy_level}/5</span>
                   <span>Căng thẳng: {item.stress_level}/5</span>
                 </div>
-                <p className="mt-2 text-body-md text-on-background/80">{item.supportive_message}</p>
+                <p className="mt-2 text-sm text-on-background/80">{item.supportive_message}</p>
               </article>
             ))}
             {history.length > 5 ? (
@@ -292,12 +292,12 @@ export default function StudentMoodCheckInPage() {
 
 function MoodResultCard({ result }: { result: MoodCheckIn }) {
   return (
-    <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
-      <h2 className="text-body-md font-semibold text-on-background">Đã lưu check-in</h2>
-      <p role="status" className="mt-3 text-body-md text-on-background/80">
+    <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+      <h2 className="text-sm font-semibold text-on-background">Đã lưu check-in</h2>
+      <p role="status" className="mt-3 text-sm text-on-background/80">
         <strong>{result.trend_label}:</strong> {result.supportive_message}
       </p>
-      <p className="mt-3 text-body-md text-on-background/70">{result.suggested_next_action}</p>
+      <p className="mt-3 text-sm text-on-background/70">{result.suggested_next_action}</p>
       <div className="mt-4 flex flex-wrap gap-3">
         {result.suggest_support_plan ? (
           <Link className="inline-flex min-h-11 items-center font-semibold text-primary" href="/student/support-plan">

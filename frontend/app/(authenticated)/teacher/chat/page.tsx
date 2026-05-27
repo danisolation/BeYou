@@ -102,14 +102,14 @@ export default function TeacherChatPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
-        <h1 className="text-display">Peerlight AI</h1>
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <h1 className="text-2xl font-bold">Peerlight AI</h1>
         <p className="mt-3 max-w-3xl text-body">{INTRO_COPY}</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-card border border-outline-variant bg-surface p-4 shadow-sm lg:block">
+        <aside className="hidden rounded-2xl border border-outline-variant bg-surface p-4 shadow-sm lg:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -148,7 +148,7 @@ export default function TeacherChatPage() {
           </div>
         )}
 
-        <section className="rounded-card border border-outline-variant bg-surface p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
           <div className="flex items-center gap-3">
             <button
               type="button"

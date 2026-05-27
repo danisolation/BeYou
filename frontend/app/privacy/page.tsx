@@ -41,7 +41,7 @@ function PrivacyContent() {
     <main className="min-h-dvh px-4 py-8 sm:px-6 sm:py-10">
       <section className="mx-auto max-w-3xl rounded-3xl bg-secondary p-5 shadow-sm sm:p-6 lg:p-8">
         <p className="text-label font-semibold text-accent">Quyền riêng tư</p>
-        <h1 className="mt-2 text-display">Ai có thể xem thông tin của em?</h1>
+        <h1 className="mt-2 text-2xl font-bold">Ai có thể xem thông tin của em?</h1>
         <p className="mt-4 text-body">
           Thông tin của em được giữ riêng tư trong Peerlight AI. Một số người lớn tin tưởng chỉ xem
           phần tóm tắt cần thiết để hỗ trợ em, không xem mọi câu trả lời riêng tư.

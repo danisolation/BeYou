@@ -18,16 +18,16 @@ export function EmptyState({
   return (
     <section
       className={[
-        "rounded-3xl border border-[#D7EFE8] bg-white p-6 text-center shadow-sm",
+        "rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-center",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
     >
-      <h2 className="text-heading">{heading}</h2>
-      <p className="mt-3 text-body">{body}</p>
-      {children ? <div className="mt-4 text-body">{children}</div> : null}
-      {action ? <div className="mt-5 flex justify-center">{action}</div> : null}
+      <h2 className="text-base font-semibold text-on-background">{heading}</h2>
+      <p className="mt-2 text-sm text-on-background/60">{body}</p>
+      {children ? <div className="mt-3 text-sm text-on-background/60">{children}</div> : null}
+      {action ? <div className="mt-4 flex justify-center">{action}</div> : null}
     </section>
   );
 }

@@ -63,7 +63,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-body-md text-on-background/70">Đang tải thông tin...</p>;
+    return <p className="p-6 text-sm text-on-background/70">Đang tải thông tin...</p>;
   }
 
   if (hasError || scenario === null) {
@@ -75,38 +75,38 @@ export default function ScenarioDetailPage({ params }: PageProps) {
       {/* Breadcrumb */}
       <Link
         href="/student/scenarios"
-        className="inline-flex items-center gap-2 text-body-md font-semibold text-primary"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
       >
         <ArrowLeft className="h-4 w-4" />
         Quay lại danh sách
       </Link>
 
-      <header className="rounded-[32px] bg-surface-container p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-headline-md font-semibold text-on-background">{scenario.title}</h1>
+          <h1 className="text-lg font-semibold text-on-background">{scenario.title}</h1>
           {scenario.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-4 text-body-md text-on-background/80">{scenario.situation}</p>
+        <p className="mt-4 text-sm text-on-background/80">{scenario.situation}</p>
         {scenario.skill_tag ? (
-          <p className="mt-4 inline-flex gap-1 rounded-full bg-primary-container/20 px-3 py-1 text-body-md text-primary">
+          <p className="mt-4 inline-flex gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
             <span>Kỹ năng liên quan:</span>
             <span className="font-semibold">{scenario.skill_tag}</span>
           </p>
         ) : null}
       </header>
 
-      <section className="rounded-[32px] bg-surface-container-low p-6 shadow-sm">
-        <h2 className="text-body-md font-semibold text-on-background">Em muốn thử cách phản hồi nào?</h2>
+      <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold text-on-background">Em muốn thử cách phản hồi nào?</h2>
         <div className="mt-6 space-y-3">
           {scenario.choices.map((choice, index) => {
             const isSelected = selectedChoiceId === choice.id;
             return (
               <label
                 key={choice.id}
-                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-[16px] border p-4 text-body-md transition-colors ${
+                className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm transition-colors ${
                   isSelected
-                    ? "border-primary bg-primary-container/20 text-on-background"
-                    : "border-outline-variant bg-white text-on-background/80 hover:bg-surface-container-low"
+                    ? "border-primary bg-primary/10 text-on-background"
+                    : "border-outline-variant bg-white text-on-background/80 hover:bg-white dark:bg-[#1e2d40]"
                 }`}
               >
                 <input
@@ -122,7 +122,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
                 <span
                   aria-hidden="true"
                   className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-semibold ${
-                    isSelected ? "bg-primary text-on-primary" : "bg-surface-container text-on-background"
+                    isSelected ? "bg-primary text-on-primary" : "bg-white dark:bg-[#1a2940] text-on-background"
                   }`}
                 >
                   {index + 1}
@@ -133,10 +133,10 @@ export default function ScenarioDetailPage({ params }: PageProps) {
           })}
         </div>
         {message ? (
-          <p className="mt-6 rounded-[16px] border border-[#F59E0B] bg-white p-4 text-body-md text-on-background/80">{message}</p>
+          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white p-4 text-sm text-on-background/80">{message}</p>
         ) : null}
         <button
-          className="mt-6 min-h-11 rounded-[16px] bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"
+          className="mt-6 min-h-11 rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"
           disabled={isSubmitting}
           onClick={submitChoice}
           type="button"
@@ -147,34 +147,34 @@ export default function ScenarioDetailPage({ params }: PageProps) {
 
       {feedback ? (
         <section
-          className={`rounded-[32px] p-6 shadow-sm ${
+          className={`rounded-2xl p-6 shadow-sm ${
             feedback.signal === "risky"
-              ? "border border-amber-300 bg-surface-container-low"
-              : "border border-primary/30 bg-surface-container-low"
+              ? "border border-amber-300 bg-white dark:bg-[#1e2d40]"
+              : "border border-primary/30 bg-white dark:bg-[#1e2d40]"
           }`}
         >
-          <h2 className="text-body-md font-semibold text-on-background">Lời khuyên</h2>
-          <p className={`mt-3 text-body-md font-semibold ${feedback.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
+          <h2 className="text-sm font-semibold text-on-background">Lời khuyên</h2>
+          <p className={`mt-3 text-sm font-semibold ${feedback.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
             {signalLabel(feedback.signal)}
           </p>
           {feedback.selected_choice ? (
-            <p className="mt-4 text-body-md text-on-background/80">
+            <p className="mt-4 text-sm text-on-background/80">
               <span className="font-semibold">Lựa chọn của em: </span>
               {feedback.selected_choice}
             </p>
           ) : null}
-          {feedback.feedback ? <p className="mt-3 text-body-md text-on-background/80">{feedback.feedback}</p> : null}
+          {feedback.feedback ? <p className="mt-3 text-sm text-on-background/80">{feedback.feedback}</p> : null}
           <div className="mt-6 space-y-4">
-            <div className="rounded-[16px] bg-surface-container p-4">
-              <h3 className="text-body-md font-semibold text-on-background">Lời khuyên nên thử</h3>
-              <p className="mt-2 text-body-md text-on-background/80">{feedback.recommended_response}</p>
+            <div className="rounded-xl bg-white dark:bg-[#1a2940] p-4">
+              <h3 className="text-sm font-semibold text-on-background">Lời khuyên nên thử</h3>
+              <p className="mt-2 text-sm text-on-background/80">{feedback.recommended_response}</p>
             </div>
-            <div className="rounded-[16px] bg-surface-container p-4">
-              <h3 className="text-body-md font-semibold text-on-background">Lời khuyên để nhớ</h3>
-              <p className="mt-2 text-body-md text-on-background/80">{feedback.lesson}</p>
+            <div className="rounded-xl bg-white dark:bg-[#1a2940] p-4">
+              <h3 className="text-sm font-semibold text-on-background">Lời khuyên để nhớ</h3>
+              <p className="mt-2 text-sm text-on-background/80">{feedback.lesson}</p>
             </div>
             {feedback.skill_tag ? (
-              <p className="text-body-md text-on-background/70">
+              <p className="text-sm text-on-background/70">
                 <span className="font-semibold">Kỹ năng liên quan:</span>{" "}
                 {feedback.skill_tag}
               </p>

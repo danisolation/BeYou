@@ -8,7 +8,7 @@ interface LayoutShellProps {
 
 export function LayoutShell({ children, className }: LayoutShellProps) {
   return (
-    <div className={cn("mx-auto max-w-container-stitch px-margin-mobile py-gutter lg:px-margin-desktop", className)}>
+    <div className={cn("min-w-0 pb-20 lg:pb-6", className)}>
       {children}
     </div>
   );

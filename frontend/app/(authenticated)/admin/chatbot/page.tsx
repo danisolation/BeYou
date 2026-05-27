@@ -62,7 +62,7 @@ export default function AdminChatbotPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-display">Cấu hình chatbot an toàn</h1>
+        <h1 className="text-2xl font-bold">Cấu hình chatbot an toàn</h1>
         <p className="mt-3 max-w-3xl text-body">
           Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.
         </p>

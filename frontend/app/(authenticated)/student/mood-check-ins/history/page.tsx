@@ -89,7 +89,7 @@ export default function StudentMoodCheckInHistoryPage() {
   return (
     <section className="space-y-6">
       <div className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <h1 className="text-display">Lịch sử check-in cảm xúc</h1>
+        <h1 className="text-2xl font-bold">Lịch sử check-in cảm xúc</h1>
         <p className="mt-4 text-body">
           Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin tưởng
           và đúng phần nội dung để chia sẻ; các nội dung khác vẫn riêng tư.

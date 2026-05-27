@@ -32,18 +32,18 @@ export default function TeacherStudentsPage() {
   if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-on-background sm:text-headline-lg">
+        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
           Học sinh liên kết
         </h1>
-        <p className="mt-2 text-body-lg text-on-background/70">
+        <p className="mt-2 text-base text-on-background/70">
           {students.length} học sinh đang được đồng hành
         </p>
       </div>
 
       {students.length === 0 ? (
-        <div className="rounded-[32px] border border-outline-variant/30 bg-white p-8 text-center dark:bg-[var(--surface)]">
+        <div className="rounded-2xl border border-outline-variant/30 bg-white p-8 text-center dark:bg-[var(--surface)]">
           <Users className="mx-auto mb-4 text-on-background/30" size={48} />
           <p className="text-on-background/70">Chưa có học sinh nào được liên kết</p>
         </div>

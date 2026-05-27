@@ -36,7 +36,7 @@ export default function StudentSosPage() {
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-surface">
             <CheckCircle size={48} className="text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-display text-on-error-container">SOS đã được gửi</h1>
+          <h1 className="text-2xl font-bold text-on-error-container">SOS đã được gửi</h1>
           <p className="text-body text-on-error-container">
             Người lớn tin tưởng của em đã được thông báo. Họ sẽ liên hệ sớm nhất có thể.
           </p>
@@ -57,17 +57,17 @@ export default function StudentSosPage() {
   // State 1: Initial confirmation
   return (
     <section className="mx-auto max-w-lg space-y-6 py-8">
-      <div className="rounded-card border border-outline-variant bg-surface p-6 text-center shadow-sm">
+      <div className="rounded-2xl border border-outline-variant bg-surface p-6 text-center shadow-sm">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error-container">
           <ShieldAlert size={32} className="text-error" aria-hidden="true" />
         </div>
-        <h1 className="mt-4 text-display">Hỗ trợ khẩn cấp</h1>
+        <h1 className="mt-4 text-2xl font-bold">Hỗ trợ khẩn cấp</h1>
         <p className="mt-3 text-body">
           Nếu em đang gặp nguy hiểm hoặc cần giúp đỡ ngay lập tức, hãy nhấn nút bên dưới.
         </p>
       </div>
 
-      <div className="rounded-card border border-outline-variant bg-surface-container p-5 shadow-sm">
+      <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-5 shadow-sm">
         <h2 className="text-heading">Khi em nhấn SOS:</h2>
         <ul className="mt-3 space-y-2 text-body">
           <li>• Người lớn tin tưởng của em sẽ được thông báo ngay lập tức</li>
