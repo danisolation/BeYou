@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bell, Lock, ShieldAlert } from "lucide-react";
+import { Bell, Lock, Monitor, Moon, ShieldAlert, Sun } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
+import { useTheme } from "@/components/theme-provider";
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
@@ -33,6 +34,7 @@ function payloadFromState(preference: StudentNotificationPreference): StudentNot
 }
 
 export default function StudentSettingsPage() {
+  const { theme, setTheme } = useTheme();
   const [preference, setPreference] = useState<StudentNotificationPreference | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -83,6 +85,54 @@ export default function StudentSettingsPage() {
           ← Quay lại bảng điều khiển
         </Link>
       </div>
+
+      {/* Section: Appearance */}
+      <section className="rounded-card border border-outline-variant bg-surface-container p-6 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+            <Sun size={18} className="text-primary" aria-hidden="true" />
+          </div>
+          <h2 className="text-heading">Giao diện</h2>
+        </div>
+        <div className="mt-4 flex gap-2">
+          <button
+            type="button"
+            onClick={() => setTheme("light")}
+            className={`flex min-h-11 items-center gap-2 rounded-2xl border px-4 font-semibold transition-colors ${
+              theme === "light"
+                ? "border-primary bg-primary text-on-primary"
+                : "border-outline-variant text-on-background hover:bg-secondary"
+            }`}
+          >
+            <Sun size={16} aria-hidden="true" />
+            Sáng
+          </button>
+          <button
+            type="button"
+            onClick={() => setTheme("dark")}
+            className={`flex min-h-11 items-center gap-2 rounded-2xl border px-4 font-semibold transition-colors ${
+              theme === "dark"
+                ? "border-primary bg-primary text-on-primary"
+                : "border-outline-variant text-on-background hover:bg-secondary"
+            }`}
+          >
+            <Moon size={16} aria-hidden="true" />
+            Tối
+          </button>
+          <button
+            type="button"
+            onClick={() => setTheme("system")}
+            className={`flex min-h-11 items-center gap-2 rounded-2xl border px-4 font-semibold transition-colors ${
+              theme === "system"
+                ? "border-primary bg-primary text-on-primary"
+                : "border-outline-variant text-on-background hover:bg-secondary"
+            }`}
+          >
+            <Monitor size={16} aria-hidden="true" />
+            Hệ thống
+          </button>
+        </div>
+      </section>
 
       {/* Section 1: Notifications & Reminders */}
       <form
