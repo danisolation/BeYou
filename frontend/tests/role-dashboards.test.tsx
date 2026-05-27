@@ -206,7 +206,8 @@ describe("role dashboards", () => {
       </>,
     );
 
-    expect(await screen.findByText("Cổng giáo viên")).toBeInTheDocument();
+    expect(await screen.findAllByText("Nguyễn An Demo")).toHaveLength(2);
+    expect(screen.getByText("Cổng giáo viên")).toBeInTheDocument();
     expect(screen.getByText("Cổng phụ huynh")).toBeInTheDocument();
     expect(screen.getByText("Ranh giới hỗ trợ của giáo viên")).toBeInTheDocument();
     expect(screen.getByText("Ranh giới hỗ trợ của phụ huynh")).toBeInTheDocument();
@@ -215,7 +216,6 @@ describe("role dashboards", () => {
         "Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.",
       ),
     ).toHaveLength(2);
-    expect(screen.getAllByText("Nguyễn An Demo")).toHaveLength(2);
   });
 
   it("renders admin safe entry cards and counts", async () => {
@@ -229,7 +229,7 @@ describe("role dashboards", () => {
     expect(await screen.findByText("Cổng quản trị")).toBeInTheDocument();
     expect(screen.getByText("Quản lý tài khoản")).toBeInTheDocument();
     expect(screen.getByText("Liên kết học sinh và người lớn hỗ trợ")).toBeInTheDocument();
-    expect(screen.getByText("2 tài khoản")).toBeInTheDocument();
-    expect(screen.getByText("1 liên kết")).toBeInTheDocument();
+    expect(screen.getByText("Preview 2 tài khoản demo")).toBeInTheDocument();
+    expect(screen.getByText("Preview 1 liên kết được phân trang")).toBeInTheDocument();
   });
 });
