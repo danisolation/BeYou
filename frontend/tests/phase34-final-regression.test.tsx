@@ -105,8 +105,9 @@ describe("Phase 34 final UI regression", () => {
       </>,
     );
 
-    expect(await screen.findAllByRole("alert")).toHaveLength(4);
-    expect(screen.getAllByText("Không thể tải thông tin")).toHaveLength(4);
+    expect(await screen.findAllByRole("alert")).toHaveLength(3);
+    expect(screen.getAllByText("Không thể tải thông tin")).toHaveLength(3);
+    expect(screen.getAllByText("Preview metadata tạm thời chưa tải được.")).toHaveLength(2);
     expect(screen.queryByText("0 tài khoản")).not.toBeInTheDocument();
     expect(screen.queryByText("Chưa có học sinh được liên kết")).not.toBeInTheDocument();
   });
@@ -131,7 +132,7 @@ describe("Phase 34 final UI regression", () => {
 
   it("keeps touched Phase 34 sources primitive-backed and free of token/cross-role regressions", () => {
     const studentSource = source("app/(authenticated)/student/page.tsx");
-    const adminSource = source("app/(authenticated)/admin/page.tsx");
+    const adminSource = [source("app/(authenticated)/admin/page.tsx"), source("lib/admin-api.ts")].join("\n");
     const layoutSource = source("app/(authenticated)/layout.tsx");
     const parentSource = source("app/(authenticated)/parent/page.tsx");
     const primitiveSource = source("components/ui-primitives.tsx");

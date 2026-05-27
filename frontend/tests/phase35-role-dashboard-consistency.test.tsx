@@ -328,6 +328,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
       source("components/adult-student-list.tsx"),
       source("lib/student-dashboard-loader.ts"),
       source("lib/adult-dashboard-loader.ts"),
+      source("lib/admin-api.ts"),
     ].join("\n");
 
     expect(dashboardSources).toContain("/api/student/profile");
@@ -488,9 +489,10 @@ describe("Phase 35 role dashboard consistency regression", () => {
     );
 
     const alerts = await screen.findAllByRole("alert");
-    expect(alerts).toHaveLength(3);
+    expect(alerts).toHaveLength(2);
     for (const alert of alerts) {
       expect(within(alert).getByText("Không thể tải thông tin")).toBeInTheDocument();
     }
+    expect(screen.getAllByText("Preview metadata tạm thời chưa tải được.")).toHaveLength(2);
   });
 });
