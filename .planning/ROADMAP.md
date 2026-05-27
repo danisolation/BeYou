@@ -20,12 +20,12 @@
 
 ## Phases
 
-- [ ] **Phase 45: Dark Mode Foundation** - Dark color palette, theme toggle, CSS custom properties, provider setup.
-- [ ] **Phase 46: Skeleton Loading States** - Shared skeleton components, replace all spinners with content-shaped skeletons.
-- [ ] **Phase 47: Navigation for All Roles** - Extend sidebar + mobile bottom nav to teacher/parent/admin roles.
-- [ ] **Phase 48: Responsive Polish** - Audit & fix all pages 320px-1920px+, touch targets, tablet breakpoints.
-- [ ] **Phase 49: Animations & Micro-interactions** - CSS transitions, scroll entrance, hover/focus states, page transitions.
-- [ ] **Phase 50: Accessibility Audit & Fixes** - Keyboard nav, ARIA labels, focus rings, contrast validation.
+- [x] **Phase 45: Dark Mode Foundation** - Dark color palette, theme toggle, CSS custom properties, provider setup.
+- [x] **Phase 46: Skeleton Loading States** - Shared skeleton components, replace all spinners with content-shaped skeletons.
+- [x] **Phase 47: Navigation for All Roles** - Extend sidebar + mobile bottom nav to teacher/parent/admin roles.
+- [x] **Phase 48: Responsive Polish** - Audit & fix all pages 320px-1920px+, touch targets, tablet breakpoints.
+- [x] **Phase 49: Animations & Micro-interactions** - CSS transitions, scroll entrance, hover/focus states, page transitions.
+- [x] **Phase 50: Accessibility Audit & Fixes** - Keyboard nav, ARIA labels, focus rings, contrast validation.
 
 ## Phase Details
 
