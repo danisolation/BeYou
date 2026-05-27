@@ -46,11 +46,11 @@ Requirements for the current milestone. Each requirement maps to exactly one roa
 
 ### Regression and Release Gates
 
-- [ ] **QA-01**: Backend tests and lint verify optimized DB/backend paths, bounded results, query/index changes, authorization checks, reason gates, audit semantics, and metadata sanitization.
-- [ ] **QA-02**: Frontend tests, lint, and build verify cross-role UI consistency, responsive behavior, accessibility-critical states, loading/error/empty patterns, and role-specific privacy boundaries.
-- [ ] **QA-03**: Performance evidence gates compare baseline and post-optimization behavior for selected backend/frontend paths or record explicit accepted external constraints.
-- [ ] **QA-04**: Privacy redline gates reject raw identifiers, emails, notes, transcripts, answers, secrets, provider claims, free-text reasons, exports, destructive reset controls, risk leaderboards, per-student drilldowns, and browser token storage in new UI/performance surfaces.
-- [ ] **QA-05**: Documentation records v1.6 UI/performance evidence, commands run, remaining production constraints, and the requirement that live `smoke:pilot` remains separate from public demo proof.
+- [x] **QA-01**: Backend tests and lint verify optimized DB/backend paths, bounded results, query/index changes, authorization checks, reason gates, audit semantics, and metadata sanitization.
+- [x] **QA-02**: Frontend tests, lint, and build verify cross-role UI consistency, responsive behavior, accessibility-critical states, loading/error/empty patterns, and role-specific privacy boundaries.
+- [x] **QA-03**: Performance evidence gates compare baseline and post-optimization behavior for selected backend/frontend paths or record explicit accepted external constraints.
+- [x] **QA-04**: Privacy redline gates reject raw identifiers, emails, notes, transcripts, answers, secrets, provider claims, free-text reasons, exports, destructive reset controls, risk leaderboards, per-student drilldowns, and browser token storage in new UI/performance surfaces.
+- [x] **QA-05**: Documentation records v1.6 UI/performance evidence, commands run, remaining production constraints, and the requirement that live `smoke:pilot` remains separate from public demo proof.
 
 ## Future Requirements
 
