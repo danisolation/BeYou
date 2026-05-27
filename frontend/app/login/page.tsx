@@ -168,6 +168,8 @@ export default function LoginPage() {
                     type="email"
                     autoComplete="email"
                     required
+                    aria-required="true"
+                    aria-describedby={error ? "login-error" : undefined}
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     className="mt-2 min-h-12 w-full rounded-button border border-outline-variant/40 bg-white px-4 outline-primary"
@@ -185,6 +187,8 @@ export default function LoginPage() {
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
                       required
+                      aria-required="true"
+                      aria-describedby={error ? "login-error" : undefined}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       className="min-h-12 min-w-0 flex-1 rounded-button px-4 outline-primary"
@@ -201,7 +205,7 @@ export default function LoginPage() {
                 </div>
 
                 {error ? (
-                  <div role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-label-md text-error">
+                  <div id="login-error" role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-label-md text-error">
                     {error}
                   </div>
                 ) : null}

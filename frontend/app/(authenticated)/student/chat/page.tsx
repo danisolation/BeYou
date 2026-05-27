@@ -201,6 +201,7 @@ export default function StudentChatPage() {
             <textarea
               id="chat-message"
               aria-label="Điều em muốn chia sẻ"
+              aria-required="true"
               value={draft}
               onChange={(event) => setDraft(event.target.value)}
               placeholder="Viết vài dòng theo cách em thấy thoải mái..."
