@@ -12,10 +12,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.6 Cross-Role UI Consistency & Production Performance archived as of 2026-05-27
-**Milestone status:** v1.7 UI Redesign to Match Stitch Mockups — defining requirements
-**Scope shipped:** 38 total phases; v1.6 Phases 33-38 completed 27/27 requirements
-**Current execution:** Defining v1.7 requirements and roadmap
+**Shipped version:** v1.7 UI Redesign to Match Stitch Mockups shipped 2026-05-27
+**Milestone status:** v1.8 UI/UX Polish & Accessibility — defining requirements
+**Scope shipped:** 44 total phases; v1.7 Phases 39-44 completed 20/20 requirements
+**Current execution:** Defining v1.8 requirements and roadmap
 **Latest verification:** v1.6 milestone verified and archived
 **Latest audit:** `.planning/milestones/v1.6-MILESTONE-AUDIT.md` completed with constrained pass (Phase 34 visual walkthrough deferred, test timeout accepted)
 
