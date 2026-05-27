@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
 import { SosAlertDetail } from "@/components/sos-alert-detail";
+import { LoadingState } from "@/components/ui-primitives";
 import { getParentSosAlert, type SosAlert } from "@/lib/sos-api";
 
 type PageProps = {
@@ -27,11 +28,11 @@ export default function ParentSosAlertPage({ params }: PageProps) {
   }, [params]);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <LoadingState message="Đang tải thông tin SOS..." className="bg-white/80" />;
   }
 
   if (hasError || alert === null) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại từ trang chính." body="Bạn có thể quay về cổng phụ huynh rồi mở lại trạng thái SOS." />;
+    return <EmptyState heading="Chưa tải được thông tin SOS" body="Bạn có thể quay về cổng phụ huynh rồi mở lại trạng thái SOS." />;
   }
 
   return <SosAlertDetail initialAlert={alert} mode="parent" />;
