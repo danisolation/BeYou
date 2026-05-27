@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: "class",
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./lib/**/*.{ts,tsx}"],
   theme: {
     extend: {
@@ -30,7 +31,7 @@ const config: Config = {
         "error-container": "#ffdad6",
 
         // Surface
-        surface: "#f8f9ff",
+        surface: "var(--surface)",
         "surface-dim": "#ccdbf3",
         "surface-bright": "#f8f9ff",
         "surface-container": "#e6eeff",
@@ -38,8 +39,8 @@ const config: Config = {
         "surface-container-high": "#dce9ff",
 
         // Background
-        background: "#f8f9ff",
-        "on-background": "#0d1c2e",
+        background: "var(--background)",
+        "on-background": "var(--foreground)",
 
         // Role colors
         "student-blue": "#3B82F6",
@@ -48,8 +49,8 @@ const config: Config = {
         "admin-slate": "#334155",
 
         // Outline
-        outline: "#6e7a75",
-        "outline-variant": "#bec9c4",
+        outline: "var(--outline)",
+        "outline-variant": "var(--outline-variant)",
 
         // Backward compat aliases
         accent: "#00604e",

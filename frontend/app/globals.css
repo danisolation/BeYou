@@ -20,6 +20,21 @@
   --line: #bec9c4;
 }
 
+.dark {
+  --background: #0d1c2e;
+  --surface: #1a2940;
+  --foreground: #e1e8f0;
+  --primary: #82d6bd;
+  --outline: #8a9590;
+  --outline-variant: #3e4945;
+  --secondary: #1a2e2a;
+  --accent: #82d6bd;
+  --accent-dark: #9ef3d9;
+  --warning: #FBBF24;
+  --destructive: #ff897a;
+  --line: #3e4945;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -40,6 +55,12 @@ body {
   font-size: 16px;
   line-height: 1.5;
   overflow-x: hidden;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(44, 165, 141, 0.08), transparent 32rem),
+    linear-gradient(180deg, #0d1c2e 0%, #0a1520 100%);
 }
 
 main,
