@@ -19,12 +19,12 @@
 
 ## Phases
 
-- [ ] **Phase 39: Design System & Shared UI Foundation** - Establish synchronized Tailwind config, shared components (cards, nav, layout), and design tokens matching Stitch mockups.
-- [ ] **Phase 40: Login & Homepage Redesign** - Rebuild login page and student homepage to match Stitch mockups with consistent branding.
-- [ ] **Phase 41: Student Dashboard & Navigation** - Rebuild student dashboard with circular cards, specific CTAs, and consistent sidebar/mobile navigation.
-- [ ] **Phase 42: Feature Pages (Tests, Check-in, Scenarios)** - Redesign Test tâm lý, Check-in cảm xúc, and Tình huống pages with sub-pages and integrated history.
-- [ ] **Phase 43: Chat, SOS, Trusted Adults & Settings** - Redesign Peerlight AI chat (mobile hamburger), SOS (2-state), Trusted Adults, and Settings pages.
-- [ ] **Phase 44: Teacher/Parent Portal Updates** - Add Peerlight AI chatbot, card-based dashboard, and SOS detail view to teacher/parent portal.
+- [x] **Phase 39: Design System & Shared UI Foundation** - Establish synchronized Tailwind config, shared components (cards, nav, layout), and design tokens matching Stitch mockups.
+- [x] **Phase 40: Login & Homepage Redesign** - Rebuild login page and student homepage to match Stitch mockups with consistent branding.
+- [x] **Phase 41: Student Dashboard & Navigation** - Rebuild student dashboard with circular cards, specific CTAs, and consistent sidebar/mobile navigation.
+- [x] **Phase 42: Feature Pages (Tests, Check-in, Scenarios)** - Redesign Test tâm lý, Check-in cảm xúc, and Tình huống pages with sub-pages and integrated history.
+- [x] **Phase 43: Chat, SOS, Trusted Adults & Settings** - Redesign Peerlight AI chat (mobile hamburger), SOS (2-state), Trusted Adults, and Settings pages.
+- [x] **Phase 44: Teacher/Parent Portal Updates** - Add Peerlight AI chatbot, card-based dashboard, and SOS detail view to teacher/parent portal.
 
 ## Phase Details
 
