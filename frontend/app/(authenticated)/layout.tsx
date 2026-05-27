@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import { DemoBanner } from "@/components/demo-banner";
 import { ErrorState, LoadingState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
 import { StudentSidebar } from "@/components/navigation/student-sidebar";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
@@ -127,7 +126,6 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       >
         Bỏ qua điều hướng
       </a>
-      {user.is_demo ? <DemoBanner /> : null}
       <header className="sticky top-0 z-30 border-b border-outline-variant bg-surface/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="min-w-0">
