@@ -90,7 +90,7 @@
 4. Admin operations dashboard sections that are expensive are optimized or bounded while preserving metadata-only serialization and sanitizer redlines.
 5. Any new index or migration is tied to observed query predicates and passes SQLAlchemy/Alembic metadata alignment, schema drift, and privacy regression checks.
 
-**Plans:** 2/5 plans executed
+**Plans:** 3/5 plans executed
 
 ### Phase 37: Frontend Data Loading & Render Optimization
 
@@ -170,7 +170,7 @@
 | 33. Cross-Role UI & Performance Baseline Audit | 3/3 | Complete    | 2026-05-26 |
 | 34. Shared UI Primitives & Role Shell Harmonization | 4/4 | Complete   | 2026-05-26 |
 | 35. Role Dashboard Consistency Pass | 5/5 | Complete    | 2026-05-27 |
-| 36. Backend & DB Hot Path Optimization | 2/5 | In Progress|  |
+| 36. Backend & DB Hot Path Optimization | 3/5 | In Progress|  |
 | 37. Frontend Data Loading & Render Optimization | 0/TBD | Not started | - |
 | 38. UI/Performance Release Gates | 0/TBD | Not started | - |
 
