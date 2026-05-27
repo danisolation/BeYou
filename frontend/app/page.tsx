@@ -39,7 +39,7 @@ export default function HomePage() {
         <nav className="mx-auto flex max-w-container-stitch items-center justify-between px-margin-mobile py-3 lg:px-margin-desktop">
           <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
-            BeYou
+            Peerlight AI
           </Link>
           <div className="hidden items-center gap-6 md:flex">
             <a href="#mission" className="text-body-md text-on-background/70 no-underline hover:text-primary">Sứ mệnh</a>
@@ -67,7 +67,7 @@ export default function HomePage() {
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
             <h1 className="mt-6 text-3xl font-bold leading-tight text-on-background md:text-display-stitch">
-              BeYou — Bến đỗ an toàn cho tâm hồn học đường
+              Peerlight AI — Bến đỗ an toàn cho tâm hồn học đường
             </h1>
             <p className="mt-4 max-w-xl text-body-lg text-on-background/70">
               Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm, 
@@ -101,7 +101,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-headline-lg text-on-background">Triết lý Safe Harbor</h2>
           <p className="mt-4 text-body-lg text-on-background/70">
-            BeYou xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe, 
+            Peerlight AI xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe, 
             được bảo vệ, và được trao quyền tự chăm sóc sức khỏe tinh thần. 
             Mọi tính năng đều đặt sự riêng tư và cảm xúc của học sinh lên hàng đầu.
           </p>
@@ -257,7 +257,7 @@ export default function HomePage() {
           <div>
             <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
               <Leaf className="h-5 w-5" aria-hidden="true" />
-              BeYou
+              Peerlight AI
             </Link>
             <p className="mt-3 text-body-md text-on-background/60">
               Bến đỗ an toàn cho tâm hồn học đường. Giúp học sinh THPT chăm sóc sức khỏe tinh thần.
@@ -280,7 +280,7 @@ export default function HomePage() {
           </div>
         </div>
         <div className="mx-auto mt-8 max-w-container-stitch border-t border-outline-variant/20 pt-6 text-center text-label-sm text-on-background/50">
-          © 2024 BeYou. Mọi quyền được bảo lưu.
+          © 2024 Peerlight AI. Mọi quyền được bảo lưu.
         </div>
       </footer>
     </main>

@@ -106,7 +106,7 @@ export default function LoginPage() {
         <header className="flex items-center justify-between rounded-card bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
           <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
-            BeYou
+            Peerlight AI
           </Link>
           <Link href="/" className="font-semibold text-on-background no-underline hover:text-primary">
             Trang chủ
