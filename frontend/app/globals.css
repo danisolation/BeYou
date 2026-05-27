@@ -41,6 +41,8 @@
 
 html {
   min-width: 320px;
+  max-width: 100vw;
+  overflow-x: hidden;
   text-size-adjust: 100%;
 }
 
@@ -155,6 +157,12 @@ svg {
 
 ::selection {
   background: rgba(44, 165, 141, 0.2);
+}
+
+/* Minimum touch target utility (44×44px per WCAG 2.5.5) */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
 }
 
 @media (max-width: 640px) {
