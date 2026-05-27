@@ -4,7 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 
-import { ErrorState, LoadingState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
+import { ErrorState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
+import { LayoutSkeleton } from "@/components/skeletons";
 import { StudentSidebar } from "@/components/navigation/student-sidebar";
 import { MobileBottomNav } from "@/components/navigation/mobile-bottom-nav";
 import { LayoutShell } from "@/components/layout-shell";
@@ -93,13 +94,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   }
 
   if (isLoading) {
-    return (
-      <main className="min-h-screen bg-background px-4 py-10">
-        <div className="mx-auto max-w-3xl">
-          <LoadingState />
-        </div>
-      </main>
-    );
+    return <LayoutSkeleton />;
   }
 
   if (loadFailed || user === null) {
