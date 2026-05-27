@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession
 
-from app.core.authorization import has_student_sos_signal, require_permission, require_role
+from app.core.authorization import require_role
 from app.core.sessions import get_current_user
-from app.db.models import LinkStatus, StudentAdultLink, User, UserRole
+from app.db.models import User, UserRole
 from app.db.session import get_db
 from app.schemas.profile import LinkedStudentResponse
+from app.services.adult_visibility import list_sos_visible_linked_student_rows
 
 router = APIRouter()
 
@@ -19,38 +19,20 @@ def get_parent_students(
     db: OrmSession = Depends(get_db),
 ) -> list[LinkedStudentResponse]:
     require_role(current_user, UserRole.PARENT)
-    rows = db.execute(
-        select(StudentAdultLink, User)
-        .join(User, User.id == StudentAdultLink.student_id)
-        .where(
-            StudentAdultLink.adult_id == current_user.id,
-            StudentAdultLink.relationship_type == UserRole.PARENT.value,
-            StudentAdultLink.status == LinkStatus.ACTIVE.value,
+    return [
+        LinkedStudentResponse(
+            id=student.id,
+            full_name=student.full_name,
+            email=student.email,
+            school=student.school,
+            class_name=student.class_name,
+            relationship_type=link.relationship_type,
+            link_status=link.status,
+            is_demo=student.is_demo,
         )
-        .limit(200)
-    ).all()
-    students: list[LinkedStudentResponse] = []
-    for link, student in rows:
-        if not has_student_sos_signal(db, student.id):
-            continue
-        require_permission(
+        for link, student in list_sos_visible_linked_student_rows(
             db,
-            current_user,
-            resource_type="student_profile",
-            action="read",
-            purpose="support_not_surveillance",
-            student_id=student.id,
+            adult=current_user,
+            relationship_type=UserRole.PARENT.value,
         )
-        students.append(
-            LinkedStudentResponse(
-                id=student.id,
-                full_name=student.full_name,
-                email=student.email,
-                school=student.school,
-                class_name=student.class_name,
-                relationship_type=link.relationship_type,
-                link_status=link.status,
-                is_demo=student.is_demo,
-            )
-        )
-    return students
+    ]
