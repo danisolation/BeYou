@@ -140,27 +140,37 @@ export function ChatSkeleton() {
   );
 }
 
-/** Layout-level skeleton: header bar + content area */
+/** Layout-level skeleton: matches new slim header + content area */
 export function LayoutSkeleton() {
   return (
-    <div className="min-h-dvh bg-background" aria-hidden="true">
-      {/* Header skeleton */}
-      <div className="border-b border-outline-variant bg-surface/95 px-4 py-3 sm:px-6">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="space-y-2">
-            <div className="h-4 w-24 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-            <div className="h-5 w-36 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-          </div>
-          <div className="flex gap-2">
-            <div className="h-10 w-20 animate-pulse rounded-2xl bg-outline-variant/20 dark:bg-outline-variant/30" />
-            <div className="h-10 w-20 animate-pulse rounded-2xl bg-outline-variant/20 dark:bg-outline-variant/30" />
+    <div className="min-h-dvh bg-background">
+      {/* Header skeleton matching new h-14 header */}
+      <div className="border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80">
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="h-5 w-28 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="flex items-center gap-3">
+            <div className="h-4 w-20 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+            <div className="h-6 w-16 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
           </div>
         </div>
       </div>
       {/* Content area skeleton */}
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8" aria-hidden="true">
         <DashboardSkeleton cards={4} />
       </div>
+      {/* Slow load hint */}
+      <SlowLoadHint />
     </div>
+  );
+}
+
+/** Shows "server waking up" message after 5 seconds of loading */
+function SlowLoadHint() {
+  if (typeof window === "undefined") return null;
+  // Use CSS animation delay to show only after 5s
+  return (
+    <p className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-[fadeIn_0.3s_ease_5s_both] rounded-xl bg-on-background/80 px-4 py-2.5 text-xs font-medium text-white opacity-0 shadow-lg dark:bg-white/90 dark:text-on-background">
+      Server đang khởi động, vui lòng chờ...
+    </p>
   );
 }
