@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText } from "lucide-react";
+import { FileText, Pencil, Trash2, Plus, Archive } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -222,6 +222,24 @@ function newThreshold(sortOrder: number): AdminSelfCheckContent["thresholds"][nu
 
 function newScenarioChoice(sortOrder: number): AdminScenarioContent["choices"][number] {
   return { text: "", signal: "constructive", feedback: "", sort_order: sortOrder, is_demo: false };
+}
+
+function StatusBadge({ status }: { status: AdminContentStatus }) {
+  const styles: Record<AdminContentStatus, string> = {
+    draft: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+    published: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+    archived: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+  };
+  const labels: Record<AdminContentStatus, string> = {
+    draft: "Nháp",
+    published: "Đã xuất bản",
+    archived: "Đã lưu trữ",
+  };
+  return (
+    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${styles[status]}`}>
+      {labels[status]}
+    </span>
+  );
 }
 
 export default function AdminContentPage() {
@@ -499,20 +517,81 @@ export default function AdminContentPage() {
       {/* Self-check tab */}
       {activeTab === "self-check" ? (
         <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
             <button
               type="button"
               onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
-              className="mt-3 min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
+              className="inline-flex items-center gap-2 min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
             >
-              Tạo bài tự kiểm tra
+              <Plus size={16} />
+              Tạo mới
             </button>
           </div>
+
+          {/* List of existing self-checks */}
           {selfChecks.length === 0 && !isLoading ? (
             <EmptyState heading="Chưa có bài tự kiểm tra" body="Tạo bản nháp đầu tiên để chuẩn bị nội dung hỗ trợ học sinh." />
-          ) : null}
-          <div className="space-y-4">
+          ) : (
+            <div className="space-y-2">
+              {selfChecks.map((item) => (
+                <div
+                  key={item.id ?? item.title}
+                  className={`flex items-center gap-3 rounded-xl border p-3 transition-colors ${
+                    selfCheckDraft.id === item.id
+                      ? "border-primary/50 bg-primary/5"
+                      : "border-outline-variant/20 hover:bg-primary/5"
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{item.title || "Chưa đặt tên"}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <StatusBadge status={item.status} />
+                      <span className="text-xs text-on-background/50">{item.questions?.length ?? 0} câu hỏi</span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setSelfCheckDraft(cloneSelfCheck(item))}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-primary/10"
+                      title="Sửa"
+                    >
+                      <Pencil size={16} className="text-primary" />
+                    </button>
+                    {item.status === "published" ? (
+                      <button
+                        type="button"
+                        onClick={() => item.id && setConfirmation({ type: "archive-self-check", id: item.id })}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                        title="Lưu trữ"
+                      >
+                        <Archive size={16} className="text-amber-600" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => item.id && setConfirmation({ type: "delete-self-check", id: item.id })}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                        title="Xóa"
+                      >
+                        <Trash2 size={16} className="text-destructive" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Editor section */}
+          <div className="rounded-2xl border border-outline-variant/20 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Pencil size={14} className="text-primary" />
+              <h3 className="text-sm font-semibold">
+                {selfCheckDraft.id ? `Đang sửa: ${selfCheckDraft.title || "Chưa đặt tên"}` : "Tạo bài tự kiểm tra mới"}
+              </h3>
+            </div>
             <Field
               label="Tên bài tự kiểm tra"
               value={selfCheckDraft.title}
@@ -758,11 +837,11 @@ export default function AdminContentPage() {
           </div>
           </div>
           </details>
-          </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
-              Lưu bản nháp
-            </button>
+           <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
+            {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
+           </button>
+          {selfCheckDraft.id ? (
             <button
               type="button"
               onClick={() =>
@@ -776,6 +855,8 @@ export default function AdminContentPage() {
             >
               Xuất bản
             </button>
+          ) : null}
+          {selfCheckDraft.id ? (
             <button
               type="button"
               onClick={() => selfCheckDraft.id && setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id })}
@@ -783,13 +864,17 @@ export default function AdminContentPage() {
             >
               Lưu trữ
             </button>
+          ) : null}
+          {selfCheckDraft.id ? (
             <button
               type="button"
               onClick={() => selfCheckDraft.id && setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id })}
-              className="min-h-11 rounded-xl bg-destructive px-4 font-semibold text-white"
+              className="min-h-11 rounded-xl border border-destructive/50 text-destructive px-4"
             >
-              Xóa bản nháp chưa dùng
+              Xóa
             </button>
+          ) : null}
+          </div>
           </div>
         </article>
       ) : null}
@@ -797,20 +882,81 @@ export default function AdminContentPage() {
       {/* Scenario tab */}
       {activeTab === "scenario" ? (
         <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <div>
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
             <button
               type="button"
               onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
-              className="mt-3 min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
+              className="inline-flex items-center gap-2 min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
             >
-              Tạo tình huống
+              <Plus size={16} />
+              Tạo mới
             </button>
           </div>
+
+          {/* List of existing scenarios */}
           {scenarios.length === 0 && !isLoading ? (
             <EmptyState heading="Chưa có tình huống" body="Tạo bản nháp tình huống để học sinh luyện cách phản hồi an toàn hơn." />
-          ) : null}
-          <div className="space-y-4">
+          ) : (
+            <div className="space-y-2">
+              {scenarios.map((item) => (
+                <div
+                  key={item.id ?? item.title}
+                  className={`flex items-center gap-3 rounded-xl border p-3 transition-colors ${
+                    scenarioDraft.id === item.id
+                      ? "border-primary/50 bg-primary/5"
+                      : "border-outline-variant/20 hover:bg-primary/5"
+                  }`}
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{item.title || "Chưa đặt tên"}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <StatusBadge status={item.status} />
+                      <span className="text-xs text-on-background/50">{item.skill_tag || "Chưa gắn kỹ năng"}</span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setScenarioDraft(cloneScenario(item))}
+                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-primary/10"
+                      title="Sửa"
+                    >
+                      <Pencil size={16} className="text-primary" />
+                    </button>
+                    {item.status === "published" ? (
+                      <button
+                        type="button"
+                        onClick={() => item.id && setConfirmation({ type: "archive-scenario", id: item.id })}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                        title="Lưu trữ"
+                      >
+                        <Archive size={16} className="text-amber-600" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => item.id && setConfirmation({ type: "delete-scenario", id: item.id })}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                        title="Xóa"
+                      >
+                        <Trash2 size={16} className="text-destructive" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Editor section */}
+          <div className="rounded-2xl border border-outline-variant/20 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <Pencil size={14} className="text-primary" />
+              <h3 className="text-sm font-semibold">
+                {scenarioDraft.id ? `Đang sửa: ${scenarioDraft.title || "Chưa đặt tên"}` : "Tạo tình huống mới"}
+              </h3>
+            </div>
             <Field label="Tiêu đề tình huống" value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
             <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
             <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
@@ -929,36 +1075,42 @@ export default function AdminContentPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-xl border border-outline-variant/30 px-4">
-              Lưu bản nháp tình huống
+            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
+              {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
             </button>
-            <button
-              type="button"
-              onClick={() =>
-                scenarioDraft.id &&
-                runAction(
-                  () => publishAdminScenario(scenarioDraft.id as string),
-                  "Đã xuất bản tình huống luyện tập cho học sinh.",
-                )
-              }
-              className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
-            >
-              Xuất bản
-            </button>
-            <button
-              type="button"
-              onClick={() => scenarioDraft.id && setConfirmation({ type: "archive-scenario", id: scenarioDraft.id })}
-              className="min-h-11 rounded-xl border border-amber-300 px-4"
-            >
-              Lưu trữ
-            </button>
-            <button
-              type="button"
-              onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
-              className="min-h-11 rounded-xl border border-outline-variant/30 px-4"
-            >
-              Xóa bản nháp tình huống chưa dùng
-            </button>
+            {scenarioDraft.id ? (
+              <button
+                type="button"
+                onClick={() =>
+                  scenarioDraft.id &&
+                  runAction(
+                    () => publishAdminScenario(scenarioDraft.id as string),
+                    "Đã xuất bản tình huống luyện tập cho học sinh.",
+                  )
+                }
+                className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
+              >
+                Xuất bản
+              </button>
+            ) : null}
+            {scenarioDraft.id ? (
+              <button
+                type="button"
+                onClick={() => scenarioDraft.id && setConfirmation({ type: "archive-scenario", id: scenarioDraft.id })}
+                className="min-h-11 rounded-xl border border-amber-300 px-4"
+              >
+                Lưu trữ
+              </button>
+            ) : null}
+            {scenarioDraft.id ? (
+              <button
+                type="button"
+                onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
+                className="min-h-11 rounded-xl border border-destructive/50 text-destructive px-4"
+              >
+                Xóa
+              </button>
+            ) : null}
           </div>
         </article>
       ) : null}
