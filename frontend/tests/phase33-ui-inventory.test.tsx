@@ -150,6 +150,13 @@ const phase33InventoryCoverage: InventoryCoverageRow[] = selectedRoutes.flatMap(
   ),
 );
 
+const sourceFileExists = new Map(
+  [...new Set(selectedRoutes.map((route) => route.sourceFile))].map((sourceFile) => [
+    sourceFile,
+    existsSync(join(process.cwd(), sourceFile)),
+  ]),
+);
+
 const forbiddenRawEvidenceFields = [
   "body",
   "id",
@@ -259,7 +266,7 @@ describe("Phase 33 UI inventory coverage helper", () => {
       expect(requiredStates).toContain(row.state);
       expect(requiredPatternCategories).toContain(row.patternCategory);
       expect(row.sourceFile).toBeTruthy();
-      expect(existsSync(join(process.cwd(), row.sourceFile))).toBe(true);
+      expect(sourceFileExists.get(row.sourceFile)).toBe(true);
       expect(allowedSeverities).toContain(row.severity);
       expect(allowedCandidateFollowUpPhases).toContain(row.candidateFollowUpPhase);
     }
