@@ -34,6 +34,12 @@ import { ApiError } from "@/lib/api";
 
 const statusOptions: AdminContentStatus[] = ["draft", "published", "archived"];
 const riskLabels: AdminRiskStateLabel[] = ["On dinh", "Can chu y", "Nen tim ho tro", "Can ho tro som"];
+const riskLabelDisplay: Record<AdminRiskStateLabel, string> = {
+  "On dinh": "Ổn định",
+  "Can chu y": "Cần chú ý",
+  "Nen tim ho tro": "Nên tìm hỗ trợ",
+  "Can ho tro som": "Cần hỗ trợ sớm",
+};
 const signalOptions: AdminScenarioSignal[] = ["constructive", "risky"];
 const defaultErrorCopy = "Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.";
 
@@ -745,7 +751,7 @@ export default function AdminContentPage() {
                     >
                       {riskLabels.map((label) => (
                         <option key={label} value={label}>
-                          {label}
+                          {riskLabelDisplay[label]}
                         </option>
                       ))}
                     </select>
@@ -829,7 +835,7 @@ export default function AdminContentPage() {
               ) : (
                 selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
                   <p key={threshold.id ?? `preview-threshold-${thresholdIndex}`} className="text-xs">
-                    {threshold.state_label}: {threshold.min_score}-{threshold.max_score} điểm
+                    {riskLabelDisplay[threshold.state_label as AdminRiskStateLabel] ?? threshold.state_label}: {threshold.min_score}-{threshold.max_score} điểm
                   </p>
                 ))
               )}
