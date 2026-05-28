@@ -59,10 +59,10 @@ export function DestructiveConfirmDialog({
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
       >
-        <h2 id={titleId} className="text-heading">Xác nhận thao tác</h2>
-        <div id={descriptionId} className="mt-3 space-y-3 text-body">
+        <h2 id={titleId} className="text-sm font-semibold">Xác nhận thao tác</h2>
+        <div id={descriptionId} className="mt-3 space-y-3 text-sm">
           <p>{message}</p>
-          {supportingText ? <p className="text-label">{supportingText}</p> : null}
+          {supportingText ? <p className="text-xs">{supportingText}</p> : null}
         </div>
         <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <button

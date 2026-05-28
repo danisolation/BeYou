@@ -23,7 +23,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)} role="dialog" aria-label="Menu mở rộng">
           <div className="absolute inset-0 bg-on-background/20" aria-hidden="true" />
           <div
-            className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-surface p-4 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940]"
+            className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-white dark:bg-[#1a2940] p-4 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940]"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="grid grid-cols-3 gap-3" aria-label="Thêm điều hướng">
@@ -40,7 +40,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
                     }`}
                   >
                     <Icon aria-hidden="true" size={20} />
-                    <span className="text-label-sm">{item.label}</span>
+                    <span className="text-xs-sm">{item.label}</span>
                   </Link>
                 );
               })}
@@ -50,7 +50,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
                 className="flex flex-col items-center gap-1 rounded-2xl p-3 text-on-background/60 no-underline"
               >
                 <Settings aria-hidden="true" size={20} />
-                <span className="text-label-sm">Cài đặt</span>
+                <span className="text-xs-sm">Cài đặt</span>
               </Link>
               <button
                 type="button"
@@ -58,7 +58,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
                 className="flex flex-col items-center gap-1 rounded-2xl p-3 text-on-background/60"
               >
                 <Settings aria-hidden="true" size={20} />
-                <span className="text-label-sm">Đăng xuất</span>
+                <span className="text-xs-sm">Đăng xuất</span>
               </button>
             </nav>
           </div>
@@ -83,7 +83,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
               aria-current={active ? "page" : undefined}
             >
               <Icon aria-hidden="true" size={20} />
-              <span className="truncate text-label-sm">{item.label}</span>
+              <span className="truncate text-xs-sm">{item.label}</span>
             </Link>
           );
         })}
@@ -92,7 +92,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
           className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 text-red-700 no-underline"
         >
           <ShieldAlert aria-hidden="true" size={20} />
-          <span className="truncate text-label-sm">SOS</span>
+          <span className="truncate text-xs-sm">SOS</span>
         </Link>
         <button
           type="button"
@@ -101,7 +101,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
           aria-label="Thêm"
         >
           <MoreHorizontal aria-hidden="true" size={20} />
-          <span className="truncate text-label-sm">Thêm</span>
+          <span className="truncate text-xs-sm">Thêm</span>
         </button>
       </nav>
     </>

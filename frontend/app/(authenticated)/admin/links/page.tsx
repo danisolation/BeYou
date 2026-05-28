@@ -67,19 +67,19 @@ export default function AdminLinksPage() {
     <section className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Liên kết học sinh và người lớn hỗ trợ</h1>
-        <p className="mt-3 text-body">
+        <p className="mt-3 text-sm">
           Tạo liên kết để giáo viên hoặc phụ huynh chỉ thấy học sinh được phép hỗ trợ.
         </p>
-        <p className="mt-2 text-label">
+        <p className="mt-2 text-xs">
           Liên kết không mở dữ liệu riêng tư thô; người lớn chỉ xem tóm tắt hỗ trợ và trạng thái được phép.
         </p>
       </div>
       <LinkForm users={users} onSubmit={handleCreate} />
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-heading">Danh sách liên kết</h2>
+        <h2 className="text-sm font-semibold">Danh sách liên kết</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && links.length === 0 ? (
           <EmptyState
@@ -96,12 +96,12 @@ export default function AdminLinksPage() {
                     <h3 className="font-semibold">{link.student_full_name}</h3>
                     {link.is_demo ? <DemoBadge /> : null}
                   </div>
-                  <p className="break-all text-label">Học sinh: {link.student_email}</p>
-                  <p className="break-all text-label">Người lớn hỗ trợ: {link.adult_full_name} ({link.adult_email})</p>
-                  <p className="text-label">Loại liên kết: {link.relationship_type}</p>
-                  <p className="text-label">Trường/lớp: {[link.student_school, link.student_class_name].filter(Boolean).join(" / ") || "Chưa cập nhật"}</p>
-                  <p className="text-label">Trạng thái: {link.status}</p>
-                  <p className="text-label">Cập nhật: {new Date(link.updated_at).toLocaleString("vi-VN")}</p>
+                  <p className="break-all text-xs">Học sinh: {link.student_email}</p>
+                  <p className="break-all text-xs">Người lớn hỗ trợ: {link.adult_full_name} ({link.adult_email})</p>
+                  <p className="text-xs">Loại liên kết: {link.relationship_type}</p>
+                  <p className="text-xs">Trường/lớp: {[link.student_school, link.student_class_name].filter(Boolean).join(" / ") || "Chưa cập nhật"}</p>
+                  <p className="text-xs">Trạng thái: {link.status}</p>
+                  <p className="text-xs">Cập nhật: {new Date(link.updated_at).toLocaleString("vi-VN")}</p>
                 </div>
                 {link.status === "active" ? (
                   <button

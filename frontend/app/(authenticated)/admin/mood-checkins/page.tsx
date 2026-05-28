@@ -100,19 +100,19 @@ export default function AdminMoodCheckInsPage() {
   return (
     <section className="space-y-6">
       <header className="rounded-3xl bg-white p-6 shadow-sm">
-        <p className="text-label font-semibold text-accent">Cấu hình an toàn</p>
+        <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Mood check-in</h1>
-        <p className="mt-3 max-w-3xl text-body">
+        <p className="mt-3 max-w-3xl text-sm">
           Quản lý nhãn, hướng dẫn và lifecycle cho check-in cảm xúc. Copy phải hỗ trợ, không chẩn đoán, không giám sát.
         </p>
-        <p className="mt-2 max-w-3xl text-label">
+        <p className="mt-2 max-w-3xl text-xs">
           Khi xuất bản, hãy dùng ngôn ngữ giúp học sinh tự gọi tên cảm xúc và người lớn mở lời hỗ trợ, không suy luận bệnh lý.
         </p>
       </header>
 
-      <section className="rounded-3xl bg-secondary p-6">
-        <h2 className="text-heading">Ranh giới</h2>
-        <p className="mt-3 text-body">
+      <section className="rounded-3xl bg-primary/5 p-6">
+        <h2 className="text-sm font-semibold">Ranh giới</h2>
+        <p className="mt-3 text-sm">
           Preview chỉ hiển thị nội dung cấu hình; không có ghi chú riêng tư, dữ liệu học sinh thô, export hay leaderboard.
         </p>
       </section>
@@ -120,7 +120,7 @@ export default function AdminMoodCheckInsPage() {
       {isLoading ? <p>Đang tải cấu hình...</p> : null}
       {configs.length > 0 ? (
         <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <h2 className="text-heading">Cấu hình hiện có</h2>
+          <h2 className="text-sm font-semibold">Cấu hình hiện có</h2>
           <div className="mt-3 flex flex-wrap gap-3">
             {configs.map((config) => (
               <button
@@ -139,7 +139,7 @@ export default function AdminMoodCheckInsPage() {
       <form className="space-y-5 rounded-3xl bg-white p-6 shadow-sm" onSubmit={handleSave}>
         <div className="grid gap-4 md:grid-cols-3">
           <TextInput label="Tên cấu hình" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} />
-          <label className="block text-label font-semibold">
+          <label className="block text-xs font-semibold">
             Trạng thái
             <select
               value={draft.status}
@@ -171,11 +171,11 @@ export default function AdminMoodCheckInsPage() {
         />
 
         <section>
-          <h2 className="text-heading">Mood options</h2>
+          <h2 className="text-sm font-semibold">Mood options</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {draft.mood_options.map((option, index) => (
-              <div key={option.key} className="rounded-2xl bg-secondary p-4">
-                <p className="text-label font-semibold">{option.key}</p>
+              <div key={option.key} className="rounded-2xl bg-primary/5 p-4">
+                <p className="text-xs font-semibold">{option.key}</p>
                 <TextInput label="Nhãn" value={option.label} onChange={(value) => updateMoodOption(index, "label", value)} />
                 <TextInput label="Helper" value={option.helper} onChange={(value) => updateMoodOption(index, "helper", value)} />
               </div>
@@ -184,20 +184,20 @@ export default function AdminMoodCheckInsPage() {
         </section>
 
         <section>
-          <h2 className="text-heading">Context tags</h2>
+          <h2 className="text-sm font-semibold">Context tags</h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {draft.context_tags.map((tag, index) => (
-              <div key={tag.key} className="rounded-2xl bg-secondary p-4">
+              <div key={tag.key} className="rounded-2xl bg-primary/5 p-4">
                 <TextInput label={tag.key} value={tag.label} onChange={(value) => updateContextTag(index, value)} />
               </div>
             ))}
           </div>
         </section>
 
-        {message ? <p role="status" className="text-body text-accent">{message}</p> : null}
-        {error ? <p role="alert" className="text-body text-red-700">{error}</p> : null}
+        {message ? <p role="status" className="text-sm text-primary">{message}</p> : null}
+        {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
-          <button type="submit" disabled={isSaving} className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white">
+          <button type="submit" disabled={isSaving} className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white">
             {isSaving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
           <button type="button" onClick={handlePreview} className="min-h-11 rounded-2xl border border-[#CFE8E1] px-5 font-semibold">
@@ -208,11 +208,11 @@ export default function AdminMoodCheckInsPage() {
 
       {preview ? (
         <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <h2 className="text-heading">Preview</h2>
-          <p className="mt-3 text-body">{preview.student_prompt}</p>
-          <p className="mt-2 text-body">{preview.adult_guidance}</p>
-          <p className="mt-3 text-label">Mood: {preview.mood_options.map((option) => option.label).join(", ")}</p>
-          <p className="mt-2 text-label">Context: {preview.context_tags.map((tag) => tag.label).join(", ")}</p>
+          <h2 className="text-sm font-semibold">Preview</h2>
+          <p className="mt-3 text-sm">{preview.student_prompt}</p>
+          <p className="mt-2 text-sm">{preview.adult_guidance}</p>
+          <p className="mt-3 text-xs">Mood: {preview.mood_options.map((option) => option.label).join(", ")}</p>
+          <p className="mt-2 text-xs">Context: {preview.context_tags.map((tag) => tag.label).join(", ")}</p>
         </section>
       ) : null}
     </section>
@@ -231,7 +231,7 @@ function TextInput({
   type?: string;
 }) {
   return (
-    <label className="mt-2 block text-label font-semibold">
+    <label className="mt-2 block text-xs font-semibold">
       {label}
       <input
         type={type}
@@ -253,7 +253,7 @@ function TextAreaInput({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="block text-label font-semibold">
+    <label className="block text-xs font-semibold">
       {label}
       <textarea
         value={value}

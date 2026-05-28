@@ -125,21 +125,21 @@ export function AdultSupportSummaryDetail({
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">Tóm tắt hỗ trợ được phép xem</h1>
           {summary.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-3 text-body">{sectionTitle}</p>
-        <p className="mt-2 text-label">
+        <p className="mt-3 text-sm">{sectionTitle}</p>
+        <p className="mt-2 text-xs">
           {summary.student.full_name} · {summary.student.school ?? "Chưa cập nhật"} ·{" "}
           {summary.student.class_name ?? "Chưa cập nhật"}
         </p>
       </header>
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">Ranh giới riêng tư</h2>
-        <ul className="mt-3 space-y-2 text-body">
+        <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
+        <ul className="mt-3 space-y-2 text-sm">
           {summary.privacy_notes.map((note) => (
             <li key={note}>{note}</li>
           ))}
@@ -190,8 +190,8 @@ function AccessReasonPrompt({
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
       <h1 className="text-2xl font-bold">Cho biết lý do hỗ trợ trước khi xem</h1>
-      <p className="mt-3 text-body">{detail.message}</p>
-      <div className="mt-4 rounded-2xl bg-secondary p-4 text-body">
+      <p className="mt-3 text-sm">{detail.message}</p>
+      <div className="mt-4 rounded-2xl bg-primary/5 p-4 text-sm">
         {(detail.copy ?? [
           "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
           "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
@@ -200,9 +200,9 @@ function AccessReasonPrompt({
         ))}
       </div>
       <fieldset className="mt-5 space-y-3">
-        <legend className="text-heading">Chọn lý do phù hợp</legend>
+        <legend className="text-sm font-semibold">Chọn lý do phù hợp</legend>
         {detail.allowed_reasons.map((reason) => (
-          <label key={reason.code} className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-3 text-body">
+          <label key={reason.code} className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-3 text-sm">
             <input
               className="mt-1"
               type="radio"
@@ -215,7 +215,7 @@ function AccessReasonPrompt({
           </label>
         ))}
       </fieldset>
-      {errorMessage ? <p className="mt-3 text-label text-red-700">{errorMessage}</p> : null}
+      {errorMessage ? <p className="mt-3 text-xs text-red-700">{errorMessage}</p> : null}
       <button
         className="mt-5 rounded-full bg-primary px-5 py-3 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
         type="button"
@@ -231,12 +231,12 @@ function AccessReasonPrompt({
 function AccessReasonAcceptedCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="text-heading">Lý do truy cập đã ghi nhận</h2>
-      <p className="mt-3 text-body">
+      <h2 className="text-sm font-semibold">Lý do truy cập đã ghi nhận</h2>
+      <p className="mt-3 text-sm">
         {summary.access_reason.reason_label ?? "Lý do hỗ trợ đã được ghi nhận"} — chỉ lưu dưới dạng mã metadata để minh bạch
         thao tác xem.
       </p>
-      <p className="mt-2 text-label">Lý do này không mở rộng quyền xem ngoài liên kết đang hoạt động.</p>
+      <p className="mt-2 text-xs">Lý do này không mở rộng quyền xem ngoài liên kết đang hoạt động.</p>
     </section>
   );
 }
@@ -246,18 +246,18 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
   if (!plan.shared_with_viewer) {
     return (
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">Người lớn tin tưởng</h2>
-        <p className="mt-3 text-body">
+        <h2 className="text-sm font-semibold">Người lớn tin tưởng</h2>
+        <p className="mt-3 text-sm">
           Học sinh chưa chia sẻ kế hoạch này với bạn, hoặc kế hoạch đang tạm dừng/ngừng chia sẻ.
         </p>
-        <p className="mt-2 text-label">Trạng thái: {plan.status ?? "Chưa có kế hoạch"}</p>
+        <p className="mt-2 text-xs">Trạng thái: {plan.status ?? "Chưa có kế hoạch"}</p>
       </section>
     );
   }
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="text-heading">Người lớn tin tưởng</h2>
-      <p className="mt-3 text-label">Được chia sẻ với {plan.selected_adult_count} người lớn tin tưởng.</p>
+      <h2 className="text-sm font-semibold">Người lớn tin tưởng</h2>
+      <p className="mt-3 text-xs">Được chia sẻ với {plan.selected_adult_count} người lớn tin tưởng.</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <SummaryField title="Điều thường giúp em" value={plan.what_helps} />
         <SummaryField title="Điều nên tránh" value={plan.what_does_not_help} />
@@ -265,9 +265,9 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
         <SummaryField title="Thời điểm phù hợp" value={plan.safe_contact_times} />
       </div>
       {plan.shareable_note ? (
-        <div className="mt-4 rounded-2xl bg-secondary p-4">
-          <h3 className="text-heading">Ghi chú em đồng ý chia sẻ</h3>
-          <p className="mt-2 text-body">{plan.shareable_note}</p>
+        <div className="mt-4 rounded-2xl bg-primary/5 p-4">
+          <h3 className="text-sm font-semibold">Ghi chú em đồng ý chia sẻ</h3>
+          <p className="mt-2 text-sm">{plan.shareable_note}</p>
         </div>
       ) : null}
     </section>
@@ -277,22 +277,22 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
 function AdultSharedMoodNotesCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="text-heading">Ghi chú được học sinh đồng ý chia sẻ</h2>
-      <p className="mt-3 text-body">Chỉ hiển thị những nội dung học sinh đã chủ động chọn chia sẻ với bạn.</p>
+      <h2 className="text-sm font-semibold">Ghi chú được học sinh đồng ý chia sẻ</h2>
+      <p className="mt-3 text-sm">Chỉ hiển thị những nội dung học sinh đã chủ động chọn chia sẻ với bạn.</p>
       <div className="mt-4 space-y-3">
         {summary.shared_mood_notes.length === 0 ? (
-          <p className="rounded-2xl bg-secondary p-4 text-body">
+          <p className="rounded-2xl bg-primary/5 p-4 text-sm">
             Học sinh chưa chia sẻ ghi chú cảm xúc nào với bạn, hoặc quyền chia sẻ đã được thu hồi.
           </p>
         ) : (
           summary.shared_mood_notes.map((note) => (
-            <article key={note.id} className="rounded-2xl bg-secondary p-4">
-              <p className="text-label">{new Date(note.shared_at).toLocaleString("vi-VN")}</p>
-              <p className="mt-1 text-label">
+            <article key={note.id} className="rounded-2xl bg-primary/5 p-4">
+              <p className="text-xs">{new Date(note.shared_at).toLocaleString("vi-VN")}</p>
+              <p className="mt-1 text-xs">
                 {note.share_scope === "private_note" ? "Ghi chú riêng tư được chia sẻ" : "Tóm tắt học sinh tự viết"}
               </p>
-              <p className="mt-2 text-body">{note.content}</p>
-              <p className="mt-3 text-label">
+              <p className="mt-2 text-sm">{note.content}</p>
+              <p className="mt-3 text-xs">
                 Nội dung này có thể không còn hiển thị nếu học sinh thu hồi quyền xem.
               </p>
             </article>
@@ -307,22 +307,22 @@ function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   const mood = summary.mood_summary;
   return (
     <section className="rounded-3xl bg-white p-6 shadow-sm">
-      <h2 className="text-heading">Xu hướng check-in cảm xúc</h2>
-      <p className="mt-3 text-label">Tóm tắt tổng hợp</p>
+      <h2 className="text-sm font-semibold">Xu hướng check-in cảm xúc</h2>
+      <p className="mt-3 text-xs">Tóm tắt tổng hợp</p>
       {mood.latest_trend_label ? (
         <>
-          <p className="mt-3 text-body">
+          <p className="mt-3 text-sm">
             Gần nhất: <strong>{mood.latest_trend_label}</strong>
             {mood.latest_checkin_at ? ` · ${new Date(mood.latest_checkin_at).toLocaleString("vi-VN")}` : ""}
           </p>
-          <p className="mt-2 text-body">
+          <p className="mt-2 text-sm">
             {mood.recent_checkin_count} check-in gần đây · {mood.high_concern_count} lần cần hỗ trợ sớm.
           </p>
-          <p className="mt-3 text-body">{mood.suggested_supportive_action}</p>
-          <p className="mt-3 text-label">Các nhãn gần đây: {mood.recent_trend_labels.join(", ")}</p>
+          <p className="mt-3 text-sm">{mood.suggested_supportive_action}</p>
+          <p className="mt-3 text-xs">Các nhãn gần đây: {mood.recent_trend_labels.join(", ")}</p>
         </>
       ) : (
-        <p className="mt-3 text-body">{mood.suggested_supportive_action}</p>
+        <p className="mt-3 text-sm">{mood.suggested_supportive_action}</p>
       )}
     </section>
   );
@@ -330,9 +330,9 @@ function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
 
 function SummaryField({ title, value }: { title: string; value: string | null }) {
   return (
-    <div className="rounded-2xl bg-secondary p-4">
-      <h3 className="text-heading">{title}</h3>
-      <p className="mt-2 text-body">{value ?? "Chưa chia sẻ nội dung này."}</p>
+    <div className="rounded-2xl bg-primary/5 p-4">
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <p className="mt-2 text-sm">{value ?? "Chưa chia sẻ nội dung này."}</p>
     </div>
   );
 }

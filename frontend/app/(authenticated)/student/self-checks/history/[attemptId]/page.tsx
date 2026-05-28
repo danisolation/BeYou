@@ -43,30 +43,30 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">{attempt.test_title}</h1>
           {attempt.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-3 text-body">Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý.</p>
-        <p className="mt-3 text-label">
+        <p className="mt-3 text-sm">Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý.</p>
+        <p className="mt-3 text-xs">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
       </header>
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">{attempt.supportive_headline}</h2>
-        <p className="mt-3 text-body">{displayRiskLabel(attempt.state_label)}</p>
-        <p className="mt-4 text-label">Điểm tham khảo: {attempt.score}</p>
+        <h2 className="text-sm font-semibold">{attempt.supportive_headline}</h2>
+        <p className="mt-3 text-sm">{displayRiskLabel(attempt.state_label)}</p>
+        <p className="mt-4 text-xs">Điểm tham khảo: {attempt.score}</p>
       </section>
 
       <section className="rounded-3xl bg-white p-6 shadow-sm">
-        <h2 className="text-heading">Câu trả lời của em</h2>
+        <h2 className="text-sm font-semibold">Câu trả lời của em</h2>
         <div className="mt-4 space-y-4">
           {attempt.answers.map((answer) => (
             <article key={`${answer.question_id ?? answer.sort_order}-${answer.choice_id ?? answer.choice_text_snapshot}`} className="rounded-2xl border border-[#CFE8E1] p-4">
-              <p className="text-body">{answer.question_text_snapshot}</p>
-              <p className="mt-2 text-label">{answer.choice_text_snapshot}</p>
+              <p className="text-sm">{answer.question_text_snapshot}</p>
+              <p className="mt-2 text-xs">{answer.choice_text_snapshot}</p>
             </article>
           ))}
         </div>

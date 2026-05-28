@@ -50,12 +50,12 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
             <span className="block font-semibold text-[#12332E]">
               {loadingRole === account.role ? "Đang vào..." : `Vào vai ${account.label}`}
             </span>
-            {!compact ? <span className="mt-1 block text-label text-[#27665B]">{account.summary}</span> : null}
+            {!compact ? <span className="mt-1 block text-xs text-[#27665B]">{account.summary}</span> : null}
           </button>
         ))}
       </div>
       {error ? (
-        <p role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label text-[#6B4A00]">
+        <p role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs text-[#6B4A00]">
           {error}
         </p>
       ) : null}

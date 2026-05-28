@@ -54,11 +54,11 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 export function PageHeader({ eyebrow, title, description, actions, children, className }: PageHeaderProps) {
   return (
-    <header className={cn("flex flex-col gap-6 rounded-3xl bg-secondary p-6 sm:p-8", className)}>
+    <header className={cn("flex flex-col gap-6 rounded-3xl bg-primary/5 p-6 sm:p-8", className)}>
       <div className="max-w-3xl">
-        {eyebrow ? <p className="text-label font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p> : null}
+        {eyebrow ? <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p> : null}
         <h1 className="mt-2 text-display">{title}</h1>
-        {description ? <p className="mt-3 text-body">{description}</p> : null}
+        {description ? <p className="mt-3 text-sm">{description}</p> : null}
       </div>
       {actions || children ? <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">{actions ?? children}</div> : null}
     </header>
@@ -71,8 +71,8 @@ export function Section({ title, description, actions, children, className }: Se
       {title || description || actions ? (
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            {title ? <h2 className="text-heading">{title}</h2> : null}
-            {description ? <p className="mt-2 text-body">{description}</p> : null}
+            {title ? <h2 className="text-sm font-semibold">{title}</h2> : null}
+            {description ? <p className="mt-2 text-sm">{description}</p> : null}
           </div>
           {actions ? <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">{actions}</div> : null}
         </div>
@@ -91,9 +91,9 @@ export function EntryCard({ title, description, meta, badge, children, className
     <article className={cn("rounded-2xl bg-white dark:bg-[#1a2940] p-5 border border-outline-variant/30", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          {meta ? <div className="mb-2 text-label text-primary">{meta}</div> : null}
-          <h3 className="text-heading">{title}</h3>
-          {description ? <p className="mt-2 text-body">{description}</p> : null}
+          {meta ? <div className="mb-2 text-xs text-primary">{meta}</div> : null}
+          <h3 className="text-sm font-semibold">{title}</h3>
+          {description ? <p className="mt-2 text-sm">{description}</p> : null}
         </div>
         {badge}
       </div>
@@ -130,7 +130,7 @@ export function ResponsiveTable({ children, className }: PrimitiveProps) {
 
 export function LoadingState({ message = "Đang tải thông tin...", className }: LoadingStateProps) {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" className={cn("rounded-3xl bg-white p-6 text-body shadow-sm ring-1 ring-outline-variant", className)}>
+    <div role="status" aria-live="polite" aria-busy="true" className={cn("rounded-3xl bg-white p-6 text-sm shadow-sm ring-1 ring-outline-variant", className)}>
       {message}
     </div>
   );
@@ -143,8 +143,8 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <div role="alert" aria-live="assertive" className={cn("rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
-      <h2 className="text-heading text-red-700">{title}</h2>
-      <p className="mt-3 text-body text-red-700">{message}</p>
+      <h2 className="text-sm font-semibold text-red-700">{title}</h2>
+      <p className="mt-3 text-sm text-red-700">{message}</p>
     </div>
   );
 }
@@ -159,7 +159,7 @@ export function PrivacyBoundaryCard({
   return (
     <aside className={cn("rounded-2xl bg-primary/5 dark:bg-primary/10 p-5 border border-primary/10", className)}>
       <p className="text-xs font-semibold uppercase tracking-widest text-primary">Ranh giới quyền riêng tư</p>
-      <h2 className="mt-2 text-heading">{title}</h2>
+      <h2 className="mt-2 text-sm font-semibold">{title}</h2>
       <p className="mt-2 text-sm text-on-background/70">{description}</p>
       {children ? <div className="mt-4">{children}</div> : null}
       {actions ? <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">{actions}</div> : null}

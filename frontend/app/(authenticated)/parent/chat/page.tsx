@@ -101,15 +101,10 @@ export default function ParentChatPage() {
   }
 
   return (
-    <section className="space-y-6">
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-        <h1 className="text-2xl font-bold">Peerlight AI</h1>
-        <p className="mt-3 max-w-3xl text-body">{INTRO_COPY}</p>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
+    <section className="space-y-4">
+      <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-2xl border border-outline-variant bg-surface p-4 shadow-sm lg:block">
+        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 lg:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -120,22 +115,22 @@ export default function ParentChatPage() {
 
         {/* Mobile drawer */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-label="Lịch sử trò chuyện">
             <div
-              className="absolute inset-0 bg-black/40"
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-            <aside className="absolute inset-y-0 left-0 w-72 bg-surface p-4 shadow-lg">
+            <aside className="absolute inset-y-0 left-0 w-72 bg-white dark:bg-[#1a2940] p-4 shadow-xl">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-heading">Lịch sử</h2>
+                <h2 className="text-sm font-semibold">Lịch sử</h2>
                 <button
                   type="button"
                   aria-label="Đóng menu"
                   onClick={() => setSidebarOpen(false)}
-                  className="rounded-2xl p-2 hover:bg-secondary"
+                  className="rounded-xl p-2 hover:bg-outline-variant/15"
                 >
-                  <X size={20} aria-hidden="true" />
+                  <X size={18} aria-hidden="true" />
                 </button>
               </div>
               <SidebarContent
@@ -148,50 +143,59 @@ export default function ParentChatPage() {
           </div>
         )}
 
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <div className="flex items-center gap-3">
+        <section className="flex flex-col rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+          {/* Chat header */}
+          <div className="flex items-center gap-3 border-b border-outline-variant/20 px-4 py-3">
             <button
               type="button"
               aria-label="Mở lịch sử trò chuyện"
               onClick={() => setSidebarOpen(true)}
-              className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant px-3 text-primary hover:bg-secondary lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 hover:bg-outline-variant/15 lg:hidden"
             >
-              <Menu size={20} aria-hidden="true" />
+              <Menu size={18} aria-hidden="true" />
             </button>
-            <h2 className="text-heading">Trò chuyện với Peerlight AI</h2>
+            <h2 className="text-sm font-semibold text-on-background">Peerlight AI – Hỗ trợ phụ huynh</h2>
           </div>
-          {isLoading ? <p className="mt-4 text-body">Đang tải cuộc trò chuyện...</p> : null}
-          {!isLoading && messages.length === 0 ? (
-            <p className="mt-4 rounded-2xl bg-secondary p-4 text-body">
-              Chưa có tin nhắn nào. Bạn có thể hỏi Peerlight AI về cách đồng hành cùng con.
-            </p>
-          ) : null}
-          <div className="mt-4 space-y-4">
-            {messages.map((message) => (
-              <ChatBubble key={message.id} message={message} />
-            ))}
-          </div>
-          {error ? <p role="alert" className="mt-4 text-body text-red-700">{error}</p> : null}
 
-          <form className="mt-6 space-y-4" onSubmit={handleSend}>
-            <label className="block text-label font-semibold" htmlFor="chat-message">
-              Nội dung muốn trao đổi
-            </label>
-            <textarea
-              id="chat-message"
-              aria-label="Nội dung muốn trao đổi"
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              placeholder="Hỏi về cách đồng hành cùng con..."
-              className="min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
-            />
-            <button
-              type="submit"
-              disabled={isSending}
-              className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60"
-            >
-              {isSending ? "Đang gửi..." : "Gửi"}
-            </button>
+          {/* Messages area */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            {isLoading ? <p className="text-sm text-on-background/50">Đang tải...</p> : null}
+            {!isLoading && messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <p className="text-sm font-medium text-on-background">Chào bạn!</p>
+                <p className="mt-1 max-w-sm text-xs text-on-background/60">
+                  {INTRO_COPY}
+                </p>
+              </div>
+            ) : null}
+            <div className="space-y-3" aria-live="polite" aria-relevant="additions">
+              {messages.map((message) => (
+                <ChatBubble key={message.id} message={message} />
+              ))}
+            </div>
+            {error ? <p role="alert" className="mt-3 text-xs text-red-600 dark:text-red-400">{error}</p> : null}
+          </div>
+
+          {/* Input area */}
+          <form className="border-t border-outline-variant/20 px-4 py-3" onSubmit={handleSend}>
+            <div className="flex items-end gap-2">
+              <textarea
+                id="chat-message"
+                aria-label="Nội dung muốn trao đổi"
+                value={draft}
+                onChange={(event) => setDraft(event.target.value)}
+                placeholder="Hỏi về cách đồng hành cùng con..."
+                rows={2}
+                className="min-h-[2.5rem] max-h-32 flex-1 resize-none rounded-xl border border-outline-variant/30 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-on-background/40 focus:border-primary dark:border-outline-variant/20"
+              />
+              <button
+                type="submit"
+                disabled={isSending || !draft.trim()}
+                className="flex h-10 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-medium text-on-primary disabled:opacity-40"
+              >
+                {isSending ? "..." : "Gửi"}
+              </button>
+            </div>
           </form>
         </section>
       </div>
@@ -204,9 +208,9 @@ function ChatBubble({ message }: { message: ChatMessage }) {
   const paragraphs = message.content.split("\n").filter(Boolean);
   return (
     <article className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <div className={`max-w-3xl rounded-3xl p-4 ${isUser ? "bg-accent text-white" : "bg-secondary text-[#12332E]"}`}>
-        <p className="text-label font-semibold">{isUser ? "Bạn" : "Peerlight AI"}</p>
-        <div className="mt-2 space-y-2 text-body">
+      <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${isUser ? "bg-primary text-on-primary" : "bg-outline-variant/10 dark:bg-outline-variant/20 text-on-background"}`}>
+        <p className="text-xs font-semibold opacity-70">{isUser ? "Bạn" : "Peerlight AI"}</p>
+        <div className="mt-1 space-y-1.5 text-sm">
           {paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -229,27 +233,24 @@ function SidebarContent({
 }) {
   return (
     <>
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="text-heading">Lịch sử</h2>
-        <button
-          type="button"
-          onClick={onNewThread}
-          className="rounded-2xl border border-outline-variant px-3 py-2 text-label font-semibold hover:bg-secondary"
-        >
-          Cuộc trò chuyện mới
-        </button>
-      </div>
-      <div className="mt-4 space-y-2">
+      <button
+        type="button"
+        onClick={onNewThread}
+        className="w-full rounded-xl border border-outline-variant/30 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/5"
+      >
+        + Cuộc trò chuyện mới
+      </button>
+      <div className="mt-3 space-y-1">
         {threads.length === 0 ? (
-          <p className="rounded-2xl bg-secondary p-3 text-label">Chưa có lịch sử.</p>
+          <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50">Chưa có lịch sử.</p>
         ) : (
           threads.map((thread) => (
             <button
               key={thread.id}
               type="button"
               onClick={() => onSelectThread(thread.id)}
-              className={`w-full rounded-2xl px-3 py-3 text-left text-label font-semibold ${
-                thread.id === threadId ? "bg-primary text-on-primary" : "bg-secondary text-on-background hover:bg-surface-container"
+              className={`w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition-colors ${
+                thread.id === threadId ? "bg-primary/10 text-primary" : "text-on-background/70 hover:bg-outline-variant/10"
               }`}
             >
               <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>

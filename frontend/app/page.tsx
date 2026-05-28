@@ -37,7 +37,7 @@ export default function HomePage() {
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 border-b border-outline-variant/20 bg-white/90 backdrop-blur-lg dark:bg-[#0d1c2e]/90">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+          <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
             Peerlight AI
           </Link>
@@ -63,7 +63,7 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid max-w-container-stitch items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="animate-fade-in">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-label-md font-semibold text-primary">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs-md font-semibold text-primary">
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
             <h1 className="mt-6 text-3xl font-bold leading-tight text-on-background md:text-2xl font-bold-stitch">
@@ -239,7 +239,7 @@ export default function HomePage() {
       <section className="bg-white dark:bg-[#1e2d40] px-margin-mobile py-12 lg:px-margin-desktop">
         <div className="mx-auto max-w-container-stitch">
           <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-outline-variant/20 sm:p-8">
-            <p className="text-label-md font-semibold text-primary">Dành cho người đánh giá</p>
+            <p className="text-xs-md font-semibold text-primary">Dành cho người đánh giá</p>
             <h2 className="mt-2 text-lg text-on-background">Vào demo trong một bước</h2>
             <p className="mt-2 text-sm text-on-background/70">
               Chọn vai trò để tự đăng nhập bằng dữ liệu seed. Không nhập dữ liệu học sinh thật.
@@ -255,7 +255,7 @@ export default function HomePage() {
       <footer className="border-t border-outline-variant/20 bg-white px-margin-mobile py-12 lg:px-margin-desktop">
         <div className="mx-auto grid max-w-container-stitch gap-8 md:grid-cols-3">
           <div>
-            <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+            <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
               <Leaf className="h-5 w-5" aria-hidden="true" />
               Peerlight AI
             </Link>
@@ -264,7 +264,7 @@ export default function HomePage() {
             </p>
           </div>
           <div>
-            <h4 className="text-label-md font-semibold text-on-background">Về chúng tôi</h4>
+            <h4 className="text-xs-md font-semibold text-on-background">Về chúng tôi</h4>
             <ul className="mt-3 space-y-2 text-sm text-on-background/60">
               <li><a href="#mission" className="no-underline hover:text-primary">Sứ mệnh</a></li>
               <li><a href="#features" className="no-underline hover:text-primary">Tính năng</a></li>
@@ -272,14 +272,14 @@ export default function HomePage() {
             </ul>
           </div>
           <div>
-            <h4 className="text-label-md font-semibold text-on-background">Pháp lý</h4>
+            <h4 className="text-xs-md font-semibold text-on-background">Pháp lý</h4>
             <ul className="mt-3 space-y-2 text-sm text-on-background/60">
               <li>Chính sách bảo mật</li>
               <li>Điều khoản sử dụng</li>
             </ul>
           </div>
         </div>
-        <div className="mx-auto mt-8 max-w-container-stitch border-t border-outline-variant/20 pt-6 text-center text-label-sm text-on-background/50">
+        <div className="mx-auto mt-8 max-w-container-stitch border-t border-outline-variant/20 pt-6 text-center text-xs-sm text-on-background/50">
           © 2024 Peerlight AI. Mọi quyền được bảo lưu.
         </div>
       </footer>

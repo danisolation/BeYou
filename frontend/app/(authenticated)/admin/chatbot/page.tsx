@@ -63,10 +63,10 @@ export default function AdminChatbotPage() {
     <section className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Cấu hình chatbot an toàn</h1>
-        <p className="mt-3 max-w-3xl text-body">
+        <p className="mt-3 max-w-3xl text-sm">
           Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.
         </p>
-        <p className="mt-2 max-w-3xl text-label">
+        <p className="mt-2 max-w-3xl text-xs">
           Thay đổi copy an toàn phải giữ hướng hỗ trợ, không đưa lời khuyên lâm sàng và không tắt guardrail backend.
         </p>
       </div>
@@ -74,17 +74,17 @@ export default function AdminChatbotPage() {
       {isLoading ? <p>Đang tải thông tin...</p> : null}
       {config ? (
         <form className="space-y-6 rounded-3xl bg-white p-6 shadow-sm" onSubmit={handleSave}>
-          <section className="rounded-2xl bg-secondary p-4">
-            <h2 className="text-heading">Thông tin provider</h2>
-            <p className="mt-2 text-body">
+          <section className="rounded-2xl bg-primary/5 p-4">
+            <h2 className="text-sm font-semibold">Thông tin provider</h2>
+            <p className="mt-2 text-sm">
               Đang dùng: {config.provider.name === "fallback" ? "fallback an toàn" : "provider backend đã cấu hình"}.
             </p>
-            <p className="mt-1 text-label">
+            <p className="mt-1 text-xs">
               Guardrail backend: {config.guardrails_locked ? "luôn bật" : "cần kiểm tra lại"}
             </p>
           </section>
 
-          <label className="block space-y-2 text-label font-semibold">
+          <label className="block space-y-2 text-xs font-semibold">
             Từ khóa nguy cơ cao
             <textarea
               aria-label="Từ khóa nguy cơ cao"
@@ -94,7 +94,7 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          <label className="block space-y-2 text-label font-semibold">
+          <label className="block space-y-2 text-xs font-semibold">
             Lời nhắn khi cần ưu tiên an toàn
             <textarea
               aria-label="Lời nhắn khi cần ưu tiên an toàn"
@@ -104,7 +104,7 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          <label className="block space-y-2 text-label font-semibold">
+          <label className="block space-y-2 text-xs font-semibold">
             Lời nhắn người lớn tin tưởng
             <textarea
               aria-label="Lời nhắn người lớn tin tưởng"
@@ -114,13 +114,13 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          {notice ? <p role="status" className="text-body text-accent">{notice}</p> : null}
-          {error ? <p role="alert" className="text-body text-red-700">{error}</p> : null}
+          {notice ? <p role="status" className="text-sm text-primary">{notice}</p> : null}
+          {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
 
           <button
             type="submit"
             disabled={isSaving}
-            className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60"
+            className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
           >
             {isSaving ? "Đang lưu..." : "Lưu cấu hình an toàn"}
           </button>

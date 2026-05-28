@@ -124,7 +124,7 @@ function Field({
   type?: "text" | "number";
 }) {
   return (
-    <label className="space-y-1 text-label font-semibold">
+    <label className="space-y-1 text-xs font-semibold">
       {label}
       <input
         aria-label={label}
@@ -147,7 +147,7 @@ function TextAreaField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="space-y-1 text-label font-semibold">
+    <label className="space-y-1 text-xs font-semibold">
       {label}
       <textarea
         aria-label={label}
@@ -460,22 +460,22 @@ export default function AdminContentPage() {
 
   return (
     <main className="mx-auto max-w-[1200px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Nội dung tự kiểm tra và tình huống</h1>
-        <p className="mt-3 text-body">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
-        <p className="mt-2 text-label">
+        <p className="mt-3 text-sm">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
+        <p className="mt-2 text-xs">
           Nội dung nên dùng ngôn ngữ hỗ trợ, không chẩn đoán, không gắn nhãn học sinh và không khuyến khích giám sát.
         </p>
       </header>
 
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
       <section className="grid gap-6 lg:grid-cols-2">
         <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
           <div>
-            <h2 className="text-heading">Quản lý bài tự kiểm tra</h2>
+            <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
             <button
               type="button"
               onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
@@ -498,7 +498,7 @@ export default function AdminContentPage() {
               value={selfCheckDraft.description ?? ""}
               onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))}
             />
-            <label className="space-y-1 text-label font-semibold">
+            <label className="space-y-1 text-xs font-semibold">
               Trạng thái nội dung
               <select
                 aria-label="Trạng thái nội dung"
@@ -515,7 +515,7 @@ export default function AdminContentPage() {
             </label>
             <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-heading">Câu hỏi và lựa chọn</h3>
+                <h3 className="text-sm font-semibold">Câu hỏi và lựa chọn</h3>
                 <button
                   type="button"
                   onClick={addSelfCheckQuestion}
@@ -525,12 +525,12 @@ export default function AdminContentPage() {
                 </button>
               </div>
               {selfCheckDraft.questions.length === 0 ? (
-                <p className="text-body">Chưa có câu hỏi. Thêm câu hỏi trước khi xuất bản.</p>
+                <p className="text-sm">Chưa có câu hỏi. Thêm câu hỏi trước khi xuất bản.</p>
               ) : null}
               {selfCheckDraft.questions.map((question, questionIndex) => (
-                <section key={question.id ?? `draft-question-${questionIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                <section key={question.id ?? `draft-question-${questionIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-heading">Câu hỏi {questionIndex + 1}</h4>
+                    <h4 className="text-sm font-semibold">Câu hỏi {questionIndex + 1}</h4>
                     <button
                       type="button"
                       onClick={() => removeSelfCheckQuestion(questionIndex)}
@@ -552,7 +552,7 @@ export default function AdminContentPage() {
                   />
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-label font-semibold">Lựa chọn trả lời</p>
+                      <p className="text-xs font-semibold">Lựa chọn trả lời</p>
                       <button
                         type="button"
                         onClick={() => addSelfCheckChoice(questionIndex)}
@@ -562,7 +562,7 @@ export default function AdminContentPage() {
                       </button>
                     </div>
                     {question.choices.length === 0 ? (
-                      <p className="text-body">Câu hỏi này chưa có lựa chọn.</p>
+                      <p className="text-sm">Câu hỏi này chưa có lựa chọn.</p>
                     ) : null}
                     {question.choices.map((choice, choiceIndex) => (
                       <div key={choice.id ?? `draft-choice-${questionIndex}-${choiceIndex}`} className="grid gap-3 rounded-2xl bg-white p-4 md:grid-cols-2">
@@ -598,7 +598,7 @@ export default function AdminContentPage() {
             </div>
             <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-heading">Ngưỡng điểm</h3>
+                <h3 className="text-sm font-semibold">Ngưỡng điểm</h3>
                 <button
                   type="button"
                   onClick={addThreshold}
@@ -608,12 +608,12 @@ export default function AdminContentPage() {
                 </button>
               </div>
               {selfCheckDraft.thresholds.length === 0 ? (
-                <p className="text-body">Chưa có ngưỡng điểm. Thêm ngưỡng điểm trước khi xuất bản.</p>
+                <p className="text-sm">Chưa có ngưỡng điểm. Thêm ngưỡng điểm trước khi xuất bản.</p>
               ) : null}
               {selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
-                <section key={threshold.id ?? `draft-threshold-${thresholdIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                <section key={threshold.id ?? `draft-threshold-${thresholdIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-heading">Ngưỡng {thresholdIndex + 1}</h4>
+                    <h4 className="text-sm font-semibold">Ngưỡng {thresholdIndex + 1}</h4>
                     <button
                       type="button"
                       onClick={() => removeThreshold(thresholdIndex)}
@@ -622,7 +622,7 @@ export default function AdminContentPage() {
                       Xóa ngưỡng điểm
                     </button>
                   </div>
-                  <label className="space-y-1 text-label font-semibold">
+                  <label className="space-y-1 text-xs font-semibold">
                     {labelFor("Nhãn trạng thái", thresholdIndex)}
                     <select
                       aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
@@ -673,14 +673,14 @@ export default function AdminContentPage() {
               ))}
             </div>
           </div>
-          <div className="rounded-2xl bg-secondary p-4">
-            <h3 className="text-heading">{selfCheckDraft.title || "Bản xem trước bài tự kiểm tra"}</h3>
-            <p className="mt-2 text-body">{selfCheckDraft.description || "Nội dung hỗ trợ học sinh sẽ hiển thị tại đây."}</p>
-            <p className="mt-2 text-label">Trạng thái nội dung: {selfCheckDraft.status}</p>
+          <div className="rounded-2xl bg-primary/5 p-4">
+            <h3 className="text-sm font-semibold">{selfCheckDraft.title || "Bản xem trước bài tự kiểm tra"}</h3>
+            <p className="mt-2 text-sm">{selfCheckDraft.description || "Nội dung hỗ trợ học sinh sẽ hiển thị tại đây."}</p>
+            <p className="mt-2 text-xs">Trạng thái nội dung: {selfCheckDraft.status}</p>
             <div className="mt-4 space-y-3">
-              <h4 className="text-heading">Bản xem trước câu hỏi</h4>
+              <h4 className="text-sm font-semibold">Bản xem trước câu hỏi</h4>
               {selfCheckDraft.questions.length === 0 ? (
-                <p className="text-body">Chưa có câu hỏi để xem trước.</p>
+                <p className="text-sm">Chưa có câu hỏi để xem trước.</p>
               ) : (
                 selfCheckDraft.questions
                   .slice()
@@ -690,7 +690,7 @@ export default function AdminContentPage() {
                       <p className="font-semibold">
                         {questionIndex + 1}. {question.text || "Câu hỏi chưa nhập"}
                       </p>
-                      <ul className="mt-2 space-y-1 text-label">
+                      <ul className="mt-2 space-y-1 text-xs">
                         {question.choices
                           .slice()
                           .sort((left, right) => left.sort_order - right.sort_order)
@@ -705,12 +705,12 @@ export default function AdminContentPage() {
               )}
             </div>
             <div className="mt-4 space-y-2">
-              <h4 className="text-heading">Bản xem trước ngưỡng điểm</h4>
+              <h4 className="text-sm font-semibold">Bản xem trước ngưỡng điểm</h4>
               {selfCheckDraft.thresholds.length === 0 ? (
-                <p className="text-body">Chưa có ngưỡng điểm để xem trước.</p>
+                <p className="text-sm">Chưa có ngưỡng điểm để xem trước.</p>
               ) : (
                 selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
-                  <p key={threshold.id ?? `preview-threshold-${thresholdIndex}`} className="text-label">
+                  <p key={threshold.id ?? `preview-threshold-${thresholdIndex}`} className="text-xs">
                     {threshold.state_label}: {threshold.min_score}-{threshold.max_score} điểm
                   </p>
                 ))
@@ -718,7 +718,7 @@ export default function AdminContentPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white">
+            <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white">
               Lưu bản nháp
             </button>
             <button
@@ -730,7 +730,7 @@ export default function AdminContentPage() {
                   "Đã xuất bản bài tự kiểm tra cho học sinh.",
                 )
               }
-              className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
+              className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white"
             >
               Xuất bản
             </button>
@@ -753,7 +753,7 @@ export default function AdminContentPage() {
 
         <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
           <div>
-            <h2 className="text-heading">Quản lý tình huống</h2>
+            <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
             <button
               type="button"
               onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
@@ -769,7 +769,7 @@ export default function AdminContentPage() {
             <Field label="Tiêu đề tình huống" value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
             <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
             <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
-            <label className="space-y-1 text-label font-semibold">
+            <label className="space-y-1 text-xs font-semibold">
               Trạng thái nội dung
               <select
                 aria-label="Trạng thái nội dung"
@@ -786,7 +786,7 @@ export default function AdminContentPage() {
             </label>
             <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-heading">Lựa chọn tình huống</h3>
+                <h3 className="text-sm font-semibold">Lựa chọn tình huống</h3>
                 <button
                   type="button"
                   onClick={addScenarioChoice}
@@ -796,12 +796,12 @@ export default function AdminContentPage() {
                 </button>
               </div>
               {scenarioDraft.choices.length === 0 ? (
-                <p className="text-body">Chưa có lựa chọn tình huống. Thêm ít nhất hai lựa chọn trước khi xuất bản.</p>
+                <p className="text-sm">Chưa có lựa chọn tình huống. Thêm ít nhất hai lựa chọn trước khi xuất bản.</p>
               ) : null}
               {scenarioDraft.choices.map((choice, choiceIndex) => (
-                <section key={choice.id ?? `draft-scenario-choice-${choiceIndex}`} className="space-y-3 rounded-2xl bg-secondary p-4">
+                <section key={choice.id ?? `draft-scenario-choice-${choiceIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-heading">Lựa chọn {choiceIndex + 1}</h4>
+                    <h4 className="text-sm font-semibold">Lựa chọn {choiceIndex + 1}</h4>
                     <button
                       type="button"
                       onClick={() => removeScenarioChoice(choiceIndex)}
@@ -815,7 +815,7 @@ export default function AdminContentPage() {
                     value={choice.text}
                     onChange={(value) => updateScenarioChoice(choiceIndex, "text", value)}
                   />
-                  <label className="space-y-1 text-label font-semibold">
+                  <label className="space-y-1 text-xs font-semibold">
                     {labelFor("Tín hiệu constructive/risky", choiceIndex)}
                     <select
                       aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}
@@ -851,18 +851,18 @@ export default function AdminContentPage() {
             />
             <TextAreaField label="Điều em có thể rút ra" value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} />
           </div>
-          <div className="rounded-2xl bg-secondary p-4">
+          <div className="rounded-2xl bg-primary/5 p-4">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-heading">{scenarioDraft.title || "Bản xem trước tình huống"}</h3>
+              <h3 className="text-sm font-semibold">{scenarioDraft.title || "Bản xem trước tình huống"}</h3>
               {scenarioDraft.is_demo ? <DemoBadge /> : null}
             </div>
-            <p className="mt-2 text-body">{scenarioDraft.situation || "Mô tả tình huống sẽ hiển thị tại đây."}</p>
-            <p className="mt-2 text-label">Kỹ năng: {scenarioDraft.skill_tag || "Chưa nhập"}</p>
-            <p className="mt-2 text-label">Trạng thái nội dung: {scenarioDraft.status}</p>
+            <p className="mt-2 text-sm">{scenarioDraft.situation || "Mô tả tình huống sẽ hiển thị tại đây."}</p>
+            <p className="mt-2 text-xs">Kỹ năng: {scenarioDraft.skill_tag || "Chưa nhập"}</p>
+            <p className="mt-2 text-xs">Trạng thái nội dung: {scenarioDraft.status}</p>
             <div className="mt-4 space-y-3">
-              <h4 className="text-heading">Bản xem trước lựa chọn</h4>
+              <h4 className="text-sm font-semibold">Bản xem trước lựa chọn</h4>
               {scenarioDraft.choices.length === 0 ? (
-                <p className="text-body">Chưa có lựa chọn để xem trước.</p>
+                <p className="text-sm">Chưa có lựa chọn để xem trước.</p>
               ) : (
                 scenarioDraft.choices
                   .slice()
@@ -872,15 +872,15 @@ export default function AdminContentPage() {
                       <p className="font-semibold">
                         {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} ({choice.signal})
                       </p>
-                      <p className="mt-2 text-label">{choice.feedback || "Phản hồi chưa nhập"}</p>
+                      <p className="mt-2 text-xs">{choice.feedback || "Phản hồi chưa nhập"}</p>
                     </article>
                   ))
               )}
             </div>
             <div className="mt-4 rounded-2xl bg-white p-3">
-              <h4 className="text-heading">Bài học và phản hồi gợi ý</h4>
-              <p className="mt-2 text-body">{scenarioDraft.recommended_response || "Cách phản hồi nên thử sẽ hiển thị tại đây."}</p>
-              <p className="mt-2 text-label">{scenarioDraft.lesson || "Điều học sinh có thể rút ra sẽ hiển thị tại đây."}</p>
+              <h4 className="text-sm font-semibold">Bài học và phản hồi gợi ý</h4>
+              <p className="mt-2 text-sm">{scenarioDraft.recommended_response || "Cách phản hồi nên thử sẽ hiển thị tại đây."}</p>
+              <p className="mt-2 text-xs">{scenarioDraft.lesson || "Điều học sinh có thể rút ra sẽ hiển thị tại đây."}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -896,7 +896,7 @@ export default function AdminContentPage() {
                   "Đã xuất bản tình huống luyện tập cho học sinh.",
                 )
               }
-              className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white"
+              className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white"
             >
               Xuất bản
             </button>

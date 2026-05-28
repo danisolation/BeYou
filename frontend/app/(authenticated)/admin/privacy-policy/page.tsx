@@ -75,17 +75,17 @@ export default function AdminPrivacyPolicyPage() {
     return (
       <section className="rounded-3xl bg-white p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Chưa mở được chính sách riêng tư</h1>
-        <p className="mt-3 text-body">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
+        <p className="mt-3 text-sm">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
       </section>
     );
   }
 
   return (
     <section className="space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
-        <p className="text-label font-semibold text-accent">Cấu hình an toàn</p>
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+        <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Chính sách riêng tư v1.4</h1>
-        <p className="mt-3 max-w-3xl text-body">
+        <p className="mt-3 max-w-3xl text-sm">
           Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập. v1.4 chỉ dùng nhắc nhở trong Peerlight AI; Zalo,
           SMS, push và email vẫn đang hoãn để có đủ quản trị đồng ý, vận hành và quyền riêng tư.
         </p>
@@ -99,7 +99,7 @@ export default function AdminPrivacyPolicyPage() {
         }}
       >
         <section className="space-y-4">
-          <h2 className="text-heading">Nhắc nhở mặc định</h2>
+          <h2 className="text-sm font-semibold">Nhắc nhở mặc định</h2>
           <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
             <input
               type="checkbox"
@@ -112,13 +112,13 @@ export default function AdminPrivacyPolicyPage() {
             />
             <span>
               <span className="block font-semibold">Bật mặc định nhắc nhở trong Peerlight AI</span>
-              <span className="mt-1 block text-label">
+              <span className="mt-1 block text-xs">
                 Học sinh vẫn giữ quyền bật/tắt và tạm dừng. Mặc định này không gửi người lớn và không tạo SOS.
               </span>
             </span>
           </label>
           <div className="grid gap-4 md:grid-cols-3">
-            <label className="block text-label" htmlFor="quiet-start">
+            <label className="block text-xs" htmlFor="quiet-start">
               Yên lặng từ
             <input
                 id="quiet-start"
@@ -131,7 +131,7 @@ export default function AdminPrivacyPolicyPage() {
                 className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
               />
             </label>
-            <label className="block text-label" htmlFor="quiet-end">
+            <label className="block text-xs" htmlFor="quiet-end">
               Đến
               <input
                 id="quiet-end"
@@ -142,7 +142,7 @@ export default function AdminPrivacyPolicyPage() {
                 className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
               />
             </label>
-            <label className="block text-label" htmlFor="timezone">
+            <label className="block text-xs" htmlFor="timezone">
               Múi giờ
               <input
                 id="timezone"
@@ -154,14 +154,14 @@ export default function AdminPrivacyPolicyPage() {
           </div>
         </section>
 
-        <section className="rounded-3xl bg-secondary p-4">
-          <h2 className="text-heading">Kênh nhắc nhở</h2>
-          <p className="mt-2 text-body">Chỉ kênh trong ứng dụng được bật trong v1.4; các kênh ngoài vẫn đang hoãn.</p>
+        <section className="rounded-3xl bg-primary/5 p-4">
+          <h2 className="text-sm font-semibold">Kênh nhắc nhở</h2>
+          <p className="mt-2 text-sm">Chỉ kênh trong ứng dụng được bật trong v1.4; các kênh ngoài vẫn đang hoãn.</p>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {policy.channel_boundaries.map((channel) => (
               <article key={channel.key} className="rounded-2xl bg-white p-4">
                 <p className="font-semibold">{channel.label}</p>
-                <p className="mt-1 text-label">
+                <p className="mt-1 text-xs">
                   {channel.available ? "Đang hỗ trợ trong v1.4" : "Đang hoãn để cần thêm đồng ý và vận hành an toàn"}
                 </p>
               </article>
@@ -170,7 +170,7 @@ export default function AdminPrivacyPolicyPage() {
         </section>
 
         <section className="space-y-4">
-          <h2 className="text-heading">Chia sẻ và lý do truy cập</h2>
+          <h2 className="text-sm font-semibold">Chia sẻ và lý do truy cập</h2>
           <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
             <input
               type="checkbox"
@@ -208,10 +208,10 @@ export default function AdminPrivacyPolicyPage() {
         </section>
 
         <fieldset className="space-y-3 rounded-3xl border border-[#D7EFE8] p-4">
-          <legend className="text-heading">Lý do truy cập được phép</legend>
-          <p className="text-body">Chỉ dùng mã lý do kiểm soát sẵn; không thu lý do tự nhập.</p>
+          <legend className="text-sm font-semibold">Lý do truy cập được phép</legend>
+          <p className="text-sm">Chỉ dùng mã lý do kiểm soát sẵn; không thu lý do tự nhập.</p>
           {ACCESS_REASON_OPTIONS.map((reason) => (
-            <label key={reason.code} className="flex items-start gap-3 rounded-2xl bg-secondary p-3">
+            <label key={reason.code} className="flex items-start gap-3 rounded-2xl bg-primary/5 p-3">
               <input
                 type="checkbox"
                 aria-label={reason.label}
@@ -224,23 +224,23 @@ export default function AdminPrivacyPolicyPage() {
           ))}
         </fieldset>
 
-        <section className="rounded-3xl bg-secondary p-4">
-          <h2 className="text-heading">Ranh giới vận hành</h2>
-          <p className="mt-2 text-body">
+        <section className="rounded-3xl bg-primary/5 p-4">
+          <h2 className="text-sm font-semibold">Ranh giới vận hành</h2>
+          <p className="mt-2 text-sm">
             Operations chỉ hiển thị count/status metadata, không xuất dữ liệu thô, không drilldown học sinh, không dùng để
             xếp hạng hay giám sát.
           </p>
-          <p className="mt-2 text-label">
+          <p className="mt-2 text-xs">
             Lý do truy cập dùng để minh bạch hỗ trợ, không mở rộng quyền xem ngoài vai trò và liên kết đang hoạt động.
           </p>
         </section>
 
-        {errorMessage ? <p role="alert" className="text-body text-red-700">{errorMessage}</p> : null}
-        {successMessage ? <p role="status" className="text-body text-accent">{successMessage}</p> : null}
+        {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : null}
+        {successMessage ? <p role="status" className="text-sm text-primary">{successMessage}</p> : null}
         <button
           type="submit"
           disabled={isSaving || policy.allowed_reason_codes.length === 0}
-          className="min-h-11 rounded-2xl bg-accent px-5 font-semibold text-white disabled:opacity-60"
+          className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
         >
           {isSaving ? "Đang lưu..." : "Lưu chính sách"}
         </button>

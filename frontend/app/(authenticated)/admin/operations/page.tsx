@@ -129,19 +129,19 @@ export default function AdminOperationsPage() {
   return (
     <section className="space-y-6">
       <header className="rounded-3xl bg-white p-6 shadow-sm">
-        <p className="text-label font-semibold text-accent">Vận hành pilot an toàn</p>
+        <p className="text-xs font-semibold text-primary">Vận hành pilot an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Sẵn sàng mở pilot trường học</h1>
-        <p className="mt-3 max-w-3xl text-body">
+        <p className="mt-3 max-w-3xl text-sm">
           Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này
           không mở nội dung riêng tư của học sinh.
         </p>
-        <p className="mt-3 text-label font-semibold text-accent">Vận hành metadata-only</p>
-        <p className="mt-3 text-label">Cập nhật: {generatedAt}</p>
+        <p className="mt-3 text-xs font-semibold text-primary">Vận hành metadata-only</p>
+        <p className="mt-3 text-xs">Cập nhật: {generatedAt}</p>
       </header>
 
-      <section className="rounded-3xl bg-secondary p-6">
-        <h2 className="text-heading">Ranh giới riêng tư</h2>
-        <ul className="mt-3 space-y-2 text-body">
+      <section className="rounded-3xl bg-primary/5 p-6">
+        <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
+        <ul className="mt-3 space-y-2 text-sm">
           {(dashboard?.privacy_notes ?? [
             "Chỉ hiển thị metadata vận hành.",
             "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận hoặc secret.",
@@ -149,17 +149,17 @@ export default function AdminOperationsPage() {
             <li key={note}>• {note}</li>
           ))}
         </ul>
-        <p className="mt-4 rounded-2xl bg-white p-4 text-label font-semibold text-accent">
+        <p className="mt-4 rounded-2xl bg-white p-4 text-xs font-semibold text-primary">
           Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ, không có đường mở hồ sơ học sinh.
         </p>
-        <p className="mt-4 rounded-2xl bg-white p-4 text-label font-semibold text-accent">
+        <p className="mt-4 rounded-2xl bg-white p-4 text-xs font-semibold text-primary">
           Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng,
           liên kết đang hoạt động và SOS của học sinh quyết định.
         </p>
       </section>
 
       <form className="grid gap-4 rounded-3xl bg-white p-6 shadow-sm md:grid-cols-3" onSubmit={applyFilters}>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Từ thời điểm
           <input
             aria-label="Từ thời điểm"
@@ -169,7 +169,7 @@ export default function AdminOperationsPage() {
             className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
           />
         </label>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Đến thời điểm
           <input
             aria-label="Đến thời điểm"
@@ -179,7 +179,7 @@ export default function AdminOperationsPage() {
             className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
           />
         </label>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Vai trò người thực hiện
           <select
             aria-label="Vai trò người thực hiện"
@@ -194,7 +194,7 @@ export default function AdminOperationsPage() {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Loại hành động
           <input
             aria-label="Loại hành động"
@@ -204,7 +204,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: account_status_changed"
           />
         </label>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Loại mục tiêu
           <input
             aria-label="Loại mục tiêu"
@@ -214,7 +214,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: account_profile"
           />
         </label>
-        <label className="space-y-2 text-label font-semibold">
+        <label className="space-y-2 text-xs font-semibold">
           Trạng thái audit
           <input
             aria-label="Trạng thái audit"
@@ -224,7 +224,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: success"
           />
         </label>
-        <button type="submit" className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white md:col-span-3">
+        <button type="submit" className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white md:col-span-3">
           Áp dụng bộ lọc
         </button>
       </form>
@@ -345,16 +345,16 @@ export default function AdminOperationsPage() {
             <Panel title="Readiness checks" description="Chỉ hiển thị key, trạng thái và hướng xử lý đã được masking.">
               <BucketList buckets={dashboard.readiness.checks_by_status} />
               {dashboard.readiness.attention_checks.length === 0 ? (
-                <p className="mt-3 text-body">Không có cảnh báo readiness cần chú ý.</p>
+                <p className="mt-3 text-sm">Không có cảnh báo readiness cần chú ý.</p>
               ) : (
                 <div className="mt-4 space-y-3">
                   {dashboard.readiness.attention_checks.map((check) => (
-                    <article key={check.key} className="rounded-2xl bg-secondary p-4">
+                    <article key={check.key} className="rounded-2xl bg-primary/5 p-4">
                       <p className="font-semibold">
                         {check.key} · {check.status}
                       </p>
-                      <p className="mt-2 text-body">{check.summary}</p>
-                      {check.remediation ? <p className="mt-2 text-label">{check.remediation}</p> : null}
+                      <p className="mt-2 text-sm">{check.summary}</p>
+                      {check.remediation ? <p className="mt-2 text-xs">{check.remediation}</p> : null}
                     </article>
                   ))}
                 </div>
@@ -371,7 +371,7 @@ export default function AdminOperationsPage() {
 
           <Panel title="Audit events" description="Có thể lọc theo thời gian, vai trò, hành động, mục tiêu và trạng thái.">
             {dashboard.audit.recent.length === 0 ? (
-              <p className="text-body">Không có audit event khớp bộ lọc.</p>
+              <p className="text-sm">Không có audit event khớp bộ lọc.</p>
             ) : (
               <div className="space-y-3">
                 {dashboard.audit.recent.map((event) => (
@@ -388,7 +388,7 @@ export default function AdminOperationsPage() {
 
 function statusClass(status: string) {
   if (status === "ready" || status === "safe" || status === "pass" || status === "covered") {
-    return "border-accent bg-secondary text-accent-dark";
+    return "border-accent bg-primary/5 text-primary-dark";
   }
   if (status === "needs_review" || status === "warn") {
     return "border-warning bg-[#FFF8E8] text-[#6B4A00]";
@@ -398,7 +398,7 @@ function statusClass(status: string) {
 
 function StatusBadge({ status }: { status: string }) {
   return (
-    <span className={`inline-flex rounded-full border px-3 py-1 text-label font-semibold ${statusClass(status)}`}>
+    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${statusClass(status)}`}>
       {status}
     </span>
   );
@@ -417,19 +417,19 @@ function pilotLaunchCopy(status: PilotLaunchSummary["status"]) {
 function PilotLaunchStatusPanel({ summary }: { summary: PilotLaunchSummary | null }) {
   const status = summary?.status ?? "needs_review";
   return (
-    <div className="rounded-2xl bg-secondary p-4">
+    <div className="rounded-2xl bg-primary/5 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={status} />
-        <p className="text-body">{pilotLaunchCopy(status)}</p>
+        <p className="text-sm">{pilotLaunchCopy(status)}</p>
       </div>
-      {summary?.generated_at ? <p className="mt-3 text-label">Cập nhật checklist: {formatDate(summary.generated_at)}</p> : null}
+      {summary?.generated_at ? <p className="mt-3 text-xs">Cập nhật checklist: {formatDate(summary.generated_at)}</p> : null}
     </div>
   );
 }
 
 function PilotLaunchChecklistPanel({ checklist }: { checklist: PilotLaunchChecklistItem[] }) {
   if (checklist.length === 0) {
-    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có checklist pilot. Hãy kiểm tra readiness và tải lại trang vận hành.</p>;
+    return <p className="rounded-2xl bg-primary/5 p-4 text-sm">Chưa có checklist pilot. Hãy kiểm tra readiness và tải lại trang vận hành.</p>;
   }
 
   return (
@@ -440,10 +440,10 @@ function PilotLaunchChecklistPanel({ checklist }: { checklist: PilotLaunchCheckl
             <h3 className="font-semibold">{item.label}</h3>
             <StatusBadge status={item.status} />
           </div>
-          <p className="mt-2 text-label">Blocking: {item.blocking ? "yes" : "no"}</p>
-          <p className="mt-2 text-body">{item.evidence}</p>
-          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
-          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+          <p className="mt-2 text-xs">Blocking: {item.blocking ? "yes" : "no"}</p>
+          <p className="mt-2 text-sm">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-primary/5 px-3 py-2 text-xs">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-xs">{item.remediation}</p> : null}
         </article>
       ))}
     </div>
@@ -453,15 +453,15 @@ function PilotLaunchChecklistPanel({ checklist }: { checklist: PilotLaunchCheckl
 function PilotDataSafetyPanel({ summary }: { summary: PilotDataSafetySummary | null }) {
   const buckets = summary?.buckets ?? [];
   if (buckets.length === 0) {
-    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có metadata an toàn dữ liệu pilot. Không có dữ liệu thô được hiển thị.</p>;
+    return <p className="rounded-2xl bg-primary/5 p-4 text-sm">Chưa có metadata an toàn dữ liệu pilot. Không có dữ liệu thô được hiển thị.</p>;
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-secondary p-4">
+      <div className="rounded-2xl bg-primary/5 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge status={summary?.status ?? "needs_review"} />
-          <p className="text-body">Tổng hợp demo/real data safety bằng count metadata.</p>
+          <p className="text-sm">Tổng hợp demo/real data safety bằng count metadata.</p>
         </div>
       </div>
       <div className="grid gap-3 md:grid-cols-2">
@@ -481,9 +481,9 @@ function PilotDataSafetyBucketCard({ bucket }: { bucket: PilotDataSafetyBucket }
         <StatusBadge status={bucket.status} />
       </div>
       <p className="mt-2 text-2xl font-bold">{bucket.count}</p>
-      <p className="mt-2 text-label">Blocking: {bucket.blocking ? "yes" : "no"}</p>
-      <p className="mt-2 text-body">{bucket.evidence}</p>
-      {bucket.remediation ? <p className="mt-2 text-label">{bucket.remediation}</p> : null}
+      <p className="mt-2 text-xs">Blocking: {bucket.blocking ? "yes" : "no"}</p>
+      <p className="mt-2 text-sm">{bucket.evidence}</p>
+      {bucket.remediation ? <p className="mt-2 text-xs">{bucket.remediation}</p> : null}
     </article>
   );
 }
@@ -492,7 +492,7 @@ function PilotHandoffPanel({ handoff }: { handoff: PilotHandoffSummary | null })
   const rollback = handoff?.rollback ?? [];
   const schoolHandoff = handoff?.school_handoff ?? [];
   if (rollback.length === 0 && schoolHandoff.length === 0) {
-    return <p className="rounded-2xl bg-secondary p-4 text-body">Chưa có hướng dẫn handoff. Hãy dùng quy trình rollback an toàn trong README và kiểm tra lại readiness.</p>;
+    return <p className="rounded-2xl bg-primary/5 p-4 text-sm">Chưa có hướng dẫn handoff. Hãy dùng quy trình rollback an toàn trong README và kiểm tra lại readiness.</p>;
   }
 
   return (
@@ -513,20 +513,20 @@ function PilotHandoffItems({
   emptyCopy: string;
 }) {
   if (items.length === 0) {
-    return <p className="rounded-2xl bg-secondary p-4 text-body">{emptyCopy}</p>;
+    return <p className="rounded-2xl bg-primary/5 p-4 text-sm">{emptyCopy}</p>;
   }
 
   return (
     <div className="space-y-3">
-      {title ? <h3 className="text-label font-semibold text-accent">{title}</h3> : null}
+      {title ? <h3 className="text-xs font-semibold text-primary">{title}</h3> : null}
       {items.map((item) => (
         <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-semibold">{item.label}</h4>
             <StatusBadge status={item.status} />
           </div>
-          <p className="mt-2 text-body">{item.guidance}</p>
-          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
+          <p className="mt-2 text-sm">{item.guidance}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-primary/5 px-3 py-2 text-xs">{item.command}</p> : null}
         </article>
       ))}
     </div>
@@ -536,13 +536,13 @@ function PilotHandoffItems({
 function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl bg-secondary p-4">
+      <div className="rounded-2xl bg-primary/5 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <StatusBadge status={demoSeed.status} />
-          <p className="text-body">{demoSeed.summary}</p>
+          <p className="text-sm">{demoSeed.summary}</p>
         </div>
-        {demoSeed.remediation ? <p className="mt-2 text-label">{demoSeed.remediation}</p> : null}
-        <p className="mt-3 text-label">
+        {demoSeed.remediation ? <p className="mt-2 text-xs">{demoSeed.remediation}</p> : null}
+        <p className="mt-3 text-xs">
           ALLOW_DEMO_SEED: {demoSeed.allow_demo_seed ? "enabled" : "disabled"} · Active demo links:{" "}
           {demoSeed.active_link_count}
         </p>
@@ -554,8 +554,8 @@ function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
               <h3 className="font-semibold">{role.role}</h3>
               <StatusBadge status={role.present && role.active && role.is_demo ? "pass" : "fail"} />
             </div>
-            <p className="mt-2 break-all text-label">{role.account_key}</p>
-            <p className="mt-2 text-label">
+            <p className="mt-2 break-all text-xs">{role.account_key}</p>
+            <p className="mt-2 text-xs">
               Present: {role.present ? "yes" : "no"} · Active: {role.active ? "yes" : "no"} · Demo:{" "}
               {role.is_demo ? "yes" : "no"}
             </p>
@@ -592,7 +592,7 @@ function RuntimeModePanel({ runtime }: { runtime: RuntimeModeSummary }) {
 
 function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary }) {
   return (
-    <div className="space-y-3 rounded-2xl bg-secondary p-4 text-body">
+    <div className="space-y-3 rounded-2xl bg-primary/5 p-4 text-sm">
       <p>
         <span className="font-semibold">Frontend origin kind:</span> {connectivity.frontend_origin_kind}
       </p>
@@ -608,7 +608,7 @@ function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary
         <span className="font-semibold">Session cookie metadata:</span> Secure{" "}
         {connectivity.session_cookie_secure ? "on" : "off"} · SameSite {connectivity.session_cookie_samesite}
       </p>
-      <p className="text-label">
+      <p className="text-xs">
         Credentialed methods: {connectivity.credentialed_cors_methods.join(", ")}. Không hiển thị cookie value hoặc
         secret.
       </p>
@@ -619,38 +619,38 @@ function ConnectivityPanel({ connectivity }: { connectivity: ConnectivitySummary
 function AuthProviderPanel({ provider }: { provider: AuthProviderReadinessSummary | null }) {
   if (!provider) {
     return (
-      <div className="rounded-2xl bg-secondary p-4">
-        <h3 className="text-label font-semibold">Chưa có metadata danh tính.</h3>
-        <p className="mt-2 text-body">Hãy kiểm tra cấu hình provider và tải lại trang vận hành.</p>
+      <div className="rounded-2xl bg-primary/5 p-4">
+        <h3 className="text-xs font-semibold">Chưa có metadata danh tính.</h3>
+        <p className="mt-2 text-sm">Hãy kiểm tra cấu hình provider và tải lại trang vận hành.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl bg-secondary p-4">
+    <div className="rounded-2xl bg-primary/5 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <StatusBadge status={provider.status} />
         <h3 className="font-semibold">{provider.provider_label}</h3>
       </div>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <p className="text-body">
+        <p className="text-sm">
           <span className="font-semibold">Mode:</span> {provider.mode}
         </p>
-        <p className="text-body">
+        <p className="text-sm">
           <span className="font-semibold">Enabled:</span> {provider.enabled ? "yes" : "no"}
         </p>
         {provider.provider_key ? (
-          <p className="text-body">
+          <p className="text-sm">
             <span className="font-semibold">Provider key:</span> {provider.provider_key}
           </p>
         ) : null}
         {provider.last_check_status ? (
-          <p className="text-body">
+          <p className="text-sm">
             <span className="font-semibold">Last check:</span> {provider.last_check_status}
           </p>
         ) : null}
       </div>
-      {provider.remediation ? <p className="mt-3 text-label">{provider.remediation}</p> : null}
+      {provider.remediation ? <p className="mt-3 text-xs">{provider.remediation}</p> : null}
     </div>
   );
 }
@@ -670,7 +670,7 @@ function IdentityMappingPanel({
       />
       <IdentityMappingMetrics mappings={mappings} />
       {(mappings?.pending_review_count ?? 0) > 0 ? (
-        <p className="rounded-2xl bg-secondary p-4 text-body">
+        <p className="rounded-2xl bg-primary/5 p-4 text-sm">
           Một số liên kết danh tính đang chờ duyệt. Không có tài khoản nào được tự động cấp quyền.
         </p>
       ) : null}
@@ -703,7 +703,7 @@ function SessionAuthPanel({
         emptyCopy="Chưa có metadata session theo phương thức đăng nhập."
       />
       <BucketList title="Provider" buckets={providerBuckets} emptyCopy="Chưa có metadata session theo phương thức đăng nhập." />
-      <p className="rounded-2xl bg-secondary p-4 text-body">
+      <p className="rounded-2xl bg-primary/5 p-4 text-sm">
         Session vẫn dùng cookie HttpOnly do backend sở hữu; UI không đọc hoặc lưu access token.
       </p>
     </div>
@@ -719,9 +719,9 @@ function SmokeChecklist({ items }: { items: ProductionSmokeChecklistItem[] }) {
             <h3 className="font-semibold">{item.label}</h3>
             <StatusBadge status={item.status} />
           </div>
-          <p className="mt-2 text-body">{item.evidence}</p>
-          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
-          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+          <p className="mt-2 text-sm">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-primary/5 px-3 py-2 text-xs">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-xs">{item.remediation}</p> : null}
         </article>
       ))}
     </div>
@@ -731,9 +731,9 @@ function SmokeChecklist({ items }: { items: ProductionSmokeChecklistItem[] }) {
 function DeploymentGuardrailsPanel({ items }: { items: DeploymentGuardrailItem[] }) {
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl bg-secondary p-4">
-        <h3 className="text-label font-semibold">Chưa có kết quả guardrail.</h3>
-        <p className="mt-2 text-body">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
+      <div className="rounded-2xl bg-primary/5 p-4">
+        <h3 className="text-xs font-semibold">Chưa có kết quả guardrail.</h3>
+        <p className="mt-2 text-sm">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
       </div>
     );
   }
@@ -746,10 +746,10 @@ function DeploymentGuardrailsPanel({ items }: { items: DeploymentGuardrailItem[]
             <h3 className="font-semibold">{item.key}</h3>
             <StatusBadge status={item.status} />
           </div>
-          <p className="mt-2 text-label">{item.category}</p>
-          <p className="mt-2 text-body">{item.evidence}</p>
-          {item.command ? <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{item.command}</p> : null}
-          {item.remediation ? <p className="mt-2 text-label">{item.remediation}</p> : null}
+          <p className="mt-2 text-xs">{item.category}</p>
+          <p className="mt-2 text-sm">{item.evidence}</p>
+          {item.command ? <p className="mt-2 rounded-2xl bg-primary/5 px-3 py-2 text-xs">{item.command}</p> : null}
+          {item.remediation ? <p className="mt-2 text-xs">{item.remediation}</p> : null}
         </article>
       ))}
     </div>
@@ -759,9 +759,9 @@ function DeploymentGuardrailsPanel({ items }: { items: DeploymentGuardrailItem[]
 function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
   if (profiles.length === 0) {
     return (
-      <div className="rounded-2xl bg-secondary p-4">
-        <h3 className="text-label font-semibold">Chưa có kết quả guardrail.</h3>
-        <p className="mt-2 text-body">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
+      <div className="rounded-2xl bg-primary/5 p-4">
+        <h3 className="text-xs font-semibold">Chưa có kết quả guardrail.</h3>
+        <p className="mt-2 text-sm">Hãy chạy guardrail hoặc smoke command rồi kiểm tra lại metadata vận hành.</p>
       </div>
     );
   }
@@ -775,21 +775,21 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
             <StatusBadge status={profile.status} />
           </div>
           {profile.key === "pilot_smoke" ? (
-            <p className="mt-2 text-body">
+            <p className="mt-2 text-sm">
               Production pilot smoke yêu cầu readiness ready và không phụ thuộc tài khoản demo hoặc dữ liệu walkthrough.
             </p>
           ) : (
-            <p className="mt-2 text-body">
+            <p className="mt-2 text-sm">
               Dùng tài khoản demo đã seed để kiểm tra landing, đăng nhập theo vai trò và dashboard public demo.
             </p>
           )}
-          <p className="mt-2 text-label">
+          <p className="mt-2 text-xs">
             Uses demo accounts: {profile.uses_demo_accounts ? "yes" : "no"} · Requires readiness ready:{" "}
             {profile.requires_readiness_ready ? "yes" : "no"}
           </p>
-          <p className="mt-2 text-body">{profile.evidence}</p>
-          <p className="mt-2 rounded-2xl bg-secondary px-3 py-2 text-label">{profile.command}</p>
-          {profile.remediation ? <p className="mt-2 text-label">{profile.remediation}</p> : null}
+          <p className="mt-2 text-sm">{profile.evidence}</p>
+          <p className="mt-2 rounded-2xl bg-primary/5 px-3 py-2 text-xs">{profile.command}</p>
+          {profile.remediation ? <p className="mt-2 text-xs">{profile.remediation}</p> : null}
         </article>
       ))}
     </div>
@@ -799,9 +799,9 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
     <article className="rounded-3xl bg-white p-6 shadow-sm">
-      <p className="text-label font-semibold text-accent">{title}</p>
+      <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold">{value}</p>
-      <p className="mt-3 text-body">{description}</p>
+      <p className="mt-3 text-sm">{description}</p>
     </article>
   );
 }
@@ -820,8 +820,8 @@ function Panel({
   return (
     <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm" data-testid={testId}>
       <div>
-        <h2 className="text-heading">{title}</h2>
-        <p className="mt-2 text-body">{description}</p>
+        <h2 className="text-sm font-semibold">{title}</h2>
+        <p className="mt-2 text-sm">{description}</p>
       </div>
       {children}
     </section>
@@ -838,12 +838,12 @@ function BucketList({
   emptyCopy?: string;
 }) {
   return (
-    <div className="rounded-2xl bg-secondary p-4">
-      {title ? <h3 className="text-label font-semibold">{title}</h3> : null}
+    <div className="rounded-2xl bg-primary/5 p-4">
+      {title ? <h3 className="text-xs font-semibold">{title}</h3> : null}
       {buckets.length === 0 ? (
-        <p className="text-body">{emptyCopy}</p>
+        <p className="text-sm">{emptyCopy}</p>
       ) : (
-        <ul className="space-y-2 text-body">
+        <ul className="space-y-2 text-sm">
           {buckets.map((bucket) => (
             <li key={`${bucket.key}-${bucket.label}`} className="flex justify-between gap-4">
               <span>{bucket.label}</span>
@@ -858,7 +858,7 @@ function BucketList({
 
 function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
   if (deliveries.length === 0) {
-    return <p className="text-body">Chưa có attempt email SOS.</p>;
+    return <p className="text-sm">Chưa có attempt email SOS.</p>;
   }
   return (
     <div className="space-y-3">
@@ -867,10 +867,10 @@ function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
           <p className="font-semibold">
             {delivery.provider} · {delivery.status} · {delivery.recipient_role}
           </p>
-          <p className="mt-2 text-label">Alert: {delivery.alert_key}</p>
-          <p className="text-label">Attempts: {delivery.attempt_count}</p>
-          {delivery.error_code ? <p className="text-label">Error: {delivery.error_code}</p> : null}
-          <p className="text-label">Tạo lúc: {formatDate(delivery.created_at)}</p>
+          <p className="mt-2 text-xs">Alert: {delivery.alert_key}</p>
+          <p className="text-xs">Attempts: {delivery.attempt_count}</p>
+          {delivery.error_code ? <p className="text-xs">Error: {delivery.error_code}</p> : null}
+          <p className="text-xs">Tạo lúc: {formatDate(delivery.created_at)}</p>
         </article>
       ))}
     </div>
@@ -883,10 +883,10 @@ function AuditEventCard({ event }: { event: AuditEventItem }) {
       <p className="font-semibold">
         {event.action} · {event.status}
       </p>
-      <p className="mt-2 text-label">
+      <p className="mt-2 text-xs">
         {event.actor_role} · {event.resource_type} · {formatDate(event.timestamp)}
       </p>
-      <p className="mt-2 text-body">{metadataText(event.metadata_summary)}</p>
+      <p className="mt-2 text-sm">{metadataText(event.metadata_summary)}</p>
     </article>
   );
 }

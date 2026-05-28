@@ -43,9 +43,9 @@ export default function SelfCheckHistoryPage() {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Xem lịch sử test tâm lý</h1>
-        <p className="mt-3 text-body">
+        <p className="mt-3 text-sm">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
         </p>
       </header>
@@ -64,14 +64,14 @@ export default function SelfCheckHistoryPage() {
               href={`/student/self-checks/history/${item.attempt_id}`}
             >
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-heading">{item.test_title}</h2>
+                <h2 className="text-sm font-semibold">{item.test_title}</h2>
                 {item.is_demo ? <DemoBadge /> : null}
               </div>
-              <p className="mt-3 text-label">{formatDate(item.completed_at)}</p>
-              <p className="mt-3 text-body">{displayRiskLabel(item.state_label)}</p>
-              {item.supportive_headline ? <p className="mt-2 text-body">{item.supportive_headline}</p> : null}
-              {item.suggested_next_action ? <p className="mt-2 text-label">{item.suggested_next_action}</p> : null}
-              <span className="mt-4 inline-flex min-h-11 items-center font-semibold text-accent">Xem chi tiết</span>
+              <p className="mt-3 text-xs">{formatDate(item.completed_at)}</p>
+              <p className="mt-3 text-sm">{displayRiskLabel(item.state_label)}</p>
+              {item.supportive_headline ? <p className="mt-2 text-sm">{item.supportive_headline}</p> : null}
+              {item.suggested_next_action ? <p className="mt-2 text-xs">{item.suggested_next_action}</p> : null}
+              <span className="mt-4 inline-flex min-h-11 items-center font-semibold text-primary">Xem chi tiết</span>
             </Link>
           ))}
         </section>

@@ -117,17 +117,17 @@ export default function AdminUsersPage() {
     <section className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Quản lý tài khoản</h1>
-        <p className="mt-3 text-body">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
-        <p className="mt-2 text-label">
+        <p className="mt-3 text-sm">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
+        <p className="mt-2 text-xs">
           Thao tác tài khoản chỉ thay đổi quyền truy cập; không mở câu trả lời tự kiểm tra, chat riêng tư hoặc mood note của học sinh.
         </p>
       </div>
       <UserForm onSubmit={handleCreate} />
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-secondary px-4 py-3 text-label">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-label">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
       <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-heading">Danh sách tài khoản</h2>
+        <h2 className="text-sm font-semibold">Danh sách tài khoản</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && users.length === 0 ? <EmptyState /> : null}
         <div className="mt-5 space-y-4">
@@ -139,13 +139,13 @@ export default function AdminUsersPage() {
                     <h3 className="font-semibold">{user.full_name}</h3>
                     {user.is_demo ? <DemoBadge /> : null}
                   </div>
-                  <p className="break-all text-label">{user.email}</p>
-                  <p className="text-label">Trường/lớp: {[user.school, user.class_name].filter(Boolean).join(" / ") || "Không áp dụng"}</p>
-                  <p className="text-label">Trạng thái tài khoản: {user.status}</p>
-                  <p className="text-label">Cập nhật lần cuối: {new Date(user.updated_at).toLocaleString("vi-VN")}</p>
+                  <p className="break-all text-xs">{user.email}</p>
+                  <p className="text-xs">Trường/lớp: {[user.school, user.class_name].filter(Boolean).join(" / ") || "Không áp dụng"}</p>
+                  <p className="text-xs">Trạng thái tài khoản: {user.status}</p>
+                  <p className="text-xs">Cập nhật lần cuối: {new Date(user.updated_at).toLocaleString("vi-VN")}</p>
                 </div>
                 <div className="grid w-full gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:flex-wrap lg:items-end lg:justify-end">
-                  <label className="space-y-1 text-label font-semibold">
+                  <label className="space-y-1 text-xs font-semibold">
                     Vai trò
                     <select
                       value={selectedRoles[user.id] ?? user.role}
@@ -166,7 +166,7 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
-                    className="min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
+                    className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-[#238C78]"
                   >
                     Lưu thay đổi
                   </button>

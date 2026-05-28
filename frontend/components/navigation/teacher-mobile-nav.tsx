@@ -12,7 +12,7 @@ interface TeacherMobileNavProps {
 export function TeacherMobileNav({ pathname, onLogout }: TeacherMobileNavProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-surface px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940] lg:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-white dark:bg-[#1a2940] px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940] lg:hidden"
       aria-label="Điều hướng giáo viên"
     >
       {teacherNav.map((item) => {
@@ -28,7 +28,7 @@ export function TeacherMobileNav({ pathname, onLogout }: TeacherMobileNavProps) 
             aria-current={active ? "page" : undefined}
           >
             <Icon aria-hidden="true" size={20} />
-            <span className="text-label-sm">{item.label}</span>
+            <span className="text-xs-sm">{item.label}</span>
           </Link>
         );
       })}
@@ -39,7 +39,7 @@ export function TeacherMobileNav({ pathname, onLogout }: TeacherMobileNavProps) 
         aria-label="Đăng xuất"
       >
         <LogOut aria-hidden="true" size={20} />
-        <span className="text-label-sm">Thoát</span>
+        <span className="text-xs-sm">Thoát</span>
       </button>
     </nav>
   );

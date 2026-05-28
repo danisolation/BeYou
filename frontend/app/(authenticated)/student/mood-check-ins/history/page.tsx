@@ -88,9 +88,9 @@ export default function StudentMoodCheckInHistoryPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <div className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Lịch sử check-in cảm xúc</h1>
-        <p className="mt-4 text-body">
+        <p className="mt-4 text-sm">
           Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin tưởng
           và đúng phần nội dung để chia sẻ; các nội dung khác vẫn riêng tư.
         </p>
@@ -132,25 +132,25 @@ function MoodHistoryItem({
   return (
     <article className="rounded-3xl bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-heading">{item.trend_label}</h2>
+        <h2 className="text-sm font-semibold">{item.trend_label}</h2>
         {item.is_demo ? <DemoBadge /> : null}
       </div>
-      <p className="mt-2 text-label">Gửi lúc: {new Date(item.created_at).toLocaleString("vi-VN")}</p>
-      <div className="mt-4 grid gap-3 text-body md:grid-cols-3">
+      <p className="mt-2 text-xs">Gửi lúc: {new Date(item.created_at).toLocaleString("vi-VN")}</p>
+      <div className="mt-4 grid gap-3 text-sm md:grid-cols-3">
         <p><strong>Cảm xúc:</strong> {moodLabelFallbacks[item.mood_label]}</p>
         <p><strong>Năng lượng:</strong> {item.energy_level}/5</p>
         <p><strong>Căng thẳng:</strong> {item.stress_level}/5</p>
       </div>
       {contextLabels.length > 0 ? (
-        <p className="mt-3 text-body">
+        <p className="mt-3 text-sm">
           <strong>Ngữ cảnh:</strong> {contextLabels.join(", ")}
         </p>
       ) : null}
-      <p className="mt-3 text-body">{item.supportive_message}</p>
+      <p className="mt-3 text-sm">{item.supportive_message}</p>
       {item.private_note ? (
-        <div className="mt-4 rounded-2xl bg-secondary p-4">
-          <p className="text-label font-semibold">Ghi chú riêng tư của em</p>
-          <p className="mt-2 text-body">{item.private_note}</p>
+        <div className="mt-4 rounded-2xl bg-primary/5 p-4">
+          <p className="text-xs font-semibold">Ghi chú riêng tư của em</p>
+          <p className="mt-2 text-sm">{item.private_note}</p>
         </div>
       ) : null}
       {item.shareable ? (
@@ -272,12 +272,12 @@ function MoodShareControls({
       />
 
       {successMessage ? (
-        <p className="mt-3 text-label text-[#2CA58D]" aria-live="polite">
+        <p className="mt-3 text-xs text-[#2CA58D]" aria-live="polite">
           {successMessage}
         </p>
       ) : null}
       {errorMessage ? (
-        <p className="mt-3 text-label text-red-700" role="alert">
+        <p className="mt-3 text-xs text-red-700" role="alert">
           {errorMessage}
         </p>
       ) : null}
@@ -286,7 +286,7 @@ function MoodShareControls({
         <div className="mt-4">
           <button
             type="button"
-            className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+            className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
             onClick={() => {
               setIsDraftOpen(true);
               setSuccessMessage(null);
@@ -294,21 +294,21 @@ function MoodShareControls({
           >
             Chia sẻ ghi chú
           </button>
-          <p className="mt-2 text-label">Chỉ những người lớn em chọn mới xem được ghi chú này.</p>
+          <p className="mt-2 text-xs">Chỉ những người lớn em chọn mới xem được ghi chú này.</p>
         </div>
       ) : null}
 
       {isDraftOpen && !isPreviewOpen ? (
         <div className="mt-4 space-y-4">
           {!canSharePrivateNote ? (
-            <p className="text-label">
+            <p className="text-xs">
               Check-in này không có ghi chú riêng tư; em vẫn có thể tự viết tóm tắt nếu muốn chia sẻ.
             </p>
           ) : null}
 
           <fieldset className="space-y-2">
-            <legend className="text-label font-semibold">Nội dung muốn chia sẻ</legend>
-            <label className="flex min-h-11 items-center gap-2 text-body">
+            <legend className="text-xs font-semibold">Nội dung muốn chia sẻ</legend>
+            <label className="flex min-h-11 items-center gap-2 text-sm">
               <input
                 type="radio"
                 name={`share-scope-${item.id}`}
@@ -319,7 +319,7 @@ function MoodShareControls({
               />
               Chia sẻ ghi chú riêng tư
             </label>
-            <label className="flex min-h-11 items-center gap-2 text-body">
+            <label className="flex min-h-11 items-center gap-2 text-sm">
               <input
                 type="radio"
                 name={`share-scope-${item.id}`}
@@ -332,27 +332,27 @@ function MoodShareControls({
           </fieldset>
 
           {shareScope === "student_summary" ? (
-            <label className="block text-body">
-              <span className="text-label font-semibold">Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ</span>
+            <label className="block text-sm">
+              <span className="text-xs font-semibold">Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ</span>
               <textarea
                 aria-label="Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ"
-                className="mt-2 min-h-28 w-full rounded-2xl border border-[#D7EFE8] p-3 text-body"
+                className="mt-2 min-h-28 w-full rounded-2xl border border-[#D7EFE8] p-3 text-sm"
                 value={studentSummary}
                 onChange={(event) => setStudentSummary(event.target.value)}
               />
-              <span className="mt-2 block text-label">
+              <span className="mt-2 block text-xs">
                 Em tự viết phần này. Peerlight AI không tự tạo diễn giải hay chẩn đoán.
               </span>
             </label>
           ) : null}
 
           <fieldset className="space-y-2">
-            <legend className="text-label font-semibold">Người lớn tin cậy</legend>
+            <legend className="text-xs font-semibold">Người lớn tin cậy</legend>
             {availableAdults.length === 0 ? (
-              <p className="text-label">Chưa có người lớn đang liên kết để chọn.</p>
+              <p className="text-xs">Chưa có người lớn đang liên kết để chọn.</p>
             ) : (
               availableAdults.map((adult) => (
-                <label key={adult.id} className="flex min-h-11 items-center gap-2 text-body">
+                <label key={adult.id} className="flex min-h-11 items-center gap-2 text-sm">
                   <input
                     type="checkbox"
                     checked={selectedAdultIds.includes(adult.id)}
@@ -367,7 +367,7 @@ function MoodShareControls({
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+              className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
               onClick={() => {
                 setIsDraftOpen(false);
                 setErrorMessage(null);
@@ -377,7 +377,7 @@ function MoodShareControls({
             </button>
             <button
               type="button"
-              className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+              className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
               onClick={openPreview}
             >
               Xem trước trước khi chia sẻ
@@ -416,11 +416,11 @@ function SharePreviewPanel({
   onConfirm: () => void;
 }) {
   return (
-    <div className="mt-4 rounded-2xl bg-secondary p-4">
-      <h3 ref={headingRef} tabIndex={-1} className="text-heading">
+    <div className="mt-4 rounded-2xl bg-primary/5 p-4">
+      <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold">
         Xem trước trước khi chia sẻ
       </h3>
-      <div className="mt-3 space-y-2 text-body">
+      <div className="mt-3 space-y-2 text-sm">
         <p>Em sắp chia sẻ ghi chú này với: {selectedAdultNames.join(", ")}.</p>
         <p>Nội dung được chia sẻ: {shareScopePreview(shareScope)}.</p>
         <p>Vẫn riêng tư: các check-in khác, ghi chú khác, điểm số chi tiết và những gì em không chọn chia sẻ.</p>
@@ -430,14 +430,14 @@ function SharePreviewPanel({
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
           onClick={onEdit}
         >
           Sửa lựa chọn
         </button>
         <button
           type="button"
-          className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-label font-semibold text-white"
+          className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
           onClick={onConfirm}
           disabled={isSaving}
         >
@@ -497,15 +497,15 @@ function ActiveShareList({
     <div className="space-y-3">
       <div className="space-y-2">
         {item.active_shares.map((share) => (
-          <div key={share.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-secondary p-3">
+          <div key={share.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-primary/5 p-3">
             <div>
-              <p className="text-body">{share.adult_full_name}</p>
-              <p className="text-label">{relationshipLabel(share.relationship_type)}</p>
+              <p className="text-sm">{share.adult_full_name}</p>
+              <p className="text-xs">{relationshipLabel(share.relationship_type)}</p>
             </div>
-            <span className="rounded-full bg-[#2CA58D] px-3 py-1 text-label text-white">Đang được chia sẻ</span>
+            <span className="rounded-full bg-[#2CA58D] px-3 py-1 text-xs text-white">Đang được chia sẻ</span>
             <button
               type="button"
-              className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-label font-semibold text-red-700"
+              className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-700"
               onClick={() => setRevokeTarget(share)}
             >
               Thu hồi quyền xem
@@ -516,7 +516,7 @@ function ActiveShareList({
       {item.active_shares.length > 1 ? (
         <button
           type="button"
-          className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-label font-semibold text-red-700"
+          className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-700"
           onClick={() => setRevokeTarget("all")}
         >
           Thu hồi tất cả
@@ -557,24 +557,24 @@ function RevokeShareConfirmation({
 
   return (
     <div className="mt-4 rounded-2xl border border-red-200 bg-white p-4">
-      <h3 ref={headingRef} tabIndex={-1} className="text-heading">
+      <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold">
         Thu hồi quyền xem
       </h3>
-      <p className="mt-2 text-body">Áp dụng với: {targetNames.join(", ")}.</p>
-      <p className="mt-2 text-body">
+      <p className="mt-2 text-sm">Áp dụng với: {targetNames.join(", ")}.</p>
+      <p className="mt-2 text-sm">
         Thu hồi quyền xem: Người lớn này sẽ không còn xem được nội dung đã chia sẻ. Lịch sử kiểm tra chỉ lưu thông tin thao tác, không lưu nội dung ghi chú.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-label font-semibold"
+          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
           onClick={onCancel}
         >
           Giữ nguyên quyền xem
         </button>
         <button
           type="button"
-          className="min-h-11 rounded-full bg-red-600 px-5 py-2 text-label font-semibold text-white"
+          className="min-h-11 rounded-full bg-red-600 px-5 py-2 text-xs font-semibold text-white"
           onClick={onConfirm}
           disabled={isRevoking}
         >

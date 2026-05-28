@@ -82,17 +82,17 @@ export default function AdminReportsPage() {
   return (
     <section className="space-y-6">
       <div className="rounded-3xl bg-white p-6 shadow-sm">
-        <p className="text-label font-semibold text-accent">Báo cáo hỗ trợ, không giám sát</p>
+        <p className="text-xs font-semibold text-primary">Báo cáo hỗ trợ, không giám sát</p>
         <h1 className="mt-2 text-2xl font-bold">Báo cáo tổng hợp riêng tư</h1>
-        <p className="mt-3 max-w-3xl text-body">
+        <p className="mt-3 max-w-3xl text-sm">
           Xem xu hướng chung để cải thiện hỗ trợ học sinh mà không mở câu trả lời, tin nhắn, ghi chú hoặc danh sách nguy cơ của từng em.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr]">
-        <section className="rounded-3xl bg-secondary p-6">
-          <h2 className="text-heading">Ranh giới riêng tư</h2>
-          <ul className="mt-3 space-y-2 text-body">
+        <section className="rounded-3xl bg-primary/5 p-6">
+          <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
+          <ul className="mt-3 space-y-2 text-sm">
             {(report?.privacy_notes ?? [
               "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời tự kiểm tra, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
               "Các nhóm nhạy cảm có ít hơn 3 bản ghi sẽ được ẩn để tránh nhận diện gián tiếp.",
@@ -101,19 +101,19 @@ export default function AdminReportsPage() {
               <li key={note}>• {note}</li>
             ))}
           </ul>
-          <p className="mt-4 rounded-2xl bg-white p-4 text-label font-semibold text-accent">
+          <p className="mt-4 rounded-2xl bg-white p-4 text-xs font-semibold text-primary">
             Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ.
           </p>
         </section>
 
         <section className="rounded-3xl bg-white p-6 shadow-sm">
-          <label className="block space-y-2 text-label font-semibold">
+          <label className="block space-y-2 text-xs font-semibold">
             Phạm vi dữ liệu
             <select
               aria-label="Phạm vi dữ liệu"
               value={demoScope}
               onChange={(event) => setDemoScope(event.target.value as DemoScope)}
-              className="w-full rounded-2xl border border-[#CFE8E1] p-3 text-body"
+              className="w-full rounded-2xl border border-[#CFE8E1] p-3 text-sm"
             >
               {SCOPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -122,10 +122,10 @@ export default function AdminReportsPage() {
               ))}
             </select>
           </label>
-          <p className="mt-4 text-body">
+          <p className="mt-4 text-sm">
             Nhãn demo/real được giữ rõ ràng theo `is_demo`; dữ liệu thật và demo có thể được xem riêng khi cần.
           </p>
-          {generatedAt ? <p className="mt-3 text-label">Cập nhật: {generatedAt}</p> : null}
+          {generatedAt ? <p className="mt-3 text-xs">Cập nhật: {generatedAt}</p> : null}
         </section>
       </div>
 
@@ -189,9 +189,9 @@ export default function AdminReportsPage() {
 function ExactMetricCard({ title, value, description }: { title: string; value: number; description: string }) {
   return (
     <article className="rounded-3xl bg-white p-6 shadow-sm">
-      <p className="text-label font-semibold text-accent">{title}</p>
+      <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold">{formatCount(value)}</p>
-      <p className="mt-3 text-body">{description}</p>
+      <p className="mt-3 text-sm">{description}</p>
     </article>
   );
 }
@@ -199,10 +199,10 @@ function ExactMetricCard({ title, value, description }: { title: string; value: 
 function PrivacyMetricCard({ bucket, description }: { bucket: PrivacyCountBucket; description: string }) {
   return (
     <article className="rounded-3xl bg-white p-6 shadow-sm">
-      <p className="text-label font-semibold text-accent">{bucket.label}</p>
+      <p className="text-xs font-semibold text-primary">{bucket.label}</p>
       <p className="mt-2 text-2xl font-bold">{privacyCountLabel(bucket)}</p>
-      <p className="mt-3 text-body">{description}</p>
-      {bucket.suppressed ? <p className="mt-2 text-label text-accent">Bảo vệ nhóm nhỏ theo ngưỡng riêng tư.</p> : null}
+      <p className="mt-3 text-sm">{description}</p>
+      {bucket.suppressed ? <p className="mt-2 text-xs text-primary">Bảo vệ nhóm nhỏ theo ngưỡng riêng tư.</p> : null}
     </article>
   );
 }
@@ -211,8 +211,8 @@ function ReportSection({ title, description, children }: { title: string; descri
   return (
     <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm">
       <div>
-        <h2 className="text-heading">{title}</h2>
-        <p className="mt-2 text-body">{description}</p>
+        <h2 className="text-sm font-semibold">{title}</h2>
+        <p className="mt-2 text-sm">{description}</p>
       </div>
       {children}
     </section>
@@ -221,19 +221,19 @@ function ReportSection({ title, description, children }: { title: string; descri
 
 function ExactBucketList({ title, buckets }: { title: string; buckets: ExactCountBucket[] }) {
   return (
-    <div className="rounded-2xl bg-secondary p-4">
-      <h3 className="text-label font-semibold">{title}</h3>
+    <div className="rounded-2xl bg-primary/5 p-4">
+      <h3 className="text-xs font-semibold">{title}</h3>
       {buckets.length ? (
         <ul className="mt-3 space-y-2">
           {buckets.map((bucket) => (
-            <li key={`${bucket.key}-${bucket.label}`} className="flex items-center justify-between gap-4 text-body">
+            <li key={`${bucket.key}-${bucket.label}`} className="flex items-center justify-between gap-4 text-sm">
               <span>{bucket.label}</span>
               <span className="font-semibold">{formatCount(bucket.count)}</span>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-body">Chưa có dữ liệu trong phạm vi này.</p>
+        <p className="mt-3 text-sm">Chưa có dữ liệu trong phạm vi này.</p>
       )}
     </div>
   );
@@ -241,8 +241,8 @@ function ExactBucketList({ title, buckets }: { title: string; buckets: ExactCoun
 
 function PrivacyBucketList({ title, buckets }: { title: string; buckets: PrivacyCountBucket[] }) {
   return (
-    <div className="rounded-2xl bg-secondary p-4">
-      <h3 className="text-label font-semibold">{title}</h3>
+    <div className="rounded-2xl bg-primary/5 p-4">
+      <h3 className="text-xs font-semibold">{title}</h3>
       {buckets.length ? (
         <ul className="mt-3 space-y-2">
           {buckets.map((bucket) => (
@@ -250,7 +250,7 @@ function PrivacyBucketList({ title, buckets }: { title: string; buckets: Privacy
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-body">Chưa có dữ liệu tổng hợp đủ lớn trong phạm vi này.</p>
+        <p className="mt-3 text-sm">Chưa có dữ liệu tổng hợp đủ lớn trong phạm vi này.</p>
       )}
     </div>
   );
@@ -258,11 +258,11 @@ function PrivacyBucketList({ title, buckets }: { title: string; buckets: Privacy
 
 function PrivacyMetricRow({ bucket }: { bucket: PrivacyCountBucket }) {
   return (
-    <li className="flex items-start justify-between gap-4 text-body">
+    <li className="flex items-start justify-between gap-4 text-sm">
       <span>{bucket.label}</span>
       <span className="text-right font-semibold">
         {privacyCountLabel(bucket)}
-        {bucket.suppressed ? <span className="block text-label font-normal text-accent">Bảo vệ nhóm nhỏ</span> : null}
+        {bucket.suppressed ? <span className="block text-xs font-normal text-primary">Bảo vệ nhóm nhỏ</span> : null}
       </span>
     </li>
   );

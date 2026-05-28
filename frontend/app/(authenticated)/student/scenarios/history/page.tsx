@@ -39,9 +39,9 @@ export default function ScenarioHistoryPage() {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-secondary p-6 shadow-sm">
+      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Xem lịch sử tình huống</h1>
-        <p className="mt-3 text-body">Những lựa chọn em đã thử được lưu riêng trong không gian học tập của em.</p>
+        <p className="mt-3 text-sm">Những lựa chọn em đã thử được lưu riêng trong không gian học tập của em.</p>
       </header>
 
       {items.length === 0 ? (
@@ -54,14 +54,14 @@ export default function ScenarioHistoryPage() {
           {items.map((item) => (
             <article key={item.attempt_id} className="rounded-3xl bg-white p-6 shadow-sm">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-heading">{item.scenario_title}</h2>
+                <h2 className="text-sm font-semibold">{item.scenario_title}</h2>
                 {item.is_demo ? <DemoBadge /> : null}
               </div>
-              <p className="mt-3 text-label">{formatDate(item.completed_at)}</p>
-              <p className="mt-4 text-label">{signalLabel(item.signal)}</p>
-              {item.selected_choice ? <p className="mt-3 text-body">Lựa chọn của em: {item.selected_choice}</p> : null}
-              {item.feedback ? <p className="mt-3 text-body">{item.feedback}</p> : null}
-              <p className="mt-3 text-label">
+              <p className="mt-3 text-xs">{formatDate(item.completed_at)}</p>
+              <p className="mt-4 text-xs">{signalLabel(item.signal)}</p>
+              {item.selected_choice ? <p className="mt-3 text-sm">Lựa chọn của em: {item.selected_choice}</p> : null}
+              {item.feedback ? <p className="mt-3 text-sm">{item.feedback}</p> : null}
+              <p className="mt-3 text-xs">
                 <span className="font-semibold">Kỹ năng liên quan</span> {item.skill_tag}
               </p>
             </article>

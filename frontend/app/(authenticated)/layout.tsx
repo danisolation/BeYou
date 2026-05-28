@@ -115,7 +115,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     <div className="min-h-dvh bg-background">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-accent focus:shadow-lg dark:focus:bg-[#1a2940]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-primary focus:shadow-lg dark:focus:bg-[#1a2940]"
       >
         Bỏ qua điều hướng
       </a>

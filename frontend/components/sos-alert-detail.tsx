@@ -26,7 +26,7 @@ const nextStatusButton: Record<Exclude<SosStatus, "sent">, string> = {
 
 export function SosStatusBadge({ status }: { status: SosStatus }) {
   return (
-    <span className="inline-flex min-h-11 items-center rounded-full bg-secondary px-4 text-heading">
+    <span className="inline-flex min-h-11 items-center rounded-full bg-primary/5 px-4 text-sm font-semibold">
       {sosStatusLabels[status]}
     </span>
   );
@@ -71,41 +71,41 @@ export function SosAlertDetail({
           <h1 className="text-display">Trạng thái SOS</h1>
           {alert.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-3 text-body">
+        <p className="mt-3 text-sm">
           {alert.student.full_name} · {alert.student.school ?? "Chưa cập nhật"} ·{" "}
           {alert.student.class_name ?? "Chưa cập nhật"}
         </p>
       </header>
 
       {/* Status and severity */}
-      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-3">
           <SosStatusBadge status={alert.current_status} />
-          <span className="rounded-full border border-outline-variant px-3 py-2 text-label">
+          <span className="rounded-full border border-outline-variant px-3 py-2 text-xs">
             {sosSeverityLabels[alert.severity]}
           </span>
         </div>
-        <p className="mt-4 text-label">Gửi lúc: {new Date(alert.created_at).toLocaleString("vi-VN")}</p>
+        <p className="mt-4 text-xs">Gửi lúc: {new Date(alert.created_at).toLocaleString("vi-VN")}</p>
         {alert.note ? (
-          <div className="mt-4 rounded-2xl bg-secondary p-4">
-            <h2 className="text-heading">Điều học sinh muốn người lớn biết</h2>
-            <p className="mt-2 text-body">{alert.note}</p>
+          <div className="mt-4 rounded-2xl bg-primary/5 p-4">
+            <h2 className="text-sm font-semibold">Điều học sinh muốn người lớn biết</h2>
+            <p className="mt-2 text-sm">{alert.note}</p>
           </div>
         ) : null}
       </section>
 
       {/* Progress timeline */}
-      <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-        <h2 className="text-heading">Tiến trình hỗ trợ</h2>
+      <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <h2 className="text-sm font-semibold">Tiến trình hỗ trợ</h2>
         <div className="mt-4 space-y-3">
           {alert.status_events.length === 0 ? (
-            <p className="text-body">Tín hiệu đã được gửi và đang chờ phản hồi.</p>
+            <p className="text-sm">Tín hiệu đã được gửi và đang chờ phản hồi.</p>
           ) : (
             alert.status_events.map((event) => (
               <article key={event.id} className="rounded-2xl border border-outline-variant p-4">
                 <p className="font-semibold">{sosStatusLabels[event.new_status]}</p>
-                <p className="text-label">{new Date(event.created_at).toLocaleString("vi-VN")}</p>
-                {event.note ? <p className="mt-2 text-body">{event.note}</p> : null}
+                <p className="text-xs">{new Date(event.created_at).toLocaleString("vi-VN")}</p>
+                {event.note ? <p className="mt-2 text-sm">{event.note}</p> : null}
               </article>
             ))
           )}
@@ -114,9 +114,9 @@ export function SosAlertDetail({
 
       {/* Teacher status update controls */}
       {mode === "teacher" && next ? (
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <h2 className="text-heading">Cập nhật trạng thái</h2>
-          <label className="mt-4 block text-label" htmlFor="sos-update-note">
+        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+          <h2 className="text-sm font-semibold">Cập nhật trạng thái</h2>
+          <label className="mt-4 block text-xs" htmlFor="sos-update-note">
             Ghi chú hỗ trợ (không bắt buộc)
           </label>
           <textarea
@@ -125,13 +125,13 @@ export function SosAlertDetail({
             onChange={(event) => setNote(event.target.value)}
             className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant p-4"
           />
-          {error ? <p role="alert" className="mt-3 text-body text-red-700">{error}</p> : null}
-          {statusMessage ? <p role="status" className="mt-3 text-body text-accent">{statusMessage}</p> : null}
+          {error ? <p role="alert" className="mt-3 text-sm text-red-700">{error}</p> : null}
+          {statusMessage ? <p role="status" className="mt-3 text-sm text-primary">{statusMessage}</p> : null}
           <button
             type="button"
             onClick={handleStatusUpdate}
             disabled={isUpdating}
-            className="mt-4 min-h-11 rounded-2xl bg-accent px-4 font-semibold text-white disabled:opacity-60"
+            className="mt-4 min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white disabled:opacity-60"
           >
             {isUpdating ? "Đang cập nhật..." : nextStatusButton[next]}
           </button>
@@ -139,13 +139,13 @@ export function SosAlertDetail({
       ) : null}
 
       {mode === "teacher" && !next ? (
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <p className="text-body">SOS này đã hoàn tất. Hãy tiếp tục hỗ trợ học sinh theo kế hoạch phù hợp.</p>
+        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+          <p className="text-sm">SOS này đã hoàn tất. Hãy tiếp tục hỗ trợ học sinh theo kế hoạch phù hợp.</p>
         </section>
       ) : null}
 
       <Link
-        className="inline-flex min-h-11 items-center rounded-2xl border border-outline-variant px-4 font-semibold hover:bg-secondary"
+        className="inline-flex min-h-11 items-center rounded-2xl border border-outline-variant px-4 font-semibold hover:bg-primary/5"
         href={`/${mode}`}
       >
         Quay về trang chính

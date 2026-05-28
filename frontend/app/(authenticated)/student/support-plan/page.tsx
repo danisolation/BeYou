@@ -138,15 +138,15 @@ export default function StudentSupportPlanPage() {
           <h1 className="text-2xl font-bold">Người lớn tin tưởng</h1>
           {data.is_demo ? <DemoBadge /> : null}
         </div>
-        <p className="mt-4 text-body">
+        <p className="mt-4 text-sm">
           Em có thể chuẩn bị trước cách người lớn tin tưởng nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
         </p>
-        <p className="mt-3 text-label">
+        <p className="mt-3 text-xs">
           Kế hoạch này giúp em nói trước điều mình cần; em vẫn quyết định người lớn nào được chọn để xem phần chia sẻ.
         </p>
-        <div className="mt-5 rounded-2xl border border-outline-variant bg-surface p-5">
-          <h2 className="text-heading">Ranh giới chia sẻ</h2>
-          <ul className="mt-3 space-y-2 text-body">
+        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-5">
+          <h2 className="text-sm font-semibold">Ranh giới chia sẻ</h2>
+          <ul className="mt-3 space-y-2 text-sm">
             {data.privacy_notes.map((note) => (
               <li key={note}>{note}</li>
             ))}
@@ -155,15 +155,15 @@ export default function StudentSupportPlanPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <h2 className="text-heading">Chọn người lớn tin tưởng</h2>
-          <p className="mt-3 text-body">
+        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+          <h2 className="text-sm font-semibold">Chọn người lớn tin tưởng</h2>
+          <p className="mt-3 text-sm">
             Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
           </p>
           {hasLinkedAdults ? (
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {data.available_adults.map((adult) => (
-                <label key={adult.id} className="flex gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-surface-container">
+                <label key={adult.id} className="flex gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-white dark:bg-[#1a2940]-container">
                   <input
                     type="checkbox"
                     checked={selectedAdultIds.includes(adult.id)}
@@ -172,7 +172,7 @@ export default function StudentSupportPlanPage() {
                   />
                   <span>
                     <span className="block font-semibold text-on-background">{adult.full_name}</span>
-                    <span className="block text-label text-on-surface-variant">
+                    <span className="block text-xs text-on-surface-variant">
                       {supportPlanRelationshipLabels[adult.relationship_type]} · {adult.email}
                     </span>
                   </span>
@@ -186,12 +186,12 @@ export default function StudentSupportPlanPage() {
             />
           )}
           {activeWithoutAdult ? (
-            <p className="mt-3 text-body text-error">Kế hoạch đang chia sẻ cần ít nhất một người lớn tin tưởng.</p>
+            <p className="mt-3 text-sm text-error">Kế hoạch đang chia sẻ cần ít nhất một người lớn tin tưởng.</p>
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <h2 className="text-heading">Điều em muốn chia sẻ</h2>
+        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+          <h2 className="text-sm font-semibold">Điều em muốn chia sẻ</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <TextAreaField
               id="what-helps"
@@ -226,15 +226,15 @@ export default function StudentSupportPlanPage() {
           />
         </section>
 
-        <section className="rounded-2xl border border-outline-variant bg-surface p-6 shadow-sm">
-          <label className="text-label font-semibold" htmlFor="support-plan-status">
+        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+          <label className="text-xs font-semibold" htmlFor="support-plan-status">
             Trạng thái chia sẻ
           </label>
           <select
             id="support-plan-status"
             value={form.status}
             onChange={(event) => updateField("status", event.target.value as SupportPlanStatus)}
-            className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-surface px-4"
+            className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] px-4"
           >
             {(["active", "paused", "deactivated"] as SupportPlanStatus[]).map((status) => (
               <option key={status} value={status}>
@@ -242,11 +242,11 @@ export default function StudentSupportPlanPage() {
               </option>
             ))}
           </select>
-          <p className="mt-3 text-label">
+          <p className="mt-3 text-xs">
             Tạm dừng hoặc ngừng chia sẻ không xoá lịch sử metadata, nhưng người lớn sẽ không còn được chọn trong kế hoạch đang mở.
           </p>
-          {errorMessage ? <p role="alert" className="mt-4 text-body text-error">{errorMessage}</p> : null}
-          {saveMessage ? <p role="status" className="mt-4 text-body text-primary">{saveMessage}</p> : null}
+          {errorMessage ? <p role="alert" className="mt-4 text-sm text-error">{errorMessage}</p> : null}
+          {saveMessage ? <p role="status" className="mt-4 text-sm text-primary">{saveMessage}</p> : null}
           <button
             type="submit"
             disabled={!canSave}
@@ -272,13 +272,13 @@ function TextAreaField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="block text-label" htmlFor={id}>
+    <label className="block text-xs" htmlFor={id}>
       {label}
       <textarea
         id={id}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant bg-surface p-4 text-body"
+        className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4 text-sm"
       />
     </label>
   );

@@ -104,7 +104,7 @@ export default function LoginPage() {
       <div className="mx-auto max-w-container-stitch space-y-6">
         {/* Header */}
         <header className="flex items-center justify-between rounded-2xl bg-white/85 dark:bg-[#0d1c2e]/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
-          <Link href="/" className="flex items-center gap-2 text-heading font-bold text-primary no-underline">
+          <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
             Peerlight AI
           </Link>
@@ -125,12 +125,12 @@ export default function LoginPage() {
 
               {/* Demo accounts section */}
               <div className="mt-6 rounded-3xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
-                <p className="text-label-md font-semibold text-primary">Tài khoản demo</p>
+                <p className="text-xs-md font-semibold text-primary">Tài khoản demo</p>
                 {!capabilitiesLoaded ? (
-                  <p className="mt-1 text-label-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
+                  <p className="mt-1 text-xs-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
                 ) : publicDemoEntryEnabled ? (
                   <>
-                    <p className="mt-1 text-label-md text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
+                    <p className="mt-1 text-xs-md text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {demoAccounts.map((account) => (
                         <button
@@ -141,7 +141,7 @@ export default function LoginPage() {
                             setPassword(DEMO_PASSWORD);
                             setError("");
                           }}
-                          className="min-h-11 rounded-button border border-outline-variant/40 bg-white px-3 text-left text-label-md font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+                          className="min-h-11 rounded-button border border-outline-variant/40 bg-white px-3 text-left text-xs-md font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
                         >
                           {account.label}
                         </button>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                     </div>
                   </>
                 ) : (
-                  <div className="mt-3 space-y-2 rounded-button border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-label-md text-[#6B4A00]">
+                  <div className="mt-3 space-y-2 rounded-button border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs-md text-[#6B4A00]">
                     <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
                     {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
                   </div>
@@ -159,7 +159,7 @@ export default function LoginPage() {
               {/* Login form */}
               <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
                 <div>
-                  <label className="block text-label-md font-semibold text-on-background" htmlFor="email">
+                  <label className="block text-xs-md font-semibold text-on-background" htmlFor="email">
                     Email
                   </label>
                   <input
@@ -177,7 +177,7 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-                  <label className="block text-label-md font-semibold text-on-background" htmlFor="password">
+                  <label className="block text-xs-md font-semibold text-on-background" htmlFor="password">
                     Mật khẩu
                   </label>
                   <div className="mt-2 flex min-h-12 items-center rounded-button border border-outline-variant/40 bg-white">
@@ -205,7 +205,7 @@ export default function LoginPage() {
                 </div>
 
                 {error ? (
-                  <div id="login-error" role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-label-md text-error">
+                  <div id="login-error" role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-xs-md text-error">
                     {error}
                   </div>
                 ) : null}

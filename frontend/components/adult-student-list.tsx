@@ -108,22 +108,22 @@ export function AdultStudentList({
               badge={student.is_demo ? <DemoBadge /> : null}
               className="min-w-0 hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
             >
-              <p className="break-all text-label">{student.email}</p>
-              <p className="mt-3 text-body">Trường: {student.school ?? "Chưa cập nhật"}</p>
-              <p className="text-body">Lớp: {student.class_name ?? "Chưa cập nhật"}</p>
-              <p className="mt-3 text-label">Trạng thái liên kết: {student.link_status}</p>
+              <p className="break-all text-xs">{student.email}</p>
+              <p className="mt-3 text-sm">Trường: {student.school ?? "Chưa cập nhật"}</p>
+              <p className="text-sm">Lớp: {student.class_name ?? "Chưa cập nhật"}</p>
+              <p className="mt-3 text-xs">Trạng thái liên kết: {student.link_status}</p>
               <SupportOverviewCard
                 support={supportByStudent.get(student.id)}
                 unavailableMessage={supportOverviewState.status === "unavailable" ? supportOverviewState.message : undefined}
                 sosBasePath={sosBasePath}
                 sosCta={sosCta}
               />
-              <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
-                <h3 className="text-heading">{summaryTitle}</h3>
-                <p className="mt-2 text-body">Peerlight AI chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
+              <SurfaceCard className="mt-5 bg-primary/5 p-4 shadow-none ring-0">
+                <h3 className="text-sm font-semibold">{summaryTitle}</h3>
+                <p className="mt-2 text-sm">Peerlight AI chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
                 <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link
-                    className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-accent px-4 font-semibold text-white hover:bg-[#238C78]"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-[#238C78]"
                     href={`${summaryBasePath}/${student.id}/self-check-summaries`}
                   >
                     {summaryCta}
@@ -156,10 +156,10 @@ function AdultPrivacyBoundaryCard({ roleContext }: { roleContext: "teacher" | "p
           : "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát."
       }
     >
-      <p className="mt-3 text-body">
+      <p className="mt-3 text-sm">
         Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.
       </p>
-      <p className="mt-3 text-label">
+      <p className="mt-3 text-xs">
         Hãy dùng các tóm tắt này để mở lời hỗ trợ, không để giám sát, xếp hạng hoặc tạo áp lực cho học sinh.
       </p>
     </PrivacyBoundaryCard>
@@ -171,8 +171,8 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
     return (
       <div role="status" aria-live="polite">
         <SurfaceCard>
-          <h2 className="text-heading">Thông báo hỗ trợ</h2>
-          <p className="mt-3 text-body">Thông báo hỗ trợ tạm thời chưa tải được.</p>
+          <h2 className="text-sm font-semibold">Thông báo hỗ trợ</h2>
+          <p className="mt-3 text-sm">Thông báo hỗ trợ tạm thời chưa tải được.</p>
         </SurfaceCard>
       </div>
     );
@@ -182,9 +182,9 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
 
   return (
     <SurfaceCard>
-      <h2 className="text-heading">Thông báo hỗ trợ</h2>
+      <h2 className="text-sm font-semibold">Thông báo hỗ trợ</h2>
       {notifications.length === 0 ? (
-        <p className="mt-3 text-body">Chưa có thông báo SOS mới từ học sinh được liên kết.</p>
+        <p className="mt-3 text-sm">Chưa có thông báo SOS mới từ học sinh được liên kết.</p>
       ) : (
         <div className="mt-4 space-y-3">
           {notifications.slice(0, 5).map((notification) => {
@@ -196,9 +196,9 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
                   {notification.is_demo ? <DemoBadge /> : null}
                   {notification.read_at === null ? <StatusBadge tone="safe">Mới</StatusBadge> : null}
                 </div>
-                <p className="mt-2 text-body">{notification.body}</p>
+                <p className="mt-2 text-sm">{notification.body}</p>
                 {href ? (
-                  <Link className="mt-3 inline-flex min-h-11 items-center font-semibold text-accent" href={href}>
+                  <Link className="mt-3 inline-flex min-h-11 items-center font-semibold text-primary" href={href}>
                     Mở trạng thái SOS
                   </Link>
                 ) : null}
@@ -231,18 +231,18 @@ function SupportOverviewCard({
 }) {
   if (unavailableMessage) {
     return (
-      <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
-        <h3 className="text-heading">Tóm tắt hỗ trợ tạm thời chưa tải được</h3>
-        <p className="mt-2 text-body">{unavailableMessage}</p>
+      <SurfaceCard className="mt-5 bg-primary/5 p-4 shadow-none ring-0">
+        <h3 className="text-sm font-semibold">Tóm tắt hỗ trợ tạm thời chưa tải được</h3>
+        <p className="mt-2 text-sm">{unavailableMessage}</p>
       </SurfaceCard>
     );
   }
 
   if (!support) {
     return (
-      <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
-        <h3 className="text-heading">{sosCta === "Xem trạng thái SOS" ? "Trạng thái SOS của con" : "Tóm tắt hỗ trợ"}</h3>
-        <p className="mt-2 text-body">Chưa có tóm tắt SOS hoặc tự kiểm tra mới cho học sinh này.</p>
+      <SurfaceCard className="mt-5 bg-primary/5 p-4 shadow-none ring-0">
+        <h3 className="text-sm font-semibold">{sosCta === "Xem trạng thái SOS" ? "Trạng thái SOS của con" : "Tóm tắt hỗ trợ"}</h3>
+        <p className="mt-2 text-sm">Chưa có tóm tắt SOS hoặc tự kiểm tra mới cho học sinh này.</p>
       </SurfaceCard>
     );
   }
@@ -250,20 +250,20 @@ function SupportOverviewCard({
   const heading = sosCta === "Xem trạng thái SOS" ? "Trạng thái SOS của con" : "Tóm tắt hỗ trợ";
 
   return (
-    <SurfaceCard className="mt-5 bg-secondary p-4 shadow-none ring-0">
+    <SurfaceCard className="mt-5 bg-primary/5 p-4 shadow-none ring-0">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-heading">{heading}</h3>
+        <h3 className="text-sm font-semibold">{heading}</h3>
         <StatusBadge tone={supportTone(support)}>{support.warning_group_label}</StatusBadge>
       </div>
       {support.latest_self_check_summary ? (
-        <p className="mt-3 text-body">{support.latest_self_check_summary.support_suggestion}</p>
+        <p className="mt-3 text-sm">{support.latest_self_check_summary.support_suggestion}</p>
       ) : (
-        <p className="mt-3 text-body">Chưa có tóm tắt tự kiểm tra gần nhất được phép xem.</p>
+        <p className="mt-3 text-sm">Chưa có tóm tắt tự kiểm tra gần nhất được phép xem.</p>
       )}
       {support.latest_sos_alert ? (
         <div className="mt-3 rounded-2xl border border-red-200 bg-white p-3">
-          <p className="text-label">SOS hiện tại: {sosStatusLabels[support.latest_sos_alert.current_status]}</p>
-          <p className="text-label">Số SOS đang mở: {support.open_sos_count}</p>
+          <p className="text-xs">SOS hiện tại: {sosStatusLabels[support.latest_sos_alert.current_status]}</p>
+          <p className="text-xs">Số SOS đang mở: {support.open_sos_count}</p>
           {sosBasePath && sosCta ? (
             <Link
               className="mt-3 inline-flex min-h-11 items-center justify-center rounded-2xl bg-red-600 px-4 font-semibold text-white hover:bg-red-700"
