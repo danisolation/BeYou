@@ -29,6 +29,13 @@ export default function StudentDashboardPage() {
       });
   }, []);
 
+  const greeting = (() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Chào buổi sáng";
+    if (hour < 18) return "Chào buổi chiều";
+    return "Chào buổi tối";
+  })();
+
   if (loading) return <DashboardSkeleton cards={4} />;
   if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
@@ -37,7 +44,7 @@ export default function StudentDashboardPage() {
       {/* Welcome header */}
       <div className="animate-fade-in">
         <h1 className="text-xl font-bold text-on-background sm:text-2xl">
-          Chào {name}! 👋
+          {greeting}, {name}! 👋
         </h1>
         <p className="mt-1 text-sm text-on-background/60">
           Hôm nay em muốn làm gì?

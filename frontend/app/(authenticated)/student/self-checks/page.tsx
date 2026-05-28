@@ -25,6 +25,14 @@ function displayRiskLabel(label: string) {
   return label;
 }
 
+function riskBadgeStyle(label: string) {
+  if (label === "On dinh") return "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300";
+  if (label === "Can chu y") return "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300";
+  if (label === "Nen tim ho tro") return "bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300";
+  if (label === "Can ho tro som") return "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300";
+  return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+}
+
 export default function SelfCheckListPage() {
   const [tests, setTests] = useState<SelfCheckListItem[]>([]);
   const [history, setHistory] = useState<SelfCheckHistoryItem[]>([]);
@@ -102,16 +110,18 @@ export default function SelfCheckListPage() {
             {history.slice(0, 5).map((item) => (
               <Link
                 key={item.attempt_id}
-                className="block rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-shadow hover:shadow-md"
+                className="block rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-all hover:shadow-md hover:border-primary/20"
                 href={`/student/self-checks/history/${item.attempt_id}`}
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-sm font-semibold text-on-background">{item.test_title}</h3>
+                  <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${riskBadgeStyle(item.state_label)}`}>
+                    {displayRiskLabel(item.state_label)}
+                  </span>
                 </div>
-                <p className="mt-1 text-sm text-on-background/60">{formatDate(item.completed_at)}</p>
-                <p className="mt-2 text-sm text-on-background/80">{displayRiskLabel(item.state_label)}</p>
+                <p className="mt-1 text-xs text-on-background/50">{formatDate(item.completed_at)}</p>
                 {item.supportive_headline ? (
-                  <p className="mt-1 text-sm text-on-background/70">{item.supportive_headline}</p>
+                  <p className="mt-2 text-sm text-on-background/70">{item.supportive_headline}</p>
                 ) : null}
               </Link>
             ))}

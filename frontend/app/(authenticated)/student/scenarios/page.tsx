@@ -17,6 +17,12 @@ function signalLabel(signal: ScenarioHistoryItem["signal"]) {
   return signal === "risky" ? "Cần cân nhắc thêm" : "Có điểm tích cực";
 }
 
+function signalBadgeStyle(signal: ScenarioHistoryItem["signal"]) {
+  return signal === "risky"
+    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+    : "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300";
+}
+
 export default function ScenarioListPage() {
   const [scenarios, setScenarios] = useState<ScenarioListItem[]>([]);
   const [history, setHistory] = useState<ScenarioHistoryItem[]>([]);
@@ -97,19 +103,19 @@ export default function ScenarioListPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.attempt_id}
-                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4"
+                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-all hover:border-primary/20 hover:shadow-sm"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-sm font-semibold text-on-background">{item.scenario_title}</h3>
+                  {item.signal ? (
+                    <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${signalBadgeStyle(item.signal)}`}>
+                      {signalLabel(item.signal)}
+                    </span>
+                  ) : null}
                 </div>
-                <p className="mt-1 text-sm text-on-background/60">{formatDate(item.completed_at)}</p>
-                {item.signal ? (
-                  <p className={`mt-2 text-sm ${item.signal === "risky" ? "text-amber-700" : "text-primary"}`}>
-                    {signalLabel(item.signal)}
-                  </p>
-                ) : null}
+                <p className="mt-1 text-xs text-on-background/50">{formatDate(item.completed_at)}</p>
                 {item.selected_choice ? (
-                  <p className="mt-1 text-sm text-on-background/70">Lựa chọn: {item.selected_choice}</p>
+                  <p className="mt-2 text-sm text-on-background/70">Lựa chọn: {item.selected_choice}</p>
                 ) : null}
               </article>
             ))}

@@ -153,7 +153,7 @@ describe("role dashboards", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("heading", { name: /Chào Nguyễn An Demo!/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Nguyễn An Demo/ })).toBeInTheDocument();
     expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
     expect(screen.getByText("Test tâm lý")).toBeInTheDocument();
     expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();

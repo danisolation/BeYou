@@ -124,7 +124,7 @@ describe("student wellbeing dashboard and API helpers", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Vào test" })).toHaveAttribute("href", "/student/self-checks");
     expect(screen.getByText("Kiểm tra sức khỏe tâm lý qua các bài test ngắn")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Vào thực hành" })).toHaveAttribute("href", "/student/scenarios");
