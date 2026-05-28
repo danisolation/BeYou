@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
+import { Activity } from "lucide-react";
 
 import {
   type AdminOperationsDashboard,
@@ -128,15 +129,17 @@ export default function AdminOperationsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-        <p className="text-xs font-semibold text-primary">Vận hành pilot an toàn</p>
-        <h1 className="mt-2 text-lg font-semibold">Sẵn sàng mở pilot trường học</h1>
-        <p className="mt-3 max-w-3xl text-sm">
-          Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này
-          không mở nội dung riêng tư của học sinh.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Activity size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Sẵn sàng mở pilot trường học</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Theo dõi readiness, checklist launch và hướng dẫn rollback. Metadata-only, không mở nội dung riêng tư.
         </p>
-        <p className="mt-3 text-xs font-semibold text-primary">Vận hành metadata-only</p>
-        <p className="mt-3 text-xs">Cập nhật: {generatedAt}</p>
+        <p className="mt-2 text-xs text-on-background/50">Cập nhật: {generatedAt}</p>
       </header>
 
       <section className="rounded-2xl bg-primary/5 p-6">
@@ -158,7 +161,7 @@ export default function AdminOperationsPage() {
         </p>
       </section>
 
-      <form className="grid gap-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm md:grid-cols-3" onSubmit={applyFilters}>
+      <form className="grid gap-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 md:grid-cols-3" onSubmit={applyFilters}>
         <label className="space-y-2 text-sm font-medium">
           Từ thời điểm
           <input
@@ -229,8 +232,8 @@ export default function AdminOperationsPage() {
         </button>
       </form>
 
-      {isLoading ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">Đang tải metadata vận hành pilot...</p> : null}
-      {error ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 text-red-700 shadow-sm">{error}</p> : null}
+      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải metadata vận hành pilot...</p> : null}
+      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-red-700">{error}</p> : null}
 
       {dashboard ? (
         <>
@@ -798,7 +801,7 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
-    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold">{value}</p>
       <p className="mt-3 text-sm">{description}</p>
@@ -818,7 +821,7 @@ function Panel({
   testId?: string;
 }) {
   return (
-    <section className="space-y-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" data-testid={testId}>
+    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" data-testid={testId}>
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
         <p className="mt-2 text-sm">{description}</p>

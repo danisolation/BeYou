@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Lock } from "lucide-react";
 
 import {
   ACCESS_REASON_OPTIONS,
@@ -73,7 +74,7 @@ export default function AdminPrivacyPolicyPage() {
 
   if (policy === null) {
     return (
-      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
         <h1 className="text-lg font-semibold">Chưa mở được chính sách riêng tư</h1>
         <p className="mt-3 text-sm">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
       </section>
@@ -82,17 +83,20 @@ export default function AdminPrivacyPolicyPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
-        <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
-        <h1 className="mt-2 text-lg font-semibold">Chính sách riêng tư v1.4</h1>
-        <p className="mt-3 max-w-3xl text-sm">
-          Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập. v1.4 chỉ dùng nhắc nhở trong Peerlight AI; Zalo,
-          SMS, push và email vẫn đang hoãn để có đủ quản trị đồng ý, vận hành và quyền riêng tư.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Lock size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Chính sách riêng tư v1.4</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập.
         </p>
       </header>
 
       <form
-        className="space-y-6 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm"
+        className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6"
         onSubmit={(event) => {
           event.preventDefault();
           void savePolicy();
@@ -128,7 +132,7 @@ export default function AdminPrivacyPolicyPage() {
                 onChange={(event) =>
                   setPolicy({ ...policy, default_quiet_hours_start: event.target.value || null })
                 }
-                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] dark:text-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="quiet-end">
@@ -139,7 +143,7 @@ export default function AdminPrivacyPolicyPage() {
                 type="time"
                 value={policy.default_quiet_hours_end ?? ""}
                 onChange={(event) => setPolicy({ ...policy, default_quiet_hours_end: event.target.value || null })}
-                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] dark:text-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="timezone">
@@ -148,7 +152,7 @@ export default function AdminPrivacyPolicyPage() {
                 id="timezone"
                 value={policy.default_timezone}
                 onChange={(event) => setPolicy({ ...policy, default_timezone: event.target.value })}
-                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] dark:text-white px-4"
               />
             </label>
           </div>

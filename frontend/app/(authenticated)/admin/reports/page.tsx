@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { Shield } from "lucide-react";
 
 import {
   type AdminAggregateReport,
@@ -81,13 +82,17 @@ export default function AdminReportsPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-        <p className="text-xs font-semibold text-primary">Báo cáo hỗ trợ, không giám sát</p>
-        <h1 className="mt-2 text-lg font-semibold">Báo cáo tổng hợp riêng tư</h1>
-        <p className="mt-3 max-w-3xl text-sm">
-          Xem xu hướng chung để cải thiện hỗ trợ học sinh mà không mở câu trả lời, tin nhắn, ghi chú hoặc danh sách nguy cơ của từng em.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Shield size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Báo cáo tổng hợp riêng tư</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Xem xu hướng chung để cải thiện hỗ trợ, không mở dữ liệu cá nhân từng học sinh.
         </p>
-      </div>
+      </header>
 
       <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr]">
         <section className="rounded-2xl bg-primary/5 p-6">
@@ -106,7 +111,7 @@ export default function AdminReportsPage() {
           </p>
         </section>
 
-        <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <label className="block space-y-2 text-sm font-medium">
             Phạm vi dữ liệu
             <select
@@ -129,13 +134,13 @@ export default function AdminReportsPage() {
         </section>
       </div>
 
-      {isLoading ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">Đang tải báo cáo tổng hợp...</p> : null}
-      {error ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 text-red-700 shadow-sm">{error}</p> : null}
+      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải báo cáo tổng hợp...</p> : null}
+      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-red-700">{error}</p> : null}
 
       {report ? (
         <>
           {!hasAnySensitiveData(report) ? (
-            <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+            <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
               Chưa có đủ dữ liệu tổng hợp trong phạm vi này. Peerlight AI vẫn giữ nguyên ranh giới riêng tư và sẽ hiển thị xu hướng khi nhóm đủ lớn.
             </p>
           ) : null}
@@ -188,7 +193,7 @@ export default function AdminReportsPage() {
 
 function ExactMetricCard({ title, value, description }: { title: string; value: number; description: string }) {
   return (
-    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold">{formatCount(value)}</p>
       <p className="mt-3 text-sm">{description}</p>
@@ -198,7 +203,7 @@ function ExactMetricCard({ title, value, description }: { title: string; value: 
 
 function PrivacyMetricCard({ bucket, description }: { bucket: PrivacyCountBucket; description: string }) {
   return (
-    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <p className="text-xs font-semibold text-primary">{bucket.label}</p>
       <p className="mt-2 text-2xl font-bold">{privacyCountLabel(bucket)}</p>
       <p className="mt-3 text-sm">{description}</p>
@@ -209,7 +214,7 @@ function PrivacyMetricCard({ bucket, description }: { bucket: PrivacyCountBucket
 
 function ReportSection({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <section className="space-y-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
         <p className="mt-2 text-sm">{description}</p>

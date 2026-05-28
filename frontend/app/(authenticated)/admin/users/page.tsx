@@ -131,7 +131,7 @@ export default function AdminUsersPage() {
       {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
-      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-sm sm:p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6">
         <h2 className="text-sm font-semibold">Danh sách tài khoản</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && users.length === 0 ? <EmptyState /> : null}

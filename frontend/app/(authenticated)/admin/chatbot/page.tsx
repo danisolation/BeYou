@@ -76,7 +76,7 @@ export default function AdminChatbotPage() {
 
       {isLoading ? <p>Đang tải thông tin...</p> : null}
       {config ? (
-        <form className="space-y-6 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" onSubmit={handleSave}>
+        <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
           <section className="rounded-2xl bg-primary/5 p-4">
             <h2 className="text-sm font-semibold">Thông tin provider</h2>
             <p className="mt-2 text-sm">

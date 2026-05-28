@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FileText } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -460,11 +461,15 @@ export default function AdminContentPage() {
 
   return (
     <main className="mx-auto max-w-[1200px] space-y-6">
-      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
-        <h1 className="text-lg font-semibold">Nội dung tự kiểm tra và tình huống</h1>
-        <p className="mt-3 text-sm">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
-        <p className="mt-2 text-xs">
-          Nội dung nên dùng ngôn ngữ hỗ trợ, không chẩn đoán, không gắn nhãn học sinh và không khuyến khích giám sát.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <FileText size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Nội dung tự kiểm tra và tình huống</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh. Ngôn ngữ hỗ trợ, không chẩn đoán.
         </p>
       </header>
 
@@ -473,7 +478,7 @@ export default function AdminContentPage() {
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <div>
             <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
             <button
@@ -751,7 +756,7 @@ export default function AdminContentPage() {
           </div>
         </article>
 
-        <article className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <div>
             <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
             <button

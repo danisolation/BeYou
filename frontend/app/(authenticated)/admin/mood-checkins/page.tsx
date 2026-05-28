@@ -114,7 +114,7 @@ export default function AdminMoodCheckInsPage() {
 
       {isLoading ? <p>Đang tải cấu hình...</p> : null}
       {configs.length > 0 ? (
-        <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Cấu hình hiện có</h2>
           <div className="mt-3 flex flex-wrap gap-3">
             {configs.map((config) => (
@@ -131,7 +131,7 @@ export default function AdminMoodCheckInsPage() {
         </section>
       ) : null}
 
-      <form className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" onSubmit={handleSave}>
+      <form className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
         <div className="grid gap-4 md:grid-cols-3">
           <TextInput label="Tên cấu hình" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} />
           <label className="block text-xs font-semibold">
@@ -202,7 +202,7 @@ export default function AdminMoodCheckInsPage() {
       </form>
 
       {preview ? (
-        <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Preview</h2>
           <p className="mt-3 text-sm">{preview.student_prompt}</p>
           <p className="mt-2 text-sm">{preview.adult_guidance}</p>
