@@ -162,7 +162,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
           />
         ) : (
           isStudentShell ? (
-            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
+            <div className="lg:ml-60">
               <StudentSidebar
                 pathname={pathname}
                 collapsed={studentMenuCollapsed}
@@ -173,7 +173,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isTeacherShell ? (
-            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
+            <div className="lg:ml-60">
               <TeacherSidebar
                 pathname={pathname}
                 collapsed={teacherMenuCollapsed}
@@ -184,7 +184,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isParentShell ? (
-            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
+            <div className="lg:ml-60">
               <ParentSidebar
                 pathname={pathname}
                 collapsed={parentMenuCollapsed}
@@ -195,7 +195,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               <LayoutShell>{children}</LayoutShell>
             </div>
           ) : isAdminShell ? (
-            <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
+            <div className="lg:ml-60">
               <AdminSidebar
                 pathname={pathname}
                 collapsed={adminMenuCollapsed}

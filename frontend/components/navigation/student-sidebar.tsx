@@ -33,7 +33,7 @@ interface StudentSidebarProps {
 export function StudentSidebar({ pathname, collapsed, onToggleCollapse, onLogout }: StudentSidebarProps) {
   return (
     <aside
-      className={`sticky top-[4.5rem] hidden h-[calc(100dvh-5.5rem)] rounded-2xl border border-outline-variant/50 bg-white p-3 shadow-sm dark:bg-[#1a2940] lg:flex lg:flex-col ${
+      className={`fixed left-3 top-[4.25rem] z-30 hidden h-[calc(100dvh-5rem)] w-56 overflow-y-auto rounded-2xl border border-outline-variant/50 bg-white p-3 shadow-sm dark:bg-[#1a2940] lg:flex lg:flex-col ${
         collapsed ? "w-20" : "w-56"
       }`}
     >
