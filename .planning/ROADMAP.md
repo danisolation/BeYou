@@ -40,7 +40,7 @@
 **Status:** Planning complete
 
 Plans:
-- [ ] 54-01-PLAN.md — Enhance SW with app shell caching + build-time asset injection
+- [x] 54-01-PLAN.md — Enhance SW with app shell caching + build-time asset injection
 
 **Success criteria:**
 1. `manifest.json` present with correct name, icons, theme_color, display: standalone.
