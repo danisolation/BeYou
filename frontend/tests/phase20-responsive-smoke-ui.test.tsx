@@ -8,6 +8,13 @@ import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
 import HomePage from "@/app/page";
 import LoginPage from "@/app/login/page";
 
+// Mock IntersectionObserver for ScrollReveal component
+vi.stubGlobal("IntersectionObserver", class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+});
+
 const push = vi.fn();
 
 vi.mock("next/navigation", () => ({
@@ -113,18 +120,14 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
 
     render(<HomePage />);
 
-    expect(screen.getAllByRole("link", { name: "Bắt đầu" })[0]).toHaveAttribute("href", "/login");
-    expect(screen.getByText("Vào demo trong một bước")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vào vai Học sinh/ })).toBeEnabled();
-    expect(screen.getByRole("button", { name: /Vào vai Giáo viên/ })).toBeEnabled();
-    expect(screen.getByRole("button", { name: /Vào vai Phụ huynh/ })).toBeEnabled();
-    expect(screen.getByRole("button", { name: /Vào vai Quản trị/ })).toBeEnabled();
+    expect(screen.getByRole("link", { name: /Đăng nhập ngay/ })).toBeInTheDocument();
+    expect(screen.getByText("Sẵn sàng bắt đầu?")).toBeInTheDocument();
 
     cleanup();
     mockFetch({ "/api/auth/capabilities": demoCapabilities });
     render(<LoginPage />);
 
-    expect(screen.getByText("Chào mừng đến với Peerlight AI")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.")).toBeInTheDocument();
     expect(await screen.findByRole("button", { name: "Học sinh" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Giáo viên" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Phụ huynh" })).toBeEnabled();

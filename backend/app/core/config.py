@@ -50,7 +50,7 @@ class Settings(BaseSettings):
     session_max_age_seconds: int = Field(default=86400, validation_alias="SESSION_MAX_AGE_SECONDS")
     frontend_origin: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN")
     frontend_origins: str = Field(default="", validation_alias="FRONTEND_ORIGINS")
-    runtime_mode: RuntimeMode = Field(default="local_demo", validation_alias="RUNTIME_MODE")
+    runtime_mode: RuntimeMode = Field(default="production_pilot", validation_alias="RUNTIME_MODE")
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
     allow_demo_login: bool = Field(default=True, validation_alias="ALLOW_DEMO_LOGIN")
     chat_provider: str = Field(default="fallback", validation_alias="CHAT_PROVIDER")

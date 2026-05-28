@@ -8,6 +8,13 @@ import PrivacyPage from "@/app/privacy/page";
 import { apiFetch } from "@/lib/api";
 import { roleToRoute } from "@/lib/routes";
 
+// Mock IntersectionObserver for ScrollReveal component
+vi.stubGlobal("IntersectionObserver", class {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+});
+
 const push = vi.fn();
 const searchParams = new URLSearchParams("next=/student");
 const demoCapabilities = {
@@ -75,16 +82,11 @@ describe("Phase 2 frontend auth foundation", () => {
     expect(submit).toBeEnabled();
   });
 
-  it("renders public demo entry with one-step role options", () => {
+  it("renders production landing page with CTA", () => {
     render(<HomePage />);
 
-    expect(screen.getByText("Peerlight AI demo live")).toBeInTheDocument();
-    expect(screen.getByText("Không gian hỗ trợ học sinh THPT trước khi căng thẳng leo thang.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vào vai Học sinh/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vào vai Giáo viên/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vào vai Phụ huynh/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Vào vai Quản trị/ })).toBeInTheDocument();
-    expect(screen.getByText(/Không nhập dữ liệu học sinh thật trong bản giới thiệu\./)).toBeInTheDocument();
+    expect(screen.getByText("Sẵn sàng bắt đầu?")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Đăng nhập ngay/ })).toBeInTheDocument();
   });
 
   it("fills demo credentials from role shortcuts", async () => {
@@ -111,11 +113,11 @@ describe("Phase 2 frontend auth foundation", () => {
 
     render(<LoginPage />);
 
-    expect(screen.getByText("Đang kiểm tra cấu hình demo an toàn...")).toBeInTheDocument();
+    expect(screen.getByText("Đang kiểm tra cấu hình hệ thống...")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
     await waitFor(() => {
       expect(
-        screen.getByText("Chưa xác minh được cấu hình demo. Hãy đăng nhập bằng email và mật khẩu được cấp."),
+        screen.getByText("Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp."),
       ).toBeInTheDocument();
     });
     expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
@@ -143,10 +145,10 @@ describe("Phase 2 frontend auth foundation", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên."),
+        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên."),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText("Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.")).toBeInTheDocument();
+    expect(screen.getByText("Đăng nhập bên ngoài chưa được kích hoạt.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Giáo viên" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Phụ huynh" })).not.toBeInTheDocument();

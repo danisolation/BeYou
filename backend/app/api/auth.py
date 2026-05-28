@@ -54,8 +54,8 @@ def _origin_unsafe_for_production_pilot(origin: str) -> bool:
 @router.get("/capabilities", response_model=AuthCapabilitiesResponse)
 def capabilities(settings: Settings = Depends(get_settings)) -> AuthCapabilitiesResponse:
     return AuthCapabilitiesResponse(
-        demo_login_enabled=settings.allow_demo_login and settings.is_demo_runtime,
-        public_demo_entry_enabled=settings.allow_demo_login and settings.is_demo_runtime,
+        demo_login_enabled=settings.allow_demo_login,
+        public_demo_entry_enabled=settings.allow_demo_login,
         email_password_enabled=True,
         provider_login_enabled=settings.auth_provider_enabled,
         provider_label=settings.auth_provider_label if settings.auth_provider_enabled else None,

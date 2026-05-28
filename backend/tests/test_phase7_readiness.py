@@ -160,14 +160,14 @@ def test_static_readiness_flags_https_localhost_in_production() -> None:
     assert by_key["origin_security"].status == "fail"
 
 
-def test_settings_runtime_mode_defaults_to_local_demo() -> None:
+def test_settings_runtime_mode_defaults_to_production_pilot() -> None:
     settings = Settings()
 
-    assert settings.runtime_mode == "local_demo"
-    assert settings.is_local_demo is True
-    assert settings.is_demo_runtime is True
+    assert settings.runtime_mode == "production_pilot"
+    assert settings.is_production_pilot is True
+    assert settings.is_demo_runtime is False
+    assert settings.is_local_demo is False
     assert settings.is_public_demo is False
-    assert settings.is_production_pilot is False
 
 
 def test_settings_rejects_unknown_runtime_mode() -> None:

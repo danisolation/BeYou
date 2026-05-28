@@ -184,13 +184,12 @@ describe("admin management UI", () => {
     expect(within(adultSelect).queryByRole("option", { name: "Quản trị Demo" })).not.toBeInTheDocument();
   });
 
-  it("renders link management copy, demo badge, and revoke confirmation", async () => {
+  it("renders link management copy and revoke confirmation", async () => {
     mockAdminFetch();
     render(<AdminLinksPage />);
 
     expect(await screen.findByText("Liên kết học sinh và người lớn hỗ trợ")).toBeInTheDocument();
     expect(screen.getAllByText("Tạo liên kết").length).toBeGreaterThan(0);
-    expect(screen.getByText("Demo")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Thu hồi liên kết" }));
 
     expect(screen.getByText(REVOKE_LINK_COPY)).toBeInTheDocument();
