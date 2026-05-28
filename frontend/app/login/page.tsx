@@ -149,7 +149,7 @@ export default function LoginPage() {
                     </div>
                   </>
                 ) : (
-                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs text-[#6B4A00]">
+                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
                     <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
                     {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
                   </div>

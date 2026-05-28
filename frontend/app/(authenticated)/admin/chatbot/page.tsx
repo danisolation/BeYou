@@ -90,7 +90,7 @@ export default function AdminChatbotPage() {
               aria-label="Từ khóa nguy cơ cao"
               value={keywordsText}
               onChange={(event) => setKeywordsText(event.target.value)}
-              className="min-h-40 w-full rounded-2xl border border-outline-variant/30 p-4"
+              className="min-h-40 w-full rounded-xl border border-outline-variant/30 p-4"
             />
           </label>
 
@@ -100,7 +100,7 @@ export default function AdminChatbotPage() {
               aria-label="Lời nhắn khi cần ưu tiên an toàn"
               value={escalationMessage}
               onChange={(event) => setEscalationMessage(event.target.value)}
-              className="min-h-32 w-full rounded-2xl border border-outline-variant/30 p-4"
+              className="min-h-32 w-full rounded-xl border border-outline-variant/30 p-4"
             />
           </label>
 
@@ -110,7 +110,7 @@ export default function AdminChatbotPage() {
               aria-label="Lời nhắn người lớn tin tưởng"
               value={trustedAdultMessage}
               onChange={(event) => setTrustedAdultMessage(event.target.value)}
-              className="min-h-28 w-full rounded-2xl border border-outline-variant/30 p-4"
+              className="min-h-28 w-full rounded-xl border border-outline-variant/30 p-4"
             />
           </label>
 
@@ -120,7 +120,7 @@ export default function AdminChatbotPage() {
           <button
             type="submit"
             disabled={isSaving}
-            className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
+            className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
           >
             {isSaving ? "Đang lưu..." : "Lưu cấu hình an toàn"}
           </button>

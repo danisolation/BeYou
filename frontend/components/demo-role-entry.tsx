@@ -55,7 +55,7 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
         ))}
       </div>
       {error ? (
-        <p role="alert" className="rounded-2xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs text-[#6B4A00]">
+        <p role="alert" className="rounded-2xl border border-warning/30 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
           {error}
         </p>
       ) : null}

@@ -42,7 +42,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       <div className="animate-fade-in">
-        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
+        <h1 className="text-lg font-semibold text-on-background">
           Quản trị hệ thống
         </h1>
         <p className="mt-1 text-sm text-on-background/60">

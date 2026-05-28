@@ -123,8 +123,8 @@ export default function AdminUsersPage() {
         </p>
       </div>
       <UserForm onSubmit={handleCreate} />
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
       <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-sm sm:p-6">
         <h2 className="text-sm font-semibold">Danh sách tài khoản</h2>
@@ -155,7 +155,7 @@ export default function AdminUsersPage() {
                           [user.id]: event.target.value as AdminUser["role"],
                         }))
                       }
-                      className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3 lg:w-44"
+                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 lg:w-44"
                     >
                       <option value="student">student</option>
                       <option value="teacher">teacher</option>
@@ -166,14 +166,14 @@ export default function AdminUsersPage() {
                   <button
                     type="button"
                     onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
-                    className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80"
+                    className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/80"
                   >
                     Lưu thay đổi
                   </button>
                   <button
                     type="button"
                     onClick={() => setConfirmation({ type: "disable", user })}
-                    className="min-h-11 rounded-2xl border border-warning px-4 hover:bg-[#FFF8E8]"
+                    className="min-h-11 rounded-xl border border-amber-300 px-4 hover:bg-amber-50"
                   >
                     Tạm khóa tài khoản
                   </button>
@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
                     <button
                       type="button"
                       onClick={() => setConfirmation({ type: "delete-demo", user })}
-                      className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white hover:bg-red-700 sm:col-span-2 lg:col-span-1"
+                      className="min-h-11 rounded-xl bg-destructive px-4 font-semibold text-white hover:bg-red-700 sm:col-span-2 lg:col-span-1"
                     >
                       Xóa tài khoản demo
                     </button>

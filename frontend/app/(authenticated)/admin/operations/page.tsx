@@ -166,7 +166,7 @@ export default function AdminOperationsPage() {
             type="datetime-local"
             value={draftFilters.startAt}
             onChange={(event) => updateFilter("startAt", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
           />
         </label>
         <label className="space-y-2 text-xs font-semibold">
@@ -176,7 +176,7 @@ export default function AdminOperationsPage() {
             type="datetime-local"
             value={draftFilters.endAt}
             onChange={(event) => updateFilter("endAt", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
           />
         </label>
         <label className="space-y-2 text-xs font-semibold">
@@ -185,7 +185,7 @@ export default function AdminOperationsPage() {
             aria-label="Vai trò người thực hiện"
             value={draftFilters.actorRole}
             onChange={(event) => updateFilter("actorRole", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
           >
             {roleOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -200,7 +200,7 @@ export default function AdminOperationsPage() {
             aria-label="Loại hành động"
             value={draftFilters.actionType}
             onChange={(event) => updateFilter("actionType", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
             placeholder="vd: account_status_changed"
           />
         </label>
@@ -210,7 +210,7 @@ export default function AdminOperationsPage() {
             aria-label="Loại mục tiêu"
             value={draftFilters.targetType}
             onChange={(event) => updateFilter("targetType", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
             placeholder="vd: account_profile"
           />
         </label>
@@ -220,11 +220,11 @@ export default function AdminOperationsPage() {
             aria-label="Trạng thái audit"
             value={draftFilters.status}
             onChange={(event) => updateFilter("status", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
             placeholder="vd: success"
           />
         </label>
-        <button type="submit" className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white md:col-span-3">
+        <button type="submit" className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white md:col-span-3">
           Áp dụng bộ lọc
         </button>
       </form>
@@ -388,12 +388,12 @@ export default function AdminOperationsPage() {
 
 function statusClass(status: string) {
   if (status === "ready" || status === "safe" || status === "pass" || status === "covered") {
-    return "border-accent bg-primary/5 text-primary-dark";
+    return "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300";
   }
   if (status === "needs_review" || status === "warn") {
-    return "border-warning bg-[#FFF8E8] text-[#6B4A00]";
+    return "border-warning bg-amber-50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-200";
   }
-  return "border-[#F3C0C0] bg-white text-red-700";
+  return "border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-300";
 }
 
 function StatusBadge({ status }: { status: string }) {

@@ -113,7 +113,7 @@ export default function AdminReportsPage() {
               aria-label="Phạm vi dữ liệu"
               value={demoScope}
               onChange={(event) => setDemoScope(event.target.value as DemoScope)}
-              className="w-full rounded-2xl border border-outline-variant/30 p-3 text-sm"
+              className="w-full rounded-xl border border-outline-variant/30 p-3 text-sm"
             >
               {SCOPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>

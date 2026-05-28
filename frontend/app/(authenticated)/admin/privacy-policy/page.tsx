@@ -128,7 +128,7 @@ export default function AdminPrivacyPolicyPage() {
                 onChange={(event) =>
                   setPolicy({ ...policy, default_quiet_hours_start: event.target.value || null })
                 }
-                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="quiet-end">
@@ -139,7 +139,7 @@ export default function AdminPrivacyPolicyPage() {
                 type="time"
                 value={policy.default_quiet_hours_end ?? ""}
                 onChange={(event) => setPolicy({ ...policy, default_quiet_hours_end: event.target.value || null })}
-                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="timezone">
@@ -148,7 +148,7 @@ export default function AdminPrivacyPolicyPage() {
                 id="timezone"
                 value={policy.default_timezone}
                 onChange={(event) => setPolicy({ ...policy, default_timezone: event.target.value })}
-                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
           </div>
@@ -240,7 +240,7 @@ export default function AdminPrivacyPolicyPage() {
         <button
           type="submit"
           disabled={isSaving || policy.allowed_reason_codes.length === 0}
-          className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
+          className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-white disabled:opacity-60"
         >
           {isSaving ? "Đang lưu..." : "Lưu chính sách"}
         </button>

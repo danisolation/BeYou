@@ -127,7 +127,7 @@ export default function AdminMoodCheckInsPage() {
                 key={config.id}
                 type="button"
                 onClick={() => selectConfig(config)}
-                className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+                className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
               >
                 {config.name} · {config.status}
               </button>
@@ -144,7 +144,7 @@ export default function AdminMoodCheckInsPage() {
             <select
               value={draft.status}
               onChange={(event) => setDraft({ ...draft, status: event.target.value as AdminMoodCheckInConfigPayload["status"] })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
             >
               <option value="draft">draft</option>
               <option value="published">published</option>
@@ -197,10 +197,10 @@ export default function AdminMoodCheckInsPage() {
         {message ? <p role="status" className="text-sm text-primary">{message}</p> : null}
         {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
-          <button type="submit" disabled={isSaving} className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white">
+          <button type="submit" disabled={isSaving} className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-white">
             {isSaving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
-          <button type="button" onClick={handlePreview} className="min-h-11 rounded-2xl border border-outline-variant/30 px-5 font-semibold">
+          <button type="button" onClick={handlePreview} className="min-h-11 rounded-xl border border-outline-variant/30 px-5 font-semibold">
             Xem preview
           </button>
         </div>
@@ -237,7 +237,7 @@ function TextInput({
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+        className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
       />
     </label>
   );
@@ -258,7 +258,7 @@ function TextAreaInput({
       <textarea
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-24 w-full rounded-2xl border border-outline-variant/30 p-3"
+        className="mt-2 min-h-24 w-full rounded-xl border border-outline-variant/30 p-3"
       />
     </label>
   );

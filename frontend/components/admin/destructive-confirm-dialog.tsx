@@ -69,7 +69,7 @@ export function DestructiveConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={isConfirming}
-            className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 disabled:opacity-60"
+            className="min-h-11 rounded-xl border border-outline-variant/30 px-4 disabled:opacity-60"
           >
             {cancelLabel}
           </button>
@@ -77,7 +77,7 @@ export function DestructiveConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={isConfirming}
-            className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white disabled:opacity-60"
+            className="min-h-11 rounded-xl bg-destructive px-4 font-semibold text-white disabled:opacity-60"
           >
             {isConfirming ? "Đang xử lý..." : confirmLabel}
           </button>

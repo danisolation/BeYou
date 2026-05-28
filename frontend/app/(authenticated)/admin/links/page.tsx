@@ -75,8 +75,8 @@ export default function AdminLinksPage() {
         </p>
       </div>
       <LinkForm users={users} onSubmit={handleCreate} />
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
       <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-sm sm:p-6">
         <h2 className="text-sm font-semibold">Danh sách liên kết</h2>

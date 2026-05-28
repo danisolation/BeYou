@@ -131,7 +131,7 @@ function Field({
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+        className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
       />
     </label>
   );
@@ -153,7 +153,7 @@ function TextAreaField({
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-24 w-full rounded-2xl border border-outline-variant/30 px-3 py-2"
+        className="min-h-24 w-full rounded-xl border border-outline-variant/30 px-3 py-2"
       />
     </label>
   );
@@ -468,8 +468,8 @@ export default function AdminContentPage() {
         </p>
       </header>
 
-      {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
+      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -479,7 +479,7 @@ export default function AdminContentPage() {
             <button
               type="button"
               onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
-              className="mt-3 min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+              className="mt-3 min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
             >
               Tạo bài tự kiểm tra
             </button>
@@ -504,7 +504,7 @@ export default function AdminContentPage() {
                 aria-label="Trạng thái nội dung"
                 value={selfCheckDraft.status}
                 onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+                className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>
@@ -519,7 +519,7 @@ export default function AdminContentPage() {
                 <button
                   type="button"
                   onClick={addSelfCheckQuestion}
-                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm câu hỏi
                 </button>
@@ -534,7 +534,7 @@ export default function AdminContentPage() {
                     <button
                       type="button"
                       onClick={() => removeSelfCheckQuestion(questionIndex)}
-                      className="min-h-11 rounded-2xl border border-warning px-4"
+                      className="min-h-11 rounded-xl border border-amber-300 px-4"
                     >
                       Xóa câu hỏi
                     </button>
@@ -556,7 +556,7 @@ export default function AdminContentPage() {
                       <button
                         type="button"
                         onClick={() => addSelfCheckChoice(questionIndex)}
-                        className="min-h-11 rounded-2xl border border-outline-variant/30 px-4"
+                        className="min-h-11 rounded-xl border border-outline-variant/30 px-4"
                       >
                         Thêm lựa chọn
                       </button>
@@ -586,7 +586,7 @@ export default function AdminContentPage() {
                         <button
                           type="button"
                           onClick={() => removeSelfCheckChoice(questionIndex, choiceIndex)}
-                          className="min-h-11 self-end rounded-2xl border border-warning px-4"
+                          className="min-h-11 self-end rounded-2xl border border-amber-300 px-4"
                         >
                           Xóa lựa chọn
                         </button>
@@ -602,7 +602,7 @@ export default function AdminContentPage() {
                 <button
                   type="button"
                   onClick={addThreshold}
-                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm ngưỡng điểm
                 </button>
@@ -617,7 +617,7 @@ export default function AdminContentPage() {
                     <button
                       type="button"
                       onClick={() => removeThreshold(thresholdIndex)}
-                      className="min-h-11 rounded-2xl border border-warning px-4"
+                      className="min-h-11 rounded-xl border border-amber-300 px-4"
                     >
                       Xóa ngưỡng điểm
                     </button>
@@ -628,7 +628,7 @@ export default function AdminContentPage() {
                       aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
                       value={threshold.state_label}
                       onChange={(event) => updateThreshold(thresholdIndex, "state_label", event.target.value)}
-                      className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
                     >
                       {riskLabels.map((label) => (
                         <option key={label} value={label}>
@@ -718,7 +718,7 @@ export default function AdminContentPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white">
+            <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
               Lưu bản nháp
             </button>
             <button
@@ -730,21 +730,21 @@ export default function AdminContentPage() {
                   "Đã xuất bản bài tự kiểm tra cho học sinh.",
                 )
               }
-              className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white"
+              className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
             >
               Xuất bản
             </button>
             <button
               type="button"
               onClick={() => selfCheckDraft.id && setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id })}
-              className="min-h-11 rounded-2xl border border-warning px-4"
+              className="min-h-11 rounded-xl border border-amber-300 px-4"
             >
               Lưu trữ
             </button>
             <button
               type="button"
               onClick={() => selfCheckDraft.id && setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id })}
-              className="min-h-11 rounded-2xl bg-destructive px-4 font-semibold text-white"
+              className="min-h-11 rounded-xl bg-destructive px-4 font-semibold text-white"
             >
               Xóa bản nháp chưa dùng
             </button>
@@ -757,7 +757,7 @@ export default function AdminContentPage() {
             <button
               type="button"
               onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
-              className="mt-3 min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+              className="mt-3 min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
             >
               Tạo tình huống
             </button>
@@ -775,7 +775,7 @@ export default function AdminContentPage() {
                 aria-label="Trạng thái nội dung"
                 value={scenarioDraft.status}
                 onChange={(event) => setScenarioDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+                className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>
@@ -790,7 +790,7 @@ export default function AdminContentPage() {
                 <button
                   type="button"
                   onClick={addScenarioChoice}
-                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
+                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm lựa chọn tình huống
                 </button>
@@ -805,7 +805,7 @@ export default function AdminContentPage() {
                     <button
                       type="button"
                       onClick={() => removeScenarioChoice(choiceIndex)}
-                      className="min-h-11 rounded-2xl border border-warning px-4"
+                      className="min-h-11 rounded-xl border border-amber-300 px-4"
                     >
                       Xóa lựa chọn tình huống
                     </button>
@@ -821,7 +821,7 @@ export default function AdminContentPage() {
                       aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}
                       value={choice.signal}
                       onChange={(event) => updateScenarioChoice(choiceIndex, "signal", event.target.value)}
-                      className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
+                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
                     >
                       {signalOptions.map((signal) => (
                         <option key={signal} value={signal}>
@@ -884,7 +884,7 @@ export default function AdminContentPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-2xl border border-outline-variant/30 px-4">
+            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-xl border border-outline-variant/30 px-4">
               Lưu bản nháp tình huống
             </button>
             <button
@@ -896,21 +896,21 @@ export default function AdminContentPage() {
                   "Đã xuất bản tình huống luyện tập cho học sinh.",
                 )
               }
-              className="min-h-11 rounded-2xl bg-primary px-4 font-semibold text-white"
+              className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
             >
               Xuất bản
             </button>
             <button
               type="button"
               onClick={() => scenarioDraft.id && setConfirmation({ type: "archive-scenario", id: scenarioDraft.id })}
-              className="min-h-11 rounded-2xl border border-warning px-4"
+              className="min-h-11 rounded-xl border border-amber-300 px-4"
             >
               Lưu trữ
             </button>
             <button
               type="button"
               onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
-              className="min-h-11 rounded-2xl border border-outline-variant/30 px-4"
+              className="min-h-11 rounded-xl border border-outline-variant/30 px-4"
             >
               Xóa bản nháp tình huống chưa dùng
             </button>
