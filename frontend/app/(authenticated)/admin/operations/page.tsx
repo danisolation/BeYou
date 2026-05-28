@@ -391,7 +391,7 @@ function statusClass(status: string) {
     return "border-emerald-300 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-300";
   }
   if (status === "needs_review" || status === "warn") {
-    return "border-warning bg-amber-50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-200";
+    return "border-amber-300 bg-amber-50 dark:bg-amber-950/20 text-amber-800 dark:text-amber-200";
   }
   return "border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-300";
 }

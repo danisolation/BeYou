@@ -86,7 +86,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
           <input value={className} onChange={(event) => setClassName(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>
         <label className="flex min-h-11 items-center gap-2 text-xs font-semibold">
-          <input type="checkbox" checked={isDemo} onChange={(event) => setIsDemo(event.target.checked)} className="min-h-5 min-w-5 accent-[#2CA58D]" />
+          <input type="checkbox" checked={isDemo} onChange={(event) => setIsDemo(event.target.checked)} className="min-h-5 min-w-5 accent-primary" />
           Demo
         </label>
       </div>

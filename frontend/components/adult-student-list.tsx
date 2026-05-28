@@ -129,7 +129,7 @@ export function AdultStudentList({
                     {summaryCta}
                   </Link>
                   <Link
-                    className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant/30 px-4 font-semibold hover:border-accent hover:bg-white"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant/30 px-4 font-semibold hover:border-primary hover:bg-white"
                     href={`${summaryBasePath}/${student.id}/support-summary`}
                   >
                     Xem kế hoạch & mood

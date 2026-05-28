@@ -80,7 +80,7 @@ function PrivacyContent() {
             checked={checked}
             disabled={reviewOnly}
             onChange={(event) => setChecked(event.target.checked)}
-            className="mt-1 min-h-5 min-w-5 accent-[#2CA58D]"
+            className="mt-1 min-h-5 min-w-5 accent-primary"
           />
           <span>Em đã đọc và hiểu ai có thể xem thông tin của em.</span>
         </label>

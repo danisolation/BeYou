@@ -272,7 +272,7 @@ function MoodShareControls({
       />
 
       {successMessage ? (
-        <p className="mt-3 text-xs text-[#2CA58D]" aria-live="polite">
+        <p className="mt-3 text-xs text-primary" aria-live="polite">
           {successMessage}
         </p>
       ) : null}
