@@ -125,12 +125,12 @@ export default function LoginPage() {
 
               {/* Demo accounts section */}
               <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
-                <p className="text-xs-md font-semibold text-primary">Tài khoản demo</p>
+                <p className="text-xs font-semibold text-primary">Tài khoản demo</p>
                 {!capabilitiesLoaded ? (
-                  <p className="mt-1 text-xs-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
+                  <p className="mt-1 text-xs text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
                 ) : publicDemoEntryEnabled ? (
                   <>
-                    <p className="mt-1 text-xs-md text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
+                    <p className="mt-1 text-xs text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {demoAccounts.map((account) => (
                         <button
@@ -141,7 +141,7 @@ export default function LoginPage() {
                             setPassword(DEMO_PASSWORD);
                             setError("");
                           }}
-                          className="min-h-11 rounded-button border border-outline-variant/40 bg-white px-3 text-left text-xs-md font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+                          className="min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
                         >
                           {account.label}
                         </button>
@@ -149,7 +149,7 @@ export default function LoginPage() {
                     </div>
                   </>
                 ) : (
-                  <div className="mt-3 space-y-2 rounded-button border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs-md text-[#6B4A00]">
+                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-[#FFF8E8] px-4 py-3 text-xs text-[#6B4A00]">
                     <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
                     {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
                   </div>
@@ -159,7 +159,7 @@ export default function LoginPage() {
               {/* Login form */}
               <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
                 <div>
-                  <label className="block text-xs-md font-semibold text-on-background" htmlFor="email">
+                  <label className="block text-xs font-semibold text-on-background" htmlFor="email">
                     Email
                   </label>
                   <input
@@ -172,15 +172,15 @@ export default function LoginPage() {
                     aria-describedby={error ? "login-error" : undefined}
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    className="mt-2 min-h-12 w-full rounded-button border border-outline-variant/40 bg-white px-4 outline-primary"
+                    className="mt-2 min-h-12 w-full rounded-xl border border-outline-variant/40 bg-white px-4 outline-primary"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs-md font-semibold text-on-background" htmlFor="password">
+                  <label className="block text-xs font-semibold text-on-background" htmlFor="password">
                     Mật khẩu
                   </label>
-                  <div className="mt-2 flex min-h-12 items-center rounded-button border border-outline-variant/40 bg-white">
+                  <div className="mt-2 flex min-h-12 items-center rounded-xl border border-outline-variant/40 bg-white">
                     <input
                       id="password"
                       name="password"
@@ -191,7 +191,7 @@ export default function LoginPage() {
                       aria-describedby={error ? "login-error" : undefined}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
-                      className="min-h-12 min-w-0 flex-1 rounded-button px-4 outline-primary"
+                      className="min-h-12 min-w-0 flex-1 rounded-xl px-4 outline-primary"
                     />
                     <button
                       type="button"
@@ -205,7 +205,7 @@ export default function LoginPage() {
                 </div>
 
                 {error ? (
-                  <div id="login-error" role="alert" className="rounded-button border border-error/30 bg-error-container px-4 py-3 text-xs-md text-error">
+                  <div id="login-error" role="alert" className="rounded-xl border border-error/30 bg-error-container px-4 py-3 text-xs text-error">
                     {error}
                   </div>
                 ) : null}
@@ -213,7 +213,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="min-h-12 w-full rounded-button bg-primary px-4 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
+                  className="min-h-12 w-full rounded-xl bg-primary px-4 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>

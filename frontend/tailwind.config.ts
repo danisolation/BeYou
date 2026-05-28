@@ -81,18 +81,7 @@ const config: Config = {
         "label-md": ["14px", { lineHeight: "1.5", fontWeight: "600" }],
         "label-sm": ["12px", { lineHeight: "1.5", fontWeight: "500" }],
       },
-      spacing: {
-        gutter: "24px",
-        "margin-desktop": "64px",
-        "margin-mobile": "20px",
-      },
-      maxWidth: {
-        "container-stitch": "1280px",
-      },
       borderRadius: {
-        card: "32px",
-        hero: "48px",
-        button: "16px",
       },
       fontFamily: {
         sans: [

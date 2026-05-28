@@ -56,12 +56,12 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-margin-mobile py-16 lg:px-margin-desktop lg:py-24">
+      <section className="relative overflow-hidden px-5 py-16 lg:px-16 lg:py-24">
         {/* Decorative shapes */}
         <div className="pointer-events-none absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/5 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -bottom-16 -right-16 h-72 w-72 rounded-full bg-tertiary/5 blur-3xl" aria-hidden="true" />
 
-        <div className="relative mx-auto grid max-w-container-stitch items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="animate-fade-in">
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs-md font-semibold text-primary">
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
@@ -97,7 +97,7 @@ export default function HomePage() {
       </section>
 
       {/* Safe Harbor Philosophy */}
-      <section id="mission" className="bg-white dark:bg-[#1e2d40] px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+      <section id="mission" className="bg-white dark:bg-[#1e2d40] px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl text-on-background">Triết lý Safe Harbor</h2>
           <p className="mt-4 text-base text-on-background/70">
@@ -109,8 +109,8 @@ export default function HomePage() {
       </section>
 
       {/* Core Values */}
-      <section className="px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
-        <div className="mx-auto max-w-container-stitch">
+      <section className="px-5 py-16 lg:px-16 lg:py-20">
+        <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl text-on-background">Giá trị cốt lõi</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {coreValues.map((value, index) => (
@@ -129,8 +129,8 @@ export default function HomePage() {
       </section>
 
       {/* Smart Tools Bento Grid */}
-      <section id="features" className="bg-white dark:bg-[#1e2d40] px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
-        <div className="mx-auto max-w-container-stitch">
+      <section id="features" className="bg-white dark:bg-[#1e2d40] px-5 py-16 lg:px-16 lg:py-20">
+        <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl text-on-background">Công cụ thông minh</h2>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-12">
             {/* Large card: AI assistant */}
@@ -190,8 +190,8 @@ export default function HomePage() {
       </section>
 
       {/* Trust & Privacy */}
-      <section id="support" className="px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
-        <div className="mx-auto max-w-container-stitch">
+      <section id="support" className="px-5 py-16 lg:px-16 lg:py-20">
+        <div className="mx-auto max-w-7xl">
           <div className="rounded-2xl bg-white/80 p-8 shadow-lg ring-1 ring-outline-variant/20 backdrop-blur lg:p-12">
             <div className="flex items-center gap-3">
               <Eye className="h-7 w-7 text-primary" aria-hidden="true" />
@@ -211,7 +211,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <ScrollReveal>
-        <section className="bg-primary px-margin-mobile py-16 lg:px-margin-desktop lg:py-20">
+        <section className="bg-primary px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl text-on-primary">Bắt đầu hành trình chữa lành của bạn</h2>
           <p className="mt-4 text-base text-on-primary/80">
@@ -236,8 +236,8 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* Demo Role Entry — for evaluators */}
-      <section className="bg-white dark:bg-[#1e2d40] px-margin-mobile py-12 lg:px-margin-desktop">
-        <div className="mx-auto max-w-container-stitch">
+      <section className="bg-white dark:bg-[#1e2d40] px-5 py-12 lg:px-16">
+        <div className="mx-auto max-w-7xl">
           <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-outline-variant/20 sm:p-8">
             <p className="text-xs-md font-semibold text-primary">Dành cho người đánh giá</p>
             <h2 className="mt-2 text-lg text-on-background">Vào demo trong một bước</h2>
@@ -252,8 +252,8 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-outline-variant/20 bg-white px-margin-mobile py-12 lg:px-margin-desktop">
-        <div className="mx-auto grid max-w-container-stitch gap-8 md:grid-cols-3">
+      <footer className="border-t border-outline-variant/20 bg-white dark:bg-[#0d1c2e] px-5 py-12 lg:px-16">
+        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
           <div>
             <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
               <Leaf className="h-5 w-5" aria-hidden="true" />
@@ -279,7 +279,7 @@ export default function HomePage() {
             </ul>
           </div>
         </div>
-        <div className="mx-auto mt-8 max-w-container-stitch border-t border-outline-variant/20 pt-6 text-center text-xs-sm text-on-background/50">
+        <div className="mx-auto mt-8 max-w-7xl border-t border-outline-variant/20 pt-6 text-center text-xs text-on-background/50">
           © 2024 Peerlight AI. Mọi quyền được bảo lưu.
         </div>
       </footer>
