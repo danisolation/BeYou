@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Users } from "lucide-react";
 
 import {
   CONFIRM_DELETE_DEMO_ACCOUNT_COPY,
@@ -115,13 +116,17 @@ export default function AdminUsersPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-lg font-semibold">Quản lý tài khoản</h1>
-        <p className="mt-3 text-sm">Tạo tài khoản, cập nhật vai trò và xử lý trạng thái tài khoản an toàn.</p>
-        <p className="mt-2 text-xs">
-          Thao tác tài khoản chỉ thay đổi quyền truy cập; không mở câu trả lời tự kiểm tra, chat riêng tư hoặc mood note của học sinh.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Users size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Quản lý tài khoản</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Tạo, sửa vai trò, khóa/mở tài khoản. Thao tác không mở dữ liệu riêng tư của học sinh.
         </p>
-      </div>
+      </header>
       <UserForm onSubmit={handleCreate} />
       {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
@@ -145,7 +150,7 @@ export default function AdminUsersPage() {
                   <p className="text-xs">Cập nhật lần cuối: {new Date(user.updated_at).toLocaleString("vi-VN")}</p>
                 </div>
                 <div className="grid w-full gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:flex-wrap lg:items-end lg:justify-end">
-                  <label className="space-y-1 text-xs font-semibold">
+                  <label className="space-y-1 text-sm font-medium">
                     Vai trò
                     <select
                       value={selectedRoles[user.id] ?? user.role}

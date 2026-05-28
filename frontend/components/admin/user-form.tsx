@@ -49,19 +49,19 @@ export function UserForm({ onSubmit }: UserFormProps) {
         Tài khoản demo chỉ dùng để giới thiệu sản phẩm, không phải hồ sơ học sinh thật.
       </p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Họ tên
           <input required value={fullName} onChange={(event) => setFullName(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Email
           <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Mật khẩu
           <input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Vai trò
           <select value={role} onChange={(event) => setRole(event.target.value as AdminUserCreate["role"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
             {roleOptions.map((value) => (
@@ -69,7 +69,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Trạng thái tài khoản
           <select value={status} onChange={(event) => setStatus(event.target.value as AdminUserCreate["status"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
             {statusOptions.map((value) => (
@@ -77,11 +77,11 @@ export function UserForm({ onSubmit }: UserFormProps) {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Trường
           <input value={school} onChange={(event) => setSchool(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Lớp
           <input value={className} onChange={(event) => setClassName(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
         </label>

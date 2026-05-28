@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { Heart } from "lucide-react";
 
 import {
   createMoodCheckInConfig,
@@ -99,23 +100,17 @@ export default function AdminMoodCheckInsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-        <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
-        <h1 className="mt-2 text-lg font-semibold">Mood check-in</h1>
-        <p className="mt-3 max-w-3xl text-sm">
-          Quản lý nhãn, hướng dẫn và lifecycle cho check-in cảm xúc. Copy phải hỗ trợ, không chẩn đoán, không giám sát.
-        </p>
-        <p className="mt-2 max-w-3xl text-xs">
-          Khi xuất bản, hãy dùng ngôn ngữ giúp học sinh tự gọi tên cảm xúc và người lớn mở lời hỗ trợ, không suy luận bệnh lý.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Heart size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Mood check-in</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Quản lý nhãn cảm xúc, hướng dẫn và context tags. Copy phải hỗ trợ, không chẩn đoán.
         </p>
       </header>
-
-      <section className="rounded-2xl bg-primary/5 p-6">
-        <h2 className="text-sm font-semibold">Ranh giới</h2>
-        <p className="mt-3 text-sm">
-          Preview chỉ hiển thị nội dung cấu hình; không có ghi chú riêng tư, dữ liệu học sinh thô, export hay leaderboard.
-        </p>
-      </section>
 
       {isLoading ? <p>Đang tải cấu hình...</p> : null}
       {configs.length > 0 ? (

@@ -30,7 +30,7 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
         Liên kết này quyết định người lớn nào được xem thông tin hỗ trợ được phép hiển thị.
       </p>
       <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Học sinh
           <select required value={studentId} onChange={(event) => setStudentId(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
             <option value="">Chọn học sinh</option>
@@ -39,7 +39,7 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Người lớn hỗ trợ
           <select required value={adultId} onChange={(event) => setAdultId(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
             <option value="">Chọn người lớn</option>
@@ -48,7 +48,7 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Loại liên kết
           <select value={relationshipType} onChange={(event) => setRelationshipType(event.target.value as AdminLinkCreate["relationship_type"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
             {relationshipOptions.map((value) => (

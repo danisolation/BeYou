@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { Bot } from "lucide-react";
 
 import {
   type ChatbotSafetyConfig,
@@ -61,15 +62,17 @@ export default function AdminChatbotPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-lg font-semibold">Cấu hình chatbot an toàn</h1>
-        <p className="mt-3 max-w-3xl text-sm">
-          Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Bot size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Cấu hình chatbot</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Quản lý từ khóa nguy cơ và lời nhắc hỗ trợ an toàn. Guardrail backend luôn bật.
         </p>
-        <p className="mt-2 max-w-3xl text-xs">
-          Thay đổi copy an toàn phải giữ hướng hỗ trợ, không đưa lời khuyên lâm sàng và không tắt guardrail backend.
-        </p>
-      </div>
+      </header>
 
       {isLoading ? <p>Đang tải thông tin...</p> : null}
       {config ? (
@@ -84,7 +87,7 @@ export default function AdminChatbotPage() {
             </p>
           </section>
 
-          <label className="block space-y-2 text-xs font-semibold">
+          <label className="block space-y-2 text-sm font-medium">
             Từ khóa nguy cơ cao
             <textarea
               aria-label="Từ khóa nguy cơ cao"
@@ -94,7 +97,7 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          <label className="block space-y-2 text-xs font-semibold">
+          <label className="block space-y-2 text-sm font-medium">
             Lời nhắn khi cần ưu tiên an toàn
             <textarea
               aria-label="Lời nhắn khi cần ưu tiên an toàn"
@@ -104,7 +107,7 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          <label className="block space-y-2 text-xs font-semibold">
+          <label className="block space-y-2 text-sm font-medium">
             Lời nhắn người lớn tin tưởng
             <textarea
               aria-label="Lời nhắn người lớn tin tưởng"

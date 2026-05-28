@@ -124,7 +124,7 @@ function Field({
   type?: "text" | "number";
 }) {
   return (
-    <label className="space-y-1 text-xs font-semibold">
+    <label className="space-y-1 text-sm font-medium">
       {label}
       <input
         aria-label={label}
@@ -147,7 +147,7 @@ function TextAreaField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="space-y-1 text-xs font-semibold">
+    <label className="space-y-1 text-sm font-medium">
       {label}
       <textarea
         aria-label={label}
@@ -498,7 +498,7 @@ export default function AdminContentPage() {
               value={selfCheckDraft.description ?? ""}
               onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))}
             />
-            <label className="space-y-1 text-xs font-semibold">
+            <label className="space-y-1 text-sm font-medium">
               Trạng thái nội dung
               <select
                 aria-label="Trạng thái nội dung"
@@ -622,7 +622,7 @@ export default function AdminContentPage() {
                       Xóa ngưỡng điểm
                     </button>
                   </div>
-                  <label className="space-y-1 text-xs font-semibold">
+                  <label className="space-y-1 text-sm font-medium">
                     {labelFor("Nhãn trạng thái", thresholdIndex)}
                     <select
                       aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
@@ -769,7 +769,7 @@ export default function AdminContentPage() {
             <Field label="Tiêu đề tình huống" value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
             <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
             <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
-            <label className="space-y-1 text-xs font-semibold">
+            <label className="space-y-1 text-sm font-medium">
               Trạng thái nội dung
               <select
                 aria-label="Trạng thái nội dung"
@@ -815,7 +815,7 @@ export default function AdminContentPage() {
                     value={choice.text}
                     onChange={(value) => updateScenarioChoice(choiceIndex, "text", value)}
                   />
-                  <label className="space-y-1 text-xs font-semibold">
+                  <label className="space-y-1 text-sm font-medium">
                     {labelFor("Tín hiệu constructive/risky", choiceIndex)}
                     <select
                       aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}

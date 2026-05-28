@@ -107,7 +107,7 @@ export default function AdminReportsPage() {
         </section>
 
         <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-          <label className="block space-y-2 text-xs font-semibold">
+          <label className="block space-y-2 text-sm font-medium">
             Phạm vi dữ liệu
             <select
               aria-label="Phạm vi dữ liệu"

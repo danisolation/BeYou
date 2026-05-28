@@ -159,7 +159,7 @@ export default function AdminOperationsPage() {
       </section>
 
       <form className="grid gap-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm md:grid-cols-3" onSubmit={applyFilters}>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Từ thời điểm
           <input
             aria-label="Từ thời điểm"
@@ -169,7 +169,7 @@ export default function AdminOperationsPage() {
             className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
           />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Đến thời điểm
           <input
             aria-label="Đến thời điểm"
@@ -179,7 +179,7 @@ export default function AdminOperationsPage() {
             className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
           />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Vai trò người thực hiện
           <select
             aria-label="Vai trò người thực hiện"
@@ -194,7 +194,7 @@ export default function AdminOperationsPage() {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Loại hành động
           <input
             aria-label="Loại hành động"
@@ -204,7 +204,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: account_status_changed"
           />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Loại mục tiêu
           <input
             aria-label="Loại mục tiêu"
@@ -214,7 +214,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: account_profile"
           />
         </label>
-        <label className="space-y-2 text-xs font-semibold">
+        <label className="space-y-2 text-sm font-medium">
           Trạng thái audit
           <input
             aria-label="Trạng thái audit"

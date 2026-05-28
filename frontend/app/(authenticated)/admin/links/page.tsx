@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Link2 } from "lucide-react";
 
 import {
   CONFIRM_REVOKE_LINK_COPY,
@@ -65,15 +66,17 @@ export default function AdminLinksPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-lg font-semibold">Liên kết học sinh và người lớn hỗ trợ</h1>
-        <p className="mt-3 text-sm">
-          Tạo liên kết để giáo viên hoặc phụ huynh chỉ thấy học sinh được phép hỗ trợ.
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Link2 size={18} />
+          </div>
+          <h1 className="text-lg font-semibold text-on-background">Liên kết hỗ trợ</h1>
+        </div>
+        <p className="mt-3 text-sm text-on-background/70">
+          Gắn học sinh với giáo viên/phụ huynh. Người lớn chỉ xem tóm tắt hỗ trợ, không xem dữ liệu thô.
         </p>
-        <p className="mt-2 text-xs">
-          Liên kết không mở dữ liệu riêng tư thô; người lớn chỉ xem tóm tắt hỗ trợ và trạng thái được phép.
-        </p>
-      </div>
+      </header>
       <LinkForm users={users} onSubmit={handleCreate} />
       {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
