@@ -73,23 +73,19 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.7 UI Redesign to Match Stitch Mockups
+## Current Milestone: v1.9 Production Polish
 
-**Goal:** Rebuild all student-facing and teacher/parent pages to match Google Stitch mockup designs with consistent design language, synchronized UI components, and proper page structure across all roles.
+**Goal:** Remove demo visual indicators (DemoBanner, DemoBadge), update all user-facing text to production tone, switch runtime default to production_pilot mode, while preserving 4 demo accounts for demonstration purposes.
 
 **Target features:**
 
-- Student Homepage (About page) with card-based design, no duplicate sections, image+text blocks only
-- Login page with updated branding cards (Góc nhỏ bình yên, Nâng niu từng xao động, Điểm hẹn chữa lành)
-- Student Dashboard with circular/rounded cards, specific CTAs (Vào test, Vào check-in, Vào thực hành, Vào thiết lập), history moved inside feature pages
-- Peerlight AI chat with mobile hamburger menu sidebar
-- Test tâm lý with 3 sub-pages (list, taking test, results)
-- Check-in cảm xúc with privacy banner (4 points) and integrated history
-- Tình huống scenarios with 3 sub-pages (library, practice, results)
-- Người lớn tin tưởng (Trusted Adults) page matching mockup
-- SOS page with 2 states (confirmation + overlay)
-- Settings page combining check-in settings and SOS settings
-- Teacher/Parent portal: Peerlight AI chatbot, dashboard card redesign, SOS detail view
+- Remove DemoBanner and DemoBadge components and all usages (20+ pages)
+- Landing page rewritten to professional product intro (no "Vào demo trong một bước")
+- Login page keeps "Tài khoản demo" section but removes other demo-centric wording
+- Privacy page updated to real data policy (no demo explanations)
+- Admin operations wording shifted to production monitoring tone
+- Default RUNTIME_MODE set to production_pilot
+- All 4 demo accounts remain functional for demonstration
 
 ## Completed Milestone: v1.5 Production Pilot Readiness & Identity
 
