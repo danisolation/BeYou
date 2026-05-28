@@ -87,100 +87,84 @@ export default function AdminReportsPage() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Shield size={18} />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Báo cáo tổng hợp riêng tư</h1>
+          <div>
+            <h1 className="text-lg font-semibold text-on-background">Báo cáo tổng hợp</h1>
+            {generatedAt ? <p className="text-xs text-on-background/50">Cập nhật: {generatedAt}</p> : null}
+          </div>
         </div>
         <p className="mt-3 text-sm text-on-background/70">
-          Xem xu hướng chung để cải thiện hỗ trợ, không mở dữ liệu cá nhân từng học sinh.
+          Số liệu xu hướng chung để cải thiện hỗ trợ. Nhóm nhỏ hơn 3 sẽ tự ẩn.
         </p>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-[1.3fr_0.7fr]">
-        <section className="rounded-2xl bg-primary/5 p-6">
-          <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
-          <ul className="mt-3 space-y-2 text-sm">
-            {(report?.privacy_notes ?? [
-              "Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư. Trang này không hiển thị câu trả lời tự kiểm tra, tin nhắn chatbot, ghi chú SOS hay danh sách học sinh theo nguy cơ.",
-              "Các nhóm nhạy cảm có ít hơn 3 bản ghi sẽ được ẩn để tránh nhận diện gián tiếp.",
-              "Dùng báo cáo để cải thiện hỗ trợ chung, không dùng để xếp hạng hoặc giám sát từng học sinh.",
-            ]).map((note) => (
-              <li key={note}>• {note}</li>
-            ))}
-          </ul>
-          <p className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-4 text-xs font-semibold text-primary">
-            Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ.
-          </p>
-        </section>
-
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <label className="block space-y-2 text-sm font-medium">
-            Phạm vi dữ liệu
-            <select
-              aria-label="Phạm vi dữ liệu"
-              value={demoScope}
-              onChange={(event) => setDemoScope(event.target.value as DemoScope)}
-              className="w-full rounded-xl border border-outline-variant/30 p-3 text-sm"
-            >
-              {SCOPE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p className="mt-4 text-sm">
-            Nhãn demo/real được giữ rõ ràng theo `is_demo`; dữ liệu thật và demo có thể được xem riêng khi cần.
-          </p>
-          {generatedAt ? <p className="mt-3 text-xs">Cập nhật: {generatedAt}</p> : null}
-        </section>
+      {/* Compact privacy notice + scope selector in one row */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4">
+        <p className="text-xs text-on-background/70">
+          <span className="font-semibold text-primary">🔒 An toàn:</span> Không hiển thị câu trả lời, tin nhắn, ghi chú SOS hay danh sách học sinh.
+        </p>
+        <select
+          aria-label="Phạm vi dữ liệu"
+          value={demoScope}
+          onChange={(event) => setDemoScope(event.target.value as DemoScope)}
+          className="min-h-9 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm sm:w-44"
+        >
+          {SCOPE_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
       </div>
 
-      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải báo cáo tổng hợp...</p> : null}
-      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-red-700">{error}</p> : null}
+      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm">Đang tải...</p> : null}
+      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm text-red-700">{error}</p> : null}
 
       {report ? (
         <>
           {!hasAnySensitiveData(report) ? (
-            <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-              Chưa có đủ dữ liệu tổng hợp trong phạm vi này. Peerlight AI vẫn giữ nguyên ranh giới riêng tư và sẽ hiển thị xu hướng khi nhóm đủ lớn.
+            <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm text-on-background/70">
+              Chưa có đủ dữ liệu. Xu hướng sẽ hiển thị khi nhóm đủ lớn.
             </p>
           ) : null}
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <ExactMetricCard title="Tài khoản" value={report.user_counts.total} description="Tổng số người dùng trong phạm vi đã chọn." />
-            <ExactMetricCard title="Học sinh có người lớn hỗ trợ" value={report.linked_students.linked_students} description={`${formatCount(report.linked_students.total_active_links)} liên kết đang hoạt động.`} />
-            <PrivacyMetricCard bucket={report.self_check_usage.total_completed} description="Tổng lượt tự kiểm tra, có ẩn nhóm nhỏ." />
-            <PrivacyMetricCard bucket={report.sos_counts.total_alerts} description="Tổng tín hiệu SOS theo phạm vi đã chọn." />
-            <PrivacyMetricCard bucket={report.scenario_usage.total_completed} description="Tổng lượt luyện tình huống đã hoàn tất." />
-            <PrivacyMetricCard bucket={report.chatbot_safety.high_risk_signals} description="Chỉ là tín hiệu an toàn tổng hợp, không có nội dung trò chuyện." />
+          {/* Quick metrics row */}
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <ExactMetricCard title="Tài khoản" value={report.user_counts.total} />
+            <ExactMetricCard title="HS có hỗ trợ" value={report.linked_students.linked_students} />
+            <PrivacyMetricCard bucket={report.self_check_usage.total_completed} />
+            <PrivacyMetricCard bucket={report.sos_counts.total_alerts} />
+            <PrivacyMetricCard bucket={report.scenario_usage.total_completed} />
+            <PrivacyMetricCard bucket={report.chatbot_safety.high_risk_signals} />
           </div>
 
+          {/* Detail sections */}
           <div className="grid gap-4 lg:grid-cols-2">
-            <ReportSection title="Người dùng và dữ liệu demo" description="Đếm tài khoản theo vai trò, trạng thái và nhãn demo/real.">
+            <ReportSection title="Người dùng" description="Phân bổ theo vai trò, trạng thái và nhãn demo/real.">
               <ExactBucketList title="Theo vai trò" buckets={report.user_counts.by_role} />
               <ExactBucketList title="Theo trạng thái" buckets={report.user_counts.by_status} />
-              <ExactBucketList title="Demo/real" buckets={report.user_counts.by_demo_status} />
+              <ExactBucketList title="Demo/Real" buckets={report.user_counts.by_demo_status} />
             </ReportSection>
 
-            <ReportSection title="Liên kết hỗ trợ" description="Chỉ đếm liên kết đang hoạt động, không mở hồ sơ từng học sinh.">
-              <ExactBucketList title="Theo loại liên kết" buckets={report.linked_students.by_relationship} />
+            <ReportSection title="Liên kết hỗ trợ" description={`${formatCount(report.linked_students.total_active_links)} liên kết đang hoạt động.`}>
+              <ExactBucketList title="Theo loại" buckets={report.linked_students.by_relationship} />
             </ReportSection>
 
-            <ReportSection title="Tự kiểm tra" description="Tổng hợp lượt hoàn tất và phân bố trạng thái, không có câu trả lời riêng tư.">
-              <PrivacyBucketList title="Theo bài tự kiểm tra" buckets={report.self_check_usage.by_test} />
+            <ReportSection title="Tự kiểm tra" description="Phân bố lượt hoàn tất, không có câu trả lời.">
+              <PrivacyBucketList title="Theo bài" buckets={report.self_check_usage.by_test} />
               <PrivacyBucketList title="Theo mức hỗ trợ" buckets={report.self_check_usage.risk_distribution} />
             </ReportSection>
 
-            <ReportSection title="SOS" description="Tổng hợp trạng thái an toàn, không hiển thị ghi chú SOS hoặc tên học sinh.">
+            <ReportSection title="Tín hiệu SOS" description="Trạng thái tổng hợp, không hiển thị ghi chú.">
               <PrivacyBucketList title="Theo trạng thái" buckets={report.sos_counts.by_status} />
               <PrivacyBucketList title="Theo mức khẩn" buckets={report.sos_counts.by_severity} />
               <PrivacyBucketList title="Theo nguồn" buckets={report.sos_counts.by_source} />
             </ReportSection>
 
-            <ReportSection title="Tình huống phổ biến" description="Xem nội dung nào được luyện nhiều để cải thiện hỗ trợ chung.">
-              <PrivacyBucketList title="Tình huống" buckets={report.scenario_usage.popular_scenarios} />
+            <ReportSection title="Tình huống" description="Nội dung nào được luyện nhiều nhất.">
+              <PrivacyBucketList title="Tình huống phổ biến" buckets={report.scenario_usage.popular_scenarios} />
             </ReportSection>
 
-            <ReportSection title="Tín hiệu an toàn chatbot" description="Chỉ là số liệu guardrail tổng hợp; học sinh vẫn sở hữu nội dung trò chuyện của mình.">
+            <ReportSection title="An toàn Chatbot" description="Guardrail tổng hợp, HS sở hữu nội dung chat.">
               <PrivacyMetricRow bucket={report.chatbot_safety.sos_suggested_signals} />
               <PrivacyBucketList title="Theo giai đoạn" buckets={report.chatbot_safety.by_stage} />
             </ReportSection>
@@ -191,23 +175,21 @@ export default function AdminReportsPage() {
   );
 }
 
-function ExactMetricCard({ title, value, description }: { title: string; value: number; description: string }) {
+function ExactMetricCard({ title, value }: { title: string; value: number }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-      <p className="text-xs font-semibold text-primary">{title}</p>
-      <p className="mt-2 text-2xl font-bold">{formatCount(value)}</p>
-      <p className="mt-3 text-sm">{description}</p>
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4 text-center">
+      <p className="text-2xl font-bold text-on-background">{formatCount(value)}</p>
+      <p className="mt-1 text-xs text-on-background/60">{title}</p>
     </article>
   );
 }
 
-function PrivacyMetricCard({ bucket, description }: { bucket: PrivacyCountBucket; description: string }) {
+function PrivacyMetricCard({ bucket }: { bucket: PrivacyCountBucket }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-      <p className="text-xs font-semibold text-primary">{bucket.label}</p>
-      <p className="mt-2 text-2xl font-bold">{privacyCountLabel(bucket)}</p>
-      <p className="mt-3 text-sm">{description}</p>
-      {bucket.suppressed ? <p className="mt-2 text-xs text-primary">Bảo vệ nhóm nhỏ theo ngưỡng riêng tư.</p> : null}
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4 text-center">
+      <p className="text-2xl font-bold text-on-background">{privacyCountLabel(bucket)}</p>
+      <p className="mt-1 text-xs text-on-background/60">{bucket.label}</p>
+      {bucket.suppressed ? <p className="mt-1 text-xs text-primary">Ẩn nhóm nhỏ</p> : null}
     </article>
   );
 }
