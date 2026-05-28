@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Heart } from "lucide-react";
+import { Heart, Pencil } from "lucide-react";
 
 import {
   createMoodCheckInConfig,
@@ -13,6 +13,22 @@ import {
   type AdminMoodCheckInConfigPayload,
   type AdminMoodCheckInPreview,
 } from "@/lib/admin-mood-checkins-api";
+
+type MoodConfigStatus = AdminMoodCheckInConfigPayload["status"];
+
+const moodConfigStatusLabels: Record<MoodConfigStatus, string> = {
+  draft: "Nháp",
+  published: "Đã xuất bản",
+  archived: "Đã lưu trữ",
+};
+
+const moodConfigStatusStyles: Record<MoodConfigStatus, string> = {
+  draft: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+  published: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+  archived: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400",
+};
+
+const moodConfigStatusOptions: MoodConfigStatus[] = ["draft", "published", "archived"];
 
 export default function AdminMoodCheckInsPage() {
   const [configs, setConfigs] = useState<AdminMoodCheckInConfig[]>([]);
@@ -105,45 +121,80 @@ export default function AdminMoodCheckInsPage() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Heart size={18} />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Mood check-in</h1>
+          <h1 className="text-lg font-semibold text-on-background dark:text-white">Mood check-in</h1>
         </div>
-        <p className="mt-3 text-sm text-on-background/70">
+        <p className="mt-3 text-sm text-on-background/70 dark:text-white/70">
           Quản lý nhãn cảm xúc, hướng dẫn và context tags. Copy phải hỗ trợ, không chẩn đoán.
         </p>
       </header>
 
-      {isLoading ? <p>Đang tải cấu hình...</p> : null}
+      {isLoading ? <p className="text-sm text-on-background/70 dark:text-white/70">Đang tải cấu hình...</p> : null}
       {configs.length > 0 ? (
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <h2 className="text-sm font-semibold">Cấu hình hiện có</h2>
-          <div className="mt-3 flex flex-wrap gap-3">
-            {configs.map((config) => (
-              <button
-                key={config.id}
-                type="button"
-                onClick={() => selectConfig(config)}
-                className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
-              >
-                {config.name} · {config.status}
-              </button>
-            ))}
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-sm font-semibold text-on-background dark:text-white">Cấu hình hiện có</h2>
+              <p className="mt-1 text-sm text-on-background/60 dark:text-white/60">Chọn một cấu hình để chỉnh sửa nhanh với badge trạng thái rõ ràng.</p>
+            </div>
+            {selectedId ? (
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary">
+                <Pencil size={14} />
+                Đang chỉnh sửa
+              </span>
+            ) : null}
+          </div>
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            {configs.map((config) => {
+              const isSelected = selectedId === config.id;
+              return (
+                <button
+                  key={config.id}
+                  type="button"
+                  onClick={() => selectConfig(config)}
+                  className={`rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 text-left transition-all ${isSelected ? "border-primary/30 bg-primary/5 shadow-sm dark:bg-primary/10" : "hover:border-primary/25 hover:bg-primary/5/40"}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-on-background dark:text-white">{config.name}</p>
+                      <p className="mt-2 text-xs text-on-background/50 dark:text-white/50">Cấu hình mood check-in</p>
+                    </div>
+                    <MoodConfigStatusBadge status={config.status} />
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </section>
       ) : null}
 
-      <form className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
+      <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5" onSubmit={handleSave}>
+        <div className="flex flex-col gap-3 border-b border-outline-variant/20 pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cấu hình</p>
+            <h2 className="mt-2 text-sm font-semibold text-on-background dark:text-white">{selectedId ? "Chỉnh sửa cấu hình" : "Tạo cấu hình"}</h2>
+          </div>
+          {selectedId ? (
+            <span className="inline-flex items-center gap-2 rounded-full border border-outline-variant/30 bg-white px-3 py-1.5 text-xs font-medium text-on-background/70 dark:bg-[#1e2d40] dark:text-white/80">
+              <Pencil size={14} />
+              Đang chỉnh sửa cấu hình hiện có
+            </span>
+          ) : null}
+        </div>
+
         <div className="grid gap-4 md:grid-cols-3">
           <TextInput label="Tên cấu hình" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} />
-          <label className="block text-xs font-semibold">
+          <label className="block text-sm font-medium text-on-background dark:text-white">
             Trạng thái
             <select
               value={draft.status}
               onChange={(event) => setDraft({ ...draft, status: event.target.value as AdminMoodCheckInConfigPayload["status"] })}
-              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 text-on-background dark:bg-[#1e2d40] dark:text-white"
             >
-              <option value="draft">draft</option>
-              <option value="published">published</option>
-              <option value="archived">archived</option>
+              {moodConfigStatusOptions.map((status) => (
+                <option key={status} value={status}>
+                  {moodConfigStatusLabels[status]}
+                </option>
+              ))}
             </select>
           </label>
           <TextInput
@@ -154,63 +205,123 @@ export default function AdminMoodCheckInsPage() {
           />
         </div>
 
-        <TextAreaInput
-          label="Prompt cho học sinh"
-          value={draft.student_prompt}
-          onChange={(value) => setDraft({ ...draft, student_prompt: value })}
-        />
-        <TextAreaInput
-          label="Gợi ý hỗ trợ cho người lớn"
-          value={draft.adult_guidance}
-          onChange={(value) => setDraft({ ...draft, adult_guidance: value })}
-        />
+        <div className="grid gap-4">
+          <TextAreaInput
+            label="Prompt cho học sinh"
+            value={draft.student_prompt}
+            onChange={(value) => setDraft({ ...draft, student_prompt: value })}
+          />
+          <TextAreaInput
+            label="Gợi ý hỗ trợ cho người lớn"
+            value={draft.adult_guidance}
+            onChange={(value) => setDraft({ ...draft, adult_guidance: value })}
+          />
+        </div>
 
-        <section>
-          <h2 className="text-sm font-semibold">Mood options</h2>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <section className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Mood options</p>
+          <div className="grid gap-3 md:grid-cols-2">
             {draft.mood_options.map((option, index) => (
-              <div key={option.key} className="rounded-2xl bg-primary/5 p-4">
-                <p className="text-xs font-semibold">{option.key}</p>
-                <TextInput label="Nhãn" value={option.label} onChange={(value) => updateMoodOption(index, "label", value)} />
-                <TextInput label="Helper" value={option.helper} onChange={(value) => updateMoodOption(index, "helper", value)} />
+              <div key={option.key} className="rounded-2xl border border-outline-variant/20 bg-primary/5 p-4 dark:bg-[#1e2d40]/70">
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-on-background dark:text-white">{option.key}</p>
+                    <p className="mt-1 text-xs text-on-background/50 dark:text-white/50">Thiết lập nhãn hiển thị và helper text cho cảm xúc này.</p>
+                  </div>
+                  <span className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-on-background/60 dark:bg-[#1a2940] dark:text-white/70">
+                    #{index + 1}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  <TextInput label="Nhãn" value={option.label} onChange={(value) => updateMoodOption(index, "label", value)} />
+                  <TextInput label="Helper" value={option.helper} onChange={(value) => updateMoodOption(index, "helper", value)} />
+                </div>
               </div>
             ))}
           </div>
         </section>
 
-        <section>
-          <h2 className="text-sm font-semibold">Context tags</h2>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+        <section className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Context tags</p>
+          <div className="grid gap-3 md:grid-cols-2">
             {draft.context_tags.map((tag, index) => (
-              <div key={tag.key} className="rounded-2xl bg-primary/5 p-4">
-                <TextInput label={tag.key} value={tag.label} onChange={(value) => updateContextTag(index, value)} />
+              <div key={tag.key} className="rounded-2xl border border-outline-variant/20 bg-primary/5 p-4 dark:bg-[#1e2d40]/70">
+                <p className="text-sm font-semibold text-on-background dark:text-white">{tag.key}</p>
+                <p className="mt-1 text-xs text-on-background/50 dark:text-white/50">Nhãn ngữ cảnh hiển thị trong màn hình check-in.</p>
+                <TextInput label="Nhãn hiển thị" value={tag.label} onChange={(value) => updateContextTag(index, value)} />
               </div>
             ))}
           </div>
         </section>
 
         {message ? <p role="status" className="text-sm text-primary">{message}</p> : null}
-        {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
+        {error ? <p role="alert" className="text-sm text-red-700 dark:text-red-400">{error}</p> : null}
         <div className="flex flex-wrap gap-3">
           <button type="submit" disabled={isSaving} className="min-h-11 rounded-xl bg-primary px-5 font-semibold text-white">
             {isSaving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
-          <button type="button" onClick={handlePreview} className="min-h-11 rounded-xl border border-outline-variant/30 px-5 font-semibold">
+          <button type="button" onClick={handlePreview} className="min-h-11 rounded-xl border border-outline-variant/30 px-5 font-semibold text-on-background dark:text-white">
             Xem preview
           </button>
         </div>
       </form>
 
       {preview ? (
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <h2 className="text-sm font-semibold">Preview</h2>
-          <p className="mt-3 text-sm">{preview.student_prompt}</p>
-          <p className="mt-2 text-sm">{preview.adult_guidance}</p>
-          <p className="mt-3 text-xs">Mood: {preview.mood_options.map((option) => option.label).join(", ")}</p>
-          <p className="mt-2 text-xs">Context: {preview.context_tags.map((tag) => tag.label).join(", ")}</p>
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Preview</p>
+              <h2 className="mt-2 text-sm font-semibold text-on-background dark:text-white">Bản xem trước mood check-in</h2>
+            </div>
+            <MoodConfigStatusBadge status={draft.status} />
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_1fr]">
+            <div className="space-y-4 rounded-2xl border border-outline-variant/20 bg-primary/5 p-4 dark:bg-[#1e2d40]/70">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Prompt cho học sinh</p>
+                <p className="mt-3 text-sm text-on-background dark:text-white">{preview.student_prompt}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Gợi ý cho người lớn</p>
+                <p className="mt-3 text-sm text-on-background dark:text-white">{preview.adult_guidance}</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border border-outline-variant/20 bg-white/80 p-4 dark:bg-[#1e2d40]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Mood options</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {preview.mood_options.map((option) => (
+                    <span key={option.key} className="inline-flex items-center rounded-full border border-outline-variant/30 bg-primary/10 px-3 py-1 text-xs font-medium text-on-background dark:text-white">
+                      {option.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Context tags</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {preview.context_tags.map((tag) => (
+                    <span key={tag.key} className="inline-flex items-center rounded-full border border-outline-variant/30 bg-white px-3 py-1 text-xs font-medium text-on-background dark:bg-[#1a2940] dark:text-white">
+                      {tag.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
       ) : null}
     </section>
+  );
+}
+
+function MoodConfigStatusBadge({ status }: { status: MoodConfigStatus }) {
+  return (
+    <span className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ${moodConfigStatusStyles[status]}`}>
+      {moodConfigStatusLabels[status]}
+    </span>
   );
 }
 
@@ -226,13 +337,13 @@ function TextInput({
   type?: string;
 }) {
   return (
-    <label className="mt-2 block text-xs font-semibold">
+    <label className="mt-2 block text-sm font-medium text-on-background dark:text-white">
       {label}
       <input
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+        className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 text-on-background dark:bg-[#1e2d40] dark:text-white"
       />
     </label>
   );
@@ -248,12 +359,12 @@ function TextAreaInput({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="block text-xs font-semibold">
+    <label className="block text-sm font-medium text-on-background dark:text-white">
       {label}
       <textarea
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-24 w-full rounded-xl border border-outline-variant/30 p-3"
+        className="mt-2 min-h-24 w-full rounded-xl border border-outline-variant/30 px-3 py-3 text-on-background dark:bg-[#1e2d40] dark:text-white"
       />
     </label>
   );

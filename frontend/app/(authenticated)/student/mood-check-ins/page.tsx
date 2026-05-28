@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
-import { Heart, Shield, Clock } from "lucide-react";
+import { Heart, Clock } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageSkeleton } from "@/components/skeletons";
@@ -16,9 +16,57 @@ import {
   type MoodLabel,
 } from "@/lib/mood-checkin-api";
 
+const scaleValues = [1, 2, 3, 4, 5] as const;
+
 function textOrNull(value: string): string | null {
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function ScaleButtonGroup({
+  label,
+  value,
+  onChange,
+  scaleLabel,
+}: {
+  label: string;
+  value: number;
+  onChange: (nextValue: number) => void;
+  scaleLabel: string;
+}) {
+  const groupId = label.toLowerCase().replace(/\s+/g, "-");
+
+  return (
+    <div>
+      <p id={`${groupId}-label`} className="text-sm text-on-background/80">
+        {label}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-labelledby={`${groupId}-label`}>
+        {scaleValues.map((scaleValue) => {
+          const isSelected = value === scaleValue;
+
+          return (
+            <button
+              key={scaleValue}
+              type="button"
+              role="radio"
+              aria-checked={isSelected}
+              aria-label={`${label} ${scaleValue}`}
+              onClick={() => onChange(scaleValue)}
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+                isSelected
+                  ? "bg-primary text-white"
+                  : "border border-outline-variant/30 text-on-background hover:bg-primary/10"
+              }`}
+            >
+              {scaleValue}
+            </button>
+          );
+        })}
+      </div>
+      <span className="mt-2 block text-sm text-on-background/60">{scaleLabel}</span>
+    </div>
+  );
 }
 
 export default function StudentMoodCheckInPage() {
@@ -100,30 +148,17 @@ export default function StudentMoodCheckInPage() {
       </header>
 
       {/* Privacy banner */}
-      <div className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4">
-        <div className="flex items-center gap-3">
-          <Shield className="h-5 w-5 shrink-0 text-primary" />
-          <h2 className="text-sm font-semibold text-on-background">Ranh giới riêng tư</h2>
-        </div>
-        <ul className="mt-3 space-y-2 text-sm text-on-background/80">
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-primary">•</span>
-            Chỉ em mới thấy nhật ký cảm xúc này
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-primary">•</span>
-            Không ai bị thông báo khi em check-in
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-primary">•</span>
-            Em có thể xóa bất kỳ lúc nào
-          </li>
-          <li className="flex items-start gap-2">
-            <span className="mt-0.5 text-primary">•</span>
-            Dữ liệu được mã hóa an toàn
-          </li>
+      <details className="rounded-xl border border-outline-variant/20 bg-primary/5 px-4 py-2.5">
+        <summary className="cursor-pointer select-none text-xs text-on-background/70 [&::-webkit-details-marker]:hidden">
+          🔒 Thông tin riêng tư — chỉ em mới thấy
+        </summary>
+        <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-on-background/70">
+          <li>Chỉ em mới thấy nhật ký cảm xúc này</li>
+          <li>Không ai bị thông báo khi em check-in</li>
+          <li>Em có thể xóa bất kỳ lúc nào</li>
+          <li>Dữ liệu được mã hóa an toàn</li>
         </ul>
-      </div>
+      </details>
 
       {/* Check-in form */}
       <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6" onSubmit={handleSubmit}>
@@ -156,39 +191,19 @@ export default function StudentMoodCheckInPage() {
         </fieldset>
 
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="block text-sm text-on-background/80" htmlFor="energy-level">
-            Năng lượng của em
-            <select
-              id="energy-level"
-              value={energyLevel}
-              onChange={(event) => setEnergyLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white dark:bg-[#1e2d40] px-4 text-on-background"
-            >
-              {[1, 2, 3, 4, 5].map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <span className="mt-2 block text-on-background/60">{options.energy_scale_label}</span>
-          </label>
+          <ScaleButtonGroup
+            label="Năng lượng"
+            value={energyLevel}
+            onChange={setEnergyLevel}
+            scaleLabel={options.energy_scale_label}
+          />
 
-          <label className="block text-sm text-on-background/80" htmlFor="stress-level">
-            Mức căng thẳng
-            <select
-              id="stress-level"
-              value={stressLevel}
-              onChange={(event) => setStressLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white dark:bg-[#1e2d40] px-4 text-on-background"
-            >
-              {[1, 2, 3, 4, 5].map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <span className="mt-2 block text-on-background/60">{options.stress_scale_label}</span>
-          </label>
+          <ScaleButtonGroup
+            label="Mức căng thẳng"
+            value={stressLevel}
+            onChange={setStressLevel}
+            scaleLabel={options.stress_scale_label}
+          />
         </div>
 
         <fieldset>
