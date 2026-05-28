@@ -188,7 +188,7 @@ describe("admin management UI", () => {
     mockAdminFetch();
     render(<AdminLinksPage />);
 
-    expect(await screen.findByText("Liên kết học sinh và người lớn hỗ trợ")).toBeInTheDocument();
+    expect(await screen.findByText("Liên kết hỗ trợ")).toBeInTheDocument();
     expect(screen.getAllByText("Tạo liên kết").length).toBeGreaterThan(0);
     await userEvent.click(screen.getByRole("button", { name: "Thu hồi liên kết" }));
 
@@ -201,7 +201,7 @@ describe("admin management UI", () => {
     const fetchMock = mockAdminFetch();
     render(<AdminLinksPage />);
 
-    await screen.findByText("Liên kết học sinh và người lớn hỗ trợ");
+    await screen.findByText("Liên kết hỗ trợ");
     await userEvent.selectOptions(screen.getByLabelText("Học sinh"), "student-1");
     await userEvent.selectOptions(screen.getByLabelText("Người lớn hỗ trợ"), "teacher-1");
     await userEvent.click(screen.getByRole("button", { name: "Tạo liên kết" }));

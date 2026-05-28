@@ -14,18 +14,6 @@ vi.mock("next/navigation", () => ({
   usePathname: () => pathname,
 }));
 
-const authUser = {
-  id: "user-1",
-  email: "student.demo@beyou.local",
-  role: "student",
-  status: "active",
-  full_name: "Nguyễn An Demo",
-  is_demo: true,
-  privacy_acknowledgement_required: false,
-  dashboard_route: "/student",
-  notice_version: "2026-05-20",
-};
-
 function source(path: string) {
   return readFileSync(join(process.cwd(), path), "utf8");
 }
@@ -48,6 +36,18 @@ function mockFetch(responses: Record<string, unknown>) {
   return fetchMock;
 }
 
+const authUser = {
+  id: "user-1",
+  email: "student.demo@beyou.local",
+  role: "student",
+  status: "active",
+  full_name: "Nguyễn An Demo",
+  is_demo: true,
+  privacy_acknowledgement_required: false,
+  dashboard_route: "/student",
+  notice_version: "2026-05-20",
+};
+
 describe("Phase 34 role shell", () => {
   beforeEach(() => {
     pathname = "/student";
@@ -55,16 +55,16 @@ describe("Phase 34 role shell", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders loading copy through an accessible status role", () => {
+  it("renders loading through the redesigned layout skeleton", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
 
-    render(
+    const { container } = render(
       <AuthenticatedLayout>
         <p>Nội dung học sinh</p>
       </AuthenticatedLayout>,
     );
 
-    expect(screen.getByRole("status")).toHaveTextContent("Đang tải thông tin...");
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
   it("keeps wrong-role recovery copy and backend dashboard route", async () => {
@@ -135,24 +135,30 @@ describe("Phase 34 role shell", () => {
       </AuthenticatedLayout>,
     );
 
-    const nav = await screen.findByRole("navigation", { name: "Điều hướng vai trò" });
-    expect(within(nav).getByRole("link", { name: "Giáo viên" })).toHaveAttribute("aria-current", "page");
-    expect(within(nav).getByRole("button", { name: "Đăng xuất" })).toHaveClass("min-h-11");
-    expect(within(nav).queryByRole("link", { name: "Học sinh" })).not.toBeInTheDocument();
+    await screen.findAllByRole("navigation", { name: "Điều hướng giáo viên" });
+    const nav = screen.getAllByRole("navigation", { name: "Điều hướng giáo viên" })[0];
+    expect(within(nav).getByRole("link", { name: "Bảng điều khiển" })).toHaveAttribute("aria-current", "page");
+    expect(within(nav).queryByRole("link", { name: "Test tâm lý" })).not.toBeInTheDocument();
 
-    await userEvent.click(within(nav).getByRole("button", { name: "Đăng xuất" }));
+    await userEvent.click(screen.getAllByRole("button", { name: "Đăng xuất" })[0]);
     await waitFor(() => expect(push).toHaveBeenCalledWith("/login"));
   });
 
   it("keeps auth ownership, privacy ordering, navigation strings, and no browser token writes", () => {
     const layoutSource = source("app/(authenticated)/layout.tsx");
+    const navSources = [
+      source("components/navigation/student-sidebar.tsx"),
+      source("components/navigation/teacher-sidebar.tsx"),
+      source("components/navigation/parent-sidebar.tsx"),
+      source("components/navigation/admin-sidebar.tsx"),
+    ].join("\n");
 
     expect(layoutSource).toContain("getCurrentUser()");
     expect(layoutSource).toContain('apiFetch("/api/auth/logout"');
     expect(layoutSource).toContain("privacy_acknowledgement_required");
     expect(layoutSource).toContain("router.push(`/privacy?next=");
     expect(layoutSource).toContain("Bỏ qua điều hướng");
-    expect(layoutSource).toContain("aria-current");
+    expect(navSources).toContain("aria-current");
     expect(layoutSource).not.toContain("localStorage.setItem");
     expect(layoutSource).not.toContain("sessionStorage.setItem");
     expect(layoutSource).not.toContain("access_token");

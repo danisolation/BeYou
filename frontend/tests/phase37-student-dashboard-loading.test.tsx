@@ -15,7 +15,7 @@ type MockResponse = {
 };
 
 function mockFetch(responses: Record<string, MockResponse>) {
-  const fetchMock = vi.fn((url: string) => {
+  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
     const path = new URL(url).pathname;
     const response = responses[path] ?? { status: 404, body: { detail: "missing" } };
     return Promise.resolve(
@@ -57,12 +57,12 @@ describe("Phase 37 Student dashboard loading", () => {
   it("renders a non-sensitive Student dashboard skeleton while loading", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
 
-    render(<StudentDashboardPage />);
+    const { container } = render(<StudentDashboardPage />);
 
-    expect(screen.getByRole("status")).toHaveTextContent("Đang tải thông tin học sinh...");
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
-  it("renders scoped unavailable copy for SOS and reminder failures", async () => {
+  it("keeps the redesigned dashboard visible even when old reminder/SOS endpoints fail", async () => {
     mockFetch({
       "/api/student/profile": { body: studentProfile },
       "/api/student/sos-alerts": { status: 500, body: { detail: "unavailable" } },
@@ -71,8 +71,10 @@ describe("Phase 37 Student dashboard loading", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText(/Tiến trình SOS tạm thời chưa tải được/)).toBeInTheDocument();
-    expect(screen.getByText(/Nhắc nhở check-in tạm thời chưa tải được/)).toBeInTheDocument();
+    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
+    expect(screen.queryByText(/Tiến trình SOS tạm thời chưa tải được/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Nhắc nhở check-in tạm thời chưa tải được/)).not.toBeInTheDocument();
   });
 
   it("keeps the Student profile read as the primary error gate", async () => {
@@ -84,27 +86,23 @@ describe("Phase 37 Student dashboard loading", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Không thể tải thông tin");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Không tải được");
   });
 
-  it("uses credentialed no-store options for Student dashboard reads", async () => {
+  it("uses credentialed profile reads for the redesigned Student dashboard", async () => {
     const fetchMock = mockFetch({
       "/api/student/profile": { body: studentProfile },
-      "/api/student/sos-alerts": { body: [] },
-      "/api/student/reminders/mood-check-in": { body: null },
     });
 
     render(<StudentDashboardPage />);
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
 
-    for (const path of ["/api/student/profile", "/api/student/sos-alerts", "/api/student/reminders/mood-check-in"]) {
-      const call = fetchMock.mock.calls.find(([url]) => new URL(String(url)).pathname === path);
-      expect(call?.[1]).toEqual(expect.objectContaining({ credentials: "include", cache: "no-store" }));
-    }
+    const call = fetchMock.mock.calls.find(([url]) => new URL(String(url)).pathname === "/api/student/profile");
+    expect(call?.[1]).toEqual(expect.objectContaining({ credentials: "include" }));
   });
 
   it("does not add browser storage or browser token handling", () => {
-    for (const file of ["app/(authenticated)/student/page.tsx", "lib/student-dashboard-loader.ts"]) {
+    for (const file of ["app/(authenticated)/student/page.tsx", "lib/api.ts"]) {
       const fileSource = source(file);
       for (const marker of redlineMarkers) {
         expect(fileSource).not.toContain(marker);

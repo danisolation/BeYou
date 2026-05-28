@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -61,37 +60,35 @@ describe("Phase 34 final UI regression", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders Student loading through accessible status primitive", () => {
+  it("renders Student loading with the redesigned skeleton container", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
 
-    render(<StudentDashboardPage />);
+    const { container } = render(<StudentDashboardPage />);
 
-    expect(screen.getByRole("status")).toHaveTextContent("Đang tải thông tin...");
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
-  it("preserves Student privacy link and red SOS confirmation flow", async () => {
+  it("preserves the redesigned Student greeting, chat entry, and settings shortcut", async () => {
     mockFetch({
       "/api/student/profile": studentProfile,
-      "/api/student/sos-alerts": [],
-      "/api/student/reminders/mood-check-in": null,
     });
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Ai có thể xem thông tin của em?" })).toBeInTheDocument();
-    const sosButton = screen.getByRole("button", { name: "Gửi SOS hỗ trợ" });
-    expect(sosButton.className).toMatch(/bg-red-600/);
-
-    await userEvent.click(sosButton);
-
-    expect(screen.getByText("Xác nhận gửi tín hiệu hỗ trợ")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Ở lại trang này" })).toBeInTheDocument();
+    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+      "href",
+      "/student/notification-preferences",
+    );
+    expect(screen.queryByText(/^Demo$/i)).not.toBeInTheDocument();
   });
 
   it("renders explicit error states when primary dashboard loads fail", async () => {
     mockFetchStatus({
       "/api/student/profile": 500,
       "/api/admin/users": 500,
+      "/api/admin/links": 500,
       "/api/teacher/students": 500,
       "/api/parent/students": 500,
     });
@@ -106,13 +103,11 @@ describe("Phase 34 final UI regression", () => {
     );
 
     expect(await screen.findAllByRole("alert")).toHaveLength(3);
-    expect(screen.getAllByText("Không thể tải thông tin")).toHaveLength(3);
-    expect(screen.getAllByText("Preview metadata tạm thời chưa tải được.")).toHaveLength(2);
-    expect(screen.queryByText("0 tài khoản")).not.toBeInTheDocument();
-    expect(screen.queryByText("Chưa có học sinh được liên kết")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Không tải được")).toHaveLength(3);
+    expect(screen.getByText("Quản trị hệ thống")).toBeInTheDocument();
   });
 
-  it("keeps Admin metadata-only entries free of unsafe control labels", async () => {
+  it("keeps Admin dashboard entries free of unsafe control labels", async () => {
     mockFetch({
       "/api/admin/users": [{ id: "u1" }, { id: "u2" }],
       "/api/admin/links": [{ id: "l1" }],
@@ -120,9 +115,10 @@ describe("Phase 34 final UI regression", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByText("Cổng quản trị")).toBeInTheDocument();
-    expect(screen.getAllByText("Vận hành metadata-only").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("Báo cáo tổng hợp riêng tư")).toBeInTheDocument();
+    expect(await screen.findByText("Quản trị hệ thống")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Bảng vận hành/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Báo cáo tổng hợp/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Chatbot AI/ })).toBeInTheDocument();
 
     const controls = [...screen.getAllByRole("link"), ...screen.queryAllByRole("button")];
     for (const control of controls) {
@@ -130,20 +126,19 @@ describe("Phase 34 final UI regression", () => {
     }
   });
 
-  it("keeps touched Phase 34 sources primitive-backed and free of token/cross-role regressions", () => {
+  it("keeps touched Phase 34 sources aligned with the redesigned dashboard primitives and auth boundaries", () => {
     const studentSource = source("app/(authenticated)/student/page.tsx");
     const adminSource = [source("app/(authenticated)/admin/page.tsx"), source("lib/admin-api.ts")].join("\n");
     const layoutSource = source("app/(authenticated)/layout.tsx");
     const parentSource = source("app/(authenticated)/parent/page.tsx");
     const primitiveSource = source("components/ui-primitives.tsx");
 
-    expect(studentSource).toContain("@/components/ui-primitives");
-    expect(studentSource).toContain("LoadingState");
-    expect(studentSource).toContain("ResponsiveTable");
+    expect(studentSource).toContain("DashboardSkeleton");
+    expect(studentSource).toContain("ErrorState");
     expect(studentSource).toContain("/api/student/profile");
-    expect(adminSource).toContain("@/components/ui-primitives");
-    expect(adminSource).toContain("/api/admin/users");
-    expect(adminSource).toContain("/api/admin/links");
+    expect(adminSource).toContain("DashboardSkeleton");
+    expect(adminSource).toContain("listUsers({ limit: 100 })");
+    expect(adminSource).toContain("listLinks({ limit: 100 })");
     expect(parentSource).not.toContain("@/app/(authenticated)/teacher/page");
 
     for (const fileSource of [studentSource, adminSource, layoutSource, parentSource, primitiveSource]) {

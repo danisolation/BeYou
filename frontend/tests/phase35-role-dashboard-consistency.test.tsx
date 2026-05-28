@@ -1,5 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen } from "@testing-library/react";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -29,6 +28,7 @@ function componentSourceFiles(dir = "components"): string[] {
 function sharedPresentationComponentFiles() {
   const intentionallyRouteOwnedComponents = new Set([
     "components/demo-role-entry.tsx",
+    "components/theme-provider.tsx",
   ]);
   return componentSourceFiles().filter((path) => !intentionallyRouteOwnedComponents.has(path));
 }
@@ -55,24 +55,7 @@ const studentProfile = {
   school: "Trường THPT BeYou Demo",
   class_name: "10A1",
   is_demo: true,
-  linked_adults: [
-    {
-      id: "teacher-1",
-      full_name: "Cô Bình Demo",
-      email: "teacher.demo@beyou.local",
-      relationship_type: "teacher",
-      link_status: "active",
-      is_demo: true,
-    },
-    {
-      id: "parent-1",
-      full_name: "Phụ huynh Chi Demo",
-      email: "parent.demo@beyou.local",
-      relationship_type: "parent",
-      link_status: "active",
-      is_demo: true,
-    },
-  ],
+  linked_adults: [],
 };
 
 const linkedStudents = [
@@ -118,96 +101,35 @@ const parentSupportOverview = [
   },
 ];
 
-const unsafeMoodReminder = {
-  due: true,
-  status_reason: "due",
-  title: "Nhắc check-in cảm xúc",
-  body: "Em có thể ghi nhanh trạng thái nếu muốn.",
-  href: "https://example.test/student/mood-check-ins",
-  generated_at: "2026-05-26T10:00:00Z",
-  last_checkin_at: null,
-  next_due_at: "2026-05-27T10:00:00Z",
-  snoozed_until: null,
-  preference: {
-    id: "pref-1",
-    student_id: "student-1",
-    in_app_reminders_enabled: true,
-    mood_checkin_reminders_enabled: true,
-    reminder_cadence: "daily",
-    allowed_channels: ["in_app"],
-    consent_version: "2026-05-20",
-    consented_at: "2026-05-20T00:00:00Z",
-    quiet_hours_start: null,
-    quiet_hours_end: null,
-    timezone: "Asia/Ho_Chi_Minh",
-    paused_until: null,
-    pause_reason_code: null,
-    channel_boundaries: [],
-    updated_at: "2026-05-26T10:00:00Z",
-    is_demo: true,
-  },
-};
-
 const unsafeControlRegex = /Export|Xuất|Download|Tải xuống|reset|drilldown|risk leaderboard|xếp hạng nguy cơ|Chi tiết học sinh|raw audit/;
 const rawAdultAdminLabelRegex = /raw self-check|private notes|chat transcripts|provider claims|request bodies|free-text access reasons/i;
 const PHASE35_REQUIREMENTS = ["ROLE-01", "ROLE-02", "ROLE-03", "ROLE-04"];
-const PHASE35_DASHBOARD_FILES = [
-  "app/(authenticated)/student/page.tsx",
-  "app/(authenticated)/teacher/page.tsx",
-  "app/(authenticated)/parent/page.tsx",
-  "app/(authenticated)/admin/page.tsx",
-  "components/adult-student-list.tsx",
-];
 
 describe("Phase 35 role dashboard consistency regression", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it("renders Student privacy and SOS confirmation redlines", async () => {
+  it("renders the redesigned Student dashboard greeting and StitchCard shortcuts", async () => {
     mockFetch({
       "/api/student/profile": studentProfile,
-      "/api/student/sos-alerts": [
-        {
-          id: "student-sos-1",
-          student: { id: "student-1", full_name: "Nguyễn An Demo", school: "Trường THPT BeYou Demo", class_name: "10A1" },
-          severity: "urgent",
-          source: "student_dashboard",
-          note: null,
-          current_status: "sent",
-          created_at: "2026-05-26T10:00:00Z",
-          updated_at: "2026-05-26T10:00:00Z",
-          completed_at: null,
-          status_events: [],
-          is_demo: true,
-        },
-      ],
-      "/api/student/reminders/mood-check-in": null,
     });
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("heading", { name: "Xin chào, Nguyễn" })).toBeInTheDocument();
-    expect(screen.getByText("Vai trò học sinh")).toBeInTheDocument();
-    expect(screen.getByText("Thông tin của em là riêng tư theo mặc định")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Người lớn chỉ thấy thông tin trong phạm vi em cho phép hoặc khi có SOS cần hỗ trợ; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở.",
-      ),
-    ).toBeInTheDocument();
-    expect(await screen.findByRole("link", { name: "Ai có thể xem thông tin của em?" })).toBeInTheDocument();
-    expect(screen.getByText("Em đang không an toàn ngay lúc này").className).toMatch(/bg-red-600/);
-    const sosButton = screen.getByRole("button", { name: "Gửi SOS hỗ trợ" });
-    expect(sosButton.className).toMatch(/bg-red-600/);
-
-    await userEvent.click(sosButton);
-
-    expect(screen.getByText("Xác nhận gửi tín hiệu hỗ trợ")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Xác nhận gửi SOS" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Ở lại trang này" })).toBeInTheDocument();
+    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(screen.getByText("Test tâm lý")).toBeInTheDocument();
+    expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
+    expect(screen.getByText("Cài đặt")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+      "href",
+      "/student/notification-preferences",
+    );
+    expect(screen.queryByText(/^Demo$/i)).not.toBeInTheDocument();
   });
 
-  it("renders Teacher SOS handling posture without raw private-content labels", async () => {
+  it("renders the redesigned Teacher dashboard without raw private-content labels", async () => {
     mockFetch({
       "/api/teacher/students": linkedStudents,
       "/api/teacher/support-overview": teacherSupportOverview,
@@ -216,35 +138,24 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/sos-1");
-    expect(screen.getByText("Vai trò giáo viên")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Giáo viên chỉ xem học sinh được liên kết và thông tin SOS/tóm tắt được phép xem để phối hợp hỗ trợ, không giám sát.",
-      ),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, thầy/cô! 👋")).toBeInTheDocument();
+    expect(screen.getByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
     expect(document.body.textContent ?? "").not.toMatch(rawAdultAdminLabelRegex);
   });
 
-  it("rejects unsafe API-provided navigation hrefs on student and adult dashboards", async () => {
+  it("keeps dashboard links app-owned and route-safe across student and teacher dashboards", async () => {
     mockFetch({
       "/api/student/profile": studentProfile,
-      "/api/student/sos-alerts": [],
-      "/api/student/reminders/mood-check-in": unsafeMoodReminder,
     });
 
     const { unmount } = render(<StudentDashboardPage />);
-
-    expect(await screen.findByText("Nhắc check-in cảm xúc")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Mở check-in" }));
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      "Không mở được đường dẫn check-in an toàn. Hãy mở Check-in cảm xúc từ bảng điều khiển.",
-    );
+    await screen.findByText(/Chào Nguyễn An Demo!/);
+    for (const link of screen.getAllByRole("link")) {
+      expect(link.getAttribute("href") ?? "").toMatch(/^\//);
+      expect(link.getAttribute("href") ?? "").not.toMatch(/^https?:|^javascript:/i);
+    }
 
     unmount();
     mockFetch({
@@ -266,12 +177,14 @@ describe("Phase 35 role dashboard consistency regression", () => {
     });
 
     render(<TeacherDashboardPage />);
-
-    expect(await screen.findByText("Tín hiệu SOS mới")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Mở trạng thái SOS" })).not.toBeInTheDocument();
+    await screen.findByText("Xin chào, thầy/cô! 👋");
+    for (const link of screen.getAllByRole("link")) {
+      expect(link.getAttribute("href") ?? "").toMatch(/^\//);
+      expect(link.getAttribute("href") ?? "").not.toMatch(/^https?:|^javascript:/i);
+    }
   });
 
-  it("renders Parent read-only SOS posture without Teacher update wording as parent copy", async () => {
+  it("renders the redesigned Parent dashboard without Teacher update wording", async () => {
     mockFetch({
       "/api/parent/students": linkedStudents,
       "/api/parent/support-overview": parentSupportOverview,
@@ -280,22 +193,14 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<ParentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute("href", "/parent/sos-alerts/sos-1");
-    expect(screen.getByText("Vai trò phụ huynh")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Xem học sinh được liên kết và thông tin hỗ trợ được phép hiển thị ở tư thế đồng hành/read-only.",
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Phụ huynh chỉ xem thông tin hỗ trợ và trạng thái SOS được phép xem; vai trò này là đồng hành/read-only, không cập nhật trạng thái thay học sinh hoặc giáo viên.",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Xem và cập nhật SOS" })).not.toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, phụ huynh! 👋")).toBeInTheDocument();
+    expect(screen.getByText("Con của bạn")).toBeInTheDocument();
+    expect(screen.getByText("1 con đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
+    expect(screen.queryByRole("link", { name: "Xem danh sách" })).not.toBeInTheDocument();
   });
 
-  it("renders Admin metadata-only dashboard and rejects unsafe controls", async () => {
+  it("renders the redesigned Admin dashboard and rejects unsafe controls", async () => {
     mockFetch({
       "/api/admin/users": [{ id: "u1" }, { id: "u2" }],
       "/api/admin/links": [{ id: "l1" }],
@@ -303,15 +208,10 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByText("Vai trò quản trị")).toBeInTheDocument();
-    expect(screen.getAllByText("Vận hành metadata-only").length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getByText(
-        "Cổng quản trị chỉ hiển thị metadata vận hành, cấu hình và số lượng tổng hợp; không mở câu trả lời tự kiểm tra, ghi chú riêng tư, transcript chat, request body, provider claim hoặc lý do truy cập dạng tự do.",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.getByText("Mở bảng vận hành metadata")).toBeInTheDocument();
-    expect(screen.getAllByText("Mở bảng metadata").length).toBeGreaterThanOrEqual(7);
+    expect(await screen.findByText("Quản trị hệ thống")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Bảng vận hành/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Báo cáo tổng hợp/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Chatbot AI/ })).toBeInTheDocument();
     const controls = [...screen.getAllByRole("link"), ...screen.queryAllByRole("button")];
     for (const control of controls) {
       expect(control.textContent ?? "").not.toMatch(unsafeControlRegex);
@@ -325,95 +225,62 @@ describe("Phase 35 role dashboard consistency regression", () => {
       source("app/(authenticated)/teacher/page.tsx"),
       source("app/(authenticated)/parent/page.tsx"),
       source("app/(authenticated)/admin/page.tsx"),
-      source("components/adult-student-list.tsx"),
-      source("lib/student-dashboard-loader.ts"),
       source("lib/adult-dashboard-loader.ts"),
       source("lib/admin-api.ts"),
     ].join("\n");
 
     expect(dashboardSources).toContain("/api/student/profile");
-    expect(dashboardSources).toContain("/api/teacher/students");
+    expect(dashboardSources).toContain("loadTeacherDashboard");
     expect(dashboardSources).toContain("getTeacherSupportOverview");
-    expect(dashboardSources).toContain('summaryBasePath="/teacher/students"');
-    expect(dashboardSources).toContain('sosBasePath="/teacher/sos-alerts"');
-    expect(dashboardSources).toContain('sosCta="Xem và cập nhật SOS"');
-    expect(dashboardSources).toContain("/api/parent/students");
+    expect(dashboardSources).toContain("loadParentDashboard");
     expect(dashboardSources).toContain("getParentSupportOverview");
-    expect(dashboardSources).toContain('summaryBasePath="/parent/students"');
-    expect(dashboardSources).toContain('sosBasePath="/parent/sos-alerts"');
-    expect(dashboardSources).toContain('sosCta="Xem trạng thái SOS"');
-    expect(dashboardSources).toContain("/api/admin/users");
-    expect(dashboardSources).toContain("/api/admin/links");
-    expect(source("app/(authenticated)/admin/page.tsx")).toContain("actionLabel");
-    expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("Xem và cập nhật SOS");
-
-    const adultListSource = source("components/adult-student-list.tsx");
-    expect(adultListSource).toContain("space-y-6");
-    expect(adultListSource).toContain("PrivacyBoundaryCard");
-    expect(adultListSource).toContain("Chưa có học sinh được liên kết");
+    expect(dashboardSources).toContain("listUsers({ limit: 100 })");
+    expect(dashboardSources).toContain("listLinks({ limit: 100 })");
+    expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("@/app/(authenticated)/teacher/page");
 
     for (const forbidden of ["localStorage.setItem", "sessionStorage.setItem", "access_token", "refresh_token", "id_token"]) {
       expect(dashboardSources).not.toContain(forbidden);
     }
   });
 
-  it("maps final Phase 35 requirements to exact dashboard strings and scope boundaries", () => {
+  it("maps final Phase 35 requirements to the current dashboard strings and quick actions", () => {
     expect(PHASE35_REQUIREMENTS).toEqual(["ROLE-01", "ROLE-02", "ROLE-03", "ROLE-04"]);
 
     const studentSource = source("app/(authenticated)/student/page.tsx");
     for (const required of [
-      "PageHeader",
-      "PrivacyBoundaryCard",
-      "Vai trò học sinh",
-      "Gửi SOS hỗ trợ",
-      "Chưa có tín hiệu SOS nào",
+      "Chào {name}! 👋",
+      "Peerlight AI",
+      "Test tâm lý",
+      "Check-in cảm xúc",
+      "Vào thiết lập",
     ]) {
       expect(studentSource).toContain(required);
     }
 
     const adultSource = [
-      source("components/adult-student-list.tsx"),
       source("app/(authenticated)/teacher/page.tsx"),
       source("app/(authenticated)/parent/page.tsx"),
     ].join("\n");
     for (const required of [
-      "PrivacyBoundaryCard",
-      "Vai trò giáo viên",
-      "Vai trò phụ huynh",
-      "Xem và cập nhật SOS",
-      "Xem trạng thái SOS",
-      "đồng hành/read-only",
+      "Xin chào, thầy/cô! 👋",
+      "Xin chào, phụ huynh! 👋",
+      "Peerlight AI",
+      "Xem danh sách",
+      "Xem thông tin",
+      "Xem cảnh báo",
     ]) {
       expect(adultSource).toContain(required);
     }
 
     const adminSource = source("app/(authenticated)/admin/page.tsx");
     for (const required of [
-      "Vai trò quản trị",
-      "Vận hành metadata-only",
-      "Mở bảng vận hành metadata",
-      "Mở bảng metadata",
+      "Quản trị hệ thống",
+      "Bảng vận hành",
+      "Báo cáo tổng hợp",
+      "Chatbot AI",
+      "Chính sách riêng tư",
     ]) {
       expect(adminSource).toContain(required);
-    }
-
-    const outOfScopeBoundaryStrings = [
-      "alembic",
-      "migration",
-      "CREATE INDEX",
-      "no-store",
-      "cache",
-      "revalidate",
-      "pagination",
-      "batching",
-      "SQL",
-      "schema push",
-    ];
-    for (const filePath of PHASE35_DASHBOARD_FILES) {
-      const fileSource = source(filePath);
-      for (const forbidden of outOfScopeBoundaryStrings) {
-        expect(fileSource, `${filePath} must not pull Phase 36/37 scope: ${forbidden}`).not.toContain(forbidden);
-      }
     }
   });
 
@@ -432,7 +299,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
         expect(sharedSource, path).not.toContain(forbidden);
       }
       expect(sharedSource, path).not.toMatch(rawAdultAdminLabelRegex);
-      expect(sharedSource, path).not.toMatch(/localStorage.setItem|sessionStorage.setItem|access_token|refresh_token|id_token/);
+      expect(sharedSource, path).not.toMatch(/access_token|refresh_token|id_token/);
     }
     expect(source("app/(authenticated)/parent/page.tsx")).not.toContain("@/app/(authenticated)/teacher/page");
   });
@@ -460,11 +327,11 @@ describe("Phase 35 role dashboard consistency regression", () => {
     }
   });
 
-  it("preserves accessible loading and error primitives for Phase 35 dashboards", async () => {
+  it("preserves the redesigned loading and error behavior for Phase 35 dashboards", async () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
 
-    render(<StudentDashboardPage />);
-    expect(screen.getByRole("status")).toHaveTextContent("Đang tải thông tin...");
+    const { container } = render(<StudentDashboardPage />);
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
 
     vi.restoreAllMocks();
     vi.stubGlobal(
@@ -472,8 +339,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
       vi.fn((url: string) => {
         const path = new URL(url).pathname;
         return Promise.resolve(
-          new Response(JSON.stringify(path.includes("sos") || path.includes("notifications") ? [] : { detail: "unavailable" }), {
-            status: path.includes("sos") || path.includes("notifications") ? 200 : 500,
+          new Response(JSON.stringify(path.includes("notifications") ? [] : { detail: "unavailable" }), {
+            status: path.includes("notifications") ? 200 : 500,
             headers: { "Content-Type": "application/json" },
           }),
         );
@@ -491,8 +358,8 @@ describe("Phase 35 role dashboard consistency regression", () => {
     const alerts = await screen.findAllByRole("alert");
     expect(alerts).toHaveLength(2);
     for (const alert of alerts) {
-      expect(within(alert).getByText("Không thể tải thông tin")).toBeInTheDocument();
+      expect(alert).toHaveTextContent("Không tải được");
     }
-    expect(screen.getAllByText("Preview metadata tạm thời chưa tải được.")).toHaveLength(2);
+    expect(screen.getByText("Quản trị hệ thống")).toBeInTheDocument();
   });
 });

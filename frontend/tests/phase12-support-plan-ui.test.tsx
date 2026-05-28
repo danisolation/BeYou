@@ -150,18 +150,13 @@ describe("Phase 12 support plan UI", () => {
     expect(localStorageSpy).not.toHaveBeenCalled();
   });
 
-  it("adds support plan entry to the student dashboard", async () => {
+  it("keeps the redesigned student dashboard quick actions available", async () => {
     mockDashboardFetch();
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Người lớn tin tưởng" })).toHaveAttribute(
-      "href",
-      "/student/support-plan",
-    );
-    expect(screen.getByRole("link", { name: "Mở kế hoạch hỗ trợ" })).toHaveAttribute(
-      "href",
-      "/student/support-plan",
-    );
+    expect(await screen.findByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Vào check-in" })).toHaveAttribute("href", "/student/mood-check-ins");
   });
 });

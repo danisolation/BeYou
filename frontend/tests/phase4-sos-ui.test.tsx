@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import ParentSosAlertPage from "@/app/(authenticated)/parent/sos-alerts/[alertId]/page";
 import ParentDashboardPage from "@/app/(authenticated)/parent/page";
-import StudentDashboardPage from "@/app/(authenticated)/student/page";
+import StudentSosPage from "@/app/(authenticated)/student/sos/page";
 import TeacherSosAlertPage from "@/app/(authenticated)/teacher/sos-alerts/[alertId]/page";
 import TeacherDashboardPage from "@/app/(authenticated)/teacher/page";
 import {
@@ -88,19 +88,7 @@ function mockFetch(handler?: (path: string, init?: RequestInit) => unknown) {
       body = handler(path, init);
     }
     if (body === undefined) {
-      if (path === "/api/student/profile") {
-        body = {
-          id: "student-1",
-          full_name: "Nguyễn An Demo",
-          email: "student.demo@beyou.local",
-          school: "Trường THPT BeYou Demo",
-          class_name: "10A1",
-          is_demo: true,
-          linked_adults: [],
-        };
-      } else if (path === "/api/student/sos-alerts" && method === "GET") {
-        body = [];
-      } else if (path === "/api/student/sos-alerts" && method === "POST") {
+      if (path === "/api/student/sos-alerts" && method === "POST") {
         body = baseAlert;
       } else if (path === "/api/teacher/students") {
         body = [linkedStudent];
@@ -156,25 +144,19 @@ describe("Phase 4 SOS API helpers", () => {
 describe("Phase 4 student SOS UI", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("shows visible SOS card, requires confirmation, posts optional note, and displays status", async () => {
+  it("shows the redesigned SOS page, sends an urgent alert, and displays the sent state", async () => {
     const fetchMock = mockFetch();
 
-    render(<StudentDashboardPage />);
+    render(<StudentSosPage />);
 
-    expect(await screen.findByText("Gửi tín hiệu để người lớn tin tưởng biết em cần hỗ trợ.")).toBeInTheDocument();
-    expect(screen.queryByText("Xác nhận gửi tín hiệu hỗ trợ")).not.toBeInTheDocument();
+    expect(screen.getByText("Hỗ trợ khẩn cấp")).toBeInTheDocument();
+    expect(screen.getByText("Nếu em đang gặp nguy hiểm hoặc cần giúp đỡ ngay lập tức, hãy nhấn nút bên dưới.")).toBeInTheDocument();
+    expect(screen.queryByText("SOS đã được gửi")).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Gửi SOS hỗ trợ" }));
-    expect(screen.getByText("Xác nhận gửi tín hiệu hỗ trợ")).toBeInTheDocument();
-    expect(
-      screen.getByText("Em có muốn gửi tín hiệu hỗ trợ ngay bây giờ không? Người lớn tin tưởng được liên kết với em sẽ nhận thông báo trong Peerlight AI."),
-    ).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Đúng, tôi cần giúp ngay" }));
 
-    await userEvent.click(screen.getByRole("radio", { name: "Em đang không an toàn ngay lúc này" }));
-    await userEvent.type(screen.getByLabelText("Điều em muốn người lớn biết lúc này (không bắt buộc)"), "Em đang cần người lớn biết em không ổn.");
-    await userEvent.click(screen.getByRole("button", { name: "Xác nhận gửi SOS" }));
-
-    await waitFor(() => expect(screen.getByText("Đã gửi")).toBeInTheDocument());
+    expect(await screen.findByText("SOS đã được gửi")).toBeInTheDocument();
+    expect(screen.getByText("Người lớn tin tưởng của em đã được thông báo. Họ sẽ liên hệ sớm nhất có thể.")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/student/sos-alerts",
       expect.objectContaining({
@@ -182,7 +164,7 @@ describe("Phase 4 student SOS UI", () => {
         body: JSON.stringify({
           severity: "urgent",
           source: "student_dashboard",
-          note: "Em đang cần người lớn biết em không ổn.",
+          note: null,
         }),
       }),
     );
@@ -192,34 +174,29 @@ describe("Phase 4 student SOS UI", () => {
 describe("Phase 4 adult support portals", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("renders teacher notifications, warning group, support summary, and SOS update link without raw answers", async () => {
+  it("renders teacher quick-access cards and SOS link without raw answers", async () => {
     mockFetch();
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByText("Thông báo hỗ trợ")).toBeInTheDocument();
-    expect(screen.getByText("Tín hiệu SOS mới")).toBeInTheDocument();
-    expect(screen.getByText("Nguy cơ cao")).toBeInTheDocument();
-    expect(screen.getByText("Hỏi em cần hỗ trợ gì ngay lúc này.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute("href", "/teacher/sos-alerts/alert-1");
+    expect(await screen.findByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem cảnh báo" })).toHaveAttribute("href", "/teacher/sos-alerts");
     expect(screen.queryByText(/RAW|choice_text_snapshot|answers/i)).not.toBeInTheDocument();
   });
 
-  it("lets teacher move SOS to received with supportive copy", async () => {
+  it("lets teacher move SOS to received from the alert detail page", async () => {
     const fetchMock = mockFetch();
 
     render(<TeacherSosAlertPage params={{ alertId: "alert-1" }} />);
 
-    expect(await screen.findByText("Cập nhật trạng thái SOS dành cho giáo viên")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Giáo viên được phân quyền có thể cập nhật tiến trình SOS để học sinh và phụ huynh biết tín hiệu đang được xử lý.",
-      ),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Trạng thái SOS")).toBeInTheDocument();
+    expect(screen.getByText("Điều học sinh muốn người lớn biết")).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Ghi chú hỗ trợ (không bắt buộc)"), "Cô đã nhận tín hiệu.");
     await userEvent.click(screen.getByRole("button", { name: "Đánh dấu đã nhận" }));
 
-    await waitFor(() => expect(screen.getByText("Đã nhận")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Đã cập nhật trạng thái SOS thành Đã nhận.")).toBeInTheDocument());
+    expect(screen.getByText("Đã nhận")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/teacher/sos-alerts/alert-1/status",
       expect.objectContaining({
@@ -229,22 +206,17 @@ describe("Phase 4 adult support portals", () => {
     );
   });
 
-  it("renders parent read-only SOS status and permitted support summary", async () => {
+  it("renders parent read-only SOS status from the dashboard entry", async () => {
     mockFetch();
 
     const { rerender } = render(<ParentDashboardPage />);
-    expect(await screen.findByText("Trạng thái SOS của con")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute("href", "/parent/sos-alerts/alert-1");
+    expect(await screen.findByRole("link", { name: "Xem cảnh báo" })).toHaveAttribute("href", "/parent/sos-alerts");
 
     rerender(<ParentSosAlertPage params={{ alertId: "alert-1" }} />);
     expect(await screen.findByText("Trạng thái SOS")).toBeInTheDocument();
-    expect(screen.getByText("Bạn đang xem trạng thái hỗ trợ và tóm tắt được phép xem, không phải câu trả lời riêng tư của học sinh.")).toBeInTheDocument();
-    expect(screen.getByText("Chế độ xem chỉ đọc của phụ huynh")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Phụ huynh xem trạng thái và tóm tắt hỗ trợ được phép xem. Việc cập nhật tiến trình SOS trong Peerlight AI dành cho giáo viên được phân quyền.",
-      ),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Đánh dấu đã nhận" })).not.toBeInTheDocument();
+    expect(screen.getByText("Điều học sinh muốn người lớn biết")).toBeInTheDocument();
+    expect(screen.getByText("Em đang cần người lớn biết em không ổn.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Quay về trang chính" })).toHaveAttribute("href", "/parent");
+    expect(screen.queryByRole("button", { name: /Đánh dấu đã nhận|Đang hỗ trợ|Hoàn tất hỗ trợ/ })).not.toBeInTheDocument();
   });
 });

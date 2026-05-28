@@ -88,17 +88,15 @@ describe("Phase 34 adult shared presentation", () => {
     const loaderSource = source("lib/adult-dashboard-loader.ts");
 
     expect(parentSource).not.toContain("@/app/(authenticated)/teacher/page");
-    // After Phase 37 refactoring, API paths live in adult-dashboard-loader.ts
     expect(loaderSource).toContain("/api/parent/students");
     expect(loaderSource).toContain("getParentSupportOverview");
     expect(loaderSource).toContain("/api/teacher/students");
     expect(loaderSource).toContain("getTeacherSupportOverview");
-    // Pages use the typed loader
     expect(parentSource).toContain("loadParentDashboard");
     expect(teacherSource).toContain("loadTeacherDashboard");
   });
 
-  it("renders distinct teacher and parent adult boundaries without raw private content markers", async () => {
+  it("renders distinct teacher and parent dashboard shells without raw private content markers", async () => {
     mockFetch({
       "/api/teacher/students": [linkedStudent],
       "/api/parent/students": [{ ...linkedStudent, relationship_type: "parent" }],
@@ -114,21 +112,19 @@ describe("Phase 34 adult shared presentation", () => {
       </>,
     );
 
-    // Wait for async loaders to complete and components to re-render
     await waitFor(() => {
-      expect(container.textContent).toContain("Ranh giới hỗ trợ của giáo viên");
+      expect(container.textContent).toContain("Xin chào, thầy/cô! 👋");
     }, { timeout: 3000 });
 
-    expect(container.textContent).toContain("Ranh giới hỗ trợ của phụ huynh");
-    expect(screen.getByRole("link", { name: "Xem và cập nhật SOS" })).toHaveAttribute(
-      "href",
-      "/teacher/sos-alerts/sos-1",
-    );
-    expect(screen.getByRole("link", { name: "Xem trạng thái SOS" })).toHaveAttribute(
-      "href",
-      "/parent/sos-alerts/sos-1",
-    );
-    expect(container.textContent).toContain("hỗ trợ/read-only");
+    expect(container.textContent).toContain("Xin chào, phụ huynh! 👋");
+    expect(container.textContent).toContain("1 học sinh đang được đồng hành");
+    expect(container.textContent).toContain("1 con đang được đồng hành");
+    expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
+    expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
+    const alertLinks = screen.getAllByRole("link", { name: "Xem cảnh báo" });
+    expect(alertLinks[0]).toHaveAttribute("href", "/teacher/sos-alerts");
+    expect(alertLinks[1]).toHaveAttribute("href", "/parent/sos-alerts");
+    expect(screen.getAllByText("Peerlight AI")).toHaveLength(2);
 
     const renderedText = document.body.textContent ?? "";
     for (const forbidden of [

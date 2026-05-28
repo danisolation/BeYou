@@ -226,17 +226,15 @@ describe("Phase 31 school pilot operations UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Vận hành pilot an toàn")).toBeInTheDocument();
-    expect(screen.getByText("Sẵn sàng mở pilot trường học")).toBeInTheDocument();
-    expect(screen.getByText("Vận hành metadata-only")).toBeInTheDocument();
-    expect(screen.getByText("Production pilot launch status")).toBeInTheDocument();
-    expect(screen.getByText("Launch checklist")).toBeInTheDocument();
-    expect(screen.getByText("Demo/real data safety")).toBeInTheDocument();
-    expect(screen.getByText("Baseline setup")).toBeInTheDocument();
-    expect(screen.getByText("Rollback và handoff")).toBeInTheDocument();
+    expect(await screen.findByText("Vận hành Pilot")).toBeInTheDocument();
+    expect(screen.getByText("Trạng thái launch pilot")).toBeInTheDocument();
+    expect(screen.getByText("Checklist trước khi mở")).toBeInTheDocument();
+    expect(screen.getByText("An toàn dữ liệu Demo/Thật")).toBeInTheDocument();
+    expect(screen.getByText("Thiết lập ban đầu")).toBeInTheDocument();
+    expect(screen.getByText("Hướng dẫn rollback")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này không mở nội dung riêng tư của học sinh.",
+        "Kiểm tra sẵn sàng, bộ lọc audit và trạng thái hệ thống. Chỉ metadata, không mở nội dung riêng tư.",
       ),
     ).toBeInTheDocument();
 
@@ -272,11 +270,7 @@ describe("Phase 31 school pilot operations UI", () => {
 
     expect(await screen.findByText("Chưa có checklist pilot. Hãy kiểm tra readiness và tải lại trang vận hành.")).toBeInTheDocument();
     expect(screen.getByText("Chưa có metadata an toàn dữ liệu pilot. Không có dữ liệu thô được hiển thị.")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Chưa có metadata thiết lập baseline. Hãy xác nhận nội dung, chính sách và cấu hình pilot trước khi mở cho trường.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText("Chưa có metadata thiết lập. Hãy xác nhận nội dung và cấu hình pilot trước khi mở.")).toBeInTheDocument();
     expect(
       screen.getByText("Chưa có hướng dẫn handoff. Hãy dùng quy trình rollback an toàn trong README và kiểm tra lại readiness."),
     ).toBeInTheDocument();

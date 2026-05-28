@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -180,8 +180,8 @@ describe("Phase 25 admin policy and operations UI", () => {
 
   it("adds admin policy entry and lets admins save safe v1.4 defaults", async () => {
     const fetchMock = mockFetch({
-      "GET /api/admin/users": [{ id: "admin-1" }],
-      "GET /api/admin/links": [],
+      "GET /api/admin/users?limit=100": [{ id: "admin-1" }],
+      "GET /api/admin/links?limit=100": [],
       "GET /api/admin/privacy-policy": policyResponse,
       "PUT /api/admin/privacy-policy": {
         ...policyResponse,
@@ -192,7 +192,7 @@ describe("Phase 25 admin policy and operations UI", () => {
     });
 
     const dashboard = render(<AdminDashboardPage />);
-    expect(await screen.findByRole("link", { name: /Chính sách riêng tư v1.4/ })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: /Chính sách riêng tư/ })).toHaveAttribute(
       "href",
       "/admin/privacy-policy",
     );
@@ -201,7 +201,7 @@ describe("Phase 25 admin policy and operations UI", () => {
     render(<AdminPrivacyPolicyPage />);
     expect(await screen.findByText("Chính sách riêng tư v1.4")).toBeInTheDocument();
     expect(screen.getByText("Zalo")).toBeInTheDocument();
-    expect(screen.getAllByText(/Đang hoãn/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Đang hoãn để cần thêm đồng ý và vận hành an toàn/).length).toBeGreaterThan(0);
     expect(screen.queryByRole("textbox", { name: /lý do/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: /Zalo|SMS|Email|Thông báo thiết bị/i })).not.toBeInTheDocument();
 
@@ -234,13 +234,9 @@ describe("Phase 25 admin policy and operations UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("v1.4 privacy controls")).toBeInTheDocument();
-    const panel = screen.getByText("v1.4 privacy controls").closest("section");
-    if (panel === null) {
-      throw new Error("missing v1.4 panel");
-    }
-    expect(within(panel).getByText("Notification preferences")).toBeInTheDocument();
-    expect(within(panel).getByText("Reason-gated support summaries")).toBeInTheDocument();
+    expect(await screen.findByText("Audit v1.4")).toBeInTheDocument();
+    expect(screen.getByText("Notification preferences")).toBeInTheDocument();
+    expect(screen.getByText("Reason-gated support summaries")).toBeInTheDocument();
     expect(screen.getByText("v1.4 policy")).toBeInTheDocument();
     expect(screen.getByText("v1.4 shares")).toBeInTheDocument();
 
@@ -250,4 +246,3 @@ describe("Phase 25 admin policy and operations UI", () => {
     expect(screen.queryByRole("link", { name: /Chi tiết học sinh|drilldown|xếp hạng/i })).not.toBeInTheDocument();
   });
 });
-

@@ -149,14 +149,13 @@ describe("Phase 14 adult support summary UI", () => {
     expect(document.body.textContent ?? "").not.toContain("Em dễ bình tĩnh hơn khi người lớn nói chậm.");
   });
 
-  it("adds adult support summary link to teacher dashboard", async () => {
+  it("adds the redesigned teacher dashboard entry point to linked students", async () => {
     mockFetch();
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Xem kế hoạch & mood" })).toHaveAttribute(
-      "href",
-      "/teacher/students/student-1/support-summary",
-    );
+    expect(await screen.findByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
   });
 });

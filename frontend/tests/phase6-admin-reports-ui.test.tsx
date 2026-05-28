@@ -108,7 +108,7 @@ describe("Phase 6 admin aggregate reports UI", () => {
     expect(localStorageSpy).not.toHaveBeenCalled();
   });
 
-  it("adds privacy report card to the admin dashboard", async () => {
+  it("adds the redesigned aggregate report card to the admin dashboard", async () => {
     mockFetch({
       "/api/admin/users": [{ id: "admin-1" }],
       "/api/admin/links": [],
@@ -116,24 +116,23 @@ describe("Phase 6 admin aggregate reports UI", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: /Báo cáo tổng hợp riêng tư/ })).toHaveAttribute(
-      "href",
-      "/admin/reports",
-    );
-    expect(screen.getByText("Xem xu hướng tổng hợp đã ẩn nhóm nhỏ, không xuất dữ liệu thô hoặc danh sách nguy cơ.")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: /Báo cáo tổng hợp/ })).toHaveAttribute("href", "/admin/reports");
+    expect(screen.getByText("Xu hướng sức khỏe tinh thần (đã ẩn nhóm nhỏ)")).toBeInTheDocument();
   });
 
-  it("renders aggregate counts, suppression, privacy notes, and no raw export or drilldown", async () => {
+  it("renders aggregate counts, suppression, privacy guardrails, and no raw export or drilldown", async () => {
     mockFetch({ "/api/admin/reports/aggregate?demo_scope=all": sampleReport });
 
     render(<AdminReportsPage />);
 
-    expect(await screen.findByText("Báo cáo tổng hợp riêng tư")).toBeInTheDocument();
-    expect(screen.getByText(/Chỉ hiển thị số liệu tổng hợp đã được giới hạn riêng tư/)).toBeInTheDocument();
+    expect(await screen.findByText("Báo cáo tổng hợp")).toBeInTheDocument();
+    expect(screen.getByText("Số liệu xu hướng chung để cải thiện hỗ trợ. Nhóm nhỏ hơn 3 sẽ tự ẩn.")).toBeInTheDocument();
+    expect(screen.getByText(/Không hiển thị câu trả lời, tin nhắn, ghi chú SOS hay danh sách học sinh/)).toBeInTheDocument();
+    expect(screen.getByText("Tài khoản")).toBeInTheDocument();
+    expect(screen.getByText("Tự kiểm tra")).toBeInTheDocument();
+    expect(screen.getByText("Người dùng")).toBeInTheDocument();
     expect(screen.getAllByText("8").length).toBeGreaterThan(0);
-    expect(screen.getByText("Sức khỏe cảm xúc")).toBeInTheDocument();
     expect(screen.getAllByText("Đã ẩn để bảo vệ riêng tư (<3)").length).toBeGreaterThan(0);
-    expect(screen.getByText("Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ.")).toBeInTheDocument();
     expect(screen.queryByText(/RAW_|email|answer_text|transcript|message_content/i)).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Xuất|Tải xuống|Export/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Chi tiết học sinh|xếp hạng/i })).not.toBeInTheDocument();
@@ -146,7 +145,7 @@ describe("Phase 6 admin aggregate reports UI", () => {
     });
 
     render(<AdminReportsPage />);
-    await screen.findByText("Báo cáo tổng hợp riêng tư");
+    await screen.findByText("Báo cáo tổng hợp");
 
     await userEvent.selectOptions(screen.getByLabelText("Phạm vi dữ liệu"), "demo");
 

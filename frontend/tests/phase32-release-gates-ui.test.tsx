@@ -326,9 +326,10 @@ describe("Phase 32 frontend release gates", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên."),
+        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên."),
       ).toBeInTheDocument();
     });
+    expect(screen.getByText("Đăng nhập bên ngoài chưa được kích hoạt.")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Giáo viên" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Phụ huynh" })).not.toBeInTheDocument();
@@ -365,7 +366,7 @@ describe("Phase 32 frontend release gates", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Vận hành metadata-only")).toBeInTheDocument();
+    expect(await screen.findByText("Vận hành Pilot")).toBeInTheDocument();
     expect(screen.getAllByText("npm --prefix frontend run guard:deploy").length).toBeGreaterThan(0);
     expect(screen.getByText("npm --prefix frontend run smoke:demo")).toBeInTheDocument();
     expect(screen.getAllByText("npm --prefix frontend run smoke:pilot").length).toBeGreaterThan(0);

@@ -89,7 +89,7 @@ describe("Phase 37 frontend integration redlines", () => {
     }
   });
 
-  it("preserves safe adult notification navigation and role-specific Student/Admin redlines", () => {
+  it("preserves safe adult navigation and current Student/Admin dashboard redlines", () => {
     const adultListSource = source("components/adult-student-list.tsx");
     const adminSource = source("app/(authenticated)/admin/page.tsx");
     const studentSource = source("app/(authenticated)/student/page.tsx");
@@ -98,8 +98,9 @@ describe("Phase 37 frontend integration redlines", () => {
     for (const marker of adminUnsafeMarkers) {
       expect(adminSource).not.toContain(marker);
     }
-    expect(studentSource).toContain("Gửi SOS hỗ trợ");
-    expect(studentSource).toContain("Xác nhận gửi tín hiệu hỗ trợ");
-    expect(studentSource).toContain("Ở lại trang này");
+    expect(studentSource).toContain("Chào {name}! 👋");
+    expect(studentSource).toContain("Peerlight AI");
+    expect(studentSource).toContain("Vào thiết lập");
+    expect(adminSource).toContain("Bảng vận hành");
   });
 });

@@ -166,6 +166,7 @@ const forbiddenRawEvidenceFields = [
 ];
 
 const inventoryArtifactCandidates = [
+  join(process.cwd(), "../.planning/milestones/v1.6-phases/33-cross-role-ui-performance-baseline-audit/33-UI-INVENTORY.md"),
   join(process.cwd(), "../.planning/phases/33-cross-role-ui-performance-baseline-audit/33-UI-INVENTORY.md"),
   join(process.cwd(), ".planning/phases/33-cross-role-ui-performance-baseline-audit/33-UI-INVENTORY.md"),
 ];

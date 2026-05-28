@@ -16,7 +16,7 @@ type MockResponse = {
 };
 
 function mockFetch(responses: Record<string, MockResponse>) {
-  const fetchMock = vi.fn((url: string) => {
+  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
     const path = new URL(url).pathname;
     const response = responses[path] ?? { status: 404, body: { detail: "missing" } };
     return Promise.resolve(
@@ -61,15 +61,15 @@ describe("Phase 37 adult dashboard loading", () => {
     vi.restoreAllMocks();
   });
 
-  it("renders scoped adult skeletons while loading", () => {
+  it("renders redesigned adult skeletons while loading", () => {
     vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
 
-    render(<TeacherDashboardPage />);
+    const { container } = render(<TeacherDashboardPage />);
 
-    expect(screen.getByRole("status")).toHaveTextContent("Đang tải tóm tắt hỗ trợ...");
+    expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
-  it("keeps Teacher linked students visible when optional panels are unavailable", async () => {
+  it("keeps Teacher summary cards visible when optional reads are unavailable", async () => {
     mockFetch({
       "/api/teacher/students": { body: [linkedStudent] },
       "/api/teacher/support-overview": { status: 500, body: { detail: "unavailable" } },
@@ -78,12 +78,12 @@ describe("Phase 37 adult dashboard loading", () => {
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByText("Nguyễn An Demo")).toBeInTheDocument();
-    expect(screen.getByText("Tóm tắt hỗ trợ tạm thời chưa tải được")).toBeInTheDocument();
-    expect(screen.getByText("Thông báo hỗ trợ tạm thời chưa tải được.")).toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, thầy/cô! 👋")).toBeInTheDocument();
+    expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByText("Hiện không có cảnh báo mới")).toBeInTheDocument();
   });
 
-  it("distinguishes Parent linked students from SOS-visible empty state", async () => {
+  it("distinguishes Parent child count from the no-alert state", async () => {
     mockFetch({
       "/api/parent/students": { body: [linkedStudent] },
       "/api/parent/support-overview": { body: [] },
@@ -92,7 +92,9 @@ describe("Phase 37 adult dashboard loading", () => {
 
     render(<ParentDashboardPage />);
 
-    expect(await screen.findByText("Chưa có học sinh SOS được phép xem")).toBeInTheDocument();
+    expect(await screen.findByText("Xin chào, phụ huynh! 👋")).toBeInTheDocument();
+    expect(screen.getByText("1 con đang được đồng hành")).toBeInTheDocument();
+    expect(screen.getByText("Hiện không có cảnh báo mới")).toBeInTheDocument();
   });
 
   it("keeps Parent linked-student failures as primary errors", async () => {
@@ -104,7 +106,7 @@ describe("Phase 37 adult dashboard loading", () => {
 
     render(<ParentDashboardPage />);
 
-    expect(await screen.findByRole("alert")).toHaveTextContent("Không thể tải thông tin");
+    expect(await screen.findByRole("alert")).toHaveTextContent("Không tải được");
   });
 
   it("uses credentialed no-store options for adult dashboard reads", async () => {

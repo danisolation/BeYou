@@ -196,7 +196,7 @@ describe("Phase 15 admin metadata closure UI", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: /Cấu hình mood check-in/ })).toHaveAttribute(
+    expect(await screen.findByRole("link", { name: /Mood check-in/ })).toHaveAttribute(
       "href",
       "/admin/mood-checkins",
     );
@@ -207,7 +207,7 @@ describe("Phase 15 admin metadata closure UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("v1.2 support metadata")).toBeInTheDocument();
+    expect(await screen.findByText("Audit v1.2")).toBeInTheDocument();
     expect(screen.getByText("Mood check-ins")).toBeInTheDocument();
     expect(screen.getByText("mood_option_count: 6")).toBeInTheDocument();
     expect(document.body.textContent ?? "").not.toMatch(/RAW_PRIVATE|private_note|student_id|raw_answers/i);

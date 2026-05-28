@@ -136,10 +136,11 @@ describe("Phase 13 mood check-in UI", () => {
     render(<StudentMoodCheckInPage />);
 
     expect(await screen.findByText("Check-in cảm xúc")).toBeInTheDocument();
-    expect(screen.getByText("Ghi chú riêng tư chỉ hiển thị cho em trong Phase 13.")).toBeInTheDocument();
+    expect(screen.getByText("Dành một phút gọi tên cảm xúc hiện tại của em.")).toBeInTheDocument();
+    expect(screen.getByText(/Thông tin riêng tư/)).toBeInTheDocument();
     await userEvent.click(screen.getByLabelText(/Quá tải/));
-    await userEvent.selectOptions(screen.getByLabelText(/Năng lượng của em/), "2");
-    await userEvent.selectOptions(screen.getByLabelText(/Mức căng thẳng/), "5");
+    await userEvent.click(screen.getByRole("radio", { name: "Năng lượng 2" }));
+    await userEvent.click(screen.getByRole("radio", { name: "Mức căng thẳng 5" }));
     await userEvent.click(screen.getByLabelText("Trường/lớp"));
     await userEvent.click(screen.getByLabelText("Giấc ngủ"));
     await userEvent.type(screen.getByLabelText("Ghi chú riêng tư cho chính em (không bắt buộc)"), "Em thấy nhiều việc quá.");
@@ -178,18 +179,13 @@ describe("Phase 13 mood check-in UI", () => {
     expect(screen.queryByRole("button", { name: /Xuất|Export|Tải xuống/i })).not.toBeInTheDocument();
   });
 
-  it("adds mood check-in entry to the student dashboard", async () => {
+  it("adds the redesigned mood check-in entry to the student dashboard", async () => {
     mockDashboardFetch();
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Check-in cảm xúc" })).toHaveAttribute(
-      "href",
-      "/student/mood-check-ins",
-    );
-    expect(screen.getByRole("link", { name: "Xem lịch sử check-in" })).toHaveAttribute(
-      "href",
-      "/student/mood-check-ins/history",
-    );
+    expect(await screen.findByRole("link", { name: "Vào check-in" })).toHaveAttribute("href", "/student/mood-check-ins");
+    expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Ghi nhận cảm xúc mỗi ngày, theo dõi xu hướng tâm trạng")).toBeInTheDocument();
   });
 });

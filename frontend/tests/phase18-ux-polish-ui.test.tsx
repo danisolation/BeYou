@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -6,6 +6,7 @@ import AdminLinksPage from "@/app/(authenticated)/admin/links/page";
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
 import TeacherSosAlertPage from "@/app/(authenticated)/teacher/sos-alerts/[alertId]/page";
 import TeacherSummaryPage from "@/app/(authenticated)/teacher/students/[studentId]/self-check-summaries/page";
+import { getAdminPrivacyPolicy, updateAdminPrivacyPolicy } from "@/lib/admin-privacy-policy-api";
 
 const studentProfile = {
   id: "student-1",
@@ -15,6 +16,35 @@ const studentProfile = {
   class_name: "10A1",
   is_demo: true,
   linked_adults: [],
+};
+
+const policyResponse = {
+  id: "policy-1",
+  school_scope: "default",
+  default_in_app_reminders_enabled: false,
+  default_quiet_hours_start: "21:30",
+  default_quiet_hours_end: "06:30",
+  default_timezone: "Asia/Ho_Chi_Minh",
+  allowed_channels: ["in_app"],
+  external_channels_enabled: false,
+  note_sharing_enabled: true,
+  reason_required_for_adult_summaries: true,
+  reason_required_for_shared_mood_notes: true,
+  allowed_reason_codes: [
+    "student_requested_support",
+    "follow_up_after_checkin",
+    "support_plan_context",
+    "routine_care_conversation",
+  ],
+  channel_boundaries: [
+    { key: "in_app", label: "Trong ứng dụng", enabled: true, available: true, status: "active" },
+    { key: "email", label: "Email", enabled: false, available: false, status: "deferred" },
+    { key: "sms", label: "SMS", enabled: false, available: false, status: "deferred" },
+    { key: "zalo", label: "Zalo", enabled: false, available: false, status: "deferred" },
+    { key: "push", label: "Thông báo thiết bị", enabled: false, available: false, status: "deferred" },
+  ],
+  updated_at: "2026-05-25T00:00:00Z",
+  is_demo: true,
 };
 
 const sosAlert = {
@@ -85,17 +115,21 @@ const links = [
 ];
 
 function jsonResponse(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
+  return Promise.resolve(
+    new Response(JSON.stringify(body), {
+      status,
+      headers: { "Content-Type": "application/json" },
+    }),
+  );
 }
 
-function mockFetch(handler: (path: string, init?: RequestInit) => unknown) {
+function mockFetch(responses: Record<string, unknown>) {
   const fetchMock = vi.fn((url: string, init?: RequestInit) => {
-    const path = new URL(url).pathname;
-    const body = handler(path, init);
-    return Promise.resolve(body instanceof Response ? body : jsonResponse(body, body === undefined ? 404 : 200));
+    const parsed = new URL(url);
+    const key = `${init?.method ?? "GET"} ${parsed.pathname}${parsed.search}`;
+    const pathKey = `${init?.method ?? "GET"} ${parsed.pathname}`;
+    const body = responses[key] ?? responses[pathKey] ?? responses[parsed.pathname];
+    return jsonResponse(body ?? { detail: "not found" }, body === undefined ? 404 : 200);
   });
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;
@@ -104,50 +138,57 @@ function mockFetch(handler: (path: string, init?: RequestInit) => unknown) {
 describe("Phase 18 supportive copy and critical interaction polish", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("shows SOS privacy copy and a clear outcome state after student confirmation", async () => {
-    mockFetch((path, init) => {
-      if (path === "/api/student/profile") {
-        return studentProfile;
-      }
-      if (path === "/api/student/sos-alerts" && (init?.method ?? "GET") === "GET") {
-        return [];
-      }
-      if (path === "/api/student/sos-alerts" && init?.method === "POST") {
-        return sosAlert;
-      }
-      return undefined;
+  it("uses cookie-authenticated admin privacy policy helper without token storage", async () => {
+    const localStorageSpy = vi.spyOn(Storage.prototype, "setItem");
+    const fetchMock = mockFetch({
+      "GET /api/admin/privacy-policy": policyResponse,
+      "PUT /api/admin/privacy-policy": policyResponse,
+    });
+
+    await getAdminPrivacyPolicy();
+    await updateAdminPrivacyPolicy({ ...policyResponse, default_in_app_reminders_enabled: true });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/privacy-policy",
+      expect.objectContaining({ credentials: "include" }),
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      "http://localhost:8000/api/admin/privacy-policy",
+      expect.objectContaining({ method: "PUT", credentials: "include" }),
+    );
+    expect(localStorageSpy).not.toHaveBeenCalled();
+  });
+
+  it("shows the redesigned student greeting and quick actions without demo chrome", async () => {
+    mockFetch({
+      "GET /api/student/profile": studentProfile,
     });
 
     render(<StudentDashboardPage />);
 
-    await screen.findByText("Gửi tín hiệu hỗ trợ");
-    await userEvent.click(screen.getByRole("button", { name: "Gửi SOS hỗ trợ" }));
-    expect(
-      screen.getByText("Chỉ gửi phần ghi chú em nhập ở đây; câu trả lời tự kiểm tra, mood note và trò chuyện riêng tư không tự động được mở."),
-    ).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole("button", { name: "Xác nhận gửi SOS" }));
-
-    expect(await screen.findByText(/Đã gửi SOS hỗ trợ/)).toBeInTheDocument();
+    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
+    expect(screen.getByText("Peerlight AI")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+      "href",
+      "/student/notification-preferences",
+    );
+    expect(screen.queryByText(/^Demo$/i)).not.toBeInTheDocument();
   });
 
-  it("announces teacher SOS status updates without asking for extra private details", async () => {
-    mockFetch((path, init) => {
-      if (path === "/api/teacher/sos-alerts/alert-1") {
-        return sosAlert;
-      }
-      if (path === "/api/teacher/sos-alerts/alert-1/status" && init?.method === "PATCH") {
-        return { ...sosAlert, current_status: "received" };
-      }
-      return undefined;
+  it("announces teacher SOS status updates without exposing extra private detail sections", async () => {
+    mockFetch({
+      "GET /api/teacher/sos-alerts/alert-1": sosAlert,
+      "PATCH /api/teacher/sos-alerts/alert-1/status": { ...sosAlert, current_status: "received" },
     });
 
     render(<TeacherSosAlertPage params={{ alertId: "alert-1" }} />);
 
-    expect(await screen.findByText("Cập nhật trạng thái SOS dành cho giáo viên")).toBeInTheDocument();
-    expect(
-      screen.getByText("Ghi chú này chỉ mô tả tiến trình hỗ trợ; không yêu cầu học sinh tiết lộ thêm nội dung riêng tư."),
-    ).toBeInTheDocument();
+    expect(await screen.findByText("Trạng thái SOS")).toBeInTheDocument();
+    expect(screen.getByText("Cập nhật trạng thái")).toBeInTheDocument();
+    expect(screen.getByLabelText("Ghi chú hỗ trợ (không bắt buộc)")).toBeInTheDocument();
+    expect(screen.queryByText("Điều học sinh muốn người lớn biết")).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Đánh dấu đã nhận" }));
 
@@ -155,28 +196,22 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
   });
 
   it("shows admin revoke consequences and outcome state for support links", async () => {
-    mockFetch((path, init) => {
-      if (path === "/api/admin/users") {
-        return users;
-      }
-      if (path === "/api/admin/links") {
-        return links;
-      }
-      if (path === "/api/admin/links/link-1" && init?.method === "PATCH") {
-        return { ...links[0], status: "revoked", revoked_at: "2026-05-22T00:00:00Z" };
-      }
-      return undefined;
+    mockFetch({
+      "GET /api/admin/users?limit=10": users,
+      "GET /api/admin/links?limit=10": links,
+      "PATCH /api/admin/links/link-1": { ...links[0], status: "revoked", revoked_at: "2026-05-22T00:00:00Z" },
     });
 
     render(<AdminLinksPage />);
 
-    await screen.findByText("Liên kết học sinh và người lớn hỗ trợ");
+    expect(await screen.findByText("Liên kết hỗ trợ")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Thu hồi liên kết" }));
     expect(
       screen.getByText("Sau khi thu hồi, giáo viên/phụ huynh này không còn được xem tóm tắt hỗ trợ mới qua liên kết này."),
     ).toBeInTheDocument();
 
-    await userEvent.click(screen.getAllByRole("button", { name: "Thu hồi liên kết" }).at(-1)!);
+    const dialog = screen.getByRole("dialog");
+    await userEvent.click(within(dialog).getByRole("button", { name: "Thu hồi liên kết" }));
 
     expect(
       await screen.findByText("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong Peerlight AI."),
@@ -184,16 +219,13 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
   });
 
   it("frames adult self-check summaries as support, not surveillance", async () => {
-    mockFetch((path) => {
-      if (path === "/api/teacher/students/student-1/self-check-summaries") {
-        return {
-          student: sosAlert.student,
-          latest_summary: null,
-          recent_summaries: [],
-          is_demo: true,
-        };
-      }
-      return undefined;
+    mockFetch({
+      "GET /api/teacher/students/student-1/self-check-summaries": {
+        student: sosAlert.student,
+        latest_summary: null,
+        recent_summaries: [],
+        is_demo: true,
+      },
     });
 
     render(<TeacherSummaryPage params={{ studentId: "student-1" }} />);

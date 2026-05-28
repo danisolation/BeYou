@@ -168,21 +168,19 @@ describe("Phase 5 chatbot API helpers", () => {
 describe("Phase 5 student chatbot UI", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("adds student dashboard chat entry and sends a supportive first response", async () => {
+  it("adds the redesigned dashboard chat entry and sends a supportive first response", async () => {
     const fetchMock = mockFetch();
 
     const { rerender } = render(<StudentDashboardPage />);
-    expect(await screen.findByRole("link", { name: /Trò chuyện với Peerlight AI/ })).toHaveAttribute(
-      "href",
-      "/student/chat",
-    );
-    expect(screen.getByText("Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByText("Trò chuyện cùng AI hỗ trợ 24/7")).toBeInTheDocument();
 
     rerender(<StudentChatPage />);
-    expect(await screen.findByText("Trò chuyện với Peerlight AI")).toBeInTheDocument();
-    expect(screen.getByText("Chưa có tin nhắn nào. Em có thể bắt đầu bằng một điều nhỏ đang làm em bận lòng.")).toBeInTheDocument();
+    expect(await screen.findByText("Peerlight AI Chat")).toBeInTheDocument();
+    expect(screen.getByText("Chào em!")).toBeInTheDocument();
+    expect(screen.getByText(/Nội dung trò chuyện riêng tư không hiển thị cho người lớn theo mặc định/)).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Hôm nay em thấy áp lực.");
-    await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
+    await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
 
     expect(await screen.findByText(/Chào em, mình là BeYou/)).toBeInTheDocument();
     expect(screen.getAllByText(/không thay thế chuyên gia tư vấn hay bác sĩ/).length).toBeGreaterThan(0);
@@ -196,7 +194,7 @@ describe("Phase 5 student chatbot UI", () => {
     );
   });
 
-  it("renders high-risk escalation guidance with SOS trusted-adult CTA", async () => {
+  it("renders high-risk escalation guidance with the SOS CTA on the redesigned chat page", async () => {
     mockFetch((path, init) => {
       if (path === "/api/student/chat/messages" && init?.method === "POST") {
         return highRiskChatResponse;
@@ -205,32 +203,31 @@ describe("Phase 5 student chatbot UI", () => {
     });
 
     render(<StudentChatPage />);
-    await screen.findByText("Trò chuyện với Peerlight AI");
+    await screen.findByText("Peerlight AI Chat");
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Em không muốn sống nữa.");
-    await userEvent.click(screen.getByRole("button", { name: "Gửi chia sẻ" }));
+    await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
 
-    expect(await screen.findByText("Mình muốn ưu tiên sự an toàn của em ngay lúc này")).toBeInTheDocument();
+    expect(await screen.findByText("Mình muốn ưu tiên sự an toàn của em")).toBeInTheDocument();
     expect(screen.getAllByText(/người lớn tin cậy|người lớn tin tưởng/).length).toBeGreaterThan(0);
     expect(screen.getByText("BeYou v1 không tự động gọi dịch vụ khẩn cấp bên ngoài.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Đi tới SOS hỗ trợ" })).toHaveAttribute("href", "/student#peerlight-sos");
+    expect(screen.getByRole("link", { name: "Đi tới SOS hỗ trợ" })).toHaveAttribute("href", "/student/sos");
   });
 });
 
 describe("Phase 5 admin chatbot safety UI", () => {
   beforeEach(() => vi.restoreAllMocks());
 
-  it("adds admin config entry and saves safety config without rendering API keys", async () => {
+  it("adds the redesigned chatbot config entry and saves safety config without rendering API keys", async () => {
     const fetchMock = mockFetch();
 
     const { rerender } = render(<AdminDashboardPage />);
-    expect(await screen.findByRole("link", { name: /Cấu hình chatbot an toàn/ })).toHaveAttribute(
-      "href",
-      "/admin/chatbot",
-    );
+    expect(await screen.findByRole("link", { name: /Chatbot AI/ })).toHaveAttribute("href", "/admin/chatbot");
 
     rerender(<AdminChatbotPage />);
-    expect(await screen.findByText("Cấu hình chatbot an toàn")).toBeInTheDocument();
-    expect(screen.getByText("Khóa API chỉ được đọc bởi backend. Trang này không hiển thị hoặc lưu khóa API ở trình duyệt.")).toBeInTheDocument();
+    expect(screen.getByText("Cấu hình chatbot")).toBeInTheDocument();
+    expect(screen.getByText(/Guardrail backend luôn bật/)).toBeInTheDocument();
+    expect(await screen.findByText("Thông tin provider")).toBeInTheDocument();
+    expect(screen.getByText(/fallback an toàn/)).toBeInTheDocument();
     expect(screen.queryByText(/api_key|admin-secret-key|FREEMODEL_API_KEY/i)).not.toBeInTheDocument();
 
     const highRiskKeywords = await screen.findByLabelText("Từ khóa nguy cơ cao");

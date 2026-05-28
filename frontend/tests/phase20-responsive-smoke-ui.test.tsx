@@ -1,4 +1,4 @@
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import AdminDashboardPage from "@/app/(authenticated)/admin/page";
@@ -150,41 +150,24 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
       "/api/admin/links": [{ id: "link-1" }],
     });
 
-    const { container: studentContainer, unmount: unmountStudent } = render(<StudentDashboardPage />);
-    await waitFor(() => {
-      expect(studentContainer.textContent).toContain("Xin chào, Nguyễn");
-    }, { timeout: 3000 });
-    expect(screen.getByRole("link", { name: "Ai có thể xem thông tin của em?" })).toHaveAttribute(
-      "href",
-      "/privacy?review=true",
-    );
+    const { unmount: unmountStudent } = render(<StudentDashboardPage />);
+    expect(await screen.findByRole("heading", { name: /Chào Nguyễn An Demo!/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Vào test" })).toHaveAttribute("href", "/student/self-checks");
     unmountStudent();
 
-    const { container: teacherContainer, unmount: unmountTeacher } = render(<TeacherDashboardPage />);
-    await waitFor(() => {
-      expect(teacherContainer.textContent).toContain("Cổng giáo viên");
-    }, { timeout: 3000 });
-    expect(screen.getByRole("link", { name: "Xem tóm tắt hỗ trợ" })).toHaveAttribute(
-      "href",
-      "/teacher/students/student-1/self-check-summaries",
-    );
+    const { unmount: unmountTeacher } = render(<TeacherDashboardPage />);
+    expect(await screen.findByRole("heading", { name: /Xin chào, thầy\/cô!/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
     unmountTeacher();
 
-    const { container: parentContainer, unmount: unmountParent } = render(<ParentDashboardPage />);
-    await waitFor(() => {
-      expect(parentContainer.textContent).toContain("Cổng phụ huynh");
-    }, { timeout: 3000 });
-    expect(screen.getByRole("link", { name: "Xem tóm tắt hỗ trợ" })).toHaveAttribute(
-      "href",
-      "/parent/students/student-1/self-check-summaries",
-    );
+    const { unmount: unmountParent } = render(<ParentDashboardPage />);
+    expect(await screen.findByRole("heading", { name: /Xin chào, phụ huynh!/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
     unmountParent();
 
-    const { container: adminContainer } = render(<AdminDashboardPage />);
-    await waitFor(() => {
-      expect(adminContainer.textContent).toContain("Cổng quản trị");
-    }, { timeout: 3000 });
-    expect(screen.getByRole("link", { name: /Vận hành metadata-only/ })).toHaveAttribute("href", "/admin/operations");
-    expect(adminContainer.textContent).toContain("Preview");
+    render(<AdminDashboardPage />);
+    expect(await screen.findByRole("heading", { name: "Quản trị hệ thống" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Pilot/ })).toHaveAttribute("href", "/admin/operations");
+    expect(screen.getByText("Bảng vận hành")).toBeInTheDocument();
   });
 });

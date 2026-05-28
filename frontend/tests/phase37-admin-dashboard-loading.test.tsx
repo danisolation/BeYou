@@ -15,7 +15,7 @@ type MockResponse = {
 };
 
 function mockFetch(responses: Record<string, MockResponse>) {
-  const fetchMock = vi.fn((url: string) => {
+  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
     const path = new URL(url).pathname;
     const response = responses[path] ?? { status: 404, body: { detail: "missing" } };
     return Promise.resolve(
@@ -29,11 +29,7 @@ function mockFetch(responses: Record<string, MockResponse>) {
   return fetchMock;
 }
 
-const unsafeAdminMarkers = [
-  '/api/admin/users")',
-  '/api/admin/links")',
-  "${counts.users} tài khoản",
-  "${counts.links} liên kết",
+const adminUnsafeMarkers = [
   "Export",
   "Xuất",
   "Download",
@@ -57,10 +53,11 @@ describe("Phase 37 Admin dashboard loading", () => {
       "/api/admin/links": { body: [{ id: "l1" }] },
     });
 
-    render(<AdminDashboardPage />);
+    const { container } = render(<AdminDashboardPage />);
 
-    expect(await screen.findByText("Preview 2 tài khoản demo")).toBeInTheDocument();
-    expect(screen.getByText("Preview 1 liên kết được phân trang")).toBeInTheDocument();
+    await waitFor(() => expect(container.textContent).toContain("2Tài khoản"));
+    expect(container.textContent).toContain("1Liên kết");
+    expect(screen.getByText("Pilot")).toBeInTheDocument();
   });
 
   it("uses bounded credentialed no-store preview reads", async () => {
@@ -74,7 +71,7 @@ describe("Phase 37 Admin dashboard loading", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
 
     for (const [url, init] of fetchMock.mock.calls) {
-      expect(String(url)).toContain("limit=10");
+      expect(String(url)).toContain("limit=100");
       expect(init).toEqual(expect.objectContaining({ credentials: "include", cache: "no-store" }));
     }
   });
@@ -87,9 +84,8 @@ describe("Phase 37 Admin dashboard loading", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByText("Cổng quản trị")).toBeInTheDocument();
-    expect(screen.getAllByText("Vận hành metadata-only").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Preview metadata tạm thời chưa tải được.")).toHaveLength(2);
+    expect(await screen.findByText("Quản trị hệ thống")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Bảng vận hành/ })).toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 
@@ -97,14 +93,14 @@ describe("Phase 37 Admin dashboard loading", () => {
     const adminSource = source("app/(authenticated)/admin/page.tsx");
     const adminApiSource = source("lib/admin-api.ts");
 
-    expect(adminSource).toContain("listUsers({ limit: 10 })");
-    expect(adminSource).toContain("listLinks({ limit: 10 })");
+    expect(adminSource).toContain("listUsers({ limit: 100 })");
+    expect(adminSource).toContain("listLinks({ limit: 100 })");
     expect(adminApiSource).toContain("limit = options.limit ?? 10");
     expect(adminApiSource).toContain("/api/admin/users?limit=");
     expect(adminApiSource).toContain("/api/admin/links?limit=");
     expect(adminApiSource).toContain("dashboardRead<AdminUser");
     expect(adminApiSource).toContain("dashboardRead<AdminLink");
-    for (const marker of unsafeAdminMarkers) {
+    for (const marker of adminUnsafeMarkers) {
       expect(`${adminSource}\n${adminApiSource}`).not.toContain(marker);
     }
   });

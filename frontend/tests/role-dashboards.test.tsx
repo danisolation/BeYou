@@ -53,18 +53,20 @@ describe("role dashboards", () => {
     vi.restoreAllMocks();
   });
 
-  it("shows loading copy, demo banner, and logout without storage token writes", async () => {
+  it("shows loading skeleton and logout without storage token writes", async () => {
     const localStorageSpy = vi.spyOn(Storage.prototype, "setItem");
     const fetchMock = mockFetch({ "/api/auth/me": authUser });
 
-    render(
+    const { container } = render(
       <AuthenticatedLayout>
         <p>Nội dung</p>
       </AuthenticatedLayout>,
     );
 
-    expect(screen.getByText("Đang tải thông tin...")).toBeInTheDocument();
-    expect(await screen.findByText("Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.")).toBeInTheDocument();
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+    expect(screen.queryByText("Nội dung")).not.toBeInTheDocument();
+    expect(await screen.findByText("Nguyễn An Demo")).toBeInTheDocument();
+    expect(screen.queryByText("Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.")).not.toBeInTheDocument();
     const nav = screen.getAllByRole("navigation", { name: "Điều hướng học sinh" })[0];
     expect(within(nav).getByRole("link", { name: "Bảng điều khiển" })).toHaveAttribute("href", "/student");
     expect(within(nav).queryByRole("link", { name: "Giáo viên" })).not.toBeInTheDocument();
@@ -119,7 +121,7 @@ describe("role dashboards", () => {
     expect(screen.queryByText("Nội dung học sinh nhạy cảm")).not.toBeInTheDocument();
   });
 
-  it("renders student profile school, class, support adults, Demo badge, and privacy link", async () => {
+  it("renders student dashboard greeting and quick actions", async () => {
     mockFetch({
       "/api/student/profile": {
         id: "student-1",
@@ -151,15 +153,16 @@ describe("role dashboards", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Xin chào, Nguyễn")).toBeInTheDocument();
-    expect(screen.getByText(/Trường THPT BeYou Demo/)).toBeInTheDocument();
-    expect(screen.getByText(/10A1/)).toBeInTheDocument();
-    expect(screen.getByText("Cô Bình Demo")).toBeInTheDocument();
-    expect(screen.getByText("Phụ huynh Chi Demo")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Ai có thể xem thông tin của em?" })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Chào Nguyễn An Demo!/ })).toBeInTheDocument();
+    expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
+    expect(screen.getByText("Test tâm lý")).toBeInTheDocument();
+    expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
+    expect(screen.getByText("Cài đặt")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
   });
 
-  it("renders teacher and parent linked-student dashboard copy", async () => {
+  it("renders teacher and parent dashboard quick actions", async () => {
     const students = [
       {
         id: "student-1",
@@ -206,19 +209,16 @@ describe("role dashboards", () => {
       </>,
     );
 
-    expect(await screen.findAllByText("Nguyễn An Demo")).toHaveLength(2);
-    expect(screen.getByText("Cổng giáo viên")).toBeInTheDocument();
-    expect(screen.getByText("Cổng phụ huynh")).toBeInTheDocument();
-    expect(screen.getByText("Ranh giới hỗ trợ của giáo viên")).toBeInTheDocument();
-    expect(screen.getByText("Ranh giới hỗ trợ của phụ huynh")).toBeInTheDocument();
-    expect(
-      screen.getAllByText(
-        "Peerlight AI không hiển thị câu trả lời test tâm lý chi tiết hoặc nội dung trò chuyện riêng tư tại cổng người lớn.",
-      ),
-    ).toHaveLength(2);
+    expect(await screen.findByRole("heading", { name: /Xin chào, thầy\/cô!/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Xin chào, phụ huynh!/ })).toBeInTheDocument();
+    expect(screen.getByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(screen.getByText("Con của bạn")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
+    expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
+    expect(screen.getAllByText("Cảnh báo SOS")).toHaveLength(2);
   });
 
-  it("renders admin safe entry cards and counts", async () => {
+  it("renders admin quick access cards and counts", async () => {
     mockFetch({
       "/api/admin/users": [{ id: "u1" }, { id: "u2" }],
       "/api/admin/links": [{ id: "l1" }],
@@ -226,10 +226,11 @@ describe("role dashboards", () => {
 
     render(<AdminDashboardPage />);
 
-    expect(await screen.findByText("Cổng quản trị")).toBeInTheDocument();
-    expect(screen.getByText("Quản lý tài khoản")).toBeInTheDocument();
-    expect(screen.getByText("Liên kết học sinh và người lớn hỗ trợ")).toBeInTheDocument();
-    expect(screen.getByText("Preview 2 tài khoản demo")).toBeInTheDocument();
-    expect(screen.getByText("Preview 1 liên kết được phân trang")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Quản trị hệ thống" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^Pilot/ })).toHaveAttribute("href", "/admin/operations");
+    expect(screen.getByText("Bảng vận hành")).toBeInTheDocument();
+    expect(screen.getByText("Báo cáo tổng hợp")).toBeInTheDocument();
+    expect(screen.getByText("2 tài khoản — tạo, sửa vai trò, khóa/mở")).toBeInTheDocument();
+    expect(screen.getByText("1 liên kết — gắn học sinh với người lớn hỗ trợ")).toBeInTheDocument();
   });
 });
