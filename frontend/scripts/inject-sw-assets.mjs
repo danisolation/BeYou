@@ -4,6 +4,9 @@
  * Post-build script that reads the Next.js build manifest and injects
  * critical asset paths into public/sw.js SHELL_ASSETS array.
  * Also stamps CACHE_NAME with a unique timestamp version.
+ *
+ * Supports Next.js 14+ (Turbopack) which uses build-manifest.json
+ * with rootMainFiles/polyfillFiles instead of legacy _buildManifest.js page routes.
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
@@ -25,40 +28,52 @@ if (!existsSync(buildIdPath)) {
 const buildId = readFileSync(buildIdPath, 'utf-8').trim();
 console.log(`Build ID: ${buildId}`);
 
-// Read _buildManifest.js
-const manifestPath = path.join(dotNext, 'static', buildId, '_buildManifest.js');
-let manifestContent = '';
-if (existsSync(manifestPath)) {
-  manifestContent = readFileSync(manifestPath, 'utf-8');
-} else {
-  console.warn(`WARN: _buildManifest.js not found at ${manifestPath}, using chunks dir only`);
-}
-
-// Extract chunk paths for "/" route from manifest
-// Format: "/": [...paths...] or "/":["path1","path2"]
+// Collect asset paths — start with app shell pages
 const assetPaths = new Set(['/', '/offline']);
 
-if (manifestContent) {
-  // Match the "/" route entry which contains the root page chunks
-  const rootMatch = manifestContent.match(/"\/":\s*\[([\s\S]*?)\]/);
-  if (rootMatch) {
-    const pathMatches = rootMatch[1].matchAll(/"([^"]+)"/g);
-    for (const m of pathMatches) {
-      assetPaths.add('/_next/' + m[1]);
+// Strategy 1: Read build-manifest.json (Next.js 14+/Turbopack)
+const buildManifestPath = path.join(dotNext, 'build-manifest.json');
+if (existsSync(buildManifestPath)) {
+  const manifest = JSON.parse(readFileSync(buildManifestPath, 'utf-8'));
+
+  // rootMainFiles: critical JS for app shell bootstrap
+  for (const file of manifest.rootMainFiles || []) {
+    assetPaths.add('/_next/' + file);
+  }
+
+  // polyfillFiles: required for older browsers
+  for (const file of manifest.polyfillFiles || []) {
+    assetPaths.add('/_next/' + file);
+  }
+
+  // Page-specific entries (if any have JS chunks listed)
+  const pages = manifest.pages || {};
+  for (const file of pages['/'] || []) {
+    assetPaths.add('/_next/' + file);
+  }
+  for (const file of pages['/_app'] || []) {
+    assetPaths.add('/_next/' + file);
+  }
+} else {
+  // Strategy 2: Legacy _buildManifest.js (Next.js 12-13)
+  const legacyManifestPath = path.join(dotNext, 'static', buildId, '_buildManifest.js');
+  if (existsSync(legacyManifestPath)) {
+    const content = readFileSync(legacyManifestPath, 'utf-8');
+    const rootMatch = content.match(/"\/":\s*\[([\s\S]*?)\]/);
+    if (rootMatch) {
+      for (const m of rootMatch[1].matchAll(/"([^"]+)"/g)) {
+        assetPaths.add('/_next/' + m[1]);
+      }
     }
   }
 }
 
-// Read chunks directory for framework/main/webpack files
+// Add CSS files from static/chunks (global styles)
 const chunksDir = path.join(dotNext, 'static', 'chunks');
 if (existsSync(chunksDir)) {
   const files = readdirSync(chunksDir);
   for (const file of files) {
-    if (
-      file.startsWith('framework-') ||
-      file.startsWith('main-') ||
-      /^webpack-/.test(file)
-    ) {
+    if (file.endsWith('.css')) {
       assetPaths.add(`/_next/static/chunks/${file}`);
     }
   }
