@@ -3,18 +3,26 @@
 import Link from "next/link";
 import {
   Activity,
+  Bot,
   FileText,
+  Heart,
   Home,
   Link2,
   LogOut,
   Menu,
+  Shield,
+  Settings,
   Users,
 } from "lucide-react";
 
 export const adminNav = [
-  { href: "/admin", label: "Bảng điều khiển", icon: Home },
+  { href: "/admin", label: "Tổng quan", icon: Home },
   { href: "/admin/operations", label: "Vận hành", icon: Activity },
+  { href: "/admin/reports", label: "Báo cáo", icon: Shield },
+  { href: "/admin/chatbot", label: "Chatbot", icon: Bot },
+  { href: "/admin/mood-checkins", label: "Mood check-in", icon: Heart },
   { href: "/admin/content", label: "Nội dung", icon: FileText },
+  { href: "/admin/privacy-policy", label: "Riêng tư", icon: Settings },
   { href: "/admin/users", label: "Tài khoản", icon: Users },
   { href: "/admin/links", label: "Liên kết", icon: Link2 },
 ];
