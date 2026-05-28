@@ -1,5 +1,27 @@
 # Project Milestones: Peerlight AI
 
+## v1.9 Production Polish (Shipped: 2026-05-28)
+
+**Delivered:** Removed demo visual indicators, production tone updates, runtime mode switch to production_pilot, full admin page redesign (users, links, operations, content wizard), student page polish (time-based greeting, colored risk/signal badges), and 4-step content editor wizard.
+
+**Phases completed:** 51-53 (3 phases)
+
+**Key accomplishments:**
+
+- Removed DemoBanner and DemoBadge components from all pages.
+- Updated landing, login, privacy pages to production wording.
+- Switched runtime default from local_demo to production_pilot.
+- Redesigned admin users page with search, role/status filters, badges, avatars.
+- Redesigned admin links page with search, filter, status badges.
+- Polished admin operations with toggle filter panel, dark mode, skeleton loading.
+- Redesigned admin content editor as 4-step wizard (info → questions → thresholds → review).
+- Added time-based greeting, colored risk/signal badges to student pages.
+- Fixed 168/169 tests (1 known flaky).
+
+**Git range:** `79ec7fa` -> `9c19c68`
+
+---
+
 ## v1.5 Production Pilot Readiness & Identity (Shipped: 2026-05-26)
 
 **Delivered:** Production/demo runtime separation, deployment guardrails, split demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, school pilot operations metadata, and release gates for privacy/security boundaries.

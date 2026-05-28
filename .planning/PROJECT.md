@@ -73,19 +73,25 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v1.9 Production Polish
+## Current Milestone: v2.0 Mobile-First & PWA
 
-**Goal:** Remove demo visual indicators (DemoBanner, DemoBadge), update all user-facing text to production tone, switch runtime default to production_pilot mode, while preserving 4 demo accounts for demonstration purposes.
+**Goal:** Transform Peerlight AI into a mobile-first progressive web app with native-like experience — bottom tab navigation, responsive layouts across all pages, offline capability, installable on phones, and smooth animations.
 
 **Target features:**
 
-- Remove DemoBanner and DemoBadge components and all usages (20+ pages)
-- Landing page rewritten to professional product intro (no "Vào demo trong một bước")
-- Login page keeps "Tài khoản demo" section but removes other demo-centric wording
-- Privacy page updated to real data policy (no demo explanations)
-- Admin operations wording shifted to production monitoring tone
-- Default RUNTIME_MODE set to production_pilot
-- All 4 demo accounts remain functional for demonstration
+- Full responsive overhaul for all pages (student, teacher, parent, admin)
+- Bottom tab navigation for student (app-like mobile experience)
+- Drawer/sidebar navigation for admin on mobile
+- PWA manifest, service worker, offline fallback
+- Native-like page transitions and micro-animations
+- Touch-friendly interactions (swipe, tap targets ≥44px)
+- Installable app prompt (Add to Home Screen)
+
+## Completed Milestone: v1.9 Production Polish
+
+**Goal:** Remove demo visual indicators, production tone, runtime switch, admin/student UI polish.
+**Archived:** 2026-05-28
+**Status:** Complete.
 
 ## Completed Milestone: v1.5 Production Pilot Readiness & Identity
 
