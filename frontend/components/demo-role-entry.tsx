@@ -45,9 +45,9 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
             type="button"
             onClick={() => enterDemo(account.role)}
             disabled={loadingRole !== null}
-            className="min-h-14 rounded-2xl border border-[#CFE8E1] bg-white p-4 text-left shadow-sm hover:-translate-y-0.5 hover:border-accent hover:shadow-md disabled:opacity-60"
+            className="min-h-14 rounded-2xl border border-outline-variant/30 bg-white p-4 text-left shadow-sm hover:-translate-y-0.5 hover:border-accent hover:shadow-md disabled:opacity-60"
           >
-            <span className="block font-semibold text-[#12332E]">
+            <span className="block font-semibold text-on-background">
               {loadingRole === account.role ? "Đang vào..." : `Vào vai ${account.label}`}
             </span>
             {!compact ? <span className="mt-1 block text-xs text-[#27665B]">{account.summary}</span> : null}

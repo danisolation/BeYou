@@ -131,7 +131,7 @@ function Field({
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+        className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
       />
     </label>
   );
@@ -153,7 +153,7 @@ function TextAreaField({
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-24 w-full rounded-2xl border border-[#CFE8E1] px-3 py-2"
+        className="min-h-24 w-full rounded-2xl border border-outline-variant/30 px-3 py-2"
       />
     </label>
   );
@@ -460,7 +460,7 @@ export default function AdminContentPage() {
 
   return (
     <main className="mx-auto max-w-[1200px] space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Nội dung tự kiểm tra và tình huống</h1>
         <p className="mt-3 text-sm">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
         <p className="mt-2 text-xs">
@@ -473,13 +473,13 @@ export default function AdminContentPage() {
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
+        <article className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
           <div>
             <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
             <button
               type="button"
               onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
-              className="mt-3 min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+              className="mt-3 min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
             >
               Tạo bài tự kiểm tra
             </button>
@@ -504,7 +504,7 @@ export default function AdminContentPage() {
                 aria-label="Trạng thái nội dung"
                 value={selfCheckDraft.status}
                 onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>
@@ -513,13 +513,13 @@ export default function AdminContentPage() {
                 ))}
               </select>
             </label>
-            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold">Câu hỏi và lựa chọn</h3>
                 <button
                   type="button"
                   onClick={addSelfCheckQuestion}
-                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm câu hỏi
                 </button>
@@ -556,7 +556,7 @@ export default function AdminContentPage() {
                       <button
                         type="button"
                         onClick={() => addSelfCheckChoice(questionIndex)}
-                        className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4"
+                        className="min-h-11 rounded-2xl border border-outline-variant/30 px-4"
                       >
                         Thêm lựa chọn
                       </button>
@@ -565,7 +565,7 @@ export default function AdminContentPage() {
                       <p className="text-sm">Câu hỏi này chưa có lựa chọn.</p>
                     ) : null}
                     {question.choices.map((choice, choiceIndex) => (
-                      <div key={choice.id ?? `draft-choice-${questionIndex}-${choiceIndex}`} className="grid gap-3 rounded-2xl bg-white p-4 md:grid-cols-2">
+                      <div key={choice.id ?? `draft-choice-${questionIndex}-${choiceIndex}`} className="grid gap-3 rounded-2xl bg-white dark:bg-[#1a2940] p-4 md:grid-cols-2">
                         <Field
                           label={choiceLabel("Lựa chọn trả lời", questionIndex, choiceIndex)}
                           value={choice.text}
@@ -596,13 +596,13 @@ export default function AdminContentPage() {
                 </section>
               ))}
             </div>
-            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold">Ngưỡng điểm</h3>
                 <button
                   type="button"
                   onClick={addThreshold}
-                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm ngưỡng điểm
                 </button>
@@ -628,7 +628,7 @@ export default function AdminContentPage() {
                       aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
                       value={threshold.state_label}
                       onChange={(event) => updateThreshold(thresholdIndex, "state_label", event.target.value)}
-                      className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                      className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
                     >
                       {riskLabels.map((label) => (
                         <option key={label} value={label}>
@@ -686,7 +686,7 @@ export default function AdminContentPage() {
                   .slice()
                   .sort((left, right) => left.sort_order - right.sort_order)
                   .map((question, questionIndex) => (
-                    <article key={question.id ?? `preview-question-${questionIndex}`} className="rounded-2xl bg-white p-3">
+                    <article key={question.id ?? `preview-question-${questionIndex}`} className="rounded-2xl bg-white dark:bg-[#1a2940] p-3">
                       <p className="font-semibold">
                         {questionIndex + 1}. {question.text || "Câu hỏi chưa nhập"}
                       </p>
@@ -751,13 +751,13 @@ export default function AdminContentPage() {
           </div>
         </article>
 
-        <article className="space-y-5 rounded-3xl bg-white p-6 shadow-sm">
+        <article className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
           <div>
             <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
             <button
               type="button"
               onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
-              className="mt-3 min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+              className="mt-3 min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
             >
               Tạo tình huống
             </button>
@@ -775,7 +775,7 @@ export default function AdminContentPage() {
                 aria-label="Trạng thái nội dung"
                 value={scenarioDraft.status}
                 onChange={(event) => setScenarioDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
               >
                 {statusOptions.map((status) => (
                   <option key={status} value={status}>
@@ -784,13 +784,13 @@ export default function AdminContentPage() {
                 ))}
               </select>
             </label>
-            <div className="space-y-4 rounded-2xl border border-[#D7EFE8] p-4">
+            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold">Lựa chọn tình huống</h3>
                 <button
                   type="button"
                   onClick={addScenarioChoice}
-                  className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                  className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
                 >
                   Thêm lựa chọn tình huống
                 </button>
@@ -821,7 +821,7 @@ export default function AdminContentPage() {
                       aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}
                       value={choice.signal}
                       onChange={(event) => updateScenarioChoice(choiceIndex, "signal", event.target.value)}
-                      className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+                      className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
                     >
                       {signalOptions.map((signal) => (
                         <option key={signal} value={signal}>
@@ -868,7 +868,7 @@ export default function AdminContentPage() {
                   .slice()
                   .sort((left, right) => left.sort_order - right.sort_order)
                   .map((choice, choiceIndex) => (
-                    <article key={choice.id ?? `preview-scenario-choice-${choiceIndex}`} className="rounded-2xl bg-white p-3">
+                    <article key={choice.id ?? `preview-scenario-choice-${choiceIndex}`} className="rounded-2xl bg-white dark:bg-[#1a2940] p-3">
                       <p className="font-semibold">
                         {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} ({choice.signal})
                       </p>
@@ -877,14 +877,14 @@ export default function AdminContentPage() {
                   ))
               )}
             </div>
-            <div className="mt-4 rounded-2xl bg-white p-3">
+            <div className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-3">
               <h4 className="text-sm font-semibold">Bài học và phản hồi gợi ý</h4>
               <p className="mt-2 text-sm">{scenarioDraft.recommended_response || "Cách phản hồi nên thử sẽ hiển thị tại đây."}</p>
               <p className="mt-2 text-xs">{scenarioDraft.lesson || "Điều học sinh có thể rút ra sẽ hiển thị tại đây."}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4">
+            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-2xl border border-outline-variant/30 px-4">
               Lưu bản nháp tình huống
             </button>
             <button
@@ -910,7 +910,7 @@ export default function AdminContentPage() {
             <button
               type="button"
               onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
-              className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4"
+              className="min-h-11 rounded-2xl border border-outline-variant/30 px-4"
             >
               Xóa bản nháp tình huống chưa dùng
             </button>

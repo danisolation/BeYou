@@ -39,7 +39,7 @@ function PrivacyContent() {
 
   return (
     <main className="min-h-dvh px-4 py-8 sm:px-6 sm:py-10">
-      <section className="mx-auto max-w-3xl rounded-3xl bg-primary/5 p-5 shadow-sm sm:p-6 lg:p-8">
+      <section className="mx-auto max-w-3xl rounded-2xl bg-primary/5 p-5 shadow-sm sm:p-6 lg:p-8">
         <p className="text-xs font-semibold text-primary">Quyền riêng tư</p>
         <h1 className="mt-2 text-2xl font-bold">Ai có thể xem thông tin của em?</h1>
         <p className="mt-4 text-sm">
@@ -89,7 +89,7 @@ function PrivacyContent() {
           type="button"
           disabled={!checked || isSubmitting}
           onClick={handleContinue}
-          className="mt-6 min-h-12 w-full rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-[#238C78] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 min-h-12 w-full rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Tiếp tục vào Peerlight AI
         </button>

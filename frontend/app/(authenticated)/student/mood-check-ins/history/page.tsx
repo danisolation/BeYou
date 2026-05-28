@@ -88,7 +88,7 @@ export default function StudentMoodCheckInHistoryPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <div className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Lịch sử check-in cảm xúc</h1>
         <p className="mt-4 text-sm">
           Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin tưởng
@@ -130,7 +130,7 @@ function MoodHistoryItem({
     (tag) => contextOptions.find((option) => option.key === tag)?.label ?? tag,
   );
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-sm font-semibold">{item.trend_label}</h2>
         {item.is_demo ? <DemoBadge /> : null}
@@ -263,7 +263,7 @@ function MoodShareControls({
   }
 
   return (
-    <div className="mt-4 rounded-2xl border border-[#D7EFE8] bg-white p-4">
+    <div className="mt-4 rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4">
       <ActiveShareList
         item={item}
         onSharesChanged={onSharesChanged}
@@ -336,7 +336,7 @@ function MoodShareControls({
               <span className="text-xs font-semibold">Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ</span>
               <textarea
                 aria-label="Tóm tắt em muốn chia sẻ thay cho ghi chú đầy đủ"
-                className="mt-2 min-h-28 w-full rounded-2xl border border-[#D7EFE8] p-3 text-sm"
+                className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant/20 p-3 text-sm"
                 value={studentSummary}
                 onChange={(event) => setStudentSummary(event.target.value)}
               />
@@ -367,7 +367,7 @@ function MoodShareControls({
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
+              className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
               onClick={() => {
                 setIsDraftOpen(false);
                 setErrorMessage(null);
@@ -430,7 +430,7 @@ function SharePreviewPanel({
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
+          className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
           onClick={onEdit}
         >
           Sửa lựa chọn
@@ -556,7 +556,7 @@ function RevokeShareConfirmation({
   }, []);
 
   return (
-    <div className="mt-4 rounded-2xl border border-red-200 bg-white p-4">
+    <div className="mt-4 rounded-2xl border border-red-200 bg-white dark:bg-[#1a2940] p-4">
       <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold">
         Thu hồi quyền xem
       </h3>
@@ -567,7 +567,7 @@ function RevokeShareConfirmation({
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-[#D7EFE8] bg-white px-5 py-2 text-xs font-semibold"
+          className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
           onClick={onCancel}
         >
           Giữ nguyên quyền xem

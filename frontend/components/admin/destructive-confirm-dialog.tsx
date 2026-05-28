@@ -53,7 +53,7 @@ export function DestructiveConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4">
       <section
-        className="max-w-md rounded-3xl bg-white p-6 shadow-lg"
+        className="max-w-md rounded-2xl bg-white p-6 shadow-lg"
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -69,7 +69,7 @@ export function DestructiveConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={isConfirming}
-            className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 disabled:opacity-60"
+            className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 disabled:opacity-60"
           >
             {cancelLabel}
           </button>

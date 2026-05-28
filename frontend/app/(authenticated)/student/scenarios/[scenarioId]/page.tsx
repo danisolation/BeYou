@@ -133,7 +133,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
           })}
         </div>
         {message ? (
-          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white p-4 text-sm text-on-background/80">{message}</p>
+          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white dark:bg-[#1a2940] p-4 text-sm text-on-background/80">{message}</p>
         ) : null}
         <button
           className="mt-6 min-h-11 rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"

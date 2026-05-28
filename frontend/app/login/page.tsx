@@ -124,7 +124,7 @@ export default function LoginPage() {
               </p>
 
               {/* Demo accounts section */}
-              <div className="mt-6 rounded-3xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
+              <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
                 <p className="text-xs-md font-semibold text-primary">Tài khoản demo</p>
                 {!capabilitiesLoaded ? (
                   <p className="mt-1 text-xs-md text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>

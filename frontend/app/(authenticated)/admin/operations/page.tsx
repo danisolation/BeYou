@@ -128,7 +128,7 @@ export default function AdminOperationsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-3xl bg-white p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Vận hành pilot an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Sẵn sàng mở pilot trường học</h1>
         <p className="mt-3 max-w-3xl text-sm">
@@ -139,7 +139,7 @@ export default function AdminOperationsPage() {
         <p className="mt-3 text-xs">Cập nhật: {generatedAt}</p>
       </header>
 
-      <section className="rounded-3xl bg-primary/5 p-6">
+      <section className="rounded-2xl bg-primary/5 p-6">
         <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {(dashboard?.privacy_notes ?? [
@@ -149,16 +149,16 @@ export default function AdminOperationsPage() {
             <li key={note}>• {note}</li>
           ))}
         </ul>
-        <p className="mt-4 rounded-2xl bg-white p-4 text-xs font-semibold text-primary">
+        <p className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-4 text-xs font-semibold text-primary">
           Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ, không có đường mở hồ sơ học sinh.
         </p>
-        <p className="mt-4 rounded-2xl bg-white p-4 text-xs font-semibold text-primary">
+        <p className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-4 text-xs font-semibold text-primary">
           Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng,
           liên kết đang hoạt động và SOS của học sinh quyết định.
         </p>
       </section>
 
-      <form className="grid gap-4 rounded-3xl bg-white p-6 shadow-sm md:grid-cols-3" onSubmit={applyFilters}>
+      <form className="grid gap-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm md:grid-cols-3" onSubmit={applyFilters}>
         <label className="space-y-2 text-xs font-semibold">
           Từ thời điểm
           <input
@@ -166,7 +166,7 @@ export default function AdminOperationsPage() {
             type="datetime-local"
             value={draftFilters.startAt}
             onChange={(event) => updateFilter("startAt", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
           />
         </label>
         <label className="space-y-2 text-xs font-semibold">
@@ -176,7 +176,7 @@ export default function AdminOperationsPage() {
             type="datetime-local"
             value={draftFilters.endAt}
             onChange={(event) => updateFilter("endAt", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
           />
         </label>
         <label className="space-y-2 text-xs font-semibold">
@@ -185,7 +185,7 @@ export default function AdminOperationsPage() {
             aria-label="Vai trò người thực hiện"
             value={draftFilters.actorRole}
             onChange={(event) => updateFilter("actorRole", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
           >
             {roleOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -200,7 +200,7 @@ export default function AdminOperationsPage() {
             aria-label="Loại hành động"
             value={draftFilters.actionType}
             onChange={(event) => updateFilter("actionType", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
             placeholder="vd: account_status_changed"
           />
         </label>
@@ -210,7 +210,7 @@ export default function AdminOperationsPage() {
             aria-label="Loại mục tiêu"
             value={draftFilters.targetType}
             onChange={(event) => updateFilter("targetType", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
             placeholder="vd: account_profile"
           />
         </label>
@@ -220,7 +220,7 @@ export default function AdminOperationsPage() {
             aria-label="Trạng thái audit"
             value={draftFilters.status}
             onChange={(event) => updateFilter("status", event.target.value)}
-            className="min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+            className="min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
             placeholder="vd: success"
           />
         </label>
@@ -229,8 +229,8 @@ export default function AdminOperationsPage() {
         </button>
       </form>
 
-      {isLoading ? <p className="rounded-3xl bg-white p-6 shadow-sm">Đang tải metadata vận hành pilot...</p> : null}
-      {error ? <p className="rounded-3xl bg-white p-6 text-red-700 shadow-sm">{error}</p> : null}
+      {isLoading ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">Đang tải metadata vận hành pilot...</p> : null}
+      {error ? <p className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 text-red-700 shadow-sm">{error}</p> : null}
 
       {dashboard ? (
         <>
@@ -435,7 +435,7 @@ function PilotLaunchChecklistPanel({ checklist }: { checklist: PilotLaunchCheckl
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {checklist.map((item) => (
-        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={item.key} className="rounded-2xl border border-outline-variant/20 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-semibold">{item.label}</h3>
             <StatusBadge status={item.status} />
@@ -475,7 +475,7 @@ function PilotDataSafetyPanel({ summary }: { summary: PilotDataSafetySummary | n
 
 function PilotDataSafetyBucketCard({ bucket }: { bucket: PilotDataSafetyBucket }) {
   return (
-    <article className="rounded-2xl border border-[#D7EFE8] p-4">
+    <article className="rounded-2xl border border-outline-variant/20 p-4">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-semibold">{bucket.label}</h3>
         <StatusBadge status={bucket.status} />
@@ -520,7 +520,7 @@ function PilotHandoffItems({
     <div className="space-y-3">
       {title ? <h3 className="text-xs font-semibold text-primary">{title}</h3> : null}
       {items.map((item) => (
-        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={item.key} className="rounded-2xl border border-outline-variant/20 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h4 className="font-semibold">{item.label}</h4>
             <StatusBadge status={item.status} />
@@ -549,7 +549,7 @@ function DemoSeedPanel({ demoSeed }: { demoSeed: DemoSeedSummary }) {
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {demoSeed.roles.map((role) => (
-          <article key={role.role} className="rounded-2xl border border-[#D7EFE8] p-4">
+          <article key={role.role} className="rounded-2xl border border-outline-variant/20 p-4">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="font-semibold">{role.role}</h3>
               <StatusBadge status={role.present && role.active && role.is_demo ? "pass" : "fail"} />
@@ -714,7 +714,7 @@ function SmokeChecklist({ items }: { items: ProductionSmokeChecklistItem[] }) {
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={item.key} className="rounded-2xl border border-outline-variant/20 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-semibold">{item.label}</h3>
             <StatusBadge status={item.status} />
@@ -741,7 +741,7 @@ function DeploymentGuardrailsPanel({ items }: { items: DeploymentGuardrailItem[]
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {items.map((item) => (
-        <article key={item.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={item.key} className="rounded-2xl border border-outline-variant/20 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-semibold">{item.key}</h3>
             <StatusBadge status={item.status} />
@@ -769,7 +769,7 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {profiles.map((profile) => (
-        <article key={profile.key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={profile.key} className="rounded-2xl border border-outline-variant/20 p-4">
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-semibold">{profile.label}</h3>
             <StatusBadge status={profile.status} />
@@ -798,7 +798,7 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold">{value}</p>
       <p className="mt-3 text-sm">{description}</p>
@@ -818,7 +818,7 @@ function Panel({
   testId?: string;
 }) {
   return (
-    <section className="space-y-4 rounded-3xl bg-white p-6 shadow-sm" data-testid={testId}>
+    <section className="space-y-4 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" data-testid={testId}>
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
         <p className="mt-2 text-sm">{description}</p>
@@ -863,7 +863,7 @@ function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
   return (
     <div className="space-y-3">
       {deliveries.map((delivery) => (
-        <article key={delivery.delivery_key} className="rounded-2xl border border-[#D7EFE8] p-4">
+        <article key={delivery.delivery_key} className="rounded-2xl border border-outline-variant/20 p-4">
           <p className="font-semibold">
             {delivery.provider} · {delivery.status} · {delivery.recipient_role}
           </p>
@@ -879,7 +879,7 @@ function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
 
 function AuditEventCard({ event }: { event: AuditEventItem }) {
   return (
-    <article className="rounded-2xl border border-[#D7EFE8] p-4">
+    <article className="rounded-2xl border border-outline-variant/20 p-4">
       <p className="font-semibold">
         {event.action} · {event.status}
       </p>

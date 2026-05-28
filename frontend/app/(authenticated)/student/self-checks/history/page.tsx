@@ -43,7 +43,7 @@ export default function SelfCheckHistoryPage() {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Xem lịch sử test tâm lý</h1>
         <p className="mt-3 text-sm">
           Câu trả lời chi tiết là riêng tư với em theo mặc định. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
@@ -60,7 +60,7 @@ export default function SelfCheckHistoryPage() {
           {items.map((item) => (
             <Link
               key={item.attempt_id}
-              className="block rounded-3xl bg-white p-6 shadow-sm"
+              className="block rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm"
               href={`/student/self-checks/history/${item.attempt_id}`}
             >
               <div className="flex flex-wrap items-center gap-2">

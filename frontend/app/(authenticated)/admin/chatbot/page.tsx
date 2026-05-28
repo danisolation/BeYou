@@ -73,7 +73,7 @@ export default function AdminChatbotPage() {
 
       {isLoading ? <p>Đang tải thông tin...</p> : null}
       {config ? (
-        <form className="space-y-6 rounded-3xl bg-white p-6 shadow-sm" onSubmit={handleSave}>
+        <form className="space-y-6 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" onSubmit={handleSave}>
           <section className="rounded-2xl bg-primary/5 p-4">
             <h2 className="text-sm font-semibold">Thông tin provider</h2>
             <p className="mt-2 text-sm">
@@ -90,7 +90,7 @@ export default function AdminChatbotPage() {
               aria-label="Từ khóa nguy cơ cao"
               value={keywordsText}
               onChange={(event) => setKeywordsText(event.target.value)}
-              className="min-h-40 w-full rounded-2xl border border-[#CFE8E1] p-4"
+              className="min-h-40 w-full rounded-2xl border border-outline-variant/30 p-4"
             />
           </label>
 
@@ -100,7 +100,7 @@ export default function AdminChatbotPage() {
               aria-label="Lời nhắn khi cần ưu tiên an toàn"
               value={escalationMessage}
               onChange={(event) => setEscalationMessage(event.target.value)}
-              className="min-h-32 w-full rounded-2xl border border-[#CFE8E1] p-4"
+              className="min-h-32 w-full rounded-2xl border border-outline-variant/30 p-4"
             />
           </label>
 
@@ -110,7 +110,7 @@ export default function AdminChatbotPage() {
               aria-label="Lời nhắn người lớn tin tưởng"
               value={trustedAdultMessage}
               onChange={(event) => setTrustedAdultMessage(event.target.value)}
-              className="min-h-28 w-full rounded-2xl border border-[#CFE8E1] p-4"
+              className="min-h-28 w-full rounded-2xl border border-outline-variant/30 p-4"
             />
           </label>
 

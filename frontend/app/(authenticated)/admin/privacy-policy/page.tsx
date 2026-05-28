@@ -73,7 +73,7 @@ export default function AdminPrivacyPolicyPage() {
 
   if (policy === null) {
     return (
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h1 className="text-2xl font-bold">Chưa mở được chính sách riêng tư</h1>
         <p className="mt-3 text-sm">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
       </section>
@@ -82,7 +82,7 @@ export default function AdminPrivacyPolicyPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Chính sách riêng tư v1.4</h1>
         <p className="mt-3 max-w-3xl text-sm">
@@ -92,7 +92,7 @@ export default function AdminPrivacyPolicyPage() {
       </header>
 
       <form
-        className="space-y-6 rounded-3xl bg-white p-6 shadow-sm"
+        className="space-y-6 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm"
         onSubmit={(event) => {
           event.preventDefault();
           void savePolicy();
@@ -100,7 +100,7 @@ export default function AdminPrivacyPolicyPage() {
       >
         <section className="space-y-4">
           <h2 className="text-sm font-semibold">Nhắc nhở mặc định</h2>
-          <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
+          <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
               aria-label="Bật mặc định nhắc nhở trong Peerlight AI"
@@ -128,7 +128,7 @@ export default function AdminPrivacyPolicyPage() {
                 onChange={(event) =>
                   setPolicy({ ...policy, default_quiet_hours_start: event.target.value || null })
                 }
-                className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="quiet-end">
@@ -139,7 +139,7 @@ export default function AdminPrivacyPolicyPage() {
                 type="time"
                 value={policy.default_quiet_hours_end ?? ""}
                 onChange={(event) => setPolicy({ ...policy, default_quiet_hours_end: event.target.value || null })}
-                className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
             <label className="block text-xs" htmlFor="timezone">
@@ -148,18 +148,18 @@ export default function AdminPrivacyPolicyPage() {
                 id="timezone"
                 value={policy.default_timezone}
                 onChange={(event) => setPolicy({ ...policy, default_timezone: event.target.value })}
-                className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] bg-white px-4"
+                className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 bg-white px-4"
               />
             </label>
           </div>
         </section>
 
-        <section className="rounded-3xl bg-primary/5 p-4">
+        <section className="rounded-2xl bg-primary/5 p-4">
           <h2 className="text-sm font-semibold">Kênh nhắc nhở</h2>
           <p className="mt-2 text-sm">Chỉ kênh trong ứng dụng được bật trong v1.4; các kênh ngoài vẫn đang hoãn.</p>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {policy.channel_boundaries.map((channel) => (
-              <article key={channel.key} className="rounded-2xl bg-white p-4">
+              <article key={channel.key} className="rounded-2xl bg-white dark:bg-[#1a2940] p-4">
                 <p className="font-semibold">{channel.label}</p>
                 <p className="mt-1 text-xs">
                   {channel.available ? "Đang hỗ trợ trong v1.4" : "Đang hoãn để cần thêm đồng ý và vận hành an toàn"}
@@ -171,7 +171,7 @@ export default function AdminPrivacyPolicyPage() {
 
         <section className="space-y-4">
           <h2 className="text-sm font-semibold">Chia sẻ và lý do truy cập</h2>
-          <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
+          <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
               aria-label="Cho phép học sinh tự chọn chia sẻ ghi chú/tóm tắt"
@@ -181,7 +181,7 @@ export default function AdminPrivacyPolicyPage() {
             />
             <span>Cho phép học sinh tự chọn chia sẻ ghi chú/tóm tắt với người lớn đang liên kết.</span>
           </label>
-          <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
+          <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
               aria-label="Yêu cầu lý do trước khi người lớn xem tóm tắt hỗ trợ"
@@ -193,7 +193,7 @@ export default function AdminPrivacyPolicyPage() {
             />
             <span>Yêu cầu lý do trước khi người lớn xem tóm tắt hỗ trợ được bảo vệ.</span>
           </label>
-          <label className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-4">
+          <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
               aria-label="Yêu cầu lý do cho các lượt đọc ghi chú/tóm tắt học sinh đã chia sẻ"
@@ -207,7 +207,7 @@ export default function AdminPrivacyPolicyPage() {
           </label>
         </section>
 
-        <fieldset className="space-y-3 rounded-3xl border border-[#D7EFE8] p-4">
+        <fieldset className="space-y-3 rounded-2xl border border-outline-variant/20 p-4">
           <legend className="text-sm font-semibold">Lý do truy cập được phép</legend>
           <p className="text-sm">Chỉ dùng mã lý do kiểm soát sẵn; không thu lý do tự nhập.</p>
           {ACCESS_REASON_OPTIONS.map((reason) => (
@@ -224,7 +224,7 @@ export default function AdminPrivacyPolicyPage() {
           ))}
         </fieldset>
 
-        <section className="rounded-3xl bg-primary/5 p-4">
+        <section className="rounded-2xl bg-primary/5 p-4">
           <h2 className="text-sm font-semibold">Ranh giới vận hành</h2>
           <p className="mt-2 text-sm">
             Operations chỉ hiển thị count/status metadata, không xuất dữ liệu thô, không drilldown học sinh, không dùng để

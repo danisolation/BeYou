@@ -43,7 +43,7 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">{attempt.test_title}</h1>
           {attempt.is_demo ? <DemoBadge /> : null}
@@ -54,17 +54,17 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
         </p>
       </header>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h2 className="text-sm font-semibold">{attempt.supportive_headline}</h2>
         <p className="mt-3 text-sm">{displayRiskLabel(attempt.state_label)}</p>
         <p className="mt-4 text-xs">Điểm tham khảo: {attempt.score}</p>
       </section>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h2 className="text-sm font-semibold">Câu trả lời của em</h2>
         <div className="mt-4 space-y-4">
           {attempt.answers.map((answer) => (
-            <article key={`${answer.question_id ?? answer.sort_order}-${answer.choice_id ?? answer.choice_text_snapshot}`} className="rounded-2xl border border-[#CFE8E1] p-4">
+            <article key={`${answer.question_id ?? answer.sort_order}-${answer.choice_id ?? answer.choice_text_snapshot}`} className="rounded-2xl border border-outline-variant/30 p-4">
               <p className="text-sm">{answer.question_text_snapshot}</p>
               <p className="mt-2 text-xs">{answer.choice_text_snapshot}</p>
             </article>

@@ -99,7 +99,7 @@ export default function AdminMoodCheckInsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-3xl bg-white p-6 shadow-sm">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
         <h1 className="mt-2 text-2xl font-bold">Mood check-in</h1>
         <p className="mt-3 max-w-3xl text-sm">
@@ -110,7 +110,7 @@ export default function AdminMoodCheckInsPage() {
         </p>
       </header>
 
-      <section className="rounded-3xl bg-primary/5 p-6">
+      <section className="rounded-2xl bg-primary/5 p-6">
         <h2 className="text-sm font-semibold">Ranh giới</h2>
         <p className="mt-3 text-sm">
           Preview chỉ hiển thị nội dung cấu hình; không có ghi chú riêng tư, dữ liệu học sinh thô, export hay leaderboard.
@@ -119,7 +119,7 @@ export default function AdminMoodCheckInsPage() {
 
       {isLoading ? <p>Đang tải cấu hình...</p> : null}
       {configs.length > 0 ? (
-        <section className="rounded-3xl bg-white p-6 shadow-sm">
+        <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
           <h2 className="text-sm font-semibold">Cấu hình hiện có</h2>
           <div className="mt-3 flex flex-wrap gap-3">
             {configs.map((config) => (
@@ -127,7 +127,7 @@ export default function AdminMoodCheckInsPage() {
                 key={config.id}
                 type="button"
                 onClick={() => selectConfig(config)}
-                className="min-h-11 rounded-2xl border border-[#CFE8E1] px-4 font-semibold"
+                className="min-h-11 rounded-2xl border border-outline-variant/30 px-4 font-semibold"
               >
                 {config.name} · {config.status}
               </button>
@@ -136,7 +136,7 @@ export default function AdminMoodCheckInsPage() {
         </section>
       ) : null}
 
-      <form className="space-y-5 rounded-3xl bg-white p-6 shadow-sm" onSubmit={handleSave}>
+      <form className="space-y-5 rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm" onSubmit={handleSave}>
         <div className="grid gap-4 md:grid-cols-3">
           <TextInput label="Tên cấu hình" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} />
           <label className="block text-xs font-semibold">
@@ -144,7 +144,7 @@ export default function AdminMoodCheckInsPage() {
             <select
               value={draft.status}
               onChange={(event) => setDraft({ ...draft, status: event.target.value as AdminMoodCheckInConfigPayload["status"] })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
             >
               <option value="draft">draft</option>
               <option value="published">published</option>
@@ -200,14 +200,14 @@ export default function AdminMoodCheckInsPage() {
           <button type="submit" disabled={isSaving} className="min-h-11 rounded-2xl bg-primary px-5 font-semibold text-white">
             {isSaving ? "Đang lưu..." : "Lưu cấu hình"}
           </button>
-          <button type="button" onClick={handlePreview} className="min-h-11 rounded-2xl border border-[#CFE8E1] px-5 font-semibold">
+          <button type="button" onClick={handlePreview} className="min-h-11 rounded-2xl border border-outline-variant/30 px-5 font-semibold">
             Xem preview
           </button>
         </div>
       </form>
 
       {preview ? (
-        <section className="rounded-3xl bg-white p-6 shadow-sm">
+        <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
           <h2 className="text-sm font-semibold">Preview</h2>
           <p className="mt-3 text-sm">{preview.student_prompt}</p>
           <p className="mt-2 text-sm">{preview.adult_guidance}</p>
@@ -237,7 +237,7 @@ function TextInput({
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-11 w-full rounded-2xl border border-[#CFE8E1] px-3"
+        className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant/30 px-3"
       />
     </label>
   );
@@ -258,7 +258,7 @@ function TextAreaInput({
       <textarea
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-24 w-full rounded-2xl border border-[#CFE8E1] p-3"
+        className="mt-2 min-h-24 w-full rounded-2xl border border-outline-variant/30 p-3"
       />
     </label>
   );

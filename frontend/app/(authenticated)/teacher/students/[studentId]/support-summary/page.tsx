@@ -125,7 +125,7 @@ export function AdultSupportSummaryDetail({
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">Tóm tắt hỗ trợ được phép xem</h1>
           {summary.is_demo ? <DemoBadge /> : null}
@@ -137,7 +137,7 @@ export function AdultSupportSummaryDetail({
         </p>
       </header>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {summary.privacy_notes.map((note) => (
@@ -188,7 +188,7 @@ function AccessReasonPrompt({
   onSubmit: () => void;
 }) {
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <h1 className="text-2xl font-bold">Cho biết lý do hỗ trợ trước khi xem</h1>
       <p className="mt-3 text-sm">{detail.message}</p>
       <div className="mt-4 rounded-2xl bg-primary/5 p-4 text-sm">
@@ -202,7 +202,7 @@ function AccessReasonPrompt({
       <fieldset className="mt-5 space-y-3">
         <legend className="text-sm font-semibold">Chọn lý do phù hợp</legend>
         {detail.allowed_reasons.map((reason) => (
-          <label key={reason.code} className="flex items-start gap-3 rounded-2xl border border-[#D7EFE8] p-3 text-sm">
+          <label key={reason.code} className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-3 text-sm">
             <input
               className="mt-1"
               type="radio"
@@ -230,7 +230,7 @@ function AccessReasonPrompt({
 
 function AccessReasonAcceptedCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <h2 className="text-sm font-semibold">Lý do truy cập đã ghi nhận</h2>
       <p className="mt-3 text-sm">
         {summary.access_reason.reason_label ?? "Lý do hỗ trợ đã được ghi nhận"} — chỉ lưu dưới dạng mã metadata để minh bạch
@@ -245,7 +245,7 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
   const plan = summary.support_plan;
   if (!plan.shared_with_viewer) {
     return (
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h2 className="text-sm font-semibold">Người lớn tin tưởng</h2>
         <p className="mt-3 text-sm">
           Học sinh chưa chia sẻ kế hoạch này với bạn, hoặc kế hoạch đang tạm dừng/ngừng chia sẻ.
@@ -255,7 +255,7 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
     );
   }
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <h2 className="text-sm font-semibold">Người lớn tin tưởng</h2>
       <p className="mt-3 text-xs">Được chia sẻ với {plan.selected_adult_count} người lớn tin tưởng.</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -276,7 +276,7 @@ function SupportPlanCard({ summary }: { summary: AdultSupportSummaryResponse }) 
 
 function AdultSharedMoodNotesCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <h2 className="text-sm font-semibold">Ghi chú được học sinh đồng ý chia sẻ</h2>
       <p className="mt-3 text-sm">Chỉ hiển thị những nội dung học sinh đã chủ động chọn chia sẻ với bạn.</p>
       <div className="mt-4 space-y-3">
@@ -306,7 +306,7 @@ function AdultSharedMoodNotesCard({ summary }: { summary: AdultSupportSummaryRes
 function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   const mood = summary.mood_summary;
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-sm">
+    <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <h2 className="text-sm font-semibold">Xu hướng check-in cảm xúc</h2>
       <p className="mt-3 text-xs">Tóm tắt tổng hợp</p>
       {mood.latest_trend_label ? (

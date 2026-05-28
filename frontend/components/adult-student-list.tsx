@@ -123,13 +123,13 @@ export function AdultStudentList({
                 <p className="mt-2 text-sm">Peerlight AI chỉ hiển thị phần tóm tắt được phép xem để hỗ trợ học sinh.</p>
                 <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link
-                    className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-[#238C78]"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80"
                     href={`${summaryBasePath}/${student.id}/self-check-summaries`}
                   >
                     {summaryCta}
                   </Link>
                   <Link
-                    className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-white"
+                    className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant/30 px-4 font-semibold hover:border-accent hover:bg-white"
                     href={`${summaryBasePath}/${student.id}/support-summary`}
                   >
                     Xem kế hoạch & mood
@@ -190,7 +190,7 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
           {notifications.slice(0, 5).map((notification) => {
             const href = safeInternalHref(notification.href);
             return (
-              <article key={notification.id} className="rounded-2xl border border-[#D7EFE8] p-4">
+              <article key={notification.id} className="rounded-2xl border border-outline-variant/20 p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-semibold">{notification.title}</h3>
                   {notification.is_demo ? <DemoBadge /> : null}

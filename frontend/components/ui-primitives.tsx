@@ -54,7 +54,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 export function PageHeader({ eyebrow, title, description, actions, children, className }: PageHeaderProps) {
   return (
-    <header className={cn("flex flex-col gap-6 rounded-3xl bg-primary/5 p-6 sm:p-8", className)}>
+    <header className={cn("flex flex-col gap-6 rounded-2xl bg-primary/5 p-6 sm:p-8", className)}>
       <div className="max-w-3xl">
         {eyebrow ? <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p> : null}
         <h1 className="mt-2 text-display">{title}</h1>
@@ -67,7 +67,7 @@ export function PageHeader({ eyebrow, title, description, actions, children, cla
 
 export function Section({ title, description, actions, children, className }: SectionProps) {
   return (
-    <section className={cn("rounded-3xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>
+    <section className={cn("rounded-2xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>
       {title || description || actions ? (
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -125,12 +125,12 @@ export function StatusBadge({ tone = "neutral", className, children }: StatusBad
 }
 
 export function ResponsiveTable({ children, className }: PrimitiveProps) {
-  return <div className={cn("overflow-x-auto rounded-3xl ring-1 ring-outline-variant", className)}>{children}</div>;
+  return <div className={cn("overflow-x-auto rounded-2xl ring-1 ring-outline-variant", className)}>{children}</div>;
 }
 
 export function LoadingState({ message = "Đang tải thông tin...", className }: LoadingStateProps) {
   return (
-    <div role="status" aria-live="polite" aria-busy="true" className={cn("rounded-3xl bg-white p-6 text-sm shadow-sm ring-1 ring-outline-variant", className)}>
+    <div role="status" aria-live="polite" aria-busy="true" className={cn("rounded-2xl bg-white p-6 text-sm shadow-sm ring-1 ring-outline-variant", className)}>
       {message}
     </div>
   );
@@ -142,7 +142,7 @@ export function ErrorState({
   className,
 }: ErrorStateProps) {
   return (
-    <div role="alert" aria-live="assertive" className={cn("rounded-3xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
+    <div role="alert" aria-live="assertive" className={cn("rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
       <h2 className="text-sm font-semibold text-red-700">{title}</h2>
       <p className="mt-3 text-sm text-red-700">{message}</p>
     </div>

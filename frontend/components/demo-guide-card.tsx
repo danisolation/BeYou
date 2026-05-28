@@ -37,8 +37,8 @@ export function DemoGuideCard({ title, body, steps, actions = [] }: DemoGuideCar
               href={action.href}
               className={
                 action.primary
-                  ? "inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-[#238C78]"
-                  : "inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#CFE8E1] px-4 font-semibold hover:border-accent hover:bg-primary/5"
+                  ? "inline-flex min-h-11 items-center justify-center rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80"
+                  : "inline-flex min-h-11 items-center justify-center rounded-2xl border border-outline-variant/30 px-4 font-semibold hover:border-accent hover:bg-primary/5"
               }
             >
               {action.label}

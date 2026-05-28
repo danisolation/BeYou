@@ -78,7 +78,7 @@ export default function AdminLinksPage() {
       {notice ? <p role="status" className="rounded-2xl border border-accent/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-2xl border border-warning/40 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
-      <section className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-sm sm:p-6">
         <h2 className="text-sm font-semibold">Danh sách liên kết</h2>
         {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
         {!isLoading && links.length === 0 ? (
@@ -89,7 +89,7 @@ export default function AdminLinksPage() {
         ) : null}
         <div className="mt-5 space-y-4">
           {links.map((link) => (
-            <article key={link.id} className="rounded-2xl border border-[#D7EFE8] p-4">
+            <article key={link.id} className="rounded-2xl border border-outline-variant/20 p-4">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">

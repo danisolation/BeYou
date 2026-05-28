@@ -27,10 +27,10 @@ function displayRiskLabel(label: string) {
 
 function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-sm font-semibold">{testName(summary)}</h3>
-        <span className="rounded-full border border-[#CFE8E1] px-3 py-1 text-xs">{displayRiskLabel(summary.state_label)}</span>
+        <span className="rounded-full border border-outline-variant/30 px-3 py-1 text-xs">{displayRiskLabel(summary.state_label)}</span>
         {summary.is_demo ? <DemoBadge /> : null}
       </div>
       <p className="mt-3 text-xs">Hoàn thành: {new Date(summary.completed_at).toLocaleString("vi-VN")}</p>
@@ -81,7 +81,7 @@ export function AdultSummaryDetail({
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-3xl bg-primary/5 p-6 shadow-sm">
+      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold">Tóm tắt được phép xem</h1>
           {summary.is_demo ? <DemoBadge /> : null}
@@ -92,7 +92,7 @@ export function AdultSummaryDetail({
         </p>
       </header>
 
-      <section className="rounded-3xl bg-white p-6 shadow-sm">
+      <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <h2 className="text-sm font-semibold">Quyền riêng tư</h2>
         <p className="mt-3 text-sm">Bạn đang xem phần tóm tắt được phép xem. Câu trả lời riêng tư và chi tiết điểm không hiển thị tại đây.</p>
         <p className="mt-3 text-sm">Peerlight AI không hiển thị câu trả lời riêng tư của học sinh tại đây. Nội dung này chỉ nhằm hỗ trợ em đúng lúc.</p>
