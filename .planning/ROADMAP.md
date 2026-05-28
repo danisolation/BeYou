@@ -25,7 +25,7 @@
 - [x] **Phase 54: PWA Foundation & App Shell** - Manifest, service worker, offline fallback, app shell caching, install prompt.
 - [x] **Phase 55: Mobile Navigation System** - Bottom tab bar for student, drawer for admin, responsive nav switching, touch targets.
 - [x] **Phase 56: Student Pages Responsive** - Mobile-first layouts for all student pages with proper breakpoints.
-- [ ] **Phase 57: Admin Pages Responsive** - Mobile-first layouts for all admin pages (users, links, operations, content wizard).
+- [x] **Phase 57: Admin Pages Responsive** - Mobile-first layouts for all admin pages (users, links, operations, content wizard).
 - [ ] **Phase 58: Teacher/Parent & Public Pages Responsive** - Mobile-first layouts for teacher, parent, landing, login, privacy pages.
 - [ ] **Phase 59: Animations & Polish** - Page transitions, micro-interactions, skeleton loading consistency, pull-to-refresh.
 
