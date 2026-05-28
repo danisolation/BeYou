@@ -367,7 +367,7 @@ function MoodShareControls({
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
+              className="min-h-11 rounded-full border border-outline-variant/20 bg-white dark:bg-[#1e2d40] dark:text-white px-5 py-2 text-xs font-semibold"
               onClick={() => {
                 setIsDraftOpen(false);
                 setErrorMessage(null);
@@ -430,7 +430,7 @@ function SharePreviewPanel({
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
+          className="min-h-11 rounded-full border border-outline-variant/20 bg-white dark:bg-[#1e2d40] dark:text-white px-5 py-2 text-xs font-semibold"
           onClick={onEdit}
         >
           Sửa lựa chọn
@@ -567,7 +567,7 @@ function RevokeShareConfirmation({
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           type="button"
-          className="min-h-11 rounded-full border border-outline-variant/20 bg-white px-5 py-2 text-xs font-semibold"
+          className="min-h-11 rounded-full border border-outline-variant/20 bg-white dark:bg-[#1e2d40] dark:text-white px-5 py-2 text-xs font-semibold"
           onClick={onCancel}
         >
           Giữ nguyên quyền xem

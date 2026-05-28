@@ -162,7 +162,7 @@ export default function StudentMoodCheckInPage() {
               id="energy-level"
               value={energyLevel}
               onChange={(event) => setEnergyLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white px-4 text-on-background"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white dark:bg-[#1e2d40] px-4 text-on-background"
             >
               {[1, 2, 3, 4, 5].map((value) => (
                 <option key={value} value={value}>
@@ -179,7 +179,7 @@ export default function StudentMoodCheckInPage() {
               id="stress-level"
               value={stressLevel}
               onChange={(event) => setStressLevel(Number(event.target.value))}
-              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white px-4 text-on-background"
+              className="mt-2 min-h-11 w-full rounded-xl border border-outline-variant bg-white dark:bg-[#1e2d40] px-4 text-on-background"
             >
               {[1, 2, 3, 4, 5].map((value) => (
                 <option key={value} value={value}>
@@ -200,7 +200,7 @@ export default function StudentMoodCheckInPage() {
                 className={`flex items-center gap-2 rounded-xl border px-4 py-3 transition-colors ${
                   contextTags.includes(tag.key)
                     ? "border-primary bg-primary/10"
-                    : "border-outline-variant bg-white"
+                    : "border-outline-variant bg-white dark:bg-[#1e2d40]"
                 }`}
               >
                 <input
