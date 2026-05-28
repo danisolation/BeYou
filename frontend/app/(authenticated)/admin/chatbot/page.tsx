@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Bot } from "lucide-react";
 
+import { PageSkeleton } from "@/components/skeletons";
 import {
   type ChatbotSafetyConfig,
   getAdminChatbotConfig,
@@ -74,7 +75,7 @@ export default function AdminChatbotPage() {
         </p>
       </header>
 
-      {isLoading ? <p>Đang tải thông tin...</p> : null}
+      {isLoading ? <PageSkeleton /> : null}
       {config ? (
         <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
           <section className="rounded-2xl bg-primary/5 p-4">

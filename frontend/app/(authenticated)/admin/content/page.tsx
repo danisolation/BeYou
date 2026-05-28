@@ -658,7 +658,7 @@ export default function AdminContentPage() {
         };
 
   return (
-    <main className="mx-auto max-w-[1200px] space-y-5 pb-20 lg:pb-0">
+    <main className="mx-auto max-w-[1200px] space-y-5 pb-20 md:pb-0">
       {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">

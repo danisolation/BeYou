@@ -129,7 +129,7 @@ export default function AdminOperationsPage() {
   }
 
   return (
-    <section className="space-y-6 pb-20 lg:pb-0">
+    <section className="space-y-6 pb-20 md:pb-0">
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
