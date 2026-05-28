@@ -152,9 +152,11 @@ describe("admin management UI", () => {
     render(<AdminUsersPage />);
 
     expect(await screen.findByText("Quản lý tài khoản")).toBeInTheDocument();
-    expect(screen.getAllByText("Vai trò").length).toBeGreaterThan(0);
-    expect(screen.getByText("Trạng thái tài khoản")).toBeInTheDocument();
-    expect(screen.queryByText("Xóa tài khoản demo")).not.toBeInTheDocument();
+    // Role selector is present with Vietnamese options
+    expect(screen.getByRole("option", { name: "Học sinh" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Giáo viên" })).toBeInTheDocument();
+    // Demo delete button not shown for non-demo user
+    expect(screen.queryByText(/Xóa demo/)).not.toBeInTheDocument();
   });
 
   it("shows exact destructive confirmation strings", () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Users } from "lucide-react";
+import { Users, Search, UserPlus, ChevronDown, ChevronUp, ShieldAlert, Trash2 } from "lucide-react";
 
 import {
   CONFIRM_DELETE_DEMO_ACCOUNT_COPY,
@@ -25,6 +25,78 @@ type ConfirmationState =
   | { type: "role"; user: AdminUser; role: AdminUser["role"] }
   | null;
 
+type RoleFilter = "all" | "student" | "teacher" | "parent" | "admin";
+type StatusFilter = "all" | "active" | "disabled";
+
+function RoleBadge({ role }: { role: AdminUser["role"] }) {
+  const styles: Record<string, string> = {
+    student: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+    teacher: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+    parent: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
+    admin: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+  };
+  const labels: Record<string, string> = {
+    student: "Học sinh",
+    teacher: "Giáo viên",
+    parent: "Phụ huynh",
+    admin: "Quản trị",
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${styles[role] ?? ""}`}>
+      {labels[role] ?? role}
+    </span>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const isActive = status === "active";
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+        isActive
+          ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
+          : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+      }`}
+    >
+      {isActive ? "Hoạt động" : "Đã khóa"}
+    </span>
+  );
+}
+
+function InitialAvatar({ name, role }: { name: string; role: string }) {
+  const colors: Record<string, string> = {
+    student: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+    teacher: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+    parent: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
+    admin: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+  };
+  const initials = name
+    .split(" ")
+    .slice(-2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+  return (
+    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold ${colors[role] ?? "bg-gray-100 text-gray-700"}`}>
+      {initials}
+    </div>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4">
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-on-background/10" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-32 rounded bg-on-background/10" />
+          <div className="h-3 w-48 rounded bg-on-background/10" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<Record<string, AdminUser["role"]>>({});
@@ -33,6 +105,10 @@ export default function AdminUsersPage() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [showForm, setShowForm] = useState(false);
 
   async function refreshUsers() {
     const loadedUsers = await listUsers();
@@ -43,6 +119,30 @@ export default function AdminUsersPage() {
   useEffect(() => {
     refreshUsers().finally(() => setIsLoading(false));
   }, []);
+
+  const filteredUsers = useMemo(() => {
+    return users.filter((user) => {
+      if (roleFilter !== "all" && user.role !== roleFilter) return false;
+      if (statusFilter !== "all" && user.status !== statusFilter) return false;
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        return (
+          user.full_name.toLowerCase().includes(q) ||
+          user.email.toLowerCase().includes(q) ||
+          (user.school ?? "").toLowerCase().includes(q)
+        );
+      }
+      return true;
+    });
+  }, [users, roleFilter, statusFilter, search]);
+
+  const stats = useMemo(() => {
+    const studentCount = users.filter((u) => u.role === "student").length;
+    const teacherCount = users.filter((u) => u.role === "teacher").length;
+    const parentCount = users.filter((u) => u.role === "parent").length;
+    const activeCount = users.filter((u) => u.status === "active").length;
+    return { studentCount, teacherCount, parentCount, activeCount, total: users.length };
+  }, [users]);
 
   const dialogProps = useMemo(() => {
     if (confirmation?.type === "disable") {
@@ -70,9 +170,7 @@ export default function AdminUsersPage() {
   }, [confirmation]);
 
   async function handleConfirm() {
-    if (confirmation === null) {
-      return;
-    }
+    if (confirmation === null) return;
     const confirmed = confirmation;
     try {
       setError("");
@@ -108,87 +206,177 @@ export default function AdminUsersPage() {
       await createUser(payload);
       await refreshUsers();
       setNotice(`Đã tạo tài khoản ${payload.full_name}.`);
+      setShowForm(false);
     } catch {
       setError("Chưa tạo được tài khoản. Hãy kiểm tra lại thông tin và thử lại.");
     }
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-5">
+      {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <Users size={18} />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Users size={18} />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-on-background">Quản lý tài khoản</h1>
+              {!isLoading && (
+                <p className="text-xs text-on-background/60">
+                  {stats.total} tài khoản · {stats.activeCount} hoạt động · {stats.studentCount} HS · {stats.teacherCount} GV · {stats.parentCount} PH
+                </p>
+              )}
+            </div>
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Quản lý tài khoản</h1>
+          <button
+            type="button"
+            onClick={() => setShowForm(!showForm)}
+            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+          >
+            <UserPlus size={16} />
+            Tạo tài khoản
+            {showForm ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
         </div>
-        <p className="mt-3 text-sm text-on-background/70">
-          Tạo, sửa vai trò, khóa/mở tài khoản. Thao tác không mở dữ liệu riêng tư của học sinh.
-        </p>
       </header>
-      <UserForm onSubmit={handleCreate} />
-      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
 
+      {/* Collapsible Create Form */}
+      {showForm && (
+        <div className="animate-in slide-in-from-top-2 duration-200">
+          <UserForm onSubmit={handleCreate} />
+        </div>
+      )}
+
+      {/* Notices */}
+      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs text-on-background">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-xs text-on-background">{error}</p> : null}
+
+      {/* Search & Filters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-background/40" />
+          <input
+            type="text"
+            placeholder="Tìm theo tên, email, trường..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] pl-9 pr-3 text-sm text-on-background placeholder:text-on-background/40"
+          />
+        </div>
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
+          className="min-h-11 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+        >
+          <option value="all">Tất cả vai trò</option>
+          <option value="student">Học sinh ({stats.studentCount})</option>
+          <option value="teacher">Giáo viên ({stats.teacherCount})</option>
+          <option value="parent">Phụ huynh ({stats.parentCount})</option>
+          <option value="admin">Quản trị</option>
+        </select>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          className="min-h-11 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+        >
+          <option value="all">Tất cả trạng thái</option>
+          <option value="active">Hoạt động ({stats.activeCount})</option>
+          <option value="disabled">Đã khóa ({stats.total - stats.activeCount})</option>
+        </select>
+      </div>
+
+      {/* User List */}
       <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6">
-        <h2 className="text-sm font-semibold">Danh sách tài khoản</h2>
-        {isLoading ? <p className="mt-4">Đang tải thông tin...</p> : null}
-        {!isLoading && users.length === 0 ? <EmptyState /> : null}
-        <div className="mt-5 space-y-4">
-          {users.map((user) => (
-            <article key={user.id} className="rounded-2xl border border-outline-variant/20 p-4">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="min-w-0">
+        <h2 className="text-xs font-medium text-on-background/70 uppercase tracking-wide">
+          Danh sách tài khoản
+          {!isLoading && ` (${filteredUsers.length})`}
+        </h2>
+
+        {isLoading && (
+          <div className="mt-4 space-y-3">
+            {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
+          </div>
+        )}
+
+        {!isLoading && filteredUsers.length === 0 && (
+          <div className="mt-4">
+            {users.length === 0 ? <EmptyState /> : (
+              <p className="text-center text-sm text-on-background/50 py-8">
+                Không tìm thấy tài khoản phù hợp.
+              </p>
+            )}
+          </div>
+        )}
+
+        <div className="mt-4 space-y-3">
+          {filteredUsers.map((user) => (
+            <article
+              key={user.id}
+              className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-colors hover:border-outline-variant/40"
+            >
+              <div className="flex gap-3">
+                <InitialAvatar name={user.full_name} role={user.role} />
+                <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold">{user.full_name}</h3>
+                    <h3 className="font-semibold text-on-background">{user.full_name}</h3>
+                    <RoleBadge role={user.role} />
+                    <StatusBadge status={user.status} />
+                    {user.is_demo && (
+                      <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 px-2 py-0.5 text-[11px] font-medium text-on-background/60">
+                        Demo
+                      </span>
+                    )}
                   </div>
-                  <p className="break-all text-xs">{user.email}</p>
-                  <p className="text-xs">Trường/lớp: {[user.school, user.class_name].filter(Boolean).join(" / ") || "Không áp dụng"}</p>
-                  <p className="text-xs">Trạng thái tài khoản: {user.status}</p>
-                  <p className="text-xs">Cập nhật lần cuối: {new Date(user.updated_at).toLocaleString("vi-VN")}</p>
-                </div>
-                <div className="grid w-full gap-2 sm:grid-cols-2 lg:flex lg:w-auto lg:flex-wrap lg:items-end lg:justify-end">
-                  <label className="space-y-1 text-sm font-medium">
-                    Vai trò
-                    <select
-                      value={selectedRoles[user.id] ?? user.role}
-                      onChange={(event) =>
-                        setSelectedRoles((current) => ({
-                          ...current,
-                          [user.id]: event.target.value as AdminUser["role"],
-                        }))
-                      }
-                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 lg:w-44"
-                    >
-                      <option value="student">student</option>
-                      <option value="teacher">teacher</option>
-                      <option value="parent">parent</option>
-                      <option value="admin">admin</option>
-                    </select>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
-                    className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/80"
-                  >
-                    Lưu thay đổi
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmation({ type: "disable", user })}
-                    className="min-h-11 rounded-xl border border-amber-300 px-4 hover:bg-amber-50"
-                  >
-                    Tạm khóa tài khoản
-                  </button>
-                  {user.is_demo ? (
+                  <p className="mt-0.5 text-xs text-on-background/60 break-all">{user.email}</p>
+                  <div className="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-on-background/50">
+                    {user.school && <span>🏫 {user.school}{user.class_name ? ` / ${user.class_name}` : ""}</span>}
+                    <span>Cập nhật: {new Date(user.updated_at).toLocaleDateString("vi-VN")}</span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={selectedRoles[user.id] ?? user.role}
+                        onChange={(e) =>
+                          setSelectedRoles((cur) => ({ ...cur, [user.id]: e.target.value as AdminUser["role"] }))
+                        }
+                        className="h-8 rounded-lg border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-2 text-xs text-on-background"
+                      >
+                        <option value="student">Học sinh</option>
+                        <option value="teacher">Giáo viên</option>
+                        <option value="parent">Phụ huynh</option>
+                        <option value="admin">Quản trị</option>
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
+                        className="h-8 rounded-lg bg-primary px-3 text-xs font-semibold text-white hover:bg-primary/80 transition-colors"
+                      >
+                        Lưu
+                      </button>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => setConfirmation({ type: "delete-demo", user })}
-                      className="min-h-11 rounded-xl bg-destructive px-4 font-semibold text-white hover:bg-red-700 sm:col-span-2 lg:col-span-1"
+                      onClick={() => setConfirmation({ type: "disable", user })}
+                      className="flex h-8 items-center gap-1.5 rounded-lg border border-amber-300 dark:border-amber-600 px-3 text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
                     >
-                      Xóa tài khoản demo
+                      <ShieldAlert size={13} />
+                      Tạm khóa
                     </button>
-                  ) : null}
+                    {user.is_demo && (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmation({ type: "delete-demo", user })}
+                        className="flex h-8 items-center gap-1.5 rounded-lg bg-destructive px-3 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+                      >
+                        <Trash2 size={13} />
+                        Xóa demo
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </article>

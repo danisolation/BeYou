@@ -4,8 +4,18 @@ import { FormEvent, useState } from "react";
 
 import { AdminUserCreate } from "@/lib/admin-api";
 
-const roleOptions: AdminUserCreate["role"][] = ["student", "teacher", "parent", "admin"];
-const statusOptions: AdminUserCreate["status"][] = ["active", "disabled", "deleted"];
+const roleOptions: { value: AdminUserCreate["role"]; label: string }[] = [
+  { value: "student", label: "Học sinh" },
+  { value: "teacher", label: "Giáo viên" },
+  { value: "parent", label: "Phụ huynh" },
+  { value: "admin", label: "Quản trị" },
+];
+
+const statusOptions: { value: AdminUserCreate["status"]; label: string }[] = [
+  { value: "active", label: "Hoạt động" },
+  { value: "disabled", label: "Đã khóa" },
+  { value: "deleted", label: "Đã xóa" },
+];
 
 type UserFormProps = {
   onSubmit: (payload: AdminUserCreate) => Promise<void> | void;
@@ -21,6 +31,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
   const [className, setClassName] = useState("");
   const [isDemo, setIsDemo] = useState(false);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,70 +40,114 @@ export function UserForm({ onSubmit }: UserFormProps) {
       return;
     }
     setError("");
-    await onSubmit({
-      email,
-      password,
-      role,
-      full_name: fullName,
-      school: school || null,
-      class_name: className || null,
-      status,
-      is_demo: isDemo,
-    });
-    setPassword("");
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        email,
+        password,
+        role,
+        full_name: fullName,
+        school: school || null,
+        class_name: className || null,
+        status,
+        is_demo: isDemo,
+      });
+      setPassword("");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <form className="rounded-2xl bg-white p-5 shadow-sm sm:p-6" onSubmit={handleSubmit}>
-      <h2 className="text-sm font-semibold">Tạo tài khoản</h2>
-      <p className="mt-2 text-xs">
-        Tài khoản demo chỉ dùng để giới thiệu sản phẩm, không phải hồ sơ học sinh thật.
-      </p>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="space-y-2 text-sm font-medium">
+    <form className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6" onSubmit={handleSubmit}>
+      <h2 className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tạo tài khoản mới</h2>
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Họ tên
-          <input required value={fullName} onChange={(event) => setFullName(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
+          <input
+            required
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Email
-          <input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
+          <input
+            required
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Mật khẩu
-          <input required type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
+          <input
+            required
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Vai trò
-          <select value={role} onChange={(event) => setRole(event.target.value as AdminUserCreate["role"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
-            {roleOptions.map((value) => (
-              <option key={value} value={value}>{value}</option>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value as AdminUserCreate["role"])}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          >
+            {roleOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-sm font-medium">
-          Trạng thái tài khoản
-          <select value={status} onChange={(event) => setStatus(event.target.value as AdminUserCreate["status"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
-            {statusOptions.map((value) => (
-              <option key={value} value={value}>{value}</option>
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+          Trạng thái
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as AdminUserCreate["status"])}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          >
+            {statusOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Trường
-          <input value={school} onChange={(event) => setSchool(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
+          <input
+            value={school}
+            onChange={(e) => setSchool(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Lớp
-          <input value={className} onChange={(event) => setClassName(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3" />
+          <input
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          />
         </label>
-        <label className="flex min-h-11 items-center gap-2 text-xs font-semibold">
-          <input type="checkbox" checked={isDemo} onChange={(event) => setIsDemo(event.target.checked)} className="min-h-5 min-w-5 accent-primary" />
-          Demo
+        <label className="flex min-h-11 items-center gap-2 text-xs font-medium text-on-background/70">
+          <input
+            type="checkbox"
+            checked={isDemo}
+            onChange={(e) => setIsDemo(e.target.checked)}
+            className="h-4 w-4 rounded accent-primary"
+          />
+          Tài khoản demo
         </label>
       </div>
-      {error ? <p className="mt-4 rounded-2xl border border-amber-300 dark:border-amber-700 px-4 py-3 text-xs">{error}</p> : null}
-      <button type="submit" className="mt-5 min-h-12 w-full rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 sm:w-auto">
-        Tạo tài khoản
+      {error ? <p className="mt-4 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-2.5 text-xs text-on-background">{error}</p> : null}
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-5 min-h-11 w-full rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 sm:w-auto"
+      >
+        {isSubmitting ? "Đang tạo..." : "Tạo tài khoản"}
       </button>
     </form>
   );
