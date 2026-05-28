@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
-import { Activity, ShieldCheck } from "lucide-react";
+import { Activity, ShieldCheck, Filter, ChevronDown, ChevronUp } from "lucide-react";
 
 import {
   type AdminOperationsDashboard,
@@ -90,6 +90,7 @@ export default function AdminOperationsPage() {
   const [dashboard, setDashboard] = useState<AdminOperationsDashboard | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -151,38 +152,47 @@ export default function AdminOperationsPage() {
       </div>
 
       {/* Filter - collapsible */}
-      <details className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
-        <summary className="cursor-pointer p-5 text-sm font-semibold text-on-background select-none">
-          🔍 Bộ lọc Audit <span className="ml-2 text-xs font-normal text-on-background/50">(nhấn để mở)</span>
-        </summary>
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+        <button
+          type="button"
+          onClick={() => setShowFilters(!showFilters)}
+          className="flex w-full items-center justify-between p-5 text-sm font-semibold text-on-background"
+        >
+          <div className="flex items-center gap-2">
+            <Filter size={15} className="text-primary" />
+            Bộ lọc Audit
+          </div>
+          {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+        {showFilters && (
         <form className="grid gap-4 border-t border-outline-variant/20 p-5 md:grid-cols-3" onSubmit={applyFilters}>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Từ thời điểm
           <input
             aria-label="Từ thời điểm"
             type="datetime-local"
             value={draftFilters.startAt}
             onChange={(event) => updateFilter("startAt", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
           />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Đến thời điểm
           <input
             aria-label="Đến thời điểm"
             type="datetime-local"
             value={draftFilters.endAt}
             onChange={(event) => updateFilter("endAt", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
           />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Vai trò người thực hiện
           <select
             aria-label="Vai trò người thực hiện"
             value={draftFilters.actorRole}
             onChange={(event) => updateFilter("actorRole", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
           >
             {roleOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -191,44 +201,64 @@ export default function AdminOperationsPage() {
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Loại hành động
           <input
             aria-label="Loại hành động"
             value={draftFilters.actionType}
             onChange={(event) => updateFilter("actionType", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background placeholder:text-on-background/40"
             placeholder="vd: account_status_changed"
           />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Loại mục tiêu
           <input
             aria-label="Loại mục tiêu"
             value={draftFilters.targetType}
             onChange={(event) => updateFilter("targetType", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background placeholder:text-on-background/40"
             placeholder="vd: account_profile"
           />
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Trạng thái audit
           <input
             aria-label="Trạng thái audit"
             value={draftFilters.status}
             onChange={(event) => updateFilter("status", event.target.value)}
-            className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background placeholder:text-on-background/40"
             placeholder="vd: success"
           />
         </label>
-        <button type="submit" className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white md:col-span-3">
+        <button type="submit" className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/90 transition-colors md:col-span-3">
           Áp dụng bộ lọc
         </button>
         </form>
-      </details>
+        )}
+      </div>
 
-      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải...</p> : null}
-      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-red-700">{error}</p> : null}
+      {isLoading ? (
+        <div className="space-y-4">
+          <div className="grid gap-4 md:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+                <div className="h-3 w-16 rounded bg-on-background/10" />
+                <div className="mt-3 h-7 w-12 rounded bg-on-background/10" />
+                <div className="mt-3 h-3 w-24 rounded bg-on-background/10" />
+              </div>
+            ))}
+          </div>
+          {[1, 2].map((i) => (
+            <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+              <div className="h-4 w-40 rounded bg-on-background/10" />
+              <div className="mt-3 h-3 w-64 rounded bg-on-background/10" />
+              <div className="mt-4 h-20 w-full rounded-xl bg-on-background/5" />
+            </div>
+          ))}
+        </div>
+      ) : null}
+      {error ? <p className="rounded-2xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-950/20 p-5 text-sm text-red-700 dark:text-red-300">{error}</p> : null}
 
       {dashboard ? (
         <>
@@ -826,10 +856,10 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 transition-colors hover:border-primary/30">
       <p className="text-xs font-semibold text-primary">{title}</p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
-      <p className="mt-3 text-sm">{description}</p>
+      <p className="mt-2 text-2xl font-bold text-on-background">{value}</p>
+      <p className="mt-2 text-xs text-on-background/60">{description}</p>
     </article>
   );
 }
@@ -846,10 +876,10 @@ function Panel({
   testId?: string;
 }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" data-testid={testId}>
+    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6" data-testid={testId}>
       <div>
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <p className="mt-2 text-sm">{description}</p>
+        <h2 className="text-sm font-semibold text-on-background">{title}</h2>
+        <p className="mt-1 text-xs text-on-background/60">{description}</p>
       </div>
       {children}
     </section>
@@ -907,14 +937,14 @@ function DeliveryList({ deliveries }: { deliveries: SosEmailDeliveryItem[] }) {
 
 function AuditEventCard({ event }: { event: AuditEventItem }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/20 p-4">
-      <p className="font-semibold">
+    <article className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-colors hover:border-outline-variant/40">
+      <p className="font-semibold text-on-background">
         {event.action} · {event.status}
       </p>
-      <p className="mt-2 text-xs">
+      <p className="mt-1 text-xs text-on-background/50">
         {event.actor_role} · {event.resource_type} · {formatDate(event.timestamp)}
       </p>
-      <p className="mt-2 text-sm">{metadataText(event.metadata_summary)}</p>
+      <p className="mt-2 text-xs text-on-background/70">{metadataText(event.metadata_summary)}</p>
     </article>
   );
 }

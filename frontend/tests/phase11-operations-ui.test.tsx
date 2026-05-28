@@ -276,6 +276,7 @@ describe("Phase 11 operations visibility UI", () => {
     expect(screen.getByText("account_status_changed · success")).toBeInTheDocument();
     expect(screen.getByText("safe_count: 1")).toBeInTheDocument();
 
+    await userEvent.click(screen.getByRole("button", { name: /Bộ lọc Audit/ }));
     await userEvent.selectOptions(screen.getByLabelText("Vai trò người thực hiện"), "admin");
     await userEvent.type(screen.getByLabelText("Loại hành động"), "account_status_changed");
     await userEvent.type(screen.getByLabelText("Loại mục tiêu"), "account_profile");
