@@ -5,7 +5,7 @@ milestone_name: "Mobile-First & PWA"
 status: planning
 last_updated: "2026-05-28T12:00:00Z"
 progress:
-  total_phases: 0
+  total_phases: 6
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -32,15 +32,19 @@ See: `.planning/PROJECT.md` (updated 2026-05-28)
 | Project context | `.planning/PROJECT.md` | Updated for v2.0 |
 | Workflow config | `.planning/config.json` | Current |
 | Milestone summary | `.planning/MILESTONES.md` | Current through v1.9 |
-| Active roadmap | `.planning/ROADMAP.md` | Pending (v2.0 roadmap TBD) |
-| Active requirements | `.planning/REQUIREMENTS.md` | Pending (v2.0 requirements TBD) |
+| Active roadmap | `.planning/ROADMAP.md` | v2.0 roadmap (6 phases) |
+| Active requirements | `.planning/REQUIREMENTS.md` | v2.0 requirements (16 reqs) |
 
-## Current Position
+## Roadmap Summary
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-28 — Milestone v2.0 started
+| Phase | Title | Status |
+|---|---|---|
+| 54 | PWA Foundation & App Shell | Not started |
+| 55 | Mobile Navigation System | Not started |
+| 56 | Student Pages Responsive | Not started |
+| 57 | Admin Pages Responsive | Not started |
+| 58 | Teacher/Parent & Public Pages Responsive | Not started |
+| 59 | Animations & Polish | Not started |
 
 ## Accumulated Context
 

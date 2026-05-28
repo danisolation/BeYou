@@ -1,36 +1,56 @@
-# Requirements: v1.9 Production Polish
+# Requirements: v2.0 Mobile-First & PWA
 
-**Milestone:** v1.9
+**Milestone:** v2.0
 **Created:** 2026-05-28
-**Total:** 9 requirements across 3 categories
+**Total:** 16 requirements across 4 categories
 
-## PROD: Production Visual Cleanup
-
-| ID | Requirement | Priority |
-|---|---|---|
-| PROD-01 | Remove DemoBanner component and all imports/renderings across the app | Must |
-| PROD-02 | Remove DemoBadge component and all imports/renderings across student, teacher, and admin pages | Must |
-| PROD-03 | Remove "Vào demo trong một bước" section from landing page; replace with professional product intro | Must |
-
-## TONE: Production Tone & Wording
+## RESP: Responsive Layouts
 
 | ID | Requirement | Priority |
 |---|---|---|
-| TONE-01 | Update login page demo-related descriptive text to production wording (keep "Tài khoản demo" section label and 4 account buttons) | Must |
-| TONE-02 | Update privacy page to remove demo-specific explanations; frame as real data policy | Must |
-| TONE-03 | Update admin operations page wording from demo-tracking to production monitoring tone | Should |
+| RESP-01 | Student pages fully responsive with mobile/tablet/desktop breakpoints (dashboard, self-checks, scenarios, chat, support plan, mood check-ins, history) | Must |
+| RESP-02 | Admin pages fully responsive (users, links, operations, content wizard) | Must |
+| RESP-03 | Teacher/Parent pages fully responsive (linked students, SOS alerts, support summaries) | Must |
+| RESP-04 | Public pages responsive (landing, login, privacy) | Must |
 
-## CONFIG: Runtime & Config Defaults
+## NAV: Mobile Navigation
 
 | ID | Requirement | Priority |
 |---|---|---|
-| CONFIG-01 | Change default RUNTIME_MODE from local_demo to production_pilot | Must |
-| CONFIG-02 | Ensure 4 demo accounts remain functional (seeded, login works, is_demo flag preserved in DB) | Must |
-| CONFIG-03 | Ensure all existing tests pass after changes (no regression) | Must |
+| NAV-01 | Bottom tab bar for student on mobile (Dashboard, Test tâm lý, Tình huống, Chat, Menu/More) with active state indicator | Must |
+| NAV-02 | Drawer/hamburger navigation for admin on mobile with collapsible sections | Must |
+| NAV-03 | Desktop sidebar hidden on mobile (<768px), mobile nav shown; smooth transition between layouts | Must |
+| NAV-04 | All interactive elements have touch targets ≥44px on mobile | Must |
+
+## PWA: Progressive Web App
+
+| ID | Requirement | Priority |
+|---|---|---|
+| PWA-01 | Web app manifest with app name "Peerlight AI", icons (192px, 512px), theme color matching brand, display: standalone | Must |
+| PWA-02 | Service worker providing offline fallback page with "Không có kết nối" message and retry button | Must |
+| PWA-03 | Install prompt UI (Add to Home Screen banner) shown once to returning users | Should |
+| PWA-04 | App shell caching — layout, fonts, and critical CSS load from cache on repeat visits | Must |
+
+## ANIM: Animations & Transitions
+
+| ID | Requirement | Priority |
+|---|---|---|
+| ANIM-01 | Page transitions between routes (slide for forward navigation, fade for tab switches) with reduced-motion respect | Must |
+| ANIM-02 | Micro-interactions on buttons (press scale), cards (hover lift), and tab switches (indicator slide) | Should |
+| ANIM-03 | Skeleton loading animations on all data-fetching pages (consistent with existing pattern) | Must |
+| ANIM-04 | Pull-to-refresh gesture on student mobile pages that triggers data reload | Should |
+
+## Traceability
+
+| Requirement | Phase |
+|---|---|
+| (To be filled by roadmap) | |
 
 ## Constraints
 
-- Keep `is_demo` database field and backend logic intact — needed for data separation in admin reports
-- Keep admin operations demo seed panel functional (monitoring tool)
-- Do NOT delete demo account data or seed scripts
-- Keep login "Tài khoản demo" section with 4 role buttons as-is
+- Must preserve existing dark mode support across all responsive layouts
+- Must not break existing test suite (168+ tests)
+- PWA service worker must not cache API responses (privacy-first — no sensitive data in cache)
+- Animations must respect `prefers-reduced-motion` media query
+- Bottom tab bar must not obstruct content (safe area padding)
+- Keep existing Tailwind design tokens and color system
