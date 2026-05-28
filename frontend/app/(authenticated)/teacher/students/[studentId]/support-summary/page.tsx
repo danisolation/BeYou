@@ -127,7 +127,7 @@ export function AdultSupportSummaryDetail({
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-2xl font-bold">Tóm tắt hỗ trợ được phép xem</h1>
+          <h1 className="text-lg font-semibold">Tóm tắt hỗ trợ được phép xem</h1>
           {summary.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-sm">{sectionTitle}</p>
@@ -189,7 +189,7 @@ function AccessReasonPrompt({
 }) {
   return (
     <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-      <h1 className="text-2xl font-bold">Cho biết lý do hỗ trợ trước khi xem</h1>
+      <h1 className="text-lg font-semibold">Cho biết lý do hỗ trợ trước khi xem</h1>
       <p className="mt-3 text-sm">{detail.message}</p>
       <div className="mt-4 rounded-2xl bg-primary/5 p-4 text-sm">
         {(detail.copy ?? [

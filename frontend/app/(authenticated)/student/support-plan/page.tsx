@@ -135,7 +135,7 @@ export default function StudentSupportPlanPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Users size={20} className="text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-2xl font-bold">Người lớn tin tưởng</h1>
+          <h1 className="text-lg font-semibold text-on-background">Người lớn tin tưởng</h1>
           {data.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-4 text-sm">

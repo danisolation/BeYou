@@ -74,7 +74,7 @@ export default function AdminPrivacyPolicyPage() {
   if (policy === null) {
     return (
       <section className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
-        <h1 className="text-2xl font-bold">Chưa mở được chính sách riêng tư</h1>
+        <h1 className="text-lg font-semibold">Chưa mở được chính sách riêng tư</h1>
         <p className="mt-3 text-sm">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
       </section>
     );
@@ -84,7 +84,7 @@ export default function AdminPrivacyPolicyPage() {
     <section className="space-y-6">
       <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
-        <h1 className="mt-2 text-2xl font-bold">Chính sách riêng tư v1.4</h1>
+        <h1 className="mt-2 text-lg font-semibold">Chính sách riêng tư v1.4</h1>
         <p className="mt-3 max-w-3xl text-sm">
           Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập. v1.4 chỉ dùng nhắc nhở trong Peerlight AI; Zalo,
           SMS, push và email vẫn đang hoãn để có đủ quản trị đồng ý, vận hành và quyền riêng tư.

@@ -101,7 +101,7 @@ export default function AdminMoodCheckInsPage() {
     <section className="space-y-6">
       <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Cấu hình an toàn</p>
-        <h1 className="mt-2 text-2xl font-bold">Mood check-in</h1>
+        <h1 className="mt-2 text-lg font-semibold">Mood check-in</h1>
         <p className="mt-3 max-w-3xl text-sm">
           Quản lý nhãn, hướng dẫn và lifecycle cho check-in cảm xúc. Copy phải hỗ trợ, không chẩn đoán, không giám sát.
         </p>

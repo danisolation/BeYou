@@ -39,9 +39,9 @@ export default function ScenarioHistoryPage() {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
-        <h1 className="text-2xl font-bold">Xem lịch sử tình huống</h1>
-        <p className="mt-3 text-sm">Những lựa chọn em đã thử được lưu riêng trong không gian học tập của em.</p>
+      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+        <h1 className="text-lg font-semibold text-on-background">Lịch sử tình huống</h1>
+        <p className="mt-3 text-sm text-on-background/70">Những lựa chọn em đã thử được lưu riêng trong không gian học tập của em.</p>
       </header>
 
       {items.length === 0 ? (
@@ -52,7 +52,7 @@ export default function ScenarioHistoryPage() {
       ) : (
         <section className="space-y-4">
           {items.map((item) => (
-            <article key={item.attempt_id} className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+            <article key={item.attempt_id} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-sm font-semibold">{item.scenario_title}</h2>
                 {item.is_demo ? <DemoBadge /> : null}

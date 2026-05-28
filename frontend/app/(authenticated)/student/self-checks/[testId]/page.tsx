@@ -158,7 +158,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
           })}
         </div>
         {validationMessage ? (
-          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white dark:bg-[#1a2940] p-4 text-sm text-on-background/80">{validationMessage}</p>
+          <p className="mt-6 rounded-xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/20 p-4 text-sm text-on-background/80">{validationMessage}</p>
         ) : null}
         <div className="mt-6 flex flex-wrap gap-3">
           <button

@@ -130,7 +130,7 @@ export default function AdminOperationsPage() {
     <section className="space-y-6">
       <header className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Vận hành pilot an toàn</p>
-        <h1 className="mt-2 text-2xl font-bold">Sẵn sàng mở pilot trường học</h1>
+        <h1 className="mt-2 text-lg font-semibold">Sẵn sàng mở pilot trường học</h1>
         <p className="mt-3 max-w-3xl text-sm">
           Theo dõi readiness, checklist launch, an toàn dữ liệu demo/thật và hướng dẫn rollback bằng metadata. Trang này
           không mở nội dung riêng tư của học sinh.

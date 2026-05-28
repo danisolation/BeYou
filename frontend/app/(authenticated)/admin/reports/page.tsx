@@ -83,7 +83,7 @@ export default function AdminReportsPage() {
     <section className="space-y-6">
       <div className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
         <p className="text-xs font-semibold text-primary">Báo cáo hỗ trợ, không giám sát</p>
-        <h1 className="mt-2 text-2xl font-bold">Báo cáo tổng hợp riêng tư</h1>
+        <h1 className="mt-2 text-lg font-semibold">Báo cáo tổng hợp riêng tư</h1>
         <p className="mt-3 max-w-3xl text-sm">
           Xem xu hướng chung để cải thiện hỗ trợ học sinh mà không mở câu trả lời, tin nhắn, ghi chú hoặc danh sách nguy cơ của từng em.
         </p>

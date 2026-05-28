@@ -461,7 +461,7 @@ export default function AdminContentPage() {
   return (
     <main className="mx-auto max-w-[1200px] space-y-6">
       <header className="rounded-2xl bg-primary/5 p-6 shadow-sm">
-        <h1 className="text-2xl font-bold">Nội dung tự kiểm tra và tình huống</h1>
+        <h1 className="text-lg font-semibold">Nội dung tự kiểm tra và tình huống</h1>
         <p className="mt-3 text-sm">Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh theo đúng phạm vi an toàn.</p>
         <p className="mt-2 text-xs">
           Nội dung nên dùng ngôn ngữ hỗ trợ, không chẩn đoán, không gắn nhãn học sinh và không khuyến khích giám sát.

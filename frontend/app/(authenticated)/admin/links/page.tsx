@@ -66,7 +66,7 @@ export default function AdminLinksPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Liên kết học sinh và người lớn hỗ trợ</h1>
+        <h1 className="text-lg font-semibold">Liên kết học sinh và người lớn hỗ trợ</h1>
         <p className="mt-3 text-sm">
           Tạo liên kết để giáo viên hoặc phụ huynh chỉ thấy học sinh được phép hỗ trợ.
         </p>

@@ -77,7 +77,7 @@ export default function StudentSettingsPage() {
   return (
     <section className="space-y-6">
       <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-        <h1 className="text-2xl font-bold">Cài đặt</h1>
+        <h1 className="text-lg font-semibold text-on-background">Cài đặt</h1>
         <p className="mt-3 text-sm">
           Quản lý nhắc nhở, cài đặt SOS và quyền riêng tư của em tại đây.
         </p>
