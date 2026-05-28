@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   getScenario,
@@ -84,7 +83,6 @@ export default function ScenarioDetailPage({ params }: PageProps) {
       <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold text-on-background">{scenario.title}</h1>
-          {scenario.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-4 text-sm text-on-background/80">{scenario.situation}</p>
         {scenario.skill_tag ? (

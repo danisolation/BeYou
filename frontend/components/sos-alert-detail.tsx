@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import {
   SosAlert,
   SosStatus,
@@ -69,7 +68,6 @@ export function SosAlertDetail({
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-display">Trạng thái SOS</h1>
-          {alert.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-sm">
           {alert.student.full_name} · {alert.student.school ?? "Chưa cập nhật"} ·{" "}

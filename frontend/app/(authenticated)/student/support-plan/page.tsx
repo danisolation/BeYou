@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Users } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   getStudentSupportPlan,
@@ -136,7 +135,6 @@ export default function StudentSupportPlanPage() {
             <Users size={20} className="text-primary" aria-hidden="true" />
           </div>
           <h1 className="text-lg font-semibold text-on-background">Người lớn tin tưởng</h1>
-          {data.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-4 text-sm">
           Em có thể chuẩn bị trước cách người lớn tin tưởng nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brain, Clock } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { PageSkeleton } from "@/components/skeletons";
 import { StitchCard } from "@/components/stitch-card";
@@ -82,7 +81,6 @@ export default function SelfCheckListPage() {
               description={test.description ?? `${questionCount(test)} câu hỏi`}
               ctaLabel="Bắt đầu"
               ctaHref={`/student/self-checks/${test.id}`}
-              className={test.is_demo ? "relative" : undefined}
             />
           ))}
         </section>
@@ -109,7 +107,6 @@ export default function SelfCheckListPage() {
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-sm font-semibold text-on-background">{item.test_title}</h3>
-                  {item.is_demo ? <DemoBadge /> : null}
                 </div>
                 <p className="mt-1 text-sm text-on-background/60">{formatDate(item.completed_at)}</p>
                 <p className="mt-2 text-sm text-on-background/80">{displayRiskLabel(item.state_label)}</p>

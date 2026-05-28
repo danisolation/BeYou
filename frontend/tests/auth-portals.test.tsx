@@ -5,8 +5,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
 import LoginPage from "@/app/login/page";
 import PrivacyPage from "@/app/privacy/page";
-import { DemoBadge } from "@/components/demo-badge";
-import { DemoBanner } from "@/components/demo-banner";
 import { apiFetch } from "@/lib/api";
 import { roleToRoute } from "@/lib/routes";
 
@@ -61,17 +59,6 @@ describe("Phase 2 frontend auth foundation", () => {
     expect(localStorageSpy).not.toHaveBeenCalled();
   });
 
-  it("renders exact demo banner and badge copy", () => {
-    render(
-      <>
-        <DemoBanner />
-        <DemoBadge />
-      </>,
-    );
-
-    expect(screen.getByText("Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.")).toBeInTheDocument();
-    expect(screen.getByText("Demo")).toBeInTheDocument();
-  });
 
   it("keeps login submit available so browser autofill can submit credentials", async () => {
     render(<LoginPage />);

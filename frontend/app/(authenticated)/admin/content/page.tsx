@@ -9,7 +9,6 @@ import {
   DestructiveConfirmDialog,
   KEEP_CONTENT_COPY,
 } from "@/components/admin/destructive-confirm-dialog";
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   archiveAdminScenario,

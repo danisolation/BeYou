@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { getSelfCheckAttemptDetail, type SelfCheckAttemptDetail } from "@/lib/wellbeing-api";
 
@@ -46,7 +45,6 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
       <header className="rounded-2xl border border-outline-variant/30 bg-primary/5 p-6">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold">{attempt.test_title}</h1>
-          {attempt.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-sm">Nội dung này là bản ghi tại thời điểm em hoàn thành test tâm lý.</p>
         <p className="mt-3 text-xs">

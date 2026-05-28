@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { DemoGuideCard } from "@/components/demo-guide-card";
 import { EmptyState } from "@/components/empty-state";
 import { EntryCard, PageHeader, PrivacyBoundaryCard, StatusBadge, SurfaceCard } from "@/components/ui-primitives";
@@ -105,7 +104,6 @@ export function AdultStudentList({
             <EntryCard
               key={student.id}
               title={student.full_name}
-              badge={student.is_demo ? <DemoBadge /> : null}
               className="min-w-0 hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
             >
               <p className="break-all text-xs">{student.email}</p>
@@ -193,7 +191,6 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
               <article key={notification.id} className="rounded-2xl border border-outline-variant/20 p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-semibold">{notification.title}</h3>
-                  {notification.is_demo ? <DemoBadge /> : null}
                   {notification.read_at === null ? <StatusBadge tone="safe">Mới</StatusBadge> : null}
                 </div>
                 <p className="mt-2 text-sm">{notification.body}</p>

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { ApiError } from "@/lib/api";
 import {
@@ -128,7 +127,6 @@ export function AdultSupportSummaryDetail({
       <header className="rounded-2xl border border-outline-variant/30 bg-primary/5 p-6">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold">Tóm tắt hỗ trợ được phép xem</h1>
-          {summary.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-sm">{sectionTitle}</p>
         <p className="mt-2 text-xs">

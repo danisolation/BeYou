@@ -10,7 +10,6 @@ import {
   REVOKE_LINK_COPY,
 } from "@/components/admin/destructive-confirm-dialog";
 import { LinkForm } from "@/components/admin/link-form";
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { AdminLink, AdminUser, createLink, listLinks, listUsers, revokeLink } from "@/lib/admin-api";
 
@@ -97,7 +96,6 @@ export default function AdminLinksPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{link.student_full_name}</h3>
-                    {link.is_demo ? <DemoBadge /> : null}
                   </div>
                   <p className="break-all text-xs">Học sinh: {link.student_email}</p>
                   <p className="break-all text-xs">Người lớn hỗ trợ: {link.adult_full_name} ({link.adult_email})</p>

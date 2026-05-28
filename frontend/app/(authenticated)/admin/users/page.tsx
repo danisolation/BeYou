@@ -16,7 +16,6 @@ import {
   CANCEL_ROLE_CHANGE_COPY,
 } from "@/components/admin/destructive-confirm-dialog";
 import { UserForm } from "@/components/admin/user-form";
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { AdminUser, createUser, deleteUser, listUsers, updateUser } from "@/lib/admin-api";
 
@@ -142,7 +141,6 @@ export default function AdminUsersPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold">{user.full_name}</h3>
-                    {user.is_demo ? <DemoBadge /> : null}
                   </div>
                   <p className="break-all text-xs">{user.email}</p>
                   <p className="text-xs">Trường/lớp: {[user.school, user.class_name].filter(Boolean).join(" / ") || "Không áp dụng"}</p>

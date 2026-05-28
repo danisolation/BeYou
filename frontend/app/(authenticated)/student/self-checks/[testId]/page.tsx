@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   getSelfCheck,
@@ -106,7 +105,6 @@ export default function SelfCheckTakePage({ params }: PageProps) {
       <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold text-on-background">{test.title}</h1>
-          {test.is_demo ? <DemoBadge /> : null}
         </div>
         {test.description ? <p className="mt-3 text-sm text-on-background/70">{test.description}</p> : null}
         <p className="mt-4 text-sm text-on-background/60">

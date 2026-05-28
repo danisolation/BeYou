@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import {
   getTeacherSelfCheckSummaries,
@@ -31,7 +30,6 @@ function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-sm font-semibold">{testName(summary)}</h3>
         <span className="rounded-full border border-outline-variant/30 px-3 py-1 text-xs">{displayRiskLabel(summary.state_label)}</span>
-        {summary.is_demo ? <DemoBadge /> : null}
       </div>
       <p className="mt-3 text-xs">Hoàn thành: {new Date(summary.completed_at).toLocaleString("vi-VN")}</p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -84,7 +82,6 @@ export function AdultSummaryDetail({
       <header className="rounded-2xl border border-outline-variant/30 bg-primary/5 p-6">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold">Tóm tắt được phép xem</h1>
-          {summary.is_demo ? <DemoBadge /> : null}
         </div>
         <p className="mt-3 text-sm">{sectionTitle}</p>
         <p className="mt-2 text-xs">

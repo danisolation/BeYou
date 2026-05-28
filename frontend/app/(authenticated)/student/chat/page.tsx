@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { ChatSkeleton } from "@/components/skeletons";
 import {
   type ChatMessage,
@@ -237,7 +236,6 @@ function ChatBubble({ message }: { message: ChatMessage }) {
       <article className="rounded-2xl border-2 border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-800/40 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-semibold text-red-800 dark:text-red-300">Mình muốn ưu tiên sự an toàn của em</h2>
-          {message.is_demo ? <DemoBadge /> : null}
         </div>
         <div className="mt-2 space-y-1.5 text-sm text-red-700 dark:text-red-300/80">
           {paragraphs.map((paragraph) => (
@@ -255,7 +253,6 @@ function ChatBubble({ message }: { message: ChatMessage }) {
       <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${isStudent ? "bg-primary text-on-primary" : "bg-outline-variant/10 dark:bg-outline-variant/20 text-on-background"}`}>
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-xs font-semibold opacity-70">{isStudent ? "Em" : "Peerlight AI"}</p>
-          {message.is_demo ? <DemoBadge /> : null}
         </div>
         <div className="mt-1 space-y-1.5 text-sm">
           {paragraphs.map((paragraph) => (

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { getSelfCheckAttemptDetail, type SelfCheckAttemptDetail } from "@/lib/wellbeing-api";
 
@@ -57,7 +56,6 @@ export default function SelfCheckResultPage({ params }: PageProps) {
       <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-on-background/60">{attempt.test_title}</p>
-          {attempt.is_demo ? <DemoBadge /> : null}
         </div>
         <h1 className="mt-3 text-lg font-semibold text-on-background">{attempt.supportive_headline}</h1>
         <p className="mt-4 inline-flex min-h-11 items-center rounded-full bg-primary/10 px-4 text-sm font-semibold text-primary">

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Leaf, Shield, Brain, Heart, Lock, Eye, MessageCircle, BookHeart, AlertTriangle, ChevronRight } from "lucide-react";
 
-import { DemoRoleEntry } from "@/components/demo-role-entry";
 import { ScrollReveal } from "@/components/scroll-reveal";
 
 const coreValues = [
@@ -235,18 +234,21 @@ export default function HomePage() {
       </section>
       </ScrollReveal>
 
-      {/* Demo Role Entry — for evaluators */}
+      {/* CTA — Bắt đầu ngay */}
       <section className="bg-white dark:bg-[#1e2d40] px-5 py-12 lg:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-outline-variant/20 sm:p-8">
-            <p className="text-xs-md font-semibold text-primary">Dành cho người đánh giá</p>
-            <h2 className="mt-2 text-lg text-on-background">Vào demo trong một bước</h2>
+          <div className="rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 p-6 ring-1 ring-primary/20 sm:p-8 text-center">
+            <h2 className="text-lg font-bold text-on-background">Sẵn sàng bắt đầu?</h2>
             <p className="mt-2 text-sm text-on-background/70">
-              Chọn vai trò để tự đăng nhập bằng dữ liệu seed. Không nhập dữ liệu học sinh thật.
+              Đăng nhập để trải nghiệm Peerlight AI — nền tảng chăm sóc sức khỏe tinh thần dành cho học sinh.
             </p>
-            <div className="mt-5">
-              <DemoRoleEntry />
-            </div>
+            <Link
+              href="/login"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white no-underline hover:bg-primary/90 transition-colors"
+            >
+              Đăng nhập ngay
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </section>

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import { DemoBadge } from "@/components/demo-badge";
 import { EmptyState } from "@/components/empty-state";
 import { listScenarioHistory, type ScenarioHistoryItem } from "@/lib/wellbeing-api";
 
@@ -55,7 +54,6 @@ export default function ScenarioHistoryPage() {
             <article key={item.attempt_id} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-sm font-semibold">{item.scenario_title}</h2>
-                {item.is_demo ? <DemoBadge /> : null}
               </div>
               <p className="mt-3 text-xs">{formatDate(item.completed_at)}</p>
               <p className="mt-4 text-xs">{signalLabel(item.signal)}</p>
