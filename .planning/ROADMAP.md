@@ -36,7 +36,11 @@
 **Goal:** App is installable, works offline (fallback), and loads instantly from cache on repeat visits.
 **Depends on:** Phase 53
 **Requirements:** PWA-01, PWA-02, PWA-03, PWA-04
-**Status:** Not started
+**Plans:** 1 plan
+**Status:** Planning complete
+
+Plans:
+- [ ] 54-01-PLAN.md — Enhance SW with app shell caching + build-time asset injection
 
 **Success criteria:**
 1. `manifest.json` present with correct name, icons, theme_color, display: standalone.
