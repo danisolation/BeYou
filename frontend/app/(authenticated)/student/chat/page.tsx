@@ -119,7 +119,7 @@ export default function StudentChatPage() {
   }
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4 overflow-hidden">
       <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
         {/* Desktop sidebar */}
         <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 lg:block">
@@ -139,7 +139,7 @@ export default function StudentChatPage() {
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-            <aside className="absolute inset-y-0 left-0 w-72 bg-white dark:bg-[#1a2940] p-4 shadow-xl">
+            <aside className="absolute inset-y-0 left-0 w-[min(18rem,calc(100vw-1rem))] bg-white p-4 shadow-xl dark:bg-[#1a2940]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">Lịch sử</h2>
                 <button
@@ -161,7 +161,7 @@ export default function StudentChatPage() {
           </div>
         )}
 
-        <section className="flex flex-col rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
           {/* Chat header */}
           <div className="flex items-center gap-3 border-b border-outline-variant/20 px-4 py-3">
             <button
@@ -176,7 +176,7 @@ export default function StudentChatPage() {
           </div>
 
           {/* Messages area */}
-          <div className="flex-1 overflow-y-auto px-4 py-4">
+          <div className="flex-1 overflow-x-hidden overflow-y-auto px-4 py-4">
             {isLoading ? <ChatSkeleton /> : null}
             {!isLoading && messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -199,7 +199,7 @@ export default function StudentChatPage() {
 
           {/* Input area */}
           <form className="border-t border-outline-variant/20 px-4 py-3" onSubmit={handleSend}>
-            <div className="flex items-end gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
               <textarea
                 id="chat-message"
                 aria-label="Điều em muốn chia sẻ"
@@ -213,7 +213,7 @@ export default function StudentChatPage() {
               <button
                 type="submit"
                 disabled={isSending || !draft.trim()}
-                className="flex h-10 shrink-0 items-center rounded-xl bg-primary px-4 text-sm font-medium text-on-primary disabled:opacity-40"
+                className="btn-press flex min-h-11 w-full shrink-0 items-center justify-center rounded-xl bg-primary px-4 text-sm font-medium text-on-primary disabled:opacity-40 sm:w-auto"
               >
                 {isSending ? "..." : "Gửi"}
               </button>
@@ -280,7 +280,7 @@ function SidebarContent({
       <button
         type="button"
         onClick={onNewThread}
-        className="w-full rounded-xl border border-outline-variant/30 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/5"
+        className="btn-press min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 py-2 text-xs font-medium text-primary hover:bg-primary/5"
       >
         + Cuộc trò chuyện mới
       </button>
@@ -293,7 +293,7 @@ function SidebarContent({
               key={thread.id}
               type="button"
               onClick={() => onSelectThread(thread.id)}
-              className={`w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition-colors ${
+              className={`btn-press min-h-11 w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition-colors ${
                 thread.id === threadId ? "bg-primary/10 text-primary" : "text-on-background/70 hover:bg-outline-variant/10"
               }`}
             >

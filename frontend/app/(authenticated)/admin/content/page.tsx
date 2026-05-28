@@ -658,7 +658,7 @@ export default function AdminContentPage() {
         };
 
   return (
-    <main className="mx-auto max-w-[1200px] space-y-5">
+    <main className="mx-auto max-w-[1200px] space-y-5 pb-20 lg:pb-0">
       {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">
@@ -694,7 +694,7 @@ export default function AdminContentPage() {
       {!isEditing ? (
         <>
           {/* Tab navigation */}
-          <nav className="flex gap-1 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-1.5">
+          <nav className="flex flex-col gap-1 rounded-2xl border border-outline-variant/30 bg-white p-1.5 dark:bg-[#1a2940] sm:flex-row">
             <button
               type="button"
               onClick={() => setActiveTab("self-check")}
@@ -712,7 +712,7 @@ export default function AdminContentPage() {
           </nav>
 
           {/* Create button */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-background/40" />
               <input
@@ -726,7 +726,7 @@ export default function AdminContentPage() {
             <button
               type="button"
               onClick={() => activeTab === "self-check" ? openSelfCheckEditor() : openScenarioEditor()}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 transition-colors"
+              className="btn-press inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary/90 sm:w-auto"
             >
               <Plus size={16} />
               {activeTab === "self-check" ? "Tạo mới" : "Tạo mới"}
@@ -744,7 +744,7 @@ export default function AdminContentPage() {
                     key={item.id ?? item.title}
                     type="button"
                     onClick={() => openSelfCheckEditor(item)}
-                    className="flex w-full items-center gap-3 rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4 text-left transition-all hover:border-primary/30 hover:shadow-sm"
+                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2940]"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
@@ -796,7 +796,7 @@ export default function AdminContentPage() {
                     key={item.id ?? item.title}
                     type="button"
                     onClick={() => openScenarioEditor(item)}
-                    className="flex w-full items-center gap-3 rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4 text-left transition-all hover:border-primary/30 hover:shadow-sm"
+                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2940]"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
@@ -1064,33 +1064,33 @@ export default function AdminContentPage() {
               </section>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <button type="button" onClick={() => setSelfCheckStep(previousEditorStep(selfCheckStep))} disabled={selfCheckStep === 1} className="rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40">
+            <div className="flex flex-col gap-3 border-t border-outline-variant/20 pt-5 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+                <button type="button" onClick={() => setSelfCheckStep(previousEditorStep(selfCheckStep))} disabled={selfCheckStep === 1} className="btn-press min-h-11 w-full rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto">
                   Quay lại
                 </button>
                 {selfCheckStep < 4 ? (
-                  <button type="button" onClick={() => setSelfCheckStep(nextEditorStep(selfCheckStep))} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                  <button type="button" onClick={() => setSelfCheckStep(nextEditorStep(selfCheckStep))} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Tiếp theo
                   </button>
                 ) : null}
               </div>
-              <div className="flex-1" />
-              <button type="button" onClick={saveSelfCheckDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+              <div className="hidden flex-1 sm:block" />
+              <button type="button" onClick={saveSelfCheckDraft} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                 {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
               {selfCheckStep === 4 && selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-green-300 dark:hover:bg-green-900/20">
+                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl border border-green-300 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
               {selfCheckDraft.id && selfCheckDraft.status === "published" ? (
-                <button type="button" onClick={() => setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
+                <button type="button" onClick={() => setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id as string })} className="btn-press min-h-11 w-full rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300 sm:w-auto">
                   Lưu trữ
                 </button>
               ) : null}
               {selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
-                <button type="button" onClick={() => setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id as string })} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm text-destructive">
+                <button type="button" onClick={() => setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id as string })} className="btn-press min-h-11 w-full rounded-xl border border-red-200 px-4 py-2.5 text-sm text-destructive dark:border-red-800 sm:w-auto">
                   Xóa
                 </button>
               ) : null}
@@ -1266,33 +1266,33 @@ export default function AdminContentPage() {
               </section>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
-              <div className="flex flex-wrap items-center gap-2">
-                <button type="button" onClick={() => setScenarioStep(previousEditorStep(scenarioStep))} disabled={scenarioStep === 1} className="rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40">
+            <div className="flex flex-col gap-3 border-t border-outline-variant/20 pt-5 sm:flex-row sm:flex-wrap sm:items-center">
+              <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
+                <button type="button" onClick={() => setScenarioStep(previousEditorStep(scenarioStep))} disabled={scenarioStep === 1} className="btn-press min-h-11 w-full rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto">
                   Quay lại
                 </button>
                 {scenarioStep < 4 ? (
-                  <button type="button" onClick={() => setScenarioStep(nextEditorStep(scenarioStep))} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                  <button type="button" onClick={() => setScenarioStep(nextEditorStep(scenarioStep))} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Tiếp theo
                   </button>
                 ) : null}
               </div>
-              <div className="flex-1" />
-              <button type="button" onClick={saveScenarioDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+              <div className="hidden flex-1 sm:block" />
+              <button type="button" onClick={saveScenarioDraft} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                 {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
               {scenarioStep === 4 && scenarioDraft.id && scenarioDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-green-300 dark:hover:bg-green-900/20">
+                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl border border-green-300 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
               {scenarioDraft.id && scenarioDraft.status === "published" ? (
-                <button type="button" onClick={() => setConfirmation({ type: "archive-scenario", id: scenarioDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
+                <button type="button" onClick={() => setConfirmation({ type: "archive-scenario", id: scenarioDraft.id as string })} className="btn-press min-h-11 w-full rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300 sm:w-auto">
                   Lưu trữ
                 </button>
               ) : null}
               {scenarioDraft.id && scenarioDraft.status === "draft" ? (
-                <button type="button" onClick={() => setConfirmation({ type: "delete-scenario", id: scenarioDraft.id as string })} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm text-destructive">
+                <button type="button" onClick={() => setConfirmation({ type: "delete-scenario", id: scenarioDraft.id as string })} className="btn-press min-h-11 w-full rounded-xl border border-red-200 px-4 py-2.5 text-sm text-destructive dark:border-red-800 sm:w-auto">
                   Xóa
                 </button>
               ) : null}

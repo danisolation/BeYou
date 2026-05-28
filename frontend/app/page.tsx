@@ -32,7 +32,7 @@ const privacyFeatures = [
 
 export default function HomePage() {
   return (
-    <main className="min-h-dvh bg-background">
+    <main className="min-h-dvh overflow-x-hidden bg-background">
       {/* Sticky Navbar */}
       <header className="sticky top-0 z-50 border-b border-outline-variant/20 bg-white/90 backdrop-blur-lg dark:bg-[#0d1c2e]/90">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -47,7 +47,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/login"
-            className="inline-flex min-h-11 items-center justify-center rounded-button bg-primary px-5 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
+            className="btn-press inline-flex min-h-11 items-center justify-center rounded-button bg-primary px-5 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
           >
             Bắt đầu
           </Link>
@@ -65,23 +65,23 @@ export default function HomePage() {
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs-md font-semibold text-primary">
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
-            <h1 className="mt-6 text-3xl font-bold leading-tight text-on-background md:text-2xl font-bold-stitch">
+            <h1 className="mt-6 text-3xl font-bold font-bold-stitch leading-tight text-on-background sm:text-4xl">
               Peerlight AI — Bến đỗ an toàn cho tâm hồn học đường
             </h1>
             <p className="mt-4 max-w-xl text-base text-on-background/70">
-              Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm, 
+              Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm,
               và nhanh chóng kết nối người lớn tin tưởng khi cần hỗ trợ.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
               <Link
                 href="/login"
-                className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-button bg-primary px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container sm:w-auto"
+                className="btn-press inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-button bg-primary px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container sm:w-auto"
               >
                 Bắt đầu ngay <ChevronRight className="h-4 w-4" />
               </Link>
               <a
                 href="#mission"
-                className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
+                className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
               >
                 Tìm hiểu thêm
               </a>
@@ -100,8 +100,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-3xl text-center">
           <h2 className="text-2xl text-on-background">Triết lý Safe Harbor</h2>
           <p className="mt-4 text-base text-on-background/70">
-            Peerlight AI xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe, 
-            được bảo vệ, và được trao quyền tự chăm sóc sức khỏe tinh thần. 
+            Peerlight AI xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe,
+            được bảo vệ, và được trao quyền tự chăm sóc sức khỏe tinh thần.
             Mọi tính năng đều đặt sự riêng tư và cảm xúc của học sinh lên hàng đầu.
           </p>
         </div>
@@ -111,10 +111,10 @@ export default function HomePage() {
       <section className="px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center text-2xl text-on-background">Giá trị cốt lõi</h2>
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {coreValues.map((value, index) => (
               <ScrollReveal key={value.title} delay={index * 100}>
-                <div className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md">
+                <div className="card-lift rounded-2xl bg-white dark:bg-[#1e2d40] p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md">
                   <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                     <value.icon className="h-6 w-6" aria-hidden="true" />
                   </div>
@@ -134,13 +134,13 @@ export default function HomePage() {
           <div className="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-12">
             {/* Large card: AI assistant */}
             <ScrollReveal className="sm:col-span-2 md:col-span-8">
-              <div className="rounded-2xl bg-primary/10 p-6 sm:p-8">
+              <div className="card-lift rounded-2xl bg-primary/10 p-6 sm:p-8">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/20 p-3 text-primary">
                   <MessageCircle className="h-7 w-7" aria-hidden="true" />
                 </div>
                 <h3 className="mt-4 text-lg text-on-background">Trợ lý AI thấu cảm</h3>
                 <p className="mt-2 max-w-lg text-sm text-on-background/70">
-                  Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét. 
+                  Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét.
                   Phát hiện tín hiệu nguy cơ và hướng dẫn tìm giúp đỡ kịp thời.
                 </p>
               </div>
@@ -148,7 +148,7 @@ export default function HomePage() {
 
             {/* Small card: Emotion diary */}
             <ScrollReveal className="sm:col-span-1 md:col-span-4" delay={100}>
-              <div className="rounded-2xl bg-white dark:bg-[#1a2940] p-6">
+              <div className="card-lift rounded-2xl bg-white dark:bg-[#1a2940] p-6">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                   <BookHeart className="h-6 w-6" aria-hidden="true" />
                 </div>
@@ -161,7 +161,7 @@ export default function HomePage() {
 
             {/* Small card: SOS */}
             <ScrollReveal className="sm:col-span-1 md:col-span-4" delay={200}>
-              <div className="rounded-2xl bg-error-container p-6">
+              <div className="card-lift rounded-2xl bg-error-container p-6">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-error/10 p-3 text-error">
                   <AlertTriangle className="h-6 w-6" aria-hidden="true" />
                 </div>
@@ -174,7 +174,7 @@ export default function HomePage() {
 
             {/* Wide card: Privacy */}
             <ScrollReveal className="sm:col-span-2 md:col-span-8" delay={300}>
-              <div className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 sm:p-8">
+              <div className="card-lift rounded-2xl bg-white p-6 sm:p-8 dark:bg-[#1a2940]">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                   <Shield className="h-7 w-7" aria-hidden="true" />
                 </div>
@@ -191,7 +191,7 @@ export default function HomePage() {
       {/* Trust & Privacy */}
       <section id="support" className="px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-2xl bg-white/80 p-8 shadow-lg ring-1 ring-outline-variant/20 backdrop-blur lg:p-12">
+          <div className="card-lift rounded-2xl bg-white/80 p-8 shadow-lg ring-1 ring-outline-variant/20 backdrop-blur lg:p-12">
             <div className="flex items-center gap-3">
               <Eye className="h-7 w-7 text-primary" aria-hidden="true" />
               <h2 className="text-2xl text-on-background">Quyền riêng tư & Tin tưởng</h2>
@@ -219,13 +219,13 @@ export default function HomePage() {
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/login"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
+              className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
             >
               Bắt đầu ngay
             </Link>
             <a
               href="#mission"
-              className="inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-on-primary/30 px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-on-primary/10 sm:w-auto"
+              className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-on-primary/30 px-6 font-semibold text-on-primary no-underline transition-colors hover:bg-on-primary/10 sm:w-auto"
             >
               Tìm hiểu thêm
             </a>
@@ -237,14 +237,14 @@ export default function HomePage() {
       {/* CTA — Bắt đầu ngay */}
       <section className="bg-white dark:bg-[#1e2d40] px-5 py-12 lg:px-16">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 p-6 ring-1 ring-primary/20 sm:p-8 text-center">
+          <div className="card-lift rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 p-6 text-center ring-1 ring-primary/20 sm:p-8">
             <h2 className="text-lg font-bold text-on-background">Sẵn sàng bắt đầu?</h2>
             <p className="mt-2 text-sm text-on-background/70">
               Đăng nhập để trải nghiệm Peerlight AI — nền tảng chăm sóc sức khỏe tinh thần dành cho học sinh.
             </p>
             <Link
               href="/login"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white no-underline hover:bg-primary/90 transition-colors"
+              className="btn-press mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white no-underline transition-colors hover:bg-primary/90"
             >
               Đăng nhập ngay
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
@@ -255,7 +255,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-outline-variant/20 bg-white dark:bg-[#0d1c2e] px-5 py-12 lg:px-16">
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
               <Leaf className="h-5 w-5" aria-hidden="true" />

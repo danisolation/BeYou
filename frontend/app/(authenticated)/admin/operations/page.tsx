@@ -129,7 +129,7 @@ export default function AdminOperationsPage() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="space-y-6 pb-20 lg:pb-0">
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -156,7 +156,7 @@ export default function AdminOperationsPage() {
         <button
           type="button"
           onClick={() => setShowFilters(!showFilters)}
-          className="flex w-full items-center justify-between p-5 text-sm font-semibold text-on-background"
+          className="btn-press flex w-full items-center justify-between p-5 text-sm font-semibold text-on-background"
         >
           <div className="flex items-center gap-2">
             <Filter size={15} className="text-primary" />
@@ -165,7 +165,7 @@ export default function AdminOperationsPage() {
           {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
         {showFilters && (
-        <form className="grid gap-4 border-t border-outline-variant/20 p-5 md:grid-cols-3" onSubmit={applyFilters}>
+        <form className="grid grid-cols-1 gap-4 border-t border-outline-variant/20 p-5 sm:grid-cols-2 xl:grid-cols-3" onSubmit={applyFilters}>
         <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Từ thời điểm
           <input
@@ -231,7 +231,7 @@ export default function AdminOperationsPage() {
             placeholder="vd: success"
           />
         </label>
-        <button type="submit" className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/90 transition-colors md:col-span-3">
+        <button type="submit" className="btn-press min-h-11 w-full rounded-xl bg-primary px-4 font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto xl:col-span-3">
           Áp dụng bộ lọc
         </button>
         </form>
@@ -240,7 +240,7 @@ export default function AdminOperationsPage() {
 
       {isLoading ? (
         <div className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
                 <div className="h-3 w-16 rounded bg-on-background/10" />
@@ -265,7 +265,7 @@ export default function AdminOperationsPage() {
           {/* === NHÓM 1: TRẠNG THÁI TỔNG QUAN === */}
           <SectionHeader label="Trạng thái tổng quan" />
 
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
             <MetricCard title="Readiness" value={dashboard.readiness.status} description="Trạng thái vận hành." />
             <MetricCard title="Demo seed" value={dashboard.demo_seed.status} description="Tài khoản demo." />
             <MetricCard title="Email SOS" value={dashboard.sos_email.total} description="Tổng attempt." />
@@ -856,7 +856,7 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 transition-colors hover:border-primary/30">
+    <article className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 transition-colors hover:border-primary/30 dark:bg-[#1a2940]">
       <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold text-on-background">{value}</p>
       <p className="mt-2 text-xs text-on-background/60">{description}</p>
@@ -876,7 +876,7 @@ function Panel({
   testId?: string;
 }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6" data-testid={testId}>
+    <section className="card-lift space-y-4 rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940] sm:p-6" data-testid={testId}>
       <div>
         <h2 className="text-sm font-semibold text-on-background">{title}</h2>
         <p className="mt-1 text-xs text-on-background/60">{description}</p>
@@ -903,7 +903,7 @@ function BucketList({
       ) : (
         <ul className="space-y-2 text-sm">
           {buckets.map((bucket) => (
-            <li key={`${bucket.key}-${bucket.label}`} className="flex justify-between gap-4">
+            <li key={`${bucket.key}-${bucket.label}`} className="flex items-start justify-between gap-4">
               <span>{bucket.label}</span>
               <span className="font-semibold">{bucket.count}</span>
             </li>

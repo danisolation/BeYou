@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+
+import { PageTransition } from "@/components/page-transition";
 import { cn } from "@/lib/cn";
 
 interface LayoutShellProps {
@@ -8,8 +10,8 @@ interface LayoutShellProps {
 
 export function LayoutShell({ children, className }: LayoutShellProps) {
   return (
-    <div className={cn("min-w-0 pb-20 lg:pb-6", className)}>
-      {children}
+    <div className={cn("min-w-0 pb-20 md:pb-0", className)}>
+      <PageTransition>{children}</PageTransition>
     </div>
   );
 }

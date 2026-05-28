@@ -20,7 +20,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
     <>
       {/* More menu overlay */}
       {showMore ? (
-        <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)} role="dialog" aria-label="Menu mở rộng">
+        <div className="fixed inset-0 z-40 md:hidden" onClick={() => setShowMore(false)} role="dialog" aria-label="Menu mở rộng">
           <div className="absolute inset-0 bg-on-background/20" aria-hidden="true" />
           <div
             className="absolute bottom-16 left-0 right-0 rounded-t-2xl border-t border-outline-variant bg-white dark:bg-[#1a2940] p-4 pb-[env(safe-area-inset-bottom)]"
@@ -35,7 +35,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setShowMore(false)}
-                    className={`flex flex-col items-center gap-1 rounded-2xl p-3 no-underline ${
+                    className={`flex flex-col items-center gap-1 rounded-2xl p-3 min-h-[44px] no-underline ${
                       active ? "text-primary" : "text-on-background/60"
                     }`}
                   >
@@ -47,7 +47,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
               <Link
                 href="/student/notification-preferences"
                 onClick={() => setShowMore(false)}
-                className="flex flex-col items-center gap-1 rounded-2xl p-3 text-on-background/60 no-underline"
+                className="flex flex-col items-center gap-1 rounded-2xl p-3 min-h-[44px] text-on-background/60 no-underline"
               >
                 <Settings aria-hidden="true" size={20} />
                 <span className="text-xs-sm">Cài đặt</span>
@@ -55,7 +55,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
               <button
                 type="button"
                 onClick={() => { setShowMore(false); onLogout(); }}
-                className="flex flex-col items-center gap-1 rounded-2xl p-3 text-on-background/60"
+                className="flex flex-col items-center gap-1 rounded-2xl p-3 min-h-[44px] text-on-background/60"
               >
                 <Settings aria-hidden="true" size={20} />
                 <span className="text-xs-sm">Đăng xuất</span>
@@ -67,7 +67,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant/50 bg-white/95 px-2 py-1.5 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg dark:bg-[#0d1c2e]/95 lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant/50 bg-white/95 px-2 py-1.5 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg dark:bg-[#0d1c2e]/95 md:hidden"
         aria-label="Điều hướng học sinh"
       >
         {visibleItems.map((item) => {
@@ -78,7 +78,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
               key={item.href}
               href={item.href}
               className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 no-underline ${
-                active ? "text-primary" : "text-on-background/60"
+                active ? "text-primary border-b-2 border-primary" : "text-on-background/60 border-b-2 border-transparent"
               }`}
               aria-current={active ? "page" : undefined}
             >

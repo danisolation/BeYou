@@ -40,7 +40,7 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
       <p className="mt-1 text-xs text-on-background/60">
         Liên kết quyết định người lớn nào được xem thông tin hỗ trợ được phép hiển thị.
       </p>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Học sinh
           <select
@@ -85,7 +85,7 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-4 min-h-11 rounded-xl bg-primary px-5 text-sm font-semibold text-white hover:bg-primary/90 disabled:opacity-50 transition-colors"
+        className="btn-press mt-4 min-h-11 w-full rounded-xl bg-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 disabled:opacity-50 sm:w-auto"
       >
         {isSubmitting ? "Đang tạo..." : "Tạo liên kết"}
       </button>

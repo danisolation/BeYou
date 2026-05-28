@@ -50,8 +50,8 @@ export default function TeacherDashboardPage() {
         </p>
       </div>
 
-      <div className="animate-fade-in rounded-2xl bg-primary/5 p-4 border border-primary/10">
-        <div className="flex items-center gap-3">
+      <div className="animate-fade-in card-lift rounded-2xl border border-primary/10 bg-primary/5 p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
             <Bot className="text-primary" size={20} />
           </div>
@@ -61,7 +61,7 @@ export default function TeacherDashboardPage() {
           </div>
           <Link
             href="/teacher/chat"
-            className="inline-flex items-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90"
+            className="btn-press inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90 sm:w-auto"
           >
             Chat
           </Link>

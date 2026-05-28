@@ -131,7 +131,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
             className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
           />
         </label>
-        <label className="flex min-h-11 items-center gap-2 text-xs font-medium text-on-background/70">
+        <label className="flex min-h-11 items-center gap-2 text-xs font-medium text-on-background/70 sm:col-span-2">
           <input
             type="checkbox"
             checked={isDemo}
@@ -145,7 +145,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="mt-5 min-h-11 w-full rounded-xl bg-primary px-4 text-sm font-semibold text-white hover:bg-primary/90 transition-colors disabled:opacity-50 sm:w-auto"
+        className="btn-press mt-5 min-h-11 w-full rounded-xl bg-primary px-4 text-sm font-semibold text-white transition-colors hover:bg-primary/90 disabled:opacity-50 sm:w-auto"
       >
         {isSubmitting ? "Đang tạo..." : "Tạo tài khoản"}
       </button>

@@ -49,9 +49,9 @@ export default function ScenarioListPage() {
   }
 
   return (
-    <main className="mx-auto max-w-[960px] space-y-6">
+    <main className="mx-auto w-full max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <MessageCircle className="h-6 w-6" />
@@ -67,9 +67,9 @@ export default function ScenarioListPage() {
       {scenarios.length === 0 ? (
         <EmptyState heading="Chưa có tình huống đang mở" body="Khi có tình huống xử lý thực tế mới, em sẽ thấy tại đây." />
       ) : (
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {scenarios.map((scenario) => (
-            <div key={scenario.id} className="relative">
+            <div key={scenario.id} className="relative min-w-0">
               <StitchCard
                 icon={<MessageCircle className="h-5 w-5" />}
                 title={scenario.title}
@@ -78,7 +78,7 @@ export default function ScenarioListPage() {
                 ctaHref={`/student/scenarios/${scenario.id}`}
               />
               {scenario.skill_tag ? (
-                <span className="absolute right-4 top-4 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary">
+                <span className="absolute right-4 top-4 max-w-[calc(100%-2rem)] rounded-full bg-primary/10 px-3 py-1 text-xs text-primary sm:text-sm">
                   {scenario.skill_tag}
                     </span>
                   ) : null}
@@ -103,7 +103,7 @@ export default function ScenarioListPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.attempt_id}
-                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-all hover:border-primary/20 hover:shadow-sm"
+                className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-all hover:border-primary/20 dark:bg-[#1e2d40]"
               >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-sm font-semibold text-on-background">{item.scenario_title}</h3>

@@ -213,10 +213,10 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-5 pb-20 lg:pb-0">
       {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Users size={18} />
@@ -233,7 +233,7 @@ export default function AdminUsersPage() {
           <button
             type="button"
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+            className="btn-press flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto"
           >
             <UserPlus size={16} />
             Tạo tài khoản
@@ -268,7 +268,7 @@ export default function AdminUsersPage() {
         <select
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
-          className="min-h-11 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-3 text-sm text-on-background dark:bg-[#1e2d40] sm:w-auto"
         >
           <option value="all">Tất cả vai trò</option>
           <option value="student">Học sinh ({stats.studentCount})</option>
@@ -279,7 +279,7 @@ export default function AdminUsersPage() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="min-h-11 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-3 text-sm text-on-background dark:bg-[#1e2d40] sm:w-auto"
         >
           <option value="all">Tất cả trạng thái</option>
           <option value="active">Hoạt động ({stats.activeCount})</option>
@@ -314,9 +314,9 @@ export default function AdminUsersPage() {
           {filteredUsers.map((user) => (
             <article
               key={user.id}
-              className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-colors hover:border-outline-variant/40"
+              className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-colors hover:border-outline-variant/40 dark:bg-[#1e2d40]"
             >
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <InitialAvatar name={user.full_name} role={user.role} />
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
@@ -336,14 +336,14 @@ export default function AdminUsersPage() {
                   </div>
 
                   {/* Actions */}
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <div className="flex items-center gap-2">
+                  <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                       <select
                         value={selectedRoles[user.id] ?? user.role}
                         onChange={(e) =>
                           setSelectedRoles((cur) => ({ ...cur, [user.id]: e.target.value as AdminUser["role"] }))
                         }
-                        className="h-8 rounded-lg border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-2 text-xs text-on-background"
+                        className="min-h-11 w-full rounded-lg border border-outline-variant/30 bg-white px-3 text-xs text-on-background dark:bg-[#1a2940] sm:w-auto"
                       >
                         <option value="student">Học sinh</option>
                         <option value="teacher">Giáo viên</option>
@@ -353,7 +353,7 @@ export default function AdminUsersPage() {
                       <button
                         type="button"
                         onClick={() => setConfirmation({ type: "role", user, role: selectedRoles[user.id] ?? user.role })}
-                        className="h-8 rounded-lg bg-primary px-3 text-xs font-semibold text-white hover:bg-primary/80 transition-colors"
+                        className="btn-press min-h-11 w-full rounded-lg bg-primary px-3 text-xs font-semibold text-white transition-colors hover:bg-primary/80 sm:w-auto"
                       >
                         Lưu
                       </button>
@@ -361,7 +361,7 @@ export default function AdminUsersPage() {
                     <button
                       type="button"
                       onClick={() => setConfirmation({ type: "disable", user })}
-                      className="flex h-8 items-center gap-1.5 rounded-lg border border-amber-300 dark:border-amber-600 px-3 text-xs font-medium text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors"
+                      className="btn-press flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-amber-300 px-3 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/20 sm:w-auto"
                     >
                       <ShieldAlert size={13} />
                       Tạm khóa
@@ -370,7 +370,7 @@ export default function AdminUsersPage() {
                       <button
                         type="button"
                         onClick={() => setConfirmation({ type: "delete-demo", user })}
-                        className="flex h-8 items-center gap-1.5 rounded-lg bg-destructive px-3 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+                        className="btn-press flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg bg-destructive px-3 text-xs font-semibold text-white transition-colors hover:bg-red-700 sm:w-auto"
                       >
                         <Trash2 size={13} />
                         Xóa demo

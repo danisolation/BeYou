@@ -227,9 +227,20 @@ svg {
   transform: translateY(0);
 }
 
-/* Smooth transitions for interactive elements */
-button:active, [role="button"]:active {
-  transform: scale(0.97);
+/* Micro-interactions */
+@media (prefers-reduced-motion: no-preference) {
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+
+  .card-lift {
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px rgb(0 0 0 / 0.1);
+  }
 }
 
 /* Skip to content link for keyboard users */

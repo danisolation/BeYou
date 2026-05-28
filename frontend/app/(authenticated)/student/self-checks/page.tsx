@@ -59,9 +59,9 @@ export default function SelfCheckListPage() {
   }
 
   return (
-    <main className="mx-auto max-w-[960px] space-y-6">
+    <main className="mx-auto w-full max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <Brain className="h-6 w-6" />
@@ -80,7 +80,7 @@ export default function SelfCheckListPage() {
           body="Khi nhà trường bật nội dung phù hợp, em sẽ thấy các bài test tại đây."
         />
       ) : (
-        <section className="grid gap-4 md:grid-cols-2">
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {tests.map((test) => (
             <StitchCard
               key={test.id}
@@ -110,7 +110,7 @@ export default function SelfCheckListPage() {
             {history.slice(0, 5).map((item) => (
               <Link
                 key={item.attempt_id}
-                className="block rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4 transition-all hover:shadow-md hover:border-primary/20"
+                className="card-lift block rounded-2xl border border-outline-variant/20 bg-white p-4 transition-all hover:border-primary/20 dark:bg-[#1e2d40]"
                 href={`/student/self-checks/history/${item.attempt_id}`}
               >
                 <div className="flex flex-wrap items-center gap-2">

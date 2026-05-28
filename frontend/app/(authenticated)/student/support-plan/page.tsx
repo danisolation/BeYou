@@ -129,7 +129,7 @@ export default function StudentSupportPlanPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <div className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Users size={20} className="text-primary" aria-hidden="true" />
@@ -153,15 +153,15 @@ export default function StudentSupportPlanPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Chọn người lớn tin tưởng</h2>
           <p className="mt-3 text-sm">
             Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
           </p>
           {hasLinkedAdults ? (
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {data.available_adults.map((adult) => (
-                <label key={adult.id} className="flex gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-white dark:bg-[#1a2940]-container">
+                <label key={adult.id} className="flex items-start gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-primary/5 dark:bg-[#1a2940]">
                   <input
                     type="checkbox"
                     checked={selectedAdultIds.includes(adult.id)}
@@ -188,9 +188,9 @@ export default function StudentSupportPlanPage() {
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Điều em muốn chia sẻ</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <TextAreaField
               id="what-helps"
               label="Điều thường giúp em bình tĩnh hơn"
@@ -224,7 +224,7 @@ export default function StudentSupportPlanPage() {
           />
         </section>
 
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <label className="text-xs font-semibold" htmlFor="support-plan-status">
             Trạng thái chia sẻ
           </label>
@@ -248,7 +248,7 @@ export default function StudentSupportPlanPage() {
           <button
             type="submit"
             disabled={!canSave}
-            className="mt-5 min-h-11 rounded-2xl bg-primary px-5 font-semibold text-on-primary disabled:opacity-60"
+            className="btn-press mt-5 min-h-11 w-full rounded-2xl bg-primary px-5 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
           >
             {isSaving ? "Đang lưu..." : "Lưu kế hoạch hỗ trợ"}
           </button>

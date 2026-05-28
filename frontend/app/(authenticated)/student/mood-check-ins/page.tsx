@@ -132,9 +132,9 @@ export default function StudentMoodCheckInPage() {
   }
 
   return (
-    <section className="mx-auto max-w-[960px] space-y-6">
+    <section className="mx-auto w-full max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <Heart className="h-6 w-6" />
@@ -161,10 +161,10 @@ export default function StudentMoodCheckInPage() {
       </details>
 
       {/* Check-in form */}
-      <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6" onSubmit={handleSubmit}>
+      <form className="card-lift space-y-6 rounded-2xl border border-outline-variant/30 bg-white p-6 dark:bg-[#1e2d40]" onSubmit={handleSubmit}>
         <fieldset>
           <legend className="text-sm font-semibold text-on-background">Hôm nay em thấy thế nào?</legend>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {options.mood_options.map((option) => (
               <label
                 key={option.key}
@@ -190,7 +190,7 @@ export default function StudentMoodCheckInPage() {
           </div>
         </fieldset>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <ScaleButtonGroup
             label="Năng lượng"
             value={energyLevel}
@@ -248,7 +248,7 @@ export default function StudentMoodCheckInPage() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="min-h-[44px] w-full rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
+          className="btn-press min-h-[44px] w-full rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60 sm:w-auto"
         >
           {isSubmitting ? "Đang lưu..." : "Lưu check-in"}
         </button>
@@ -273,7 +273,7 @@ export default function StudentMoodCheckInPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.id}
-                className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1e2d40] p-4"
+                className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 dark:bg-[#1e2d40]"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className="text-sm font-semibold text-on-background">
@@ -283,7 +283,7 @@ export default function StudentMoodCheckInPage() {
                     {new Date(item.created_at).toLocaleString("vi-VN")}
                   </span>
                 </div>
-                <div className="mt-2 flex gap-4 text-sm text-on-background/70">
+                <div className="mt-2 flex flex-wrap gap-4 text-sm text-on-background/70">
                   <span>Năng lượng: {item.energy_level}/5</span>
                   <span>Căng thẳng: {item.stress_level}/5</span>
                 </div>
@@ -307,7 +307,7 @@ export default function StudentMoodCheckInPage() {
 
 function MoodResultCard({ result }: { result: MoodCheckIn }) {
   return (
-    <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
+    <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-6 dark:bg-[#1e2d40]">
       <h2 className="text-sm font-semibold text-on-background">Đã lưu check-in</h2>
       <p role="status" className="mt-3 text-sm text-on-background/80">
         <strong>{result.trend_label}:</strong> {result.supportive_message}

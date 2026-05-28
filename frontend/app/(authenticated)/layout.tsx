@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 
 import { ErrorState, PrivacyBoundaryCard, StatusBadge } from "@/components/ui-primitives";
 import { LayoutSkeleton } from "@/components/skeletons";
@@ -16,6 +16,7 @@ import { ParentMobileNav } from "@/components/navigation/parent-mobile-nav";
 import { AdminSidebar } from "@/components/navigation/admin-sidebar";
 import { AdminMobileNav } from "@/components/navigation/admin-mobile-nav";
 import { LayoutShell } from "@/components/layout-shell";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { apiFetch } from "@/lib/api";
 import { AuthUser, getCurrentUser } from "@/lib/auth";
 
@@ -49,6 +50,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const [teacherMenuCollapsed, setTeacherMenuCollapsed] = useState(false);
   const [parentMenuCollapsed, setParentMenuCollapsed] = useState(false);
   const [adminMenuCollapsed, setAdminMenuCollapsed] = useState(false);
+  const [adminDrawerOpen, setAdminDrawerOpen] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -83,6 +85,10 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
       isActive = false;
     };
   }, [pathname, router]);
+
+  useEffect(() => {
+    setAdminDrawerOpen(false);
+  }, [pathname]);
 
   async function handleLogout() {
     await apiFetch("/api/auth/logout", { method: "POST" });
@@ -120,19 +126,34 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
         Bỏ qua điều hướng
       </a>
 
-      {/* Slim header — one row */}
-      <header role="banner" className="sticky top-0 z-30 border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80">
+      <header
+        role="banner"
+        className="sticky top-0 z-30 border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80"
+      >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href={user.dashboard_route} className="flex items-center gap-2 no-underline">
-            <span className="text-lg font-bold tracking-tight text-primary">Peerlight AI</span>
-          </Link>
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            {isAdminShell ? (
+              <button
+                type="button"
+                aria-label="Mở menu quản trị"
+                aria-controls="admin-mobile-drawer"
+                onClick={() => setAdminDrawerOpen(true)}
+                className="btn-press touch-target inline-flex items-center justify-center rounded-xl text-on-background/60 transition-colors hover:bg-outline-variant/20 hover:text-on-background md:hidden"
+              >
+                <Menu size={18} aria-hidden="true" />
+              </button>
+            ) : null}
+            <Link href={user.dashboard_route} className="flex min-w-0 items-center gap-2 no-underline">
+              <span className="truncate text-lg font-bold tracking-tight text-primary">Peerlight AI</span>
+            </Link>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3">
             <span className="hidden text-sm font-medium text-on-background/70 sm:block">{user.full_name}</span>
             <StatusBadge tone="safe">{roleLabels[user.role]}</StatusBadge>
             <button
               type="button"
               onClick={handleLogout}
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 transition-colors hover:bg-outline-variant/20 hover:text-on-background"
+              className="btn-press flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 transition-colors hover:bg-outline-variant/20 hover:text-on-background"
               aria-label="Đăng xuất"
             >
               <LogOut size={18} aria-hidden="true" />
@@ -160,54 +181,58 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
               </Link>
             }
           />
+        ) : isStudentShell ? (
+          <div className={`transition-all duration-200 ${studentMenuCollapsed ? "md:ml-24" : "md:ml-60"}`}>
+            <StudentSidebar
+              pathname={pathname}
+              collapsed={studentMenuCollapsed}
+              onToggleCollapse={() => setStudentMenuCollapsed((current) => !current)}
+              onLogout={handleLogout}
+            />
+            <MobileBottomNav pathname={pathname} onLogout={handleLogout} />
+            <PullToRefresh />
+            <LayoutShell>{children}</LayoutShell>
+          </div>
+        ) : isTeacherShell ? (
+          <div className={`transition-all duration-200 ${teacherMenuCollapsed ? "md:ml-24" : "md:ml-60"}`}>
+            <TeacherSidebar
+              pathname={pathname}
+              collapsed={teacherMenuCollapsed}
+              onToggleCollapse={() => setTeacherMenuCollapsed((current) => !current)}
+              onLogout={handleLogout}
+            />
+            <TeacherMobileNav pathname={pathname} onLogout={handleLogout} />
+            <LayoutShell>{children}</LayoutShell>
+          </div>
+        ) : isParentShell ? (
+          <div className={`transition-all duration-200 ${parentMenuCollapsed ? "md:ml-24" : "md:ml-60"}`}>
+            <ParentSidebar
+              pathname={pathname}
+              collapsed={parentMenuCollapsed}
+              onToggleCollapse={() => setParentMenuCollapsed((current) => !current)}
+              onLogout={handleLogout}
+            />
+            <ParentMobileNav pathname={pathname} onLogout={handleLogout} />
+            <LayoutShell>{children}</LayoutShell>
+          </div>
+        ) : isAdminShell ? (
+          <div className={`transition-all duration-200 ${adminMenuCollapsed ? "md:ml-24" : "md:ml-60"}`}>
+            <AdminSidebar
+              pathname={pathname}
+              collapsed={adminMenuCollapsed}
+              onToggleCollapse={() => setAdminMenuCollapsed((current) => !current)}
+              onLogout={handleLogout}
+            />
+            <AdminMobileNav
+              pathname={pathname}
+              onLogout={handleLogout}
+              open={adminDrawerOpen}
+              onOpenChange={setAdminDrawerOpen}
+            />
+            <LayoutShell>{children}</LayoutShell>
+          </div>
         ) : (
-          isStudentShell ? (
-            <div className={`transition-all duration-200 ${studentMenuCollapsed ? "lg:ml-24" : "lg:ml-60"}`}>
-              <StudentSidebar
-                pathname={pathname}
-                collapsed={studentMenuCollapsed}
-                onToggleCollapse={() => setStudentMenuCollapsed((current) => !current)}
-                onLogout={handleLogout}
-              />
-              <MobileBottomNav pathname={pathname} onLogout={handleLogout} />
-              <LayoutShell>{children}</LayoutShell>
-            </div>
-          ) : isTeacherShell ? (
-            <div className={`transition-all duration-200 ${teacherMenuCollapsed ? "lg:ml-24" : "lg:ml-60"}`}>
-              <TeacherSidebar
-                pathname={pathname}
-                collapsed={teacherMenuCollapsed}
-                onToggleCollapse={() => setTeacherMenuCollapsed((current) => !current)}
-                onLogout={handleLogout}
-              />
-              <TeacherMobileNav pathname={pathname} onLogout={handleLogout} />
-              <LayoutShell>{children}</LayoutShell>
-            </div>
-          ) : isParentShell ? (
-            <div className={`transition-all duration-200 ${parentMenuCollapsed ? "lg:ml-24" : "lg:ml-60"}`}>
-              <ParentSidebar
-                pathname={pathname}
-                collapsed={parentMenuCollapsed}
-                onToggleCollapse={() => setParentMenuCollapsed((current) => !current)}
-                onLogout={handleLogout}
-              />
-              <ParentMobileNav pathname={pathname} onLogout={handleLogout} />
-              <LayoutShell>{children}</LayoutShell>
-            </div>
-          ) : isAdminShell ? (
-            <div className={`transition-all duration-200 ${adminMenuCollapsed ? "lg:ml-24" : "lg:ml-60"}`}>
-              <AdminSidebar
-                pathname={pathname}
-                collapsed={adminMenuCollapsed}
-                onToggleCollapse={() => setAdminMenuCollapsed((current) => !current)}
-                onLogout={handleLogout}
-              />
-              <AdminMobileNav pathname={pathname} onLogout={handleLogout} />
-              <LayoutShell>{children}</LayoutShell>
-            </div>
-          ) : (
-            children
-          )
+          children
         )}
       </main>
     </div>

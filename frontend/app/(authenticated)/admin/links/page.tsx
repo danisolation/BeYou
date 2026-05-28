@@ -129,10 +129,10 @@ export default function AdminLinksPage() {
   }
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-5 pb-20 lg:pb-0">
       {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Link2 size={18} />
@@ -147,7 +147,7 @@ export default function AdminLinksPage() {
           <button
             type="button"
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors"
+            className="btn-press flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto"
           >
             <Plus size={16} />
             <span className="hidden sm:inline">Tạo liên kết</span>
@@ -183,13 +183,13 @@ export default function AdminLinksPage() {
             placeholder="Tìm theo tên hoặc email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="min-h-10 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] pl-9 pr-3 text-sm text-on-background placeholder:text-on-background/40"
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white pl-9 pr-3 text-sm text-on-background placeholder:text-on-background/40 dark:bg-[#1e2d40]"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="min-h-10 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white px-3 text-sm text-on-background dark:bg-[#1e2d40] sm:w-auto"
         >
           <option value="all">Tất cả ({links.length})</option>
           <option value="active">Đang hoạt động ({activeCount})</option>
@@ -222,7 +222,7 @@ export default function AdminLinksPage() {
           filteredLinks.map((link) => (
             <article
               key={link.id}
-              className="rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4 sm:p-5 transition-shadow hover:shadow-sm"
+              className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-shadow hover:shadow-sm dark:bg-[#1a2940] sm:p-5"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3 min-w-0">
@@ -253,7 +253,7 @@ export default function AdminLinksPage() {
                   <button
                     type="button"
                     onClick={() => setRevokeTarget(link)}
-                    className="flex items-center justify-center gap-2 min-h-10 rounded-xl border border-red-200 dark:border-red-800 px-4 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors sm:w-auto w-full"
+                    className="btn-press flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-red-200 px-4 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/20 sm:w-auto"
                   >
                     <UserX size={14} />
                     Thu hồi

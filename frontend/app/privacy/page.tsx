@@ -38,7 +38,7 @@ function PrivacyContent() {
   }
 
   return (
-    <main className="min-h-dvh px-4 py-8 sm:px-6 sm:py-10">
+    <main className="min-h-dvh bg-background px-4 py-8 sm:px-6 sm:py-10">
       <section className="mx-auto max-w-3xl rounded-2xl bg-primary/5 p-5 shadow-sm sm:p-6 lg:p-8">
         <p className="text-xs font-semibold text-primary">Quyền riêng tư</p>
         <h1 className="mt-2 text-2xl font-bold">Ai có thể xem thông tin của em?</h1>
@@ -47,7 +47,7 @@ function PrivacyContent() {
           phần tóm tắt cần thiết để hỗ trợ em, không xem mọi câu trả lời riêng tư.
         </p>
 
-        <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 sm:p-5">
+        <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 dark:bg-[#1a2940] sm:p-5">
           <section>
             <h2 className="text-sm font-semibold">Ai thấy gì?</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
@@ -74,7 +74,7 @@ function PrivacyContent() {
           </section>
         </div>
 
-        <label className="mt-6 flex items-start gap-3 rounded-2xl bg-white p-4 text-sm">
+        <label className="mt-6 flex items-start gap-3 rounded-2xl bg-white p-4 text-sm dark:bg-[#1a2940]">
           <input
             type="checkbox"
             checked={checked}
@@ -89,7 +89,7 @@ function PrivacyContent() {
           type="button"
           disabled={!checked || isSubmitting}
           onClick={handleContinue}
-          className="mt-6 min-h-12 w-full rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-press mt-6 min-h-12 w-full rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Tiếp tục vào Peerlight AI
         </button>

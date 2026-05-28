@@ -103,7 +103,7 @@ export default function LoginPage() {
     <main className="min-h-dvh bg-background px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
-        <header className="flex items-center justify-between rounded-2xl bg-white/85 dark:bg-[#0d1c2e]/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
+        <header className="flex flex-col gap-3 rounded-2xl bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur dark:bg-[#0d1c2e]/85 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
             Peerlight AI
@@ -141,7 +141,7 @@ export default function LoginPage() {
                             setPassword(DEMO_PASSWORD);
                             setError("");
                           }}
-                          className="min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+                          className="btn-press min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
                         >
                           {account.label}
                         </button>
@@ -197,7 +197,7 @@ export default function LoginPage() {
                       type="button"
                       aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                       onClick={() => setShowPassword((current) => !current)}
-                      className="min-h-12 min-w-12 text-primary"
+                      className="btn-press min-h-12 min-w-12 text-primary"
                     >
                       {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
                     </button>
@@ -213,7 +213,7 @@ export default function LoginPage() {
                 <button
                   type="submit"
                   disabled={!canSubmit}
-                  className="min-h-12 w-full rounded-xl bg-primary px-4 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
+                  className="btn-press min-h-12 w-full rounded-xl bg-primary px-4 font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
@@ -225,7 +225,7 @@ export default function LoginPage() {
               {brandingCards.map((card) => (
                 <div
                   key={card.title}
-                  className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md"
+                  className="card-lift rounded-2xl bg-white p-6 ring-1 ring-outline-variant/20 transition-shadow hover:shadow-md dark:bg-[#1e2d40]"
                 >
                   <div className="mb-3 inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                     <card.icon className="h-6 w-6" aria-hidden="true" />
