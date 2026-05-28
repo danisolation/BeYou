@@ -64,8 +64,7 @@ describe("Phase 2 frontend auth foundation", () => {
     render(<LoginPage />);
 
     const submit = screen.getByRole("button", { name: "Đăng nhập" });
-    expect(screen.getByText("Chào mừng đến với Peerlight AI")).toBeInTheDocument();
-    expect(screen.getByText("Đăng nhập để vào không gian hỗ trợ phù hợp với vai trò của bạn.")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.")).toBeInTheDocument();
     expect(submit).toBeEnabled();
     expect(screen.getByLabelText("Email")).toBeRequired();
     expect(screen.getByLabelText("Mật khẩu")).toBeRequired();

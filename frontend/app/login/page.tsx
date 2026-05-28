@@ -9,10 +9,10 @@ import { AuthCapabilities, getAuthCapabilities, login, loginErrorCopy } from "@/
 import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 
 const DEMO_DISABLED_COPY =
-  "Demo công khai đang tắt cho production pilot. Hãy dùng tài khoản được cấp bởi quản trị viên.";
-const PROVIDER_DISABLED_COPY = "Nhà cung cấp đăng nhập ngoài chưa bật cho pilot.";
-const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình demo an toàn...";
-const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình demo. Hãy đăng nhập bằng email và mật khẩu được cấp.";
+  "Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên.";
+const PROVIDER_DISABLED_COPY = "Đăng nhập bên ngoài chưa được kích hoạt.";
+const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình hệ thống...";
+const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp.";
 
 const brandingCards = [
   {
@@ -120,7 +120,7 @@ export default function LoginPage() {
             <div className="order-1 rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
               <h1 className="text-2xl text-on-background">Đăng nhập</h1>
               <p className="mt-2 text-sm text-on-background/70">
-                Vào không gian hỗ trợ phù hợp với vai trò của bạn.
+                Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.
               </p>
 
               {/* Demo accounts section */}
@@ -130,7 +130,7 @@ export default function LoginPage() {
                   <p className="mt-1 text-xs text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
                 ) : publicDemoEntryEnabled ? (
                   <>
-                    <p className="mt-1 text-xs text-on-background/60">Chọn một vai trò để tự điền email và mật khẩu demo.</p>
+                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để đăng nhập nhanh.</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {demoAccounts.map((account) => (
                         <button

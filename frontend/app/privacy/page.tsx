@@ -67,9 +67,9 @@ function PrivacyContent() {
           </section>
 
           <section>
-            <h2 className="text-sm font-semibold">Dữ liệu demo và dữ liệu thật khác nhau thế nào?</h2>
+            <h2 className="text-sm font-semibold">Dữ liệu của em được bảo vệ thế nào?</h2>
             <p className="mt-3 text-sm">
-              Dữ liệu demo có nhãn Demo và banner: Đang xem dữ liệu demo - không phải hồ sơ học sinh thật.
+              Mọi dữ liệu cá nhân được mã hóa và lưu trữ an toàn. Chỉ những người được ủy quyền mới có thể truy cập thông tin hỗ trợ khi cần thiết.
             </p>
           </section>
         </div>
