@@ -166,7 +166,7 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
     expect(screen.getByText("Peerlight AI")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");

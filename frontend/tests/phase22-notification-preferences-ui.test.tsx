@@ -156,7 +156,7 @@ describe("Phase 22 notification preferences UI", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.queryByText("Nhắc nhẹ: em muốn check-in cảm xúc không?")).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
       "href",

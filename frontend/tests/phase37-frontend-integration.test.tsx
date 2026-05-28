@@ -98,7 +98,7 @@ describe("Phase 37 frontend integration redlines", () => {
     for (const marker of adminUnsafeMarkers) {
       expect(adminSource).not.toContain(marker);
     }
-    expect(studentSource).toContain("Chào {name}! 👋");
+    expect(studentSource).toContain("{greeting}, {name}!");
     expect(studentSource).toContain("Peerlight AI");
     expect(studentSource).toContain("Vào thiết lập");
     expect(adminSource).toContain("Bảng vận hành");

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search } from "lucide-react";
+import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -123,15 +123,20 @@ function Field({
   value,
   onChange,
   type = "text",
+  required = false,
 }: {
   label: string;
   value: string | number;
   onChange: (value: string) => void;
   type?: "text" | "number";
+  required?: boolean;
 }) {
   return (
     <label className="space-y-1.5 text-xs font-medium text-on-background/70">
-      {label}
+      <span>
+        {label}
+        {required ? <span className="ml-0.5 text-red-500">*</span> : null}
+      </span>
       <input
         aria-label={label}
         type={type}
@@ -147,14 +152,19 @@ function TextAreaField({
   label,
   value,
   onChange,
+  required = false,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  required?: boolean;
 }) {
   return (
     <label className="space-y-1.5 text-xs font-medium text-on-background/70">
-      {label}
+      <span>
+        {label}
+        {required ? <span className="ml-0.5 text-red-500">*</span> : null}
+      </span>
       <textarea
         aria-label={label}
         value={value}
@@ -247,6 +257,86 @@ function StatusBadge({ status }: { status: AdminContentStatus }) {
   );
 }
 
+type EditorStep = 1 | 2 | 3 | 4;
+
+function StepIndicator({
+  steps,
+  currentStep,
+  onStepChange,
+}: {
+  steps: readonly string[];
+  currentStep: EditorStep;
+  onStepChange: (step: EditorStep) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+        {steps.map((step, index) => {
+          const stepNumber = (index + 1) as EditorStep;
+          const isCompleted = stepNumber < currentStep;
+          const isActive = stepNumber === currentStep;
+
+          return (
+            <div key={step} className="flex min-w-0 flex-1 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onStepChange(stepNumber)}
+                className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-primary/5"
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
+                    isCompleted
+                      ? "bg-green-500 text-white"
+                      : isActive
+                        ? "bg-primary text-white"
+                        : "bg-on-background/10 text-on-background/60"
+                  }`}
+                >
+                  {isCompleted ? <Check size={16} /> : stepNumber}
+                </span>
+                <span className={`min-w-0 text-sm ${isActive ? "font-semibold text-on-background" : "text-on-background/70"}`}>
+                  {step}
+                </span>
+              </button>
+              {index < steps.length - 1 ? (
+                <div className={`hidden h-px flex-1 sm:block ${isCompleted ? "bg-green-500/50" : "bg-outline-variant/40"}`} />
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+      <div className="h-2 rounded-full bg-on-background/10">
+        <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(currentStep / steps.length) * 100}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function ChecklistItem({ passed, label }: { passed: boolean; label: string }) {
+  return (
+    <li className={`flex items-center gap-2 text-sm ${passed ? "text-green-700 dark:text-green-300" : "text-red-600 dark:text-red-300"}`}>
+      <span
+        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold ${
+          passed
+            ? "bg-green-500 text-white"
+            : "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300"
+        }`}
+      >
+        {passed ? "✓" : "✕"}
+      </span>
+      <span>{label}</span>
+    </li>
+  );
+}
+
+function nextEditorStep(step: EditorStep): EditorStep {
+  return (step === 4 ? 4 : step + 1) as EditorStep;
+}
+
+function previousEditorStep(step: EditorStep): EditorStep {
+  return (step === 1 ? 1 : step - 1) as EditorStep;
+}
+
 export default function AdminContentPage() {
   const [selfChecks, setSelfChecks] = useState<AdminSelfCheckContent[]>([]);
   const [scenarios, setScenarios] = useState<AdminScenarioContent[]>([]);
@@ -260,6 +350,8 @@ export default function AdminContentPage() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [selfCheckStep, setSelfCheckStep] = useState<EditorStep>(1);
+  const [scenarioStep, setScenarioStep] = useState<EditorStep>(1);
 
   const filteredSelfChecks = useMemo(() => {
     if (!search.trim()) return selfChecks;
@@ -273,6 +365,51 @@ export default function AdminContentPage() {
     return scenarios.filter((item) => item.title.toLowerCase().includes(q) || item.skill_tag.toLowerCase().includes(q) || item.status.includes(q));
   }, [scenarios, search]);
 
+  const selfCheckSteps = [
+    "Bước 1: Thông tin cơ bản",
+    "Bước 2: Câu hỏi",
+    "Bước 3: Ngưỡng điểm",
+    "Bước 4: Xem lại & Xuất bản",
+  ] as const;
+  const scenarioSteps = [
+    "Bước 1: Thông tin cơ bản",
+    "Bước 2: Lựa chọn phản hồi",
+    "Bước 3: Bài học",
+    "Bước 4: Xem lại & Xuất bản",
+  ] as const;
+
+  const selfCheckBasicCount = [selfCheckDraft.title.trim(), selfCheckDraft.description?.trim() ?? "", selfCheckDraft.status].filter(Boolean).length;
+  const filledSelfCheckQuestions = selfCheckDraft.questions.filter((question) => question.text.trim().length > 0).length;
+  const selfCheckQuestionsReady = selfCheckDraft.questions.filter(
+    (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
+  ).length;
+  const selfCheckReviewItems = [
+    { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0 },
+    { label: "Có ít nhất 1 câu hỏi", passed: selfCheckDraft.questions.some((question) => question.text.trim().length > 0) },
+    {
+      label: "Mỗi câu hỏi có ít nhất 2 lựa chọn",
+      passed:
+        selfCheckDraft.questions.length > 0 &&
+        selfCheckDraft.questions.every(
+          (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
+        ),
+    },
+    { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0 },
+  ];
+  const canPublishSelfCheck =
+    Boolean(selfCheckDraft.id) && selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
+
+  const scenarioBasicCount = [scenarioDraft.title.trim(), scenarioDraft.situation.trim(), scenarioDraft.skill_tag.trim(), scenarioDraft.status].filter(Boolean).length;
+  const filledScenarioChoices = scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length;
+  const filledScenarioLessons = [scenarioDraft.recommended_response.trim(), scenarioDraft.lesson.trim()].filter(Boolean).length;
+  const scenarioReviewItems = [
+    { label: "Tên bài đã được nhập", passed: scenarioDraft.title.trim().length > 0 },
+    { label: "Có ít nhất 2 lựa chọn", passed: scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length >= 2 },
+    { label: "Đã nhập bài học", passed: scenarioDraft.lesson.trim().length > 0 },
+  ];
+  const canPublishScenario =
+    Boolean(scenarioDraft.id) && scenarioDraft.status === "draft" && scenarioReviewItems.every((item) => item.passed);
+
   async function refreshContent() {
     const [loadedSelfChecks, loadedScenarios] = await Promise.all([listAdminSelfChecks(), listAdminScenarios()]);
     setSelfChecks(loadedSelfChecks);
@@ -285,6 +422,7 @@ export default function AdminContentPage() {
 
   function openSelfCheckEditor(item?: AdminSelfCheckContent) {
     setSelfCheckDraft(cloneSelfCheck(item ?? emptySelfCheck));
+    setSelfCheckStep(1);
     setIsEditing(true);
     setNotice("");
     setError("");
@@ -292,6 +430,7 @@ export default function AdminContentPage() {
 
   function openScenarioEditor(item?: AdminScenarioContent) {
     setScenarioDraft(cloneScenario(item ?? emptyScenario));
+    setScenarioStep(1);
     setIsEditing(true);
     setNotice("");
     setError("");
@@ -299,6 +438,8 @@ export default function AdminContentPage() {
 
   function closeEditor() {
     setIsEditing(false);
+    setSelfCheckStep(1);
+    setScenarioStep(1);
     setNotice("");
     setError("");
   }
@@ -526,7 +667,7 @@ export default function AdminContentPage() {
           </div>
           <div>
             <h1 className="text-lg font-semibold text-on-background">Quản lý nội dung</h1>
-            <p className="text-xs text-on-background/60">Tạo, sửa và xuất bản bài tự kiểm tra và tình huống</p>
+            <p className="text-xs text-on-background/60">Soạn nội dung test tâm lý và tình huống cho học sinh</p>
           </div>
         </div>
       </header>
@@ -706,113 +847,243 @@ export default function AdminContentPage() {
             Quay lại danh sách
           </button>
 
-          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 space-y-5">
-            <h2 className="text-base font-semibold">
-              {selfCheckDraft.id ? "Chỉnh sửa bài tự kiểm tra" : "Tạo bài tự kiểm tra mới"}
-            </h2>
-
-            {/* Basic info */}
-            <section className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cơ bản</h3>
-              <Field label="Tên bài" value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} />
-              <TextAreaField label="Mô tả ngắn" value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} />
-              <label className="space-y-1 text-sm font-medium">
-                Trạng thái
-                <select aria-label="Trạng thái nội dung" value={selfCheckDraft.status} onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 dark:bg-[#1e2d40]">
-                  {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
-                </select>
-              </label>
-            </section>
-
-            {/* Questions */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Câu hỏi ({selfCheckDraft.questions.length})</h3>
-                <button type="button" onClick={addSelfCheckQuestion} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
-                  <Plus size={14} /> Thêm
-                </button>
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-5">
+            <div className="space-y-4 border-b border-outline-variant/20 pb-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <h2 className="text-base font-semibold text-on-background">
+                    {selfCheckDraft.id ? "Chỉnh sửa bài tự kiểm tra" : "Tạo bài tự kiểm tra mới"}
+                  </h2>
+                  <p className="text-sm text-on-background/60">Đi từng bước để soạn câu hỏi, ngưỡng điểm và kiểm tra trước khi xuất bản.</p>
+                </div>
+                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {selfCheckStep}/4</div>
               </div>
-              {selfCheckDraft.questions.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 1 câu hỏi.</p> : null}
-              {selfCheckDraft.questions.map((question, qi) => (
-                <details key={question.id ?? `q-${qi}`} className="rounded-xl border border-outline-variant/20 overflow-hidden" open={qi === 0}>
-                  <summary className="cursor-pointer bg-primary/5 dark:bg-primary/10 px-4 py-3 text-sm font-medium select-none flex items-center justify-between">
-                    <span>Câu {qi + 1}: {question.text || "Chưa nhập"}</span>
-                    <button type="button" onClick={(e) => { e.preventDefault(); removeSelfCheckQuestion(qi); }} className="text-xs text-destructive hover:underline">Xóa</button>
-                  </summary>
-                  <div className="space-y-3 p-4">
-                    <Field label="Nội dung câu hỏi" value={question.text} onChange={(v) => updateSelfCheckQuestion(qi, "text", v)} />
-                    <Field label="Thứ tự" value={question.sort_order} type="number" onChange={(v) => updateSelfCheckQuestion(qi, "sort_order", v)} />
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-on-background/70">Lựa chọn ({question.choices.length})</span>
-                        <button type="button" onClick={() => addSelfCheckChoice(qi)} className="text-xs text-primary hover:underline">+ Thêm</button>
+              <StepIndicator steps={selfCheckSteps} currentStep={selfCheckStep} onStepChange={setSelfCheckStep} />
+            </div>
+
+            {selfCheckStep === 1 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 1: Thông tin cơ bản</p>
+                    <h3 className="text-lg font-semibold text-on-background">Đặt tên và mô tả bài test</h3>
+                    <p className="text-sm text-on-background/60">Các trường có dấu <span className="text-red-500">*</span> nên được hoàn thiện trước khi xuất bản.</p>
+                  </div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckBasicCount}/3 trường đã nhập</div>
+                </div>
+                <Field label="Tên bài" required value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} />
+                <TextAreaField label="Mô tả ngắn" required value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} />
+                <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                  <span>
+                    Trạng thái nội dung
+                    <span className="ml-0.5 text-red-500">*</span>
+                  </span>
+                  <select aria-label="Trạng thái nội dung" value={selfCheckDraft.status} onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
+                    {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
+                  </select>
+                </label>
+              </section>
+            ) : null}
+
+            {selfCheckStep === 2 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 2: Câu hỏi</p>
+                    <h3 className="text-lg font-semibold text-on-background">Soạn câu hỏi và lựa chọn trả lời</h3>
+                    <p className="text-sm text-on-background/60">Mỗi câu hỏi nên có ít nhất 2 lựa chọn để học sinh dễ trả lời.</p>
+                  </div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{filledSelfCheckQuestions}/{selfCheckDraft.questions.length} câu hỏi đã nhập</div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4">
+                  <div>
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tiến độ câu hỏi</p>
+                    <p className="mt-1 text-sm text-on-background/70">{selfCheckQuestionsReady}/{selfCheckDraft.questions.length} câu hỏi đã đủ 2 lựa chọn</p>
+                  </div>
+                  <button type="button" onClick={addSelfCheckQuestion} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                    <Plus size={16} className="inline-flex" /> Thêm câu hỏi
+                  </button>
+                </div>
+
+                {selfCheckDraft.questions.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 1 câu hỏi.</p> : null}
+                {selfCheckDraft.questions.map((question, qi) => (
+                  <div key={question.id ?? `q-${qi}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Câu hỏi {qi + 1}</p>
+                        <p className="mt-1 text-sm text-on-background/70">{question.choices.filter((choice) => choice.text.trim().length > 0).length}/{question.choices.length} lựa chọn đã nhập</p>
+                      </div>
+                      <button type="button" onClick={() => removeSelfCheckQuestion(qi)} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2 text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
+                        Xóa
+                      </button>
+                    </div>
+                    <Field label="Nội dung câu hỏi" required value={question.text} onChange={(value) => updateSelfCheckQuestion(qi, "text", value)} />
+                    <Field label="Thứ tự" value={question.sort_order} type="number" onChange={(value) => updateSelfCheckQuestion(qi, "sort_order", value)} />
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Lựa chọn trả lời</p>
+                        <button type="button" onClick={() => addSelfCheckChoice(qi)} className="rounded-xl border border-outline-variant/30 px-4 py-2 text-sm text-on-background/70 hover:bg-primary/5">
+                          + Thêm lựa chọn
+                        </button>
                       </div>
                       {question.choices.map((choice, ci) => (
-                        <div key={choice.id ?? `c-${qi}-${ci}`} className="flex items-start gap-2 rounded-lg border border-outline-variant/10 bg-white dark:bg-[#1e2d40] p-3">
-                          <div className="flex-1 space-y-2">
-                            <input aria-label={`Lựa chọn ${ci + 1}`} type="text" value={choice.text} onChange={(e) => updateSelfCheckChoice(qi, ci, "text", e.target.value)} placeholder={`Lựa chọn ${ci + 1}`} className="w-full rounded-lg border border-outline-variant/20 px-3 py-2 text-sm dark:bg-[#1e2d40]" />
-                            <div className="flex gap-2 items-center">
-                              <input aria-label="Điểm" type="number" value={choice.score_value} onChange={(e) => updateSelfCheckChoice(qi, ci, "score_value", e.target.value)} className="w-20 rounded-lg border border-outline-variant/20 px-2 py-1 text-xs dark:bg-[#1e2d40]" />
-                              <span className="text-xs text-on-background/50">điểm</span>
+                        <div key={choice.id ?? `c-${qi}-${ci}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-1 space-y-3">
+                              <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                                <span>
+                                  Lựa chọn {ci + 1}
+                                  <span className="ml-0.5 text-red-500">*</span>
+                                </span>
+                                <input aria-label={`Lựa chọn ${ci + 1}`} type="text" value={choice.text} onChange={(event) => updateSelfCheckChoice(qi, ci, "text", event.target.value)} placeholder={`Lựa chọn ${ci + 1}`} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background" />
+                              </label>
+                              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[120px_1fr] sm:items-end">
+                                <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                                  <span>
+                                    Điểm
+                                    <span className="ml-0.5 text-red-500">*</span>
+                                  </span>
+                                  <input aria-label="Điểm" type="number" value={choice.score_value} onChange={(event) => updateSelfCheckChoice(qi, ci, "score_value", event.target.value)} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background" />
+                                </label>
+                                <p className="pb-2 text-xs text-on-background/50">Điểm này sẽ được cộng vào tổng điểm của bài tự kiểm tra.</p>
+                              </div>
                             </div>
+                            <button type="button" onClick={() => removeSelfCheckChoice(qi, ci)} className="rounded-xl p-2 text-on-background/40 hover:bg-red-50 hover:text-destructive dark:hover:bg-red-900/20">
+                              <Trash2 size={14} />
+                            </button>
                           </div>
-                          <button type="button" onClick={() => removeSelfCheckChoice(qi, ci)} className="mt-1 text-on-background/40 hover:text-destructive"><Trash2 size={14} /></button>
                         </div>
                       ))}
                     </div>
                   </div>
-                </details>
-              ))}
-            </section>
+                ))}
+              </section>
+            ) : null}
 
-            {/* Thresholds */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Ngưỡng điểm ({selfCheckDraft.thresholds.length})</h3>
-                <button type="button" onClick={addThreshold} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
-                  <Plus size={14} /> Thêm
-                </button>
-              </div>
-              {selfCheckDraft.thresholds.map((threshold, ti) => (
-                <div key={threshold.id ?? `th-${ti}`} className="rounded-xl border border-outline-variant/20 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Ngưỡng {ti + 1}</span>
-                    <button type="button" onClick={() => removeThreshold(ti)} className="text-xs text-destructive hover:underline">Xóa</button>
+            {selfCheckStep === 3 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Ngưỡng điểm</p>
+                    <h3 className="text-lg font-semibold text-on-background">Thiết lập kết quả theo tổng điểm</h3>
+                    <p className="text-sm text-on-background/60">Mỗi ngưỡng xác định kết quả dựa trên tổng điểm.</p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label className="space-y-1 text-sm font-medium">
-                      Mức
-                      <select aria-label="Mức" value={threshold.state_label} onChange={(e) => updateThreshold(ti, "state_label", e.target.value)} className="min-h-10 w-full rounded-lg border border-outline-variant/30 px-2 text-sm dark:bg-[#1e2d40]">
-                        {riskLabels.map((l) => <option key={l} value={l}>{riskLabelDisplay[l]}</option>)}
-                      </select>
-                    </label>
-                    <Field label="Min" value={threshold.min_score} type="number" onChange={(v) => updateThreshold(ti, "min_score", v)} />
-                    <Field label="Max" value={threshold.max_score} type="number" onChange={(v) => updateThreshold(ti, "max_score", v)} />
-                  </div>
-                  <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(v) => updateThreshold(ti, "comment", v)} />
-                  <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(v) => updateThreshold(ti, "advice", v)} />
-                  <details className="text-xs">
-                    <summary className="cursor-pointer text-on-background/50 hover:text-on-background select-none">Thêm trường...</summary>
-                    <div className="mt-2 space-y-3">
-                      <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(v) => updateThreshold(ti, "positive_content", v)} />
-                      <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(v) => updateThreshold(ti, "suggested_next_action", v)} />
-                    </div>
-                  </details>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckDraft.thresholds.length} ngưỡng đã cấu hình</div>
                 </div>
-              ))}
-            </section>
 
-            {/* Action bar */}
+                <div className="flex justify-end">
+                  <button type="button" onClick={addThreshold} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                    <Plus size={16} className="inline-flex" /> Thêm ngưỡng
+                  </button>
+                </div>
+
+                {selfCheckDraft.thresholds.map((threshold, ti) => (
+                  <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Ngưỡng {ti + 1}</p>
+                        <p className="mt-1 text-sm text-on-background/70">Thiết lập khoảng điểm và nội dung phản hồi cho kết quả này.</p>
+                      </div>
+                      <button type="button" onClick={() => removeThreshold(ti)} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2 text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
+                        Xóa
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                      <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                        <span>
+                          Mức
+                          <span className="ml-0.5 text-red-500">*</span>
+                        </span>
+                        <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
+                          {riskLabels.map((label) => <option key={label} value={label}>{riskLabelDisplay[label]}</option>)}
+                        </select>
+                      </label>
+                      <Field label="Min" required value={threshold.min_score} type="number" onChange={(value) => updateThreshold(ti, "min_score", value)} />
+                      <Field label="Max" required value={threshold.max_score} type="number" onChange={(value) => updateThreshold(ti, "max_score", value)} />
+                    </div>
+                    <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(value) => updateThreshold(ti, "comment", value)} />
+                    <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(value) => updateThreshold(ti, "advice", value)} />
+                    <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(value) => updateThreshold(ti, "positive_content", value)} />
+                    <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} />
+                  </div>
+                ))}
+              </section>
+            ) : null}
+
+            {selfCheckStep === 4 ? (
+              <section className="space-y-4">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 4: Xem lại & Xuất bản</p>
+                  <h3 className="text-lg font-semibold text-on-background">Kiểm tra nhanh trước khi xuất bản</h3>
+                  <p className="text-sm text-on-background/60">Hệ thống sẽ chỉ cho phép xuất bản khi tất cả mục dưới đây đều đạt.</p>
+                </div>
+                <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tóm tắt nội dung</p>
+                    <dl className="mt-4 space-y-3 text-sm text-on-background/80">
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Tên bài</dt>
+                        <dd className="text-right font-medium">{selfCheckDraft.title.trim() || "Chưa nhập"}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Mô tả</dt>
+                        <dd className="max-w-[70%] text-right">{selfCheckDraft.description?.trim() || "Chưa nhập"}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Trạng thái</dt>
+                        <dd className="text-right"><StatusBadge status={selfCheckDraft.status} /></dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Câu hỏi</dt>
+                        <dd className="text-right font-medium">{filledSelfCheckQuestions}/{selfCheckDraft.questions.length} đã nhập</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Ngưỡng điểm</dt>
+                        <dd className="text-right font-medium">{selfCheckDraft.thresholds.length} ngưỡng</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
+                    <ul className="mt-4 space-y-3">
+                      {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} />)}
+                    </ul>
+                    {!selfCheckDraft.id ? (
+                      <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+                        Lưu bản nháp trước khi xuất bản.
+                      </p>
+                    ) : null}
+                    {selfCheckDraft.status !== "draft" ? (
+                      <p className="mt-4 rounded-xl border border-outline-variant/30 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
+                        Chỉ có thể xuất bản khi nội dung đang ở trạng thái nháp.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </section>
+            ) : null}
+
             <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
-              <button type="button" onClick={saveSelfCheckDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => setSelfCheckStep(previousEditorStep(selfCheckStep))} disabled={selfCheckStep === 1} className="rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40">
+                  Quay lại
+                </button>
+                {selfCheckStep < 4 ? (
+                  <button type="button" onClick={() => setSelfCheckStep(nextEditorStep(selfCheckStep))} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                    Tiếp theo
+                  </button>
+                ) : null}
+              </div>
+              <div className="flex-1" />
+              <button type="button" onClick={saveSelfCheckDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
                 {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
-                <button type="button" onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20">
+              {selfCheckStep === 4 && selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
+                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-green-300 dark:hover:bg-green-900/20">
                   Xuất bản
                 </button>
               ) : null}
-              <div className="flex-1" />
               {selfCheckDraft.id && selfCheckDraft.status === "published" ? (
                 <button type="button" onClick={() => setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
                   Lưu trữ
@@ -836,80 +1107,185 @@ export default function AdminContentPage() {
             Quay lại danh sách
           </button>
 
-          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 space-y-5">
-            <h2 className="text-base font-semibold">
-              {scenarioDraft.id ? "Chỉnh sửa tình huống" : "Tạo tình huống mới"}
-            </h2>
-
-            {/* Basic info */}
-            <section className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cơ bản</h3>
-              <Field label="Tiêu đề" value={scenarioDraft.title} onChange={(v) => setScenarioDraft((c) => ({ ...c, title: v }))} />
-              <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(v) => setScenarioDraft((c) => ({ ...c, situation: v }))} />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(v) => setScenarioDraft((c) => ({ ...c, skill_tag: v }))} />
-                <label className="space-y-1 text-sm font-medium">
-                  Trạng thái
-                  <select aria-label="Trạng thái" value={scenarioDraft.status} onChange={(e) => setScenarioDraft((c) => ({ ...c, status: e.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 dark:bg-[#1e2d40]">
-                    {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
-                  </select>
-                </label>
-              </div>
-            </section>
-
-            {/* Choices */}
-            <section className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Lựa chọn phản hồi ({scenarioDraft.choices.length})</h3>
-                <button type="button" onClick={addScenarioChoice} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
-                  <Plus size={14} /> Thêm
-                </button>
-              </div>
-              {scenarioDraft.choices.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 2 lựa chọn.</p> : null}
-              {scenarioDraft.choices.map((choice, ci) => (
-                <div key={choice.id ?? `sc-${ci}`} className="rounded-xl border border-outline-variant/20 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">Lựa chọn {ci + 1}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${choice.signal === "constructive" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"}`}>
-                        {choice.signal === "constructive" ? "Tích cực" : "Rủi ro"}
-                      </span>
-                    </div>
-                    <button type="button" onClick={() => removeScenarioChoice(ci)} className="text-xs text-destructive hover:underline">Xóa</button>
-                  </div>
-                  <Field label="Nội dung" value={choice.text} onChange={(v) => updateScenarioChoice(ci, "text", v)} />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label className="space-y-1 text-sm font-medium">
-                      Tín hiệu
-                      <select aria-label="Tín hiệu" value={choice.signal} onChange={(e) => updateScenarioChoice(ci, "signal", e.target.value)} className="min-h-10 w-full rounded-lg border border-outline-variant/30 px-2 text-sm dark:bg-[#1e2d40]">
-                        {signalOptions.map((s) => <option key={s} value={s}>{s === "constructive" ? "Tích cực" : "Rủi ro"}</option>)}
-                      </select>
-                    </label>
-                    <Field label="Thứ tự" value={choice.sort_order} type="number" onChange={(v) => updateScenarioChoice(ci, "sort_order", v)} />
-                  </div>
-                  <TextAreaField label="Phản hồi" value={choice.feedback} onChange={(v) => updateScenarioChoice(ci, "feedback", v)} />
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-5">
+            <div className="space-y-4 border-b border-outline-variant/20 pb-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="space-y-1">
+                  <h2 className="text-base font-semibold text-on-background">
+                    {scenarioDraft.id ? "Chỉnh sửa tình huống" : "Tạo tình huống mới"}
+                  </h2>
+                  <p className="text-sm text-on-background/60">Đi từng bước để soạn tình huống, lựa chọn phản hồi và kiểm tra trước khi xuất bản.</p>
                 </div>
-              ))}
-            </section>
+                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {scenarioStep}/4</div>
+              </div>
+              <StepIndicator steps={scenarioSteps} currentStep={scenarioStep} onStepChange={setScenarioStep} />
+            </div>
 
-            {/* Lesson */}
-            <section className="space-y-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Bài học & gợi ý</h3>
-              <TextAreaField label="Cách phản hồi nên thử" value={scenarioDraft.recommended_response} onChange={(v) => setScenarioDraft((c) => ({ ...c, recommended_response: v }))} />
-              <TextAreaField label="Điều em có thể rút ra" value={scenarioDraft.lesson} onChange={(v) => setScenarioDraft((c) => ({ ...c, lesson: v }))} />
-            </section>
+            {scenarioStep === 1 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 1: Thông tin cơ bản</p>
+                    <h3 className="text-lg font-semibold text-on-background">Giới thiệu tình huống</h3>
+                    <p className="text-sm text-on-background/60">Các trường có dấu <span className="text-red-500">*</span> sẽ giúp giáo viên dễ kiểm tra trước khi xuất bản.</p>
+                  </div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{scenarioBasicCount}/4 trường đã nhập</div>
+                </div>
+                <Field label="Tiêu đề" required value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
+                <TextAreaField label="Mô tả tình huống" required value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
+                  <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                    <span>
+                      Trạng thái
+                      <span className="ml-0.5 text-red-500">*</span>
+                    </span>
+                    <select aria-label="Trạng thái" value={scenarioDraft.status} onChange={(event) => setScenarioDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
+                      {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
+                    </select>
+                  </label>
+                </div>
+              </section>
+            ) : null}
 
-            {/* Action bar */}
+            {scenarioStep === 2 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 2: Lựa chọn phản hồi</p>
+                    <h3 className="text-lg font-semibold text-on-background">Thêm các phản hồi học sinh có thể chọn</h3>
+                    <p className="text-sm text-on-background/60">Nên có ít nhất 2 lựa chọn để học sinh so sánh và nhận biết tín hiệu an toàn.</p>
+                  </div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{filledScenarioChoices}/{scenarioDraft.choices.length} lựa chọn đã nhập</div>
+                </div>
+
+                <div className="flex justify-end">
+                  <button type="button" onClick={addScenarioChoice} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                    <Plus size={16} className="inline-flex" /> Thêm lựa chọn
+                  </button>
+                </div>
+
+                {scenarioDraft.choices.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 2 lựa chọn.</p> : null}
+                {scenarioDraft.choices.map((choice, ci) => (
+                  <div key={choice.id ?? `sc-${ci}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-semibold text-on-background">Lựa chọn {ci + 1}</p>
+                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${choice.signal === "constructive" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"}`}>
+                          {choice.signal === "constructive" ? "Tích cực" : "Rủi ro"}
+                        </span>
+                      </div>
+                      <button type="button" onClick={() => removeScenarioChoice(ci)} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2 text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
+                        Xóa
+                      </button>
+                    </div>
+                    <Field label="Nội dung" required value={choice.text} onChange={(value) => updateScenarioChoice(ci, "text", value)} />
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      <label className="space-y-1.5 text-xs font-medium text-on-background/70">
+                        <span>
+                          Tín hiệu
+                          <span className="ml-0.5 text-red-500">*</span>
+                        </span>
+                        <select aria-label="Tín hiệu" value={choice.signal} onChange={(event) => updateScenarioChoice(ci, "signal", event.target.value)} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
+                          {signalOptions.map((signal) => <option key={signal} value={signal}>{signal === "constructive" ? "Tích cực" : "Rủi ro"}</option>)}
+                        </select>
+                      </label>
+                      <Field label="Thứ tự" value={choice.sort_order} type="number" onChange={(value) => updateScenarioChoice(ci, "sort_order", value)} />
+                    </div>
+                    <TextAreaField label="Phản hồi" required value={choice.feedback} onChange={(value) => updateScenarioChoice(ci, "feedback", value)} />
+                  </div>
+                ))}
+              </section>
+            ) : null}
+
+            {scenarioStep === 3 ? (
+              <section className="space-y-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Bài học</p>
+                    <h3 className="text-lg font-semibold text-on-background">Chốt thông điệp cho học sinh</h3>
+                    <p className="text-sm text-on-background/60">Gợi ý cách phản hồi và bài học ngắn giúp học sinh biết nên làm gì tiếp theo.</p>
+                  </div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{filledScenarioLessons}/2 nội dung đã nhập</div>
+                </div>
+                <TextAreaField label="Cách phản hồi nên thử" required value={scenarioDraft.recommended_response} onChange={(value) => setScenarioDraft((current) => ({ ...current, recommended_response: value }))} />
+                <TextAreaField label="Điều em có thể rút ra" required value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} />
+              </section>
+            ) : null}
+
+            {scenarioStep === 4 ? (
+              <section className="space-y-4">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 4: Xem lại & Xuất bản</p>
+                  <h3 className="text-lg font-semibold text-on-background">Kiểm tra nhanh trước khi xuất bản</h3>
+                  <p className="text-sm text-on-background/60">Kiểm tra đủ các phần chính để tránh lỗi khi xuất bản nội dung.</p>
+                </div>
+                <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tóm tắt nội dung</p>
+                    <dl className="mt-4 space-y-3 text-sm text-on-background/80">
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Tiêu đề</dt>
+                        <dd className="text-right font-medium">{scenarioDraft.title.trim() || "Chưa nhập"}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Mô tả tình huống</dt>
+                        <dd className="max-w-[70%] text-right">{scenarioDraft.situation.trim() || "Chưa nhập"}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Kỹ năng liên quan</dt>
+                        <dd className="text-right font-medium">{scenarioDraft.skill_tag.trim() || "Chưa nhập"}</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Lựa chọn</dt>
+                        <dd className="text-right font-medium">{filledScenarioChoices}/{scenarioDraft.choices.length} đã nhập</dd>
+                      </div>
+                      <div className="flex items-start justify-between gap-3">
+                        <dt className="text-on-background/60">Bài học</dt>
+                        <dd className="text-right font-medium">{scenarioDraft.lesson.trim() ? "Đã nhập" : "Chưa nhập"}</dd>
+                      </div>
+                    </dl>
+                  </div>
+                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
+                    <ul className="mt-4 space-y-3">
+                      {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} />)}
+                    </ul>
+                    {!scenarioDraft.id ? (
+                      <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
+                        Lưu bản nháp trước khi xuất bản.
+                      </p>
+                    ) : null}
+                    {scenarioDraft.status !== "draft" ? (
+                      <p className="mt-4 rounded-xl border border-outline-variant/30 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
+                        Chỉ có thể xuất bản khi nội dung đang ở trạng thái nháp.
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              </section>
+            ) : null}
+
             <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
-              <button type="button" onClick={saveScenarioDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+              <div className="flex flex-wrap items-center gap-2">
+                <button type="button" onClick={() => setScenarioStep(previousEditorStep(scenarioStep))} disabled={scenarioStep === 1} className="rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40">
+                  Quay lại
+                </button>
+                {scenarioStep < 4 ? (
+                  <button type="button" onClick={() => setScenarioStep(nextEditorStep(scenarioStep))} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
+                    Tiếp theo
+                  </button>
+                ) : null}
+              </div>
+              <div className="flex-1" />
+              <button type="button" onClick={saveScenarioDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
                 {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {scenarioDraft.id && scenarioDraft.status === "draft" ? (
-                <button type="button" onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20">
+              {scenarioStep === 4 && scenarioDraft.id && scenarioDraft.status === "draft" ? (
+                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:text-green-300 dark:hover:bg-green-900/20">
                   Xuất bản
                 </button>
               ) : null}
-              <div className="flex-1" />
               {scenarioDraft.id && scenarioDraft.status === "published" ? (
                 <button type="button" onClick={() => setConfirmation({ type: "archive-scenario", id: scenarioDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
                   Lưu trữ

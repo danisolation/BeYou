@@ -151,7 +151,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     });
 
     const { unmount: unmountStudent } = render(<StudentDashboardPage />);
-    expect(await screen.findByRole("heading", { name: /Chào Nguyễn An Demo!/ })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Nguyễn An Demo/ })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Vào test" })).toHaveAttribute("href", "/student/self-checks");
     unmountStudent();
 

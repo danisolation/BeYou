@@ -117,7 +117,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.getByText("Test tâm lý")).toBeInTheDocument();
     expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
     expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
     });
 
     const { unmount } = render(<StudentDashboardPage />);
-    await screen.findByText(/Chào Nguyễn An Demo!/);
+    await screen.findByText(/Nguyễn An Demo/);
     for (const link of screen.getAllByRole("link")) {
       expect(link.getAttribute("href") ?? "").toMatch(/^\//);
       expect(link.getAttribute("href") ?? "").not.toMatch(/^https?:|^javascript:/i);
@@ -248,7 +248,7 @@ describe("Phase 35 role dashboard consistency regression", () => {
 
     const studentSource = source("app/(authenticated)/student/page.tsx");
     for (const required of [
-      "Chào {name}! 👋",
+      "{greeting}, {name}!",
       "Peerlight AI",
       "Test tâm lý",
       "Check-in cảm xúc",

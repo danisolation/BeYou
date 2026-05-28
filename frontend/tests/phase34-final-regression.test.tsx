@@ -75,7 +75,7 @@ describe("Phase 34 final UI regression", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Chào Nguyễn An Demo! 👋")).toBeInTheDocument();
+    expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
     expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
       "href",
