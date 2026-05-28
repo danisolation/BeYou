@@ -286,7 +286,7 @@ function MoodShareControls({
         <div className="mt-4">
           <button
             type="button"
-            className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
+            className="min-h-11 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-white"
             onClick={() => {
               setIsDraftOpen(true);
               setSuccessMessage(null);
@@ -377,7 +377,7 @@ function MoodShareControls({
             </button>
             <button
               type="button"
-              className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
+              className="min-h-11 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-white"
               onClick={openPreview}
             >
               Xem trước trước khi chia sẻ
@@ -437,7 +437,7 @@ function SharePreviewPanel({
         </button>
         <button
           type="button"
-          className="min-h-11 rounded-full bg-[#2CA58D] px-5 py-2 text-xs font-semibold text-white"
+          className="min-h-11 rounded-full bg-primary px-5 py-2 text-xs font-semibold text-white"
           onClick={onConfirm}
           disabled={isSaving}
         >
@@ -502,7 +502,7 @@ function ActiveShareList({
               <p className="text-sm">{share.adult_full_name}</p>
               <p className="text-xs">{relationshipLabel(share.relationship_type)}</p>
             </div>
-            <span className="rounded-full bg-[#2CA58D] px-3 py-1 text-xs text-white">Đang được chia sẻ</span>
+            <span className="rounded-full bg-primary px-3 py-1 text-xs text-white">Đang được chia sẻ</span>
             <button
               type="button"
               className="min-h-11 rounded-full border border-red-200 px-4 py-2 text-xs font-semibold text-red-700"
