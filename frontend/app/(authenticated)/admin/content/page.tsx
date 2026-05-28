@@ -229,6 +229,7 @@ export default function AdminContentPage() {
   const [scenarios, setScenarios] = useState<AdminScenarioContent[]>([]);
   const [selfCheckDraft, setSelfCheckDraft] = useState<AdminSelfCheckContent>(cloneSelfCheck(emptySelfCheck));
   const [scenarioDraft, setScenarioDraft] = useState<AdminScenarioContent>(cloneScenario(emptyScenario));
+  const [activeTab, setActiveTab] = useState<"self-check" | "scenario">("self-check");
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -474,10 +475,29 @@ export default function AdminContentPage() {
       </header>
 
       {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white px-4 py-3 text-xs">{error}</p> : null}
+      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-[#1e2d40] px-4 py-3 text-xs">{error}</p> : null}
       {isLoading ? <p>Đang tải thông tin...</p> : null}
 
-      <section className="grid gap-6 lg:grid-cols-2">
+      {/* Tab navigation */}
+      <nav className="flex gap-1 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-1.5">
+        <button
+          type="button"
+          onClick={() => setActiveTab("self-check")}
+          className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "self-check" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
+        >
+          Bài tự kiểm tra ({selfChecks.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab("scenario")}
+          className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "scenario" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
+        >
+          Tình huống ({scenarios.length})
+        </button>
+      </nav>
+
+      {/* Self-check tab */}
+      {activeTab === "self-check" ? (
         <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <div>
             <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
@@ -518,9 +538,13 @@ export default function AdminContentPage() {
                 ))}
               </select>
             </label>
-            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
+            <details className="rounded-2xl border border-outline-variant/20" open>
+              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
+                📝 Câu hỏi và lựa chọn ({selfCheckDraft.questions.length} câu)
+              </summary>
+              <div className="space-y-4 border-t border-outline-variant/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold">Câu hỏi và lựa chọn</h3>
+                <span className="text-xs text-on-background/60">Thêm câu hỏi trước khi xuất bản</span>
                 <button
                   type="button"
                   onClick={addSelfCheckQuestion}
@@ -600,10 +624,15 @@ export default function AdminContentPage() {
                   </div>
                 </section>
               ))}
-            </div>
-            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
+              </div>
+            </details>
+            <details className="rounded-2xl border border-outline-variant/20">
+              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
+                📊 Ngưỡng điểm ({selfCheckDraft.thresholds.length} ngưỡng)
+              </summary>
+              <div className="space-y-4 border-t border-outline-variant/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold">Ngưỡng điểm</h3>
+                <span className="text-xs text-on-background/60">Thêm ngưỡng trước khi xuất bản</span>
                 <button
                   type="button"
                   onClick={addThreshold}
@@ -676,8 +705,13 @@ export default function AdminContentPage() {
                   />
                 </section>
               ))}
-            </div>
-          </div>
+              </div>
+            </details>
+            <details className="rounded-2xl border border-outline-variant/20">
+              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
+                👁️ Xem trước
+              </summary>
+              <div className="border-t border-outline-variant/20 p-4">
           <div className="rounded-2xl bg-primary/5 p-4">
             <h3 className="text-sm font-semibold">{selfCheckDraft.title || "Bản xem trước bài tự kiểm tra"}</h3>
             <p className="mt-2 text-sm">{selfCheckDraft.description || "Nội dung hỗ trợ học sinh sẽ hiển thị tại đây."}</p>
@@ -722,6 +756,9 @@ export default function AdminContentPage() {
               )}
             </div>
           </div>
+          </div>
+          </details>
+          </div>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
               Lưu bản nháp
@@ -755,7 +792,10 @@ export default function AdminContentPage() {
             </button>
           </div>
         </article>
+      ) : null}
 
+      {/* Scenario tab */}
+      {activeTab === "scenario" ? (
         <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <div>
             <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
@@ -921,7 +961,7 @@ export default function AdminContentPage() {
             </button>
           </div>
         </article>
-      </section>
+      ) : null}
 
       <DestructiveConfirmDialog
         open={confirmation !== null}
