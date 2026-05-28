@@ -101,7 +101,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-dvh bg-background px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-container-stitch space-y-6">
+      <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
         <header className="flex items-center justify-between rounded-2xl bg-white/85 dark:bg-[#0d1c2e]/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur">
           <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">

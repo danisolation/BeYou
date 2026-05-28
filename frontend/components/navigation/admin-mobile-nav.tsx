@@ -24,7 +24,7 @@ export function AdminMobileNav({ pathname, onLogout }: AdminMobileNavProps) {
         <div className="fixed inset-0 z-40 lg:hidden" onClick={() => setShowMore(false)} role="dialog" aria-label="Menu mở rộng">
           <div className="absolute inset-0 bg-on-background/20" aria-hidden="true" />
           <div
-            className="absolute bottom-16 left-0 right-0 rounded-t-card border-t border-outline-variant bg-white dark:bg-[#1a2940] p-4 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940]"
+            className="absolute bottom-16 left-0 right-0 rounded-t-2xl border-t border-outline-variant bg-white dark:bg-[#1a2940] p-4 pb-[env(safe-area-inset-bottom)]"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="grid grid-cols-3 gap-3" aria-label="Thêm điều hướng">
@@ -60,7 +60,7 @@ export function AdminMobileNav({ pathname, onLogout }: AdminMobileNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-white dark:bg-[#1a2940] px-margin-mobile py-2 pb-[env(safe-area-inset-bottom)] dark:bg-[#1a2940] lg:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-white dark:bg-[#1a2940] px-5 py-2 pb-[env(safe-area-inset-bottom)] lg:hidden"
         aria-label="Điều hướng quản trị"
       >
         {visibleItems.map((item) => {
