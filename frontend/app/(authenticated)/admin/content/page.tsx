@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Pencil, Trash2, Plus, Archive } from "lucide-react";
+import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -254,6 +254,7 @@ export default function AdminContentPage() {
   const [selfCheckDraft, setSelfCheckDraft] = useState<AdminSelfCheckContent>(cloneSelfCheck(emptySelfCheck));
   const [scenarioDraft, setScenarioDraft] = useState<AdminScenarioContent>(cloneScenario(emptyScenario));
   const [activeTab, setActiveTab] = useState<"self-check" | "scenario">("self-check");
+  const [isEditing, setIsEditing] = useState(false);
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -264,13 +265,31 @@ export default function AdminContentPage() {
     const [loadedSelfChecks, loadedScenarios] = await Promise.all([listAdminSelfChecks(), listAdminScenarios()]);
     setSelfChecks(loadedSelfChecks);
     setScenarios(loadedScenarios);
-    setSelfCheckDraft(cloneSelfCheck(loadedSelfChecks[0] ?? emptySelfCheck));
-    setScenarioDraft(cloneScenario(loadedScenarios[0] ?? emptyScenario));
   }
 
   useEffect(() => {
     refreshContent().finally(() => setIsLoading(false));
   }, []);
+
+  function openSelfCheckEditor(item?: AdminSelfCheckContent) {
+    setSelfCheckDraft(cloneSelfCheck(item ?? emptySelfCheck));
+    setIsEditing(true);
+    setNotice("");
+    setError("");
+  }
+
+  function openScenarioEditor(item?: AdminScenarioContent) {
+    setScenarioDraft(cloneScenario(item ?? emptyScenario));
+    setIsEditing(true);
+    setNotice("");
+    setError("");
+  }
+
+  function closeEditor() {
+    setIsEditing(false);
+    setNotice("");
+    setError("");
+  }
 
   function updateSelfCheckQuestion(questionIndex: number, field: "text" | "sort_order", value: string) {
     setSelfCheckDraft((current) => ({
@@ -418,7 +437,7 @@ export default function AdminContentPage() {
       const loadedSelfChecks = await listAdminSelfChecks();
       setSelfChecks(loadedSelfChecks);
       setSelfCheckDraft(cloneSelfCheck(saved));
-      setNotice("Đã lưu bản nháp tự kiểm tra. Hãy xuất bản khi nội dung đã đủ hỗ trợ và không chẩn đoán.");
+      setNotice("Đã lưu thành công!");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
@@ -434,7 +453,7 @@ export default function AdminContentPage() {
       const loadedScenarios = await listAdminScenarios();
       setScenarios(loadedScenarios);
       setScenarioDraft(cloneScenario(saved));
-      setNotice("Đã lưu bản nháp tình huống. Hãy xuất bản khi phản hồi vẫn hỗ trợ và không đổ lỗi cho học sinh.");
+      setNotice("Đã lưu thành công!");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
@@ -450,21 +469,22 @@ export default function AdminContentPage() {
       if (confirmed.type === "archive-self-check") {
         await runAction(
           () => archiveAdminSelfCheck(confirmed.id),
-          "Đã lưu trữ bài tự kiểm tra. Học sinh không còn thấy nội dung này, lịch sử đã hoàn thành vẫn được giữ.",
+          "Đã lưu trữ thành công.",
         );
       }
       if (confirmed.type === "delete-self-check") {
-        await runAction(() => deleteDraftAdminSelfCheck(confirmed.id), "Đã xóa bản nháp tự kiểm tra chưa dùng.");
+        await runAction(() => deleteDraftAdminSelfCheck(confirmed.id), "Đã xóa bản nháp.");
       }
       if (confirmed.type === "archive-scenario") {
         await runAction(
           () => archiveAdminScenario(confirmed.id),
-          "Đã lưu trữ tình huống. Học sinh không còn thấy nội dung này, lịch sử đã hoàn thành vẫn được giữ.",
+          "Đã lưu trữ thành công.",
         );
       }
       if (confirmed.type === "delete-scenario") {
-        await runAction(() => deleteDraftAdminScenario(confirmed.id), "Đã xóa bản nháp tình huống chưa dùng.");
+        await runAction(() => deleteDraftAdminScenario(confirmed.id), "Đã xóa bản nháp.");
       }
+      setIsEditing(false);
     } finally {
       setIsConfirming(false);
       setConfirmation(null);
@@ -485,640 +505,389 @@ export default function AdminContentPage() {
         };
 
   return (
-    <main className="mx-auto max-w-[1200px] space-y-6">
+    <main className="mx-auto max-w-[1200px] space-y-5">
+      {/* Header */}
       <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <FileText size={18} />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Nội dung tự kiểm tra và tình huống</h1>
+          <div>
+            <h1 className="text-lg font-semibold text-on-background">Quản lý nội dung</h1>
+            <p className="text-xs text-on-background/60">Tạo, sửa và xuất bản bài tự kiểm tra và tình huống</p>
+          </div>
         </div>
-        <p className="mt-3 text-sm text-on-background/70">
-          Tạo, chỉnh sửa và xuất bản nội dung hỗ trợ học sinh. Ngôn ngữ hỗ trợ, không chẩn đoán.
-        </p>
       </header>
 
-      {notice ? <p role="status" className="rounded-2xl border border-primary/30 bg-primary/5 px-4 py-3 text-xs">{notice}</p> : null}
-      {error ? <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-white dark:bg-[#1e2d40] px-4 py-3 text-xs">{error}</p> : null}
-      {isLoading ? <p>Đang tải thông tin...</p> : null}
+      {/* Notices */}
+      {notice ? <p role="status" className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-4 py-2.5 text-xs text-green-800 dark:text-green-300">{notice}</p> : null}
+      {error ? <p role="alert" className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 text-xs text-red-800 dark:text-red-300">{error}</p> : null}
+      {isLoading ? <p className="text-sm text-on-background/60">Đang tải...</p> : null}
 
-      {/* Tab navigation */}
-      <nav className="flex gap-1 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-1.5">
-        <button
-          type="button"
-          onClick={() => setActiveTab("self-check")}
-          className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "self-check" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
-        >
-          Bài tự kiểm tra ({selfChecks.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("scenario")}
-          className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "scenario" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
-        >
-          Tình huống ({scenarios.length})
-        </button>
-      </nav>
-
-      {/* Self-check tab */}
-      {activeTab === "self-check" ? (
-        <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold">Quản lý bài tự kiểm tra</h2>
+      {/* === LIST VIEW === */}
+      {!isEditing ? (
+        <>
+          {/* Tab navigation */}
+          <nav className="flex gap-1 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-1.5">
             <button
               type="button"
-              onClick={() => setSelfCheckDraft(cloneSelfCheck(emptySelfCheck))}
-              className="inline-flex items-center gap-2 min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
+              onClick={() => setActiveTab("self-check")}
+              className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "self-check" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
+            >
+              Bài tự kiểm tra ({selfChecks.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("scenario")}
+              className={`flex-1 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${activeTab === "scenario" ? "bg-primary text-on-primary" : "text-on-background/70 hover:bg-primary/5"}`}
+            >
+              Tình huống ({scenarios.length})
+            </button>
+          </nav>
+
+          {/* Create button */}
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => activeTab === "self-check" ? openSelfCheckEditor() : openScenarioEditor()}
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
             >
               <Plus size={16} />
-              Tạo mới
+              {activeTab === "self-check" ? "Tạo bài tự kiểm tra" : "Tạo tình huống"}
             </button>
           </div>
 
-          {/* List of existing self-checks */}
-          {selfChecks.length === 0 && !isLoading ? (
-            <EmptyState heading="Chưa có bài tự kiểm tra" body="Tạo bản nháp đầu tiên để chuẩn bị nội dung hỗ trợ học sinh." />
-          ) : (
+          {/* Self-check list */}
+          {activeTab === "self-check" ? (
             <div className="space-y-2">
-              {selfChecks.map((item) => (
-                <div
-                  key={item.id ?? item.title}
-                  className={`flex items-center gap-3 rounded-xl border p-3 transition-colors ${
-                    selfCheckDraft.id === item.id
-                      ? "border-primary/50 bg-primary/5"
-                      : "border-outline-variant/20 hover:bg-primary/5"
-                  }`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{item.title || "Chưa đặt tên"}</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <StatusBadge status={item.status} />
-                      <span className="text-xs text-on-background/50">{item.questions?.length ?? 0} câu hỏi</span>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setSelfCheckDraft(cloneSelfCheck(item))}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-primary/10"
-                      title="Sửa"
-                    >
-                      <Pencil size={16} className="text-primary" />
-                    </button>
-                    {item.status === "published" ? (
-                      <button
-                        type="button"
-                        onClick={() => item.id && setConfirmation({ type: "archive-self-check", id: item.id })}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
-                        title="Lưu trữ"
-                      >
-                        <Archive size={16} className="text-amber-600" />
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => item.id && setConfirmation({ type: "delete-self-check", id: item.id })}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
-                        title="Xóa"
-                      >
-                        <Trash2 size={16} className="text-destructive" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Editor section */}
-          <div className="rounded-2xl border border-outline-variant/20 p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <Pencil size={14} className="text-primary" />
-              <h3 className="text-sm font-semibold">
-                {selfCheckDraft.id ? `Đang sửa: ${selfCheckDraft.title || "Chưa đặt tên"}` : "Tạo bài tự kiểm tra mới"}
-              </h3>
-            </div>
-            <Field
-              label="Tên bài tự kiểm tra"
-              value={selfCheckDraft.title}
-              onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))}
-            />
-            <TextAreaField
-              label="Mô tả ngắn"
-              value={selfCheckDraft.description ?? ""}
-              onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))}
-            />
-            <label className="space-y-1 text-sm font-medium">
-              Trạng thái nội dung
-              <select
-                aria-label="Trạng thái nội dung"
-                value={selfCheckDraft.status}
-                onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <details className="rounded-2xl border border-outline-variant/20" open>
-              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
-                📝 Câu hỏi và lựa chọn ({selfCheckDraft.questions.length} câu)
-              </summary>
-              <div className="space-y-4 border-t border-outline-variant/20 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs text-on-background/60">Thêm câu hỏi trước khi xuất bản</span>
-                <button
-                  type="button"
-                  onClick={addSelfCheckQuestion}
-                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
-                >
-                  Thêm câu hỏi
-                </button>
-              </div>
-              {selfCheckDraft.questions.length === 0 ? (
-                <p className="text-sm">Chưa có câu hỏi. Thêm câu hỏi trước khi xuất bản.</p>
-              ) : null}
-              {selfCheckDraft.questions.map((question, questionIndex) => (
-                <section key={question.id ?? `draft-question-${questionIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-sm font-semibold">Câu hỏi {questionIndex + 1}</h4>
-                    <button
-                      type="button"
-                      onClick={() => removeSelfCheckQuestion(questionIndex)}
-                      className="min-h-11 rounded-xl border border-amber-300 px-4"
-                    >
-                      Xóa câu hỏi
-                    </button>
-                  </div>
-                  <TextAreaField
-                    label={labelFor("Câu hỏi tự kiểm tra", questionIndex)}
-                    value={question.text}
-                    onChange={(value) => updateSelfCheckQuestion(questionIndex, "text", value)}
-                  />
-                  <Field
-                    label={labelFor("Thứ tự câu hỏi", questionIndex)}
-                    value={question.sort_order}
-                    type="number"
-                    onChange={(value) => updateSelfCheckQuestion(questionIndex, "sort_order", value)}
-                  />
-                  <div className="space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-xs font-semibold">Lựa chọn trả lời</p>
-                      <button
-                        type="button"
-                        onClick={() => addSelfCheckChoice(questionIndex)}
-                        className="min-h-11 rounded-xl border border-outline-variant/30 px-4"
-                      >
-                        Thêm lựa chọn
-                      </button>
-                    </div>
-                    {question.choices.length === 0 ? (
-                      <p className="text-sm">Câu hỏi này chưa có lựa chọn.</p>
-                    ) : null}
-                    {question.choices.map((choice, choiceIndex) => (
-                      <div key={choice.id ?? `draft-choice-${questionIndex}-${choiceIndex}`} className="grid gap-3 rounded-2xl bg-white dark:bg-[#1a2940] p-4 md:grid-cols-2">
-                        <Field
-                          label={choiceLabel("Lựa chọn trả lời", questionIndex, choiceIndex)}
-                          value={choice.text}
-                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "text", value)}
-                        />
-                        <Field
-                          label={choiceLabel("Giá trị điểm", questionIndex, choiceIndex)}
-                          value={choice.score_value}
-                          type="number"
-                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "score_value", value)}
-                        />
-                        <Field
-                          label={choiceLabel("Thứ tự lựa chọn", questionIndex, choiceIndex)}
-                          value={choice.sort_order}
-                          type="number"
-                          onChange={(value) => updateSelfCheckChoice(questionIndex, choiceIndex, "sort_order", value)}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeSelfCheckChoice(questionIndex, choiceIndex)}
-                          className="min-h-11 self-end rounded-2xl border border-amber-300 px-4"
-                        >
-                          Xóa lựa chọn
-                        </button>
+              {selfChecks.length === 0 && !isLoading ? (
+                <EmptyState heading="Chưa có bài tự kiểm tra" body="Nhấn nút tạo mới để bắt đầu." />
+              ) : (
+                selfChecks.map((item) => (
+                  <button
+                    key={item.id ?? item.title}
+                    type="button"
+                    onClick={() => openSelfCheckEditor(item)}
+                    className="flex w-full items-center gap-3 rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4 text-left transition-all hover:border-primary/30 hover:shadow-sm"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                        <StatusBadge status={item.status} />
+                        <span className="text-xs text-on-background/50">{item.questions?.length ?? 0} câu hỏi · {item.thresholds?.length ?? 0} ngưỡng</span>
                       </div>
-                    ))}
-                  </div>
-                </section>
-              ))}
-              </div>
-            </details>
-            <details className="rounded-2xl border border-outline-variant/20">
-              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
-                📊 Ngưỡng điểm ({selfCheckDraft.thresholds.length} ngưỡng)
-              </summary>
-              <div className="space-y-4 border-t border-outline-variant/20 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-xs text-on-background/60">Thêm ngưỡng trước khi xuất bản</span>
-                <button
-                  type="button"
-                  onClick={addThreshold}
-                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
-                >
-                  Thêm ngưỡng điểm
-                </button>
-              </div>
-              {selfCheckDraft.thresholds.length === 0 ? (
-                <p className="text-sm">Chưa có ngưỡng điểm. Thêm ngưỡng điểm trước khi xuất bản.</p>
-              ) : null}
-              {selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
-                <section key={threshold.id ?? `draft-threshold-${thresholdIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-sm font-semibold">Ngưỡng {thresholdIndex + 1}</h4>
-                    <button
-                      type="button"
-                      onClick={() => removeThreshold(thresholdIndex)}
-                      className="min-h-11 rounded-xl border border-amber-300 px-4"
-                    >
-                      Xóa ngưỡng điểm
-                    </button>
-                  </div>
-                  <label className="space-y-1 text-sm font-medium">
-                    {labelFor("Nhãn trạng thái", thresholdIndex)}
-                    <select
-                      aria-label={labelFor("Nhãn trạng thái", thresholdIndex)}
-                      value={threshold.state_label}
-                      onChange={(event) => updateThreshold(thresholdIndex, "state_label", event.target.value)}
-                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
-                    >
-                      {riskLabels.map((label) => (
-                        <option key={label} value={label}>
-                          {riskLabelDisplay[label]}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <Field
-                    label={labelFor("Điểm tối thiểu", thresholdIndex)}
-                    value={threshold.min_score}
-                    type="number"
-                    onChange={(value) => updateThreshold(thresholdIndex, "min_score", value)}
-                  />
-                  <Field
-                    label={labelFor("Điểm tối đa", thresholdIndex)}
-                    value={threshold.max_score}
-                    type="number"
-                    onChange={(value) => updateThreshold(thresholdIndex, "max_score", value)}
-                  />
-                  <TextAreaField
-                    label={labelFor("Nhận xét", thresholdIndex)}
-                    value={threshold.comment ?? ""}
-                    onChange={(value) => updateThreshold(thresholdIndex, "comment", value)}
-                  />
-                  <TextAreaField
-                    label={labelFor("Tóm tắt gợi ý", thresholdIndex)}
-                    value={threshold.advice ?? ""}
-                    onChange={(value) => updateThreshold(thresholdIndex, "advice", value)}
-                  />
-                  <TextAreaField
-                    label={labelFor("Nội dung tích cực", thresholdIndex)}
-                    value={threshold.positive_content ?? ""}
-                    onChange={(value) => updateThreshold(thresholdIndex, "positive_content", value)}
-                  />
-                  <TextAreaField
-                    label={labelFor("Hành động tiếp theo gợi ý", thresholdIndex)}
-                    value={threshold.suggested_next_action ?? ""}
-                    onChange={(value) => updateThreshold(thresholdIndex, "suggested_next_action", value)}
-                  />
-                </section>
-              ))}
-              </div>
-            </details>
-            <details className="rounded-2xl border border-outline-variant/20">
-              <summary className="cursor-pointer p-4 text-sm font-semibold select-none">
-                👁️ Xem trước
-              </summary>
-              <div className="border-t border-outline-variant/20 p-4">
-          <div className="rounded-2xl bg-primary/5 p-4">
-            <h3 className="text-sm font-semibold">{selfCheckDraft.title || "Bản xem trước bài tự kiểm tra"}</h3>
-            <p className="mt-2 text-sm">{selfCheckDraft.description || "Nội dung hỗ trợ học sinh sẽ hiển thị tại đây."}</p>
-            <p className="mt-2 text-xs">Trạng thái nội dung: {selfCheckDraft.status}</p>
-            <div className="mt-4 space-y-3">
-              <h4 className="text-sm font-semibold">Bản xem trước câu hỏi</h4>
-              {selfCheckDraft.questions.length === 0 ? (
-                <p className="text-sm">Chưa có câu hỏi để xem trước.</p>
-              ) : (
-                selfCheckDraft.questions
-                  .slice()
-                  .sort((left, right) => left.sort_order - right.sort_order)
-                  .map((question, questionIndex) => (
-                    <article key={question.id ?? `preview-question-${questionIndex}`} className="rounded-2xl bg-white dark:bg-[#1a2940] p-3">
-                      <p className="font-semibold">
-                        {questionIndex + 1}. {question.text || "Câu hỏi chưa nhập"}
-                      </p>
-                      <ul className="mt-2 space-y-1 text-xs">
-                        {question.choices
-                          .slice()
-                          .sort((left, right) => left.sort_order - right.sort_order)
-                          .map((choice, choiceIndex) => (
-                            <li key={choice.id ?? `preview-choice-${questionIndex}-${choiceIndex}`}>
-                              {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} - {choice.score_value} điểm
-                            </li>
-                          ))}
-                      </ul>
-                    </article>
-                  ))
-              )}
-            </div>
-            <div className="mt-4 space-y-2">
-              <h4 className="text-sm font-semibold">Bản xem trước ngưỡng điểm</h4>
-              {selfCheckDraft.thresholds.length === 0 ? (
-                <p className="text-sm">Chưa có ngưỡng điểm để xem trước.</p>
-              ) : (
-                selfCheckDraft.thresholds.map((threshold, thresholdIndex) => (
-                  <p key={threshold.id ?? `preview-threshold-${thresholdIndex}`} className="text-xs">
-                    {riskLabelDisplay[threshold.state_label as AdminRiskStateLabel] ?? threshold.state_label}: {threshold.min_score}-{threshold.max_score} điểm
-                  </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      {item.status === "published" ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "archive-self-check", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "archive-self-check", id: item.id }); } }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                          title="Lưu trữ"
+                        >
+                          <Archive size={15} className="text-amber-600" />
+                        </span>
+                      ) : item.status === "draft" ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); } }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                          title="Xóa"
+                        >
+                          <Trash2 size={15} className="text-destructive" />
+                        </span>
+                      ) : null}
+                      <ChevronRight size={16} className="text-on-background/30" />
+                    </div>
+                  </button>
                 ))
               )}
             </div>
-          </div>
-          </div>
-          </details>
-          <div className="flex flex-wrap gap-2">
-           <button type="button" onClick={saveSelfCheckDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
-            {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
-           </button>
-          {selfCheckDraft.id ? (
-            <button
-              type="button"
-              onClick={() =>
-                selfCheckDraft.id &&
-                runAction(
-                  () => publishAdminSelfCheck(selfCheckDraft.id as string),
-                  "Đã xuất bản bài tự kiểm tra cho học sinh.",
-                )
-              }
-              className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
-            >
-              Xuất bản
-            </button>
           ) : null}
-          {selfCheckDraft.id ? (
-            <button
-              type="button"
-              onClick={() => selfCheckDraft.id && setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id })}
-              className="min-h-11 rounded-xl border border-amber-300 px-4"
-            >
-              Lưu trữ
-            </button>
-          ) : null}
-          {selfCheckDraft.id ? (
-            <button
-              type="button"
-              onClick={() => selfCheckDraft.id && setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id })}
-              className="min-h-11 rounded-xl border border-destructive/50 text-destructive px-4"
-            >
-              Xóa
-            </button>
-          ) : null}
-          </div>
-          </div>
-        </article>
-      ) : null}
 
-      {/* Scenario tab */}
-      {activeTab === "scenario" ? (
-        <article className="space-y-5 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold">Quản lý tình huống</h2>
-            <button
-              type="button"
-              onClick={() => setScenarioDraft(cloneScenario(emptyScenario))}
-              className="inline-flex items-center gap-2 min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
-            >
-              <Plus size={16} />
-              Tạo mới
-            </button>
-          </div>
-
-          {/* List of existing scenarios */}
-          {scenarios.length === 0 && !isLoading ? (
-            <EmptyState heading="Chưa có tình huống" body="Tạo bản nháp tình huống để học sinh luyện cách phản hồi an toàn hơn." />
-          ) : (
+          {/* Scenario list */}
+          {activeTab === "scenario" ? (
             <div className="space-y-2">
-              {scenarios.map((item) => (
-                <div
-                  key={item.id ?? item.title}
-                  className={`flex items-center gap-3 rounded-xl border p-3 transition-colors ${
-                    scenarioDraft.id === item.id
-                      ? "border-primary/50 bg-primary/5"
-                      : "border-outline-variant/20 hover:bg-primary/5"
-                  }`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{item.title || "Chưa đặt tên"}</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <StatusBadge status={item.status} />
-                      <span className="text-xs text-on-background/50">{item.skill_tag || "Chưa gắn kỹ năng"}</span>
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setScenarioDraft(cloneScenario(item))}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-primary/10"
-                      title="Sửa"
-                    >
-                      <Pencil size={16} className="text-primary" />
-                    </button>
-                    {item.status === "published" ? (
-                      <button
-                        type="button"
-                        onClick={() => item.id && setConfirmation({ type: "archive-scenario", id: item.id })}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
-                        title="Lưu trữ"
-                      >
-                        <Archive size={16} className="text-amber-600" />
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => item.id && setConfirmation({ type: "delete-scenario", id: item.id })}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
-                        title="Xóa"
-                      >
-                        <Trash2 size={16} className="text-destructive" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Editor section */}
-          <div className="rounded-2xl border border-outline-variant/20 p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <Pencil size={14} className="text-primary" />
-              <h3 className="text-sm font-semibold">
-                {scenarioDraft.id ? `Đang sửa: ${scenarioDraft.title || "Chưa đặt tên"}` : "Tạo tình huống mới"}
-              </h3>
-            </div>
-            <Field label="Tiêu đề tình huống" value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
-            <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
-            <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
-            <label className="space-y-1 text-sm font-medium">
-              Trạng thái nội dung
-              <select
-                aria-label="Trạng thái nội dung"
-                value={scenarioDraft.status}
-                onChange={(event) => setScenarioDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))}
-                className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
-              >
-                {statusOptions.map((status) => (
-                  <option key={status} value={status}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <div className="space-y-4 rounded-2xl border border-outline-variant/20 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold">Lựa chọn tình huống</h3>
-                <button
-                  type="button"
-                  onClick={addScenarioChoice}
-                  className="min-h-11 rounded-xl border border-outline-variant/30 px-4 font-semibold"
-                >
-                  Thêm lựa chọn tình huống
-                </button>
-              </div>
-              {scenarioDraft.choices.length === 0 ? (
-                <p className="text-sm">Chưa có lựa chọn tình huống. Thêm ít nhất hai lựa chọn trước khi xuất bản.</p>
-              ) : null}
-              {scenarioDraft.choices.map((choice, choiceIndex) => (
-                <section key={choice.id ?? `draft-scenario-choice-${choiceIndex}`} className="space-y-3 rounded-2xl bg-primary/5 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <h4 className="text-sm font-semibold">Lựa chọn {choiceIndex + 1}</h4>
-                    <button
-                      type="button"
-                      onClick={() => removeScenarioChoice(choiceIndex)}
-                      className="min-h-11 rounded-xl border border-amber-300 px-4"
-                    >
-                      Xóa lựa chọn tình huống
-                    </button>
-                  </div>
-                  <Field
-                    label={labelFor("Lựa chọn phản hồi", choiceIndex)}
-                    value={choice.text}
-                    onChange={(value) => updateScenarioChoice(choiceIndex, "text", value)}
-                  />
-                  <label className="space-y-1 text-sm font-medium">
-                    {labelFor("Tín hiệu constructive/risky", choiceIndex)}
-                    <select
-                      aria-label={labelFor("Tín hiệu constructive/risky", choiceIndex)}
-                      value={choice.signal}
-                      onChange={(event) => updateScenarioChoice(choiceIndex, "signal", event.target.value)}
-                      className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
-                    >
-                      {signalOptions.map((signal) => (
-                        <option key={signal} value={signal}>
-                          {signal}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <TextAreaField
-                    label={labelFor("Phản hồi cho lựa chọn", choiceIndex)}
-                    value={choice.feedback}
-                    onChange={(value) => updateScenarioChoice(choiceIndex, "feedback", value)}
-                  />
-                  <Field
-                    label={labelFor("Thứ tự lựa chọn tình huống", choiceIndex)}
-                    value={choice.sort_order}
-                    type="number"
-                    onChange={(value) => updateScenarioChoice(choiceIndex, "sort_order", value)}
-                  />
-                </section>
-              ))}
-            </div>
-            <TextAreaField
-              label="Cách phản hồi nên thử"
-              value={scenarioDraft.recommended_response}
-              onChange={(value) => setScenarioDraft((current) => ({ ...current, recommended_response: value }))}
-            />
-            <TextAreaField label="Điều em có thể rút ra" value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} />
-          </div>
-          <div className="rounded-2xl bg-primary/5 p-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="text-sm font-semibold">{scenarioDraft.title || "Bản xem trước tình huống"}</h3>
-              {scenarioDraft.is_demo ? <DemoBadge /> : null}
-            </div>
-            <p className="mt-2 text-sm">{scenarioDraft.situation || "Mô tả tình huống sẽ hiển thị tại đây."}</p>
-            <p className="mt-2 text-xs">Kỹ năng: {scenarioDraft.skill_tag || "Chưa nhập"}</p>
-            <p className="mt-2 text-xs">Trạng thái nội dung: {scenarioDraft.status}</p>
-            <div className="mt-4 space-y-3">
-              <h4 className="text-sm font-semibold">Bản xem trước lựa chọn</h4>
-              {scenarioDraft.choices.length === 0 ? (
-                <p className="text-sm">Chưa có lựa chọn để xem trước.</p>
+              {scenarios.length === 0 && !isLoading ? (
+                <EmptyState heading="Chưa có tình huống" body="Nhấn nút tạo mới để bắt đầu." />
               ) : (
-                scenarioDraft.choices
-                  .slice()
-                  .sort((left, right) => left.sort_order - right.sort_order)
-                  .map((choice, choiceIndex) => (
-                    <article key={choice.id ?? `preview-scenario-choice-${choiceIndex}`} className="rounded-2xl bg-white dark:bg-[#1a2940] p-3">
-                      <p className="font-semibold">
-                        {choiceIndex + 1}. {choice.text || "Lựa chọn chưa nhập"} ({choice.signal})
-                      </p>
-                      <p className="mt-2 text-xs">{choice.feedback || "Phản hồi chưa nhập"}</p>
-                    </article>
-                  ))
+                scenarios.map((item) => (
+                  <button
+                    key={item.id ?? item.title}
+                    type="button"
+                    onClick={() => openScenarioEditor(item)}
+                    className="flex w-full items-center gap-3 rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4 text-left transition-all hover:border-primary/30 hover:shadow-sm"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
+                      <div className="mt-1.5 flex flex-wrap items-center gap-2">
+                        <StatusBadge status={item.status} />
+                        <span className="text-xs text-on-background/50">{item.skill_tag || "Chưa gắn kỹ năng"} · {item.choices?.length ?? 0} lựa chọn</span>
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-1">
+                      {item.status === "published" ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "archive-scenario", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "archive-scenario", id: item.id }); } }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
+                          title="Lưu trữ"
+                        >
+                          <Archive size={15} className="text-amber-600" />
+                        </span>
+                      ) : item.status === "draft" ? (
+                        <span
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); } }}
+                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                          title="Xóa"
+                        >
+                          <Trash2 size={15} className="text-destructive" />
+                        </span>
+                      ) : null}
+                      <ChevronRight size={16} className="text-on-background/30" />
+                    </div>
+                  </button>
+                ))
               )}
             </div>
-            <div className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-3">
-              <h4 className="text-sm font-semibold">Bài học và phản hồi gợi ý</h4>
-              <p className="mt-2 text-sm">{scenarioDraft.recommended_response || "Cách phản hồi nên thử sẽ hiển thị tại đây."}</p>
-              <p className="mt-2 text-xs">{scenarioDraft.lesson || "Điều học sinh có thể rút ra sẽ hiển thị tại đây."}</p>
+          ) : null}
+        </>
+      ) : null}
+
+      {/* === EDITOR VIEW (Self-check) === */}
+      {isEditing && activeTab === "self-check" ? (
+        <div className="space-y-4">
+          <button type="button" onClick={closeEditor} className="inline-flex items-center gap-1.5 text-sm text-on-background/70 hover:text-primary transition-colors">
+            <ArrowLeft size={16} />
+            Quay lại danh sách
+          </button>
+
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 space-y-5">
+            <h2 className="text-base font-semibold">
+              {selfCheckDraft.id ? "Chỉnh sửa bài tự kiểm tra" : "Tạo bài tự kiểm tra mới"}
+            </h2>
+
+            {/* Basic info */}
+            <section className="space-y-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cơ bản</h3>
+              <Field label="Tên bài" value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} />
+              <TextAreaField label="Mô tả ngắn" value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} />
+              <label className="space-y-1 text-sm font-medium">
+                Trạng thái
+                <select aria-label="Trạng thái nội dung" value={selfCheckDraft.status} onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 dark:bg-[#1e2d40]">
+                  {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
+                </select>
+              </label>
+            </section>
+
+            {/* Questions */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Câu hỏi ({selfCheckDraft.questions.length})</h3>
+                <button type="button" onClick={addSelfCheckQuestion} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
+                  <Plus size={14} /> Thêm
+                </button>
+              </div>
+              {selfCheckDraft.questions.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 1 câu hỏi.</p> : null}
+              {selfCheckDraft.questions.map((question, qi) => (
+                <details key={question.id ?? `q-${qi}`} className="rounded-xl border border-outline-variant/20 overflow-hidden" open={qi === 0}>
+                  <summary className="cursor-pointer bg-primary/5 dark:bg-primary/10 px-4 py-3 text-sm font-medium select-none flex items-center justify-between">
+                    <span>Câu {qi + 1}: {question.text || "Chưa nhập"}</span>
+                    <button type="button" onClick={(e) => { e.preventDefault(); removeSelfCheckQuestion(qi); }} className="text-xs text-destructive hover:underline">Xóa</button>
+                  </summary>
+                  <div className="space-y-3 p-4">
+                    <Field label="Nội dung câu hỏi" value={question.text} onChange={(v) => updateSelfCheckQuestion(qi, "text", v)} />
+                    <Field label="Thứ tự" value={question.sort_order} type="number" onChange={(v) => updateSelfCheckQuestion(qi, "sort_order", v)} />
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-on-background/70">Lựa chọn ({question.choices.length})</span>
+                        <button type="button" onClick={() => addSelfCheckChoice(qi)} className="text-xs text-primary hover:underline">+ Thêm</button>
+                      </div>
+                      {question.choices.map((choice, ci) => (
+                        <div key={choice.id ?? `c-${qi}-${ci}`} className="flex items-start gap-2 rounded-lg border border-outline-variant/10 bg-white dark:bg-[#1e2d40] p-3">
+                          <div className="flex-1 space-y-2">
+                            <input aria-label={`Lựa chọn ${ci + 1}`} type="text" value={choice.text} onChange={(e) => updateSelfCheckChoice(qi, ci, "text", e.target.value)} placeholder={`Lựa chọn ${ci + 1}`} className="w-full rounded-lg border border-outline-variant/20 px-3 py-2 text-sm dark:bg-[#1e2d40]" />
+                            <div className="flex gap-2 items-center">
+                              <input aria-label="Điểm" type="number" value={choice.score_value} onChange={(e) => updateSelfCheckChoice(qi, ci, "score_value", e.target.value)} className="w-20 rounded-lg border border-outline-variant/20 px-2 py-1 text-xs dark:bg-[#1e2d40]" />
+                              <span className="text-xs text-on-background/50">điểm</span>
+                            </div>
+                          </div>
+                          <button type="button" onClick={() => removeSelfCheckChoice(qi, ci)} className="mt-1 text-on-background/40 hover:text-destructive"><Trash2 size={14} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </section>
+
+            {/* Thresholds */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Ngưỡng điểm ({selfCheckDraft.thresholds.length})</h3>
+                <button type="button" onClick={addThreshold} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
+                  <Plus size={14} /> Thêm
+                </button>
+              </div>
+              {selfCheckDraft.thresholds.map((threshold, ti) => (
+                <div key={threshold.id ?? `th-${ti}`} className="rounded-xl border border-outline-variant/20 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Ngưỡng {ti + 1}</span>
+                    <button type="button" onClick={() => removeThreshold(ti)} className="text-xs text-destructive hover:underline">Xóa</button>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <label className="space-y-1 text-sm font-medium">
+                      Mức
+                      <select aria-label="Mức" value={threshold.state_label} onChange={(e) => updateThreshold(ti, "state_label", e.target.value)} className="min-h-10 w-full rounded-lg border border-outline-variant/30 px-2 text-sm dark:bg-[#1e2d40]">
+                        {riskLabels.map((l) => <option key={l} value={l}>{riskLabelDisplay[l]}</option>)}
+                      </select>
+                    </label>
+                    <Field label="Min" value={threshold.min_score} type="number" onChange={(v) => updateThreshold(ti, "min_score", v)} />
+                    <Field label="Max" value={threshold.max_score} type="number" onChange={(v) => updateThreshold(ti, "max_score", v)} />
+                  </div>
+                  <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(v) => updateThreshold(ti, "comment", v)} />
+                  <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(v) => updateThreshold(ti, "advice", v)} />
+                  <details className="text-xs">
+                    <summary className="cursor-pointer text-on-background/50 hover:text-on-background select-none">Thêm trường...</summary>
+                    <div className="mt-2 space-y-3">
+                      <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(v) => updateThreshold(ti, "positive_content", v)} />
+                      <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(v) => updateThreshold(ti, "suggested_next_action", v)} />
+                    </div>
+                  </details>
+                </div>
+              ))}
+            </section>
+
+            {/* Action bar */}
+            <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
+              <button type="button" onClick={saveSelfCheckDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+                {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
+              </button>
+              {selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
+                <button type="button" onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20">
+                  Xuất bản
+                </button>
+              ) : null}
+              <div className="flex-1" />
+              {selfCheckDraft.id && selfCheckDraft.status === "published" ? (
+                <button type="button" onClick={() => setConfirmation({ type: "archive-self-check", id: selfCheckDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
+                  Lưu trữ
+                </button>
+              ) : null}
+              {selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
+                <button type="button" onClick={() => setConfirmation({ type: "delete-self-check", id: selfCheckDraft.id as string })} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm text-destructive">
+                  Xóa
+                </button>
+              ) : null}
             </div>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={saveScenarioDraft} className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white">
-              {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
-            </button>
-            {scenarioDraft.id ? (
-              <button
-                type="button"
-                onClick={() =>
-                  scenarioDraft.id &&
-                  runAction(
-                    () => publishAdminScenario(scenarioDraft.id as string),
-                    "Đã xuất bản tình huống luyện tập cho học sinh.",
-                  )
-                }
-                className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white"
-              >
-                Xuất bản
+          </article>
+        </div>
+      ) : null}
+
+      {/* === EDITOR VIEW (Scenario) === */}
+      {isEditing && activeTab === "scenario" ? (
+        <div className="space-y-4">
+          <button type="button" onClick={closeEditor} className="inline-flex items-center gap-1.5 text-sm text-on-background/70 hover:text-primary transition-colors">
+            <ArrowLeft size={16} />
+            Quay lại danh sách
+          </button>
+
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 space-y-5">
+            <h2 className="text-base font-semibold">
+              {scenarioDraft.id ? "Chỉnh sửa tình huống" : "Tạo tình huống mới"}
+            </h2>
+
+            {/* Basic info */}
+            <section className="space-y-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cơ bản</h3>
+              <Field label="Tiêu đề" value={scenarioDraft.title} onChange={(v) => setScenarioDraft((c) => ({ ...c, title: v }))} />
+              <TextAreaField label="Mô tả tình huống" value={scenarioDraft.situation} onChange={(v) => setScenarioDraft((c) => ({ ...c, situation: v }))} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Field label="Kỹ năng liên quan" value={scenarioDraft.skill_tag} onChange={(v) => setScenarioDraft((c) => ({ ...c, skill_tag: v }))} />
+                <label className="space-y-1 text-sm font-medium">
+                  Trạng thái
+                  <select aria-label="Trạng thái" value={scenarioDraft.status} onChange={(e) => setScenarioDraft((c) => ({ ...c, status: e.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3 dark:bg-[#1e2d40]">
+                    {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
+                  </select>
+                </label>
+              </div>
+            </section>
+
+            {/* Choices */}
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Lựa chọn phản hồi ({scenarioDraft.choices.length})</h3>
+                <button type="button" onClick={addScenarioChoice} className="inline-flex items-center gap-1 rounded-lg border border-outline-variant/30 px-3 py-1.5 text-xs font-medium hover:bg-primary/5">
+                  <Plus size={14} /> Thêm
+                </button>
+              </div>
+              {scenarioDraft.choices.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 2 lựa chọn.</p> : null}
+              {scenarioDraft.choices.map((choice, ci) => (
+                <div key={choice.id ?? `sc-${ci}`} className="rounded-xl border border-outline-variant/20 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium">Lựa chọn {ci + 1}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${choice.signal === "constructive" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"}`}>
+                        {choice.signal === "constructive" ? "Tích cực" : "Rủi ro"}
+                      </span>
+                    </div>
+                    <button type="button" onClick={() => removeScenarioChoice(ci)} className="text-xs text-destructive hover:underline">Xóa</button>
+                  </div>
+                  <Field label="Nội dung" value={choice.text} onChange={(v) => updateScenarioChoice(ci, "text", v)} />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="space-y-1 text-sm font-medium">
+                      Tín hiệu
+                      <select aria-label="Tín hiệu" value={choice.signal} onChange={(e) => updateScenarioChoice(ci, "signal", e.target.value)} className="min-h-10 w-full rounded-lg border border-outline-variant/30 px-2 text-sm dark:bg-[#1e2d40]">
+                        {signalOptions.map((s) => <option key={s} value={s}>{s === "constructive" ? "Tích cực" : "Rủi ro"}</option>)}
+                      </select>
+                    </label>
+                    <Field label="Thứ tự" value={choice.sort_order} type="number" onChange={(v) => updateScenarioChoice(ci, "sort_order", v)} />
+                  </div>
+                  <TextAreaField label="Phản hồi" value={choice.feedback} onChange={(v) => updateScenarioChoice(ci, "feedback", v)} />
+                </div>
+              ))}
+            </section>
+
+            {/* Lesson */}
+            <section className="space-y-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Bài học & gợi ý</h3>
+              <TextAreaField label="Cách phản hồi nên thử" value={scenarioDraft.recommended_response} onChange={(v) => setScenarioDraft((c) => ({ ...c, recommended_response: v }))} />
+              <TextAreaField label="Điều em có thể rút ra" value={scenarioDraft.lesson} onChange={(v) => setScenarioDraft((c) => ({ ...c, lesson: v }))} />
+            </section>
+
+            {/* Action bar */}
+            <div className="flex flex-wrap items-center gap-3 border-t border-outline-variant/20 pt-5">
+              <button type="button" onClick={saveScenarioDraft} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90">
+                {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-            ) : null}
-            {scenarioDraft.id ? (
-              <button
-                type="button"
-                onClick={() => scenarioDraft.id && setConfirmation({ type: "archive-scenario", id: scenarioDraft.id })}
-                className="min-h-11 rounded-xl border border-amber-300 px-4"
-              >
-                Lưu trữ
-              </button>
-            ) : null}
-            {scenarioDraft.id ? (
-              <button
-                type="button"
-                onClick={() => scenarioDraft.id && setConfirmation({ type: "delete-scenario", id: scenarioDraft.id })}
-                className="min-h-11 rounded-xl border border-destructive/50 text-destructive px-4"
-              >
-                Xóa
-              </button>
-            ) : null}
-          </div>
-        </article>
+              {scenarioDraft.id && scenarioDraft.status === "draft" ? (
+                <button type="button" onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="rounded-xl border border-green-300 dark:border-green-700 px-5 py-2.5 text-sm font-medium text-green-700 dark:text-green-300 hover:bg-green-50 dark:hover:bg-green-900/20">
+                  Xuất bản
+                </button>
+              ) : null}
+              <div className="flex-1" />
+              {scenarioDraft.id && scenarioDraft.status === "published" ? (
+                <button type="button" onClick={() => setConfirmation({ type: "archive-scenario", id: scenarioDraft.id as string })} className="rounded-xl border border-amber-300 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-300">
+                  Lưu trữ
+                </button>
+              ) : null}
+              {scenarioDraft.id && scenarioDraft.status === "draft" ? (
+                <button type="button" onClick={() => setConfirmation({ type: "delete-scenario", id: scenarioDraft.id as string })} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2.5 text-sm text-destructive">
+                  Xóa
+                </button>
+              ) : null}
+            </div>
+          </article>
+        </div>
       ) : null}
 
       <DestructiveConfirmDialog
@@ -1126,7 +895,7 @@ export default function AdminContentPage() {
         message={dialogProps.message}
         cancelLabel={dialogProps.cancelLabel}
         confirmLabel={dialogProps.confirmLabel}
-        supportingText="Thao tác lifecycle chỉ thay đổi nội dung học sinh nhìn thấy; lịch sử đã hoàn thành vẫn được giữ đúng ranh giới riêng tư."
+        supportingText="Thao tác này chỉ thay đổi nội dung học sinh nhìn thấy."
         isConfirming={isConfirming}
         onCancel={() => setConfirmation(null)}
         onConfirm={handleConfirm}
