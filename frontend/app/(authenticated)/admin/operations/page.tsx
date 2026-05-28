@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, type ReactNode, useEffect, useMemo, useState } from "react";
-import { Activity } from "lucide-react";
+import { Activity, ShieldCheck } from "lucide-react";
 
 import {
   type AdminOperationsDashboard,
@@ -134,34 +134,28 @@ export default function AdminOperationsPage() {
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Activity size={18} />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Sẵn sàng mở pilot trường học</h1>
+          <h1 className="text-lg font-semibold text-on-background">Vận hành Pilot</h1>
         </div>
         <p className="mt-3 text-sm text-on-background/70">
-          Theo dõi readiness, checklist launch và hướng dẫn rollback. Metadata-only, không mở nội dung riêng tư.
+          Kiểm tra sẵn sàng, bộ lọc audit và trạng thái hệ thống. Chỉ metadata, không mở nội dung riêng tư.
         </p>
-        <p className="mt-2 text-xs text-on-background/50">Cập nhật: {generatedAt}</p>
+        <p className="mt-2 text-xs text-on-background/50">Cập nhật lần cuối: {generatedAt}</p>
       </header>
 
-      <section className="rounded-2xl bg-primary/5 p-6">
-        <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
-        <ul className="mt-3 space-y-2 text-sm">
-          {(dashboard?.privacy_notes ?? [
-            "Chỉ hiển thị metadata vận hành.",
-            "Không hiển thị ghi chú SOS, câu trả lời tự kiểm tra, nội dung chatbot, email người nhận hoặc secret.",
-          ]).map((note) => (
-            <li key={note}>• {note}</li>
-          ))}
-        </ul>
-        <p className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-4 text-xs font-semibold text-primary">
-          Không có xuất dữ liệu thô, không có danh sách học sinh theo nguy cơ, không có đường mở hồ sơ học sinh.
+      {/* Compact privacy notice */}
+      <div className="flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+        <ShieldCheck size={16} className="mt-0.5 shrink-0 text-primary" />
+        <p className="text-xs text-on-background/70">
+          <span className="font-semibold text-primary">An toàn:</span> Trang này chỉ hiển thị metadata tổng hợp. Không có ghi chú SOS, câu trả lời, email hay secret nào được hiển thị.
         </p>
-        <p className="mt-4 rounded-2xl bg-white dark:bg-[#1a2940] p-4 text-xs font-semibold text-primary">
-          Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng,
-          liên kết đang hoạt động và SOS của học sinh quyết định.
-        </p>
-      </section>
+      </div>
 
-      <form className="grid gap-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 md:grid-cols-3" onSubmit={applyFilters}>
+      {/* Filter - collapsible */}
+      <details className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+        <summary className="cursor-pointer p-5 text-sm font-semibold text-on-background select-none">
+          🔍 Bộ lọc Audit <span className="ml-2 text-xs font-normal text-on-background/50">(nhấn để mở)</span>
+        </summary>
+        <form className="grid gap-4 border-t border-outline-variant/20 p-5 md:grid-cols-3" onSubmit={applyFilters}>
         <label className="space-y-2 text-sm font-medium">
           Từ thời điểm
           <input
@@ -230,91 +224,94 @@ export default function AdminOperationsPage() {
         <button type="submit" className="min-h-11 rounded-xl bg-primary px-4 font-semibold text-white md:col-span-3">
           Áp dụng bộ lọc
         </button>
-      </form>
+        </form>
+      </details>
 
-      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải metadata vận hành pilot...</p> : null}
+      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">Đang tải...</p> : null}
       {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-red-700">{error}</p> : null}
 
       {dashboard ? (
         <>
+          {/* === NHÓM 1: TRẠNG THÁI TỔNG QUAN === */}
+          <SectionHeader label="Trạng thái tổng quan" />
+
+          <div className="grid gap-4 md:grid-cols-4">
+            <MetricCard title="Readiness" value={dashboard.readiness.status} description="Trạng thái vận hành." />
+            <MetricCard title="Demo seed" value={dashboard.demo_seed.status} description="Tài khoản demo." />
+            <MetricCard title="Email SOS" value={dashboard.sos_email.total} description="Tổng attempt." />
+            <MetricCard title="Audit events" value={dashboard.audit.total_matching} description="Khớp bộ lọc." />
+          </div>
+
           <Panel
-            title="Production pilot launch status"
-            description="Trạng thái launch pilot được suy ra từ checklist metadata, không phải phê duyệt pháp lý hoặc lâm sàng."
+            title="Trạng thái launch pilot"
+            description="Suy ra từ checklist metadata."
             testId="pilot-launch-status"
           >
             <PilotLaunchStatusPanel summary={dashboard.pilot_launch ?? null} />
           </Panel>
           <Panel
-            title="Launch checklist"
-            description="Các điều kiện runtime, readiness, guardrail, smoke, baseline và policy trước khi dùng với dữ liệu học sinh thật."
+            title="Checklist trước khi mở"
+            description="Điều kiện runtime, readiness, guardrail, smoke."
             testId="pilot-launch-checklist"
           >
             <PilotLaunchChecklistPanel checklist={dashboard.pilot_launch?.checklist ?? []} />
           </Panel>
           <Panel
-            title="Demo/real data safety"
-            description="Đếm aggregate demo/real metadata để tránh phụ thuộc demo khi mở production pilot."
+            title="An toàn dữ liệu Demo/Thật"
+            description="Đếm tổng hợp để tránh phụ thuộc demo khi mở pilot."
             testId="pilot-data-safety"
           >
             <PilotDataSafetyPanel summary={dashboard.pilot_data_safety ?? null} />
           </Panel>
+
+          {/* === NHÓM 2: CẤU HÌNH & TRIỂN KHAI === */}
+          <SectionHeader label="Cấu hình & Triển khai" />
+
           <Panel
-            title="Baseline setup"
-            description="Thiết lập nội dung, policy và reminder không-demo trước khi trường bắt đầu onboarding."
+            title="Thiết lập ban đầu"
+            description="Nội dung, policy và reminder cần sẵn sàng trước onboarding."
             testId="pilot-baseline-setup"
           >
             <PilotHandoffItems
               items={dashboard.pilot_handoff?.baseline_setup ?? []}
-              emptyCopy="Chưa có metadata thiết lập baseline. Hãy xác nhận nội dung, chính sách và cấu hình pilot trước khi mở cho trường."
+              emptyCopy="Chưa có metadata thiết lập. Hãy xác nhận nội dung và cấu hình pilot trước khi mở."
             />
           </Panel>
-          <Panel
-            title="Rollback và handoff"
-            description="Hướng dẫn rollback và bàn giao chỉ là metadata tĩnh; không lưu contact details hoặc incident free text."
-            testId="pilot-handoff-guidance"
-          >
-            <PilotHandoffPanel handoff={dashboard.pilot_handoff ?? null} />
-          </Panel>
-          <Panel
-            title="Deployment guardrails"
-            description="Kiểm tra Render, Vercel, API target, CORS và cookie bằng metadata an toàn."
-          >
-            <DeploymentGuardrailsPanel items={dashboard.deployment_guardrails ?? []} />
-          </Panel>
-          <Panel
-            title="Smoke profiles"
-            description="Tách smoke public demo khỏi production pilot để không tạo tự tin sai từ tài khoản demo."
-          >
-            <SmokeProfilesPanel profiles={dashboard.smoke_profiles ?? []} />
-          </Panel>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            <MetricCard title="Readiness" value={dashboard.readiness.status} description="Trạng thái vận hành tổng thể." />
-            <MetricCard title="Demo seed" value={dashboard.demo_seed.status} description="Vai trò demo, liên kết và nội dung walkthrough." />
-            <MetricCard title="SOS email attempts" value={dashboard.sos_email.total} description="Tổng attempt email SOS metadata." />
-            <MetricCard title="Audit matching" value={dashboard.audit.total_matching} description="Số audit event khớp bộ lọc." />
-          </div>
           <section className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Runtime mode" description="Tóm tắt mode vận hành và chính sách demo/pilot bằng metadata an toàn.">
+            <Panel title="Chế độ vận hành" description="Mode sản phẩm và chính sách demo/pilot.">
               <RuntimeModePanel runtime={dashboard.runtime} />
             </Panel>
-            <Panel title="Demo seed readiness" description="Kiểm tra tài khoản demo, liên kết hỗ trợ và nội dung seed bằng metadata an toàn.">
-              <DemoSeedPanel demoSeed={dashboard.demo_seed} />
-            </Panel>
-            <Panel title="Connectivity & session contract" description="Xác nhận frontend/backend, CORS credentialed và cookie session theo cấu hình đã mask.">
+            <Panel title="Kết nối hệ thống" description="Frontend/backend, CORS và cookie session.">
               <ConnectivityPanel connectivity={dashboard.connectivity} />
             </Panel>
           </section>
+
           <Panel
-            title="Auth provider readiness"
-            description="Theo dõi cấu hình đăng nhập ngoài bằng metadata an toàn, không hiển thị client ID, issuer, callback URL hoặc secret."
+            title="Guardrails triển khai"
+            description="Kiểm tra Render, Vercel, API target, CORS và cookie."
+          >
+            <DeploymentGuardrailsPanel items={dashboard.deployment_guardrails ?? []} />
+          </Panel>
+
+          {/* === NHÓM 3: TÀI KHOẢN & ĐĂNG NHẬP === */}
+          <SectionHeader label="Tài khoản & Đăng nhập" />
+
+          <Panel title="Tài khoản demo" description="Kiểm tra vai trò demo, liên kết hỗ trợ và nội dung seed.">
+            <DemoSeedPanel demoSeed={dashboard.demo_seed} />
+          </Panel>
+
+          <Panel
+            title="Xác thực đăng nhập ngoài"
+            description="Cấu hình provider đăng nhập (không hiển thị secret)."
           >
             <AuthProviderPanel provider={dashboard.auth_provider ?? null} />
           </Panel>
+
           <section className="grid gap-4 lg:grid-cols-2">
             <Panel
-              title="Identity mapping buckets"
-              description="Tóm tắt trạng thái liên kết danh tính theo count metadata; không có email, subject, claim hoặc đường mở tài khoản."
+              title="Liên kết danh tính"
+              description="Trạng thái liên kết tài khoản ngoài."
             >
               <IdentityMappingPanel
                 mappings={dashboard.identity_mappings ?? null}
@@ -322,8 +319,8 @@ export default function AdminOperationsPage() {
               />
             </Panel>
             <Panel
-              title="Session auth methods"
-              description="Tóm tắt session backend-owned theo phương thức đăng nhập và provider an toàn; không lưu token trong trình duyệt."
+              title="Phương thức đăng nhập"
+              description="Phân bổ session theo phương thức và provider."
             >
               <SessionAuthPanel
                 methodBuckets={dashboard.session_auth?.by_auth_method ?? []}
@@ -331,24 +328,15 @@ export default function AdminOperationsPage() {
               />
             </Panel>
           </section>
-          <Panel title="Production smoke checklist" description="Các bước smoke production có thể chạy mà không xuất secret hoặc dữ liệu riêng tư.">
-            <SmokeChecklist items={dashboard.production_smoke} />
-          </Panel>
-          <Panel title="v1.2 support metadata" description="Support plan, mood check-in, adult summary và admin config theo count metadata an toàn.">
-            <BucketList buckets={dashboard.v1_2_audit ?? []} emptyCopy="Chưa có audit v1.2." />
-          </Panel>
-          <Panel
-            title="v1.4 privacy controls"
-            description="Consent, reminders, note sharing, reason-gated reads và policy updates theo count metadata an toàn."
-          >
-            <BucketList buckets={dashboard.v1_4_audit ?? []} emptyCopy="Chưa có audit v1.4." />
-          </Panel>
+
+          {/* === NHÓM 4: KIỂM TRA & AUDIT === */}
+          <SectionHeader label="Kiểm tra & Audit" />
 
           <section className="grid gap-4 lg:grid-cols-2">
-            <Panel title="Readiness checks" description="Chỉ hiển thị key, trạng thái và hướng xử lý đã được masking.">
+            <Panel title="Kiểm tra Readiness" description="Key, trạng thái và hướng xử lý.">
               <BucketList buckets={dashboard.readiness.checks_by_status} />
               {dashboard.readiness.attention_checks.length === 0 ? (
-                <p className="mt-3 text-sm">Không có cảnh báo readiness cần chú ý.</p>
+                <p className="mt-3 text-sm text-on-background/60">✓ Không có cảnh báo cần chú ý.</p>
               ) : (
                 <div className="mt-4 space-y-3">
                   {dashboard.readiness.attention_checks.map((check) => (
@@ -364,17 +352,34 @@ export default function AdminOperationsPage() {
               )}
             </Panel>
 
-            <Panel title="SOS email delivery metadata" description="Không hiển thị email người nhận hoặc ghi chú SOS.">
+            <Panel title="Email SOS" description="Trạng thái gửi email (không hiển thị email người nhận).">
               <BucketList buckets={dashboard.sos_email.by_status} />
               <BucketList title="Provider" buckets={dashboard.sos_email.by_provider} />
-              <BucketList title="Mã lỗi an toàn" buckets={dashboard.sos_email.by_error_code} emptyCopy="Chưa có lỗi email." />
+              <BucketList title="Mã lỗi" buckets={dashboard.sos_email.by_error_code} emptyCopy="Không có lỗi." />
               <DeliveryList deliveries={dashboard.sos_email.recent} />
             </Panel>
           </section>
 
-          <Panel title="Audit events" description="Có thể lọc theo thời gian, vai trò, hành động, mục tiêu và trạng thái.">
+          <Panel title="Smoke profiles" description="Tách smoke demo khỏi production pilot.">
+            <SmokeProfilesPanel profiles={dashboard.smoke_profiles ?? []} />
+          </Panel>
+
+          <Panel title="Smoke checklist" description="Các bước kiểm tra production không xuất secret.">
+            <SmokeChecklist items={dashboard.production_smoke} />
+          </Panel>
+
+          <section className="grid gap-4 lg:grid-cols-2">
+            <Panel title="Audit v1.2" description="Support plan, mood, adult summary.">
+              <BucketList buckets={dashboard.v1_2_audit ?? []} emptyCopy="Chưa có audit v1.2." />
+            </Panel>
+            <Panel title="Audit v1.4" description="Consent, reminders, note sharing, policy.">
+              <BucketList buckets={dashboard.v1_4_audit ?? []} emptyCopy="Chưa có audit v1.4." />
+            </Panel>
+          </section>
+
+          <Panel title="Lịch sử Audit" description="Lọc theo thời gian, vai trò, hành động và trạng thái.">
             {dashboard.audit.recent.length === 0 ? (
-              <p className="text-sm">Không có audit event khớp bộ lọc.</p>
+              <p className="text-sm text-on-background/60">Không có audit event khớp bộ lọc.</p>
             ) : (
               <div className="space-y-3">
                 {dashboard.audit.recent.map((event) => (
@@ -383,9 +388,29 @@ export default function AdminOperationsPage() {
               </div>
             )}
           </Panel>
+
+          {/* === NHÓM 5: ROLLBACK === */}
+          <SectionHeader label="Rollback & Bàn giao" />
+
+          <Panel
+            title="Hướng dẫn rollback"
+            description="Metadata tĩnh, không lưu contact details."
+            testId="pilot-handoff-guidance"
+          >
+            <PilotHandoffPanel handoff={dashboard.pilot_handoff ?? null} />
+          </Panel>
         </>
       ) : null}
     </section>
+  );
+}
+
+function SectionHeader({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3 pt-2">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-on-background/50">{label}</h2>
+      <div className="h-px flex-1 bg-outline-variant/30" />
+    </div>
   );
 }
 
