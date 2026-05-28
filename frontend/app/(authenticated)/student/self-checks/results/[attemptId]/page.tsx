@@ -54,7 +54,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
         Quay lại danh sách
       </Link>
 
-      <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-on-background/60">{attempt.test_title}</p>
           {attempt.is_demo ? <DemoBadge /> : null}

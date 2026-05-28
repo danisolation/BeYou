@@ -155,7 +155,7 @@ export default function StudentSupportPlanPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Chọn người lớn tin tưởng</h2>
           <p className="mt-3 text-sm">
             Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
@@ -190,7 +190,7 @@ export default function StudentSupportPlanPage() {
           ) : null}
         </section>
 
-        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <h2 className="text-sm font-semibold">Điều em muốn chia sẻ</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <TextAreaField
@@ -226,7 +226,7 @@ export default function StudentSupportPlanPage() {
           />
         </section>
 
-        <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
           <label className="text-xs font-semibold" htmlFor="support-plan-status">
             Trạng thái chia sẻ
           </label>

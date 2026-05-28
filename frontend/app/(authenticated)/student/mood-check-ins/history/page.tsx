@@ -130,7 +130,7 @@ function MoodHistoryItem({
     (tag) => contextOptions.find((option) => option.key === tag)?.label ?? tag,
   );
   return (
-    <article className="rounded-2xl bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-sm font-semibold">{item.trend_label}</h2>
         {item.is_demo ? <DemoBadge /> : null}

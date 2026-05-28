@@ -136,7 +136,7 @@ export default function StudentSettingsPage() {
 
       {/* Section 1: Notifications & Reminders */}
       <form
-        className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm"
+        className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6"
         onSubmit={(event) => {
           event.preventDefault();
           void save(preference, "Đã lưu cài đặt nhắc nhở.");
@@ -273,7 +273,7 @@ export default function StudentSettingsPage() {
       </form>
 
       {/* Section 2: SOS Settings */}
-      <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-error-container">
             <ShieldAlert size={18} className="text-error" aria-hidden="true" />
@@ -305,7 +305,7 @@ export default function StudentSettingsPage() {
       </section>
 
       {/* Section 3: Privacy */}
-      <section className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
             <Lock size={18} className="text-primary" aria-hidden="true" />

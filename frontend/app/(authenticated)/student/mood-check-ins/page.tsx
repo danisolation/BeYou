@@ -126,7 +126,7 @@ export default function StudentMoodCheckInPage() {
       </div>
 
       {/* Check-in form */}
-      <form className="space-y-6 rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm" onSubmit={handleSubmit}>
+      <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6" onSubmit={handleSubmit}>
         <fieldset>
           <legend className="text-sm font-semibold text-on-background">Hôm nay em thấy thế nào?</legend>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -292,7 +292,7 @@ export default function StudentMoodCheckInPage() {
 
 function MoodResultCard({ result }: { result: MoodCheckIn }) {
   return (
-    <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+    <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
       <h2 className="text-sm font-semibold text-on-background">Đã lưu check-in</h2>
       <p role="status" className="mt-3 text-sm text-on-background/80">
         <strong>{result.trend_label}:</strong> {result.supportive_message}

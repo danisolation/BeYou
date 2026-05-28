@@ -95,7 +95,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
         ) : null}
       </header>
 
-      <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
         <h2 className="text-sm font-semibold text-on-background">Em muốn thử cách phản hồi nào?</h2>
         <div className="mt-6 space-y-3">
           {scenario.choices.map((choice, index) => {
@@ -147,7 +147,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
 
       {feedback ? (
         <section
-          className={`rounded-2xl p-6 shadow-sm ${
+          className={`rounded-2xl p-6 ${
             feedback.signal === "risky"
               ? "border border-amber-300 bg-white dark:bg-[#1e2d40]"
               : "border border-primary/30 bg-white dark:bg-[#1e2d40]"

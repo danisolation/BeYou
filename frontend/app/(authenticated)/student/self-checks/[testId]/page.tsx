@@ -128,7 +128,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
         </div>
       </div>
 
-      <section className="rounded-2xl bg-white dark:bg-[#1e2d40] p-6 shadow-sm">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] p-6">
         <h2 className="text-lg font-semibold text-on-background">{currentQuestion.text}</h2>
         <div className="mt-6 space-y-3">
           {currentQuestion.choices.map((choice) => {
