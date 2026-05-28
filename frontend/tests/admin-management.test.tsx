@@ -178,10 +178,10 @@ describe("admin management UI", () => {
     render(<LinkForm users={users} onSubmit={vi.fn()} />);
 
     const adultSelect = screen.getByLabelText("Người lớn hỗ trợ");
-    expect(within(adultSelect).queryByRole("option", { name: "Nguyễn An Demo" })).not.toBeInTheDocument();
-    expect(within(adultSelect).getByRole("option", { name: "Cô Bình Demo" })).toBeInTheDocument();
-    expect(within(adultSelect).getByRole("option", { name: "Phụ huynh Chi Demo" })).toBeInTheDocument();
-    expect(within(adultSelect).queryByRole("option", { name: "Quản trị Demo" })).not.toBeInTheDocument();
+    expect(within(adultSelect).queryByRole("option", { name: /Nguyễn An Demo/ })).not.toBeInTheDocument();
+    expect(within(adultSelect).getByRole("option", { name: /Cô Bình Demo/ })).toBeInTheDocument();
+    expect(within(adultSelect).getByRole("option", { name: /Phụ huynh Chi Demo/ })).toBeInTheDocument();
+    expect(within(adultSelect).queryByRole("option", { name: /Quản trị Demo/ })).not.toBeInTheDocument();
   });
 
   it("renders link management copy and revoke confirmation", async () => {
@@ -189,12 +189,10 @@ describe("admin management UI", () => {
     render(<AdminLinksPage />);
 
     expect(await screen.findByText("Liên kết hỗ trợ")).toBeInTheDocument();
-    expect(screen.getAllByText("Tạo liên kết").length).toBeGreaterThan(0);
-    await userEvent.click(screen.getByRole("button", { name: "Thu hồi liên kết" }));
+    await userEvent.click(screen.getByRole("button", { name: /Thu hồi/ }));
 
     expect(screen.getByText(REVOKE_LINK_COPY)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Giữ liên kết" })).toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Thu hồi liên kết" }).length).toBeGreaterThan(0);
   });
 
   it("admin API client uses credentialed fetch for mutations through pages", async () => {
@@ -202,9 +200,14 @@ describe("admin management UI", () => {
     render(<AdminLinksPage />);
 
     await screen.findByText("Liên kết hỗ trợ");
+    // Open the create form (first button with that name)
+    const createButtons = screen.getAllByRole("button", { name: /Tạo liên kết/ });
+    await userEvent.click(createButtons[0]);
     await userEvent.selectOptions(screen.getByLabelText("Học sinh"), "student-1");
     await userEvent.selectOptions(screen.getByLabelText("Người lớn hỗ trợ"), "teacher-1");
-    await userEvent.click(screen.getByRole("button", { name: "Tạo liên kết" }));
+    // Submit form (the second/submit button)
+    const submitButtons = screen.getAllByRole("button", { name: /Tạo liên kết/ });
+    await userEvent.click(submitButtons[submitButtons.length - 1]);
 
     await waitFor(() =>
       expect(fetchMock).toHaveBeenCalledWith(

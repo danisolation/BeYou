@@ -4,7 +4,10 @@ import { FormEvent, useMemo, useState } from "react";
 
 import { AdminLinkCreate, AdminUser } from "@/lib/admin-api";
 
-const relationshipOptions: AdminLinkCreate["relationship_type"][] = ["teacher", "parent"];
+const relationshipOptions: { value: AdminLinkCreate["relationship_type"]; label: string }[] = [
+  { value: "teacher", label: "Giáo viên" },
+  { value: "parent", label: "Phụ huynh" },
+];
 
 type LinkFormProps = {
   users: AdminUser[];
@@ -17,48 +20,74 @@ export function LinkForm({ users, onSubmit }: LinkFormProps) {
   const [studentId, setStudentId] = useState("");
   const [adultId, setAdultId] = useState("");
   const [relationshipType, setRelationshipType] = useState<AdminLinkCreate["relationship_type"]>("teacher");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await onSubmit({ student_id: studentId, adult_id: adultId, relationship_type: relationshipType });
+    setIsSubmitting(true);
+    try {
+      await onSubmit({ student_id: studentId, adult_id: adultId, relationship_type: relationshipType });
+      setStudentId("");
+      setAdultId("");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <form className="rounded-2xl bg-white p-5 shadow-sm sm:p-6" onSubmit={handleSubmit}>
-      <h2 className="text-sm font-semibold">Tạo liên kết</h2>
-      <p className="mt-2 text-xs">
-        Liên kết này quyết định người lớn nào được xem thông tin hỗ trợ được phép hiển thị.
+    <form onSubmit={handleSubmit}>
+      <h2 className="text-sm font-semibold text-on-background">Tạo liên kết mới</h2>
+      <p className="mt-1 text-xs text-on-background/60">
+        Liên kết quyết định người lớn nào được xem thông tin hỗ trợ được phép hiển thị.
       </p>
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <label className="space-y-2 text-sm font-medium">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Học sinh
-          <select required value={studentId} onChange={(event) => setStudentId(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
+          <select
+            required
+            value={studentId}
+            onChange={(event) => setStudentId(event.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          >
             <option value="">Chọn học sinh</option>
             {students.map((user) => (
               <option key={user.id} value={user.id}>{user.full_name}</option>
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Người lớn hỗ trợ
-          <select required value={adultId} onChange={(event) => setAdultId(event.target.value)} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
+          <select
+            required
+            value={adultId}
+            onChange={(event) => setAdultId(event.target.value)}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          >
             <option value="">Chọn người lớn</option>
             {adults.map((user) => (
-              <option key={user.id} value={user.id}>{user.full_name}</option>
+              <option key={user.id} value={user.id}>{user.full_name} ({user.role === "teacher" ? "GV" : "PH"})</option>
             ))}
           </select>
         </label>
-        <label className="space-y-2 text-sm font-medium">
+        <label className="space-y-1.5 text-xs font-medium text-on-background/70">
           Loại liên kết
-          <select value={relationshipType} onChange={(event) => setRelationshipType(event.target.value as AdminLinkCreate["relationship_type"])} className="min-h-12 w-full rounded-xl border border-outline-variant/30 px-3">
-            {relationshipOptions.map((value) => (
-              <option key={value} value={value}>{value}</option>
+          <select
+            value={relationshipType}
+            onChange={(event) => setRelationshipType(event.target.value as AdminLinkCreate["relationship_type"])}
+            className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+          >
+            {relationshipOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
         </label>
       </div>
-      <button type="submit" className="mt-5 min-h-12 w-full rounded-xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 sm:w-auto">
-        Tạo liên kết
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="mt-4 min-h-11 rounded-xl bg-primary px-5 text-sm font-semibold text-white hover:bg-primary/90 disabled:opacity-50 transition-colors"
+      >
+        {isSubmitting ? "Đang tạo..." : "Tạo liên kết"}
       </button>
     </form>
   );

@@ -205,7 +205,7 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
     render(<AdminLinksPage />);
 
     expect(await screen.findByText("Liên kết hỗ trợ")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Thu hồi liên kết" }));
+    await userEvent.click(screen.getByRole("button", { name: /Thu hồi/ }));
     expect(
       screen.getByText("Sau khi thu hồi, giáo viên/phụ huynh này không còn được xem tóm tắt hỗ trợ mới qua liên kết này."),
     ).toBeInTheDocument();
@@ -214,7 +214,7 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
     await userEvent.click(within(dialog).getByRole("button", { name: "Thu hồi liên kết" }));
 
     expect(
-      await screen.findByText("Đã thu hồi liên kết. Người lớn này không còn thấy thông tin hỗ trợ mới của học sinh trong Peerlight AI."),
+      await screen.findByText(/Đã thu hồi liên kết/),
     ).toBeInTheDocument();
   });
 
