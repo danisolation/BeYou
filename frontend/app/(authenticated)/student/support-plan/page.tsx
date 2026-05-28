@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Users } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import {
   getStudentSupportPlan,
   saveStudentSupportPlan,
@@ -116,7 +117,7 @@ export default function StudentSupportPlanPage() {
   }
 
   if (isLoading) {
-    return <p>Đang tải kế hoạch hỗ trợ...</p>;
+    return <PageSkeleton />;
   }
 
   if (data === null) {

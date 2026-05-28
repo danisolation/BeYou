@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import { listScenarioHistory, type ScenarioHistoryItem } from "@/lib/wellbeing-api";
 
 function formatDate(value: string) {
@@ -29,7 +30,7 @@ export default function ScenarioHistoryPage() {
   }, []);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError) {

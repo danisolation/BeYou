@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import {
   getMoodCheckInHistory,
   getMoodNoteShareOptions,
@@ -49,7 +50,7 @@ export default function StudentMoodCheckInHistoryPage() {
   );
 
   if (isLoading) {
-    return <p>Đang tải lịch sử check-in...</p>;
+    return <PageSkeleton />;
   }
 
   if (errorMessage) {

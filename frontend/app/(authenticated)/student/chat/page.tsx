@@ -120,9 +120,9 @@ export default function StudentChatPage() {
 
   return (
     <section className="space-y-4 overflow-hidden">
-      <div className="grid gap-4 lg:grid-cols-[16rem_1fr]">
+      <div className="grid gap-4 md:grid-cols-[16rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 lg:block">
+        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 md:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -133,7 +133,7 @@ export default function StudentChatPage() {
 
         {/* Mobile drawer */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-label="Lịch sử trò chuyện">
+          <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-label="Lịch sử trò chuyện">
             <div
               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
@@ -168,7 +168,7 @@ export default function StudentChatPage() {
               type="button"
               aria-label="Mở lịch sử trò chuyện"
               onClick={() => setSidebarOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 hover:bg-outline-variant/15 lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-on-background/60 hover:bg-outline-variant/15 md:hidden"
             >
               <Menu size={18} aria-hidden="true" />
             </button>

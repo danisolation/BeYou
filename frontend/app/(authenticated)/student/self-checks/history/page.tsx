@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import { listSelfCheckHistory, type SelfCheckHistoryItem } from "@/lib/wellbeing-api";
 
 function formatDate(value: string) {
@@ -33,7 +34,7 @@ export default function SelfCheckHistoryPage() {
   }, []);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError) {
