@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -130,14 +130,14 @@ function Field({
   type?: "text" | "number";
 }) {
   return (
-    <label className="space-y-1 text-sm font-medium">
+    <label className="space-y-1.5 text-xs font-medium text-on-background/70">
       {label}
       <input
         aria-label={label}
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 w-full rounded-xl border border-outline-variant/30 px-3"
+        className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
       />
     </label>
   );
@@ -153,13 +153,13 @@ function TextAreaField({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="space-y-1 text-sm font-medium">
+    <label className="space-y-1.5 text-xs font-medium text-on-background/70">
       {label}
       <textarea
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-24 w-full rounded-xl border border-outline-variant/30 px-3 py-2"
+        className="min-h-24 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 py-2 text-sm text-on-background"
       />
     </label>
   );
@@ -259,6 +259,19 @@ export default function AdminContentPage() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+
+  const filteredSelfChecks = useMemo(() => {
+    if (!search.trim()) return selfChecks;
+    const q = search.toLowerCase();
+    return selfChecks.filter((item) => item.title.toLowerCase().includes(q) || item.status.includes(q));
+  }, [selfChecks, search]);
+
+  const filteredScenarios = useMemo(() => {
+    if (!search.trim()) return scenarios;
+    const q = search.toLowerCase();
+    return scenarios.filter((item) => item.title.toLowerCase().includes(q) || item.skill_tag.toLowerCase().includes(q) || item.status.includes(q));
+  }, [scenarios, search]);
 
   async function refreshContent() {
     const [loadedSelfChecks, loadedScenarios] = await Promise.all([listAdminSelfChecks(), listAdminScenarios()]);
@@ -521,7 +534,20 @@ export default function AdminContentPage() {
       {/* Notices */}
       {notice ? <p role="status" className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-4 py-2.5 text-xs text-green-800 dark:text-green-300">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 text-xs text-red-800 dark:text-red-300">{error}</p> : null}
-      {isLoading ? <p className="text-sm text-on-background/60">Đang tải...</p> : null}
+      {isLoading ? (
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="animate-pulse rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4">
+              <div className="flex items-center gap-3">
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-40 rounded bg-on-background/10" />
+                  <div className="h-3 w-24 rounded bg-on-background/10" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
 
       {/* === LIST VIEW === */}
       {!isEditing ? (
@@ -545,24 +571,34 @@ export default function AdminContentPage() {
           </nav>
 
           {/* Create button */}
-          <div className="flex justify-end">
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-on-background/40" />
+              <input
+                type="text"
+                placeholder="Tìm theo tên, kỹ năng..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] pl-9 pr-3 text-sm text-on-background placeholder:text-on-background/40"
+              />
+            </div>
             <button
               type="button"
               onClick={() => activeTab === "self-check" ? openSelfCheckEditor() : openScenarioEditor()}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 transition-colors"
             >
               <Plus size={16} />
-              {activeTab === "self-check" ? "Tạo bài tự kiểm tra" : "Tạo tình huống"}
+              {activeTab === "self-check" ? "Tạo mới" : "Tạo mới"}
             </button>
           </div>
 
           {/* Self-check list */}
           {activeTab === "self-check" ? (
             <div className="space-y-2">
-              {selfChecks.length === 0 && !isLoading ? (
-                <EmptyState heading="Chưa có bài tự kiểm tra" body="Nhấn nút tạo mới để bắt đầu." />
+              {filteredSelfChecks.length === 0 && !isLoading ? (
+                <EmptyState heading="Chưa có bài tự kiểm tra" body={search ? "Không tìm thấy kết quả." : "Nhấn nút tạo mới để bắt đầu."} />
               ) : (
-                selfChecks.map((item) => (
+                filteredSelfChecks.map((item) => (
                   <button
                     key={item.id ?? item.title}
                     type="button"
@@ -611,10 +647,10 @@ export default function AdminContentPage() {
           {/* Scenario list */}
           {activeTab === "scenario" ? (
             <div className="space-y-2">
-              {scenarios.length === 0 && !isLoading ? (
-                <EmptyState heading="Chưa có tình huống" body="Nhấn nút tạo mới để bắt đầu." />
+              {filteredScenarios.length === 0 && !isLoading ? (
+                <EmptyState heading="Chưa có tình huống" body={search ? "Không tìm thấy kết quả." : "Nhấn nút tạo mới để bắt đầu."} />
               ) : (
-                scenarios.map((item) => (
+                filteredScenarios.map((item) => (
                   <button
                     key={item.id ?? item.title}
                     type="button"

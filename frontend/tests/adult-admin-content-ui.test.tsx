@@ -326,7 +326,7 @@ describe("admin content management UI", () => {
     expect(await screen.findByText("Quản lý nội dung")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Bài tự kiểm tra/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Tình huống/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Tạo bài tự kiểm tra" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Tạo mới/ })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
 
@@ -352,7 +352,7 @@ describe("admin content management UI", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /Quay lại danh sách/ }));
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
-    expect(screen.getByRole("button", { name: "Tạo tình huống" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Tạo mới/ })).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
 
     expect(screen.getByText("Chỉnh sửa tình huống")).toBeInTheDocument();
