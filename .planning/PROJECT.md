@@ -12,21 +12,24 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v1.7 UI Redesign to Match Stitch Mockups shipped 2026-05-27
-**Milestone status:** v1.8 UI/UX Polish & Accessibility — defining requirements
-**Scope shipped:** 44 total phases; v1.7 Phases 39-44 completed 20/20 requirements
-**Current execution:** Defining v1.8 requirements and roadmap
-**Latest verification:** v1.6 milestone verified and archived
-**Latest audit:** `.planning/milestones/v1.6-MILESTONE-AUDIT.md` completed with constrained pass (Phase 34 visual walkthrough deferred, test timeout accepted)
+**Shipped version:** v2.0 Mobile-First & PWA shipped 2026-05-28
+**Milestone status:** v2.0 complete — 59 total phases across 12 milestones
+**Scope shipped:** 16/16 requirements satisfied, 8/8 cross-phase integrations verified
+**Latest audit:** `.planning/milestones/v2.0-MILESTONE-AUDIT.md` — PASS with 0 blockers
+**Next milestone:** To be defined with `/gsd-new-milestone`
 
 ### Built Product
 
-- Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, and demo-data separation.
+- Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, connection pool optimization, and keep-alive cron.
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
-- Student wellbeing flows: privacy notice, Test tâm lý results/history with three Vietnamese visible labels, Tình huống xử lý thực tế feedback/history, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminder preferences, and selective mood-note sharing/revocation.
-- Adult support flows: linked teacher/parent views only for students who have sent SOS, reason-gated protected support summaries when policy requires it, selected support-plan visibility, mood trend summaries without raw private notes by default, student-consented shared mood notes, in-app SOS notifications, optional backend-owned SOS email delivery metadata, and teacher status workflow.
-- Admin flows: users, student-adult links, nested self-check/scenario content editing, chatbot safety config, mood check-in prompt/guidance configuration, v1.4 school privacy policy defaults, privacy-limited aggregate reports, and metadata-only operations dashboard with pilot launch/data-safety/handoff panels.
-- Demo/pilot readiness: public guided landing, one-step demo role entry, role-specific walkthrough cards, responsive/accessibility guardrails, supportive critical-action copy, explicit `local_demo`/`public_demo`/`production_pilot` runtime modes, metadata-only readiness, deployment guardrail CLI, separated demo/pilot smoke profiles, OAuth/SSO-ready identity contracts, public-safe auth capabilities, school pilot launch checklist/rollback guidance, and Next 16-compatible lint/test/build gates.
+- **PWA:** Installable web app with service worker (5-branch caching), offline fallback, install prompt for returning users, app shell pre-caching via build-time manifest injection.
+- **Mobile navigation:** Bottom tab bar for students (5 items + center SOS), drawer for admin, responsive breakpoint switching at 768px, 44px touch targets.
+- **Responsive layouts:** All pages (student, admin, teacher, parent, public) responsive from 320px to 1440px+.
+- **Animations:** Page transitions, micro-interactions (btn-press, card-lift), skeleton loading, pull-to-refresh, reduced-motion respect.
+- Student wellbeing flows: privacy notice, Test tâm lý results/history, Tình huống xử lý thực tế, supportive Peerlight AI chat, confirmed SOS alerts, trusted adult support plans, mood check-ins/history, in-app reminders, selective mood-note sharing/revocation.
+- Adult support flows: linked teacher/parent views, reason-gated support summaries, student-consented shared mood notes, in-app SOS notifications, teacher status workflow.
+- Admin flows: users, links, content editing, chatbot config, mood check-in config, privacy policy, aggregate reports, operations dashboard with pilot panels.
+- Demo/pilot readiness: guided landing, demo roles, runtime modes, deployment guardrails, OAuth/SSO-ready identity contracts.
 
 ### Latest Verification Snapshot
 
