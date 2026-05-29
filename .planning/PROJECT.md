@@ -12,13 +12,12 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v2.1 AI Chat Enhancement shipped 2026-05-28
-**Milestone status:** v2.2 UX Refinement & Usability Polish — 4 phases (64-67), ready for execution
-**Scope shipped:** 14/14 requirements, 6/6 cross-phase integrations verified
-**Latest audit:** `.planning/milestones/v2.1-MILESTONE-AUDIT.md` — PASS with 0 blockers
-**Next milestone:** v2.2 UX Refinement & Usability Polish (toast system, retry patterns, student/adult/admin polish)
+**Shipped version:** v2.2 UX Refinement & Usability Polish shipped 2026-05-28
+**Milestone status:** v2.3 Content Management Polish — 3 phases (68-70), 2/3 complete
+**Next phase:** Phase 70 — Content Final Polish
+**Latest tag:** v2.2
 
-### Built Product
+## Current Milestone: v2.3 Content Management Polish
 
 - Python/FastAPI backend with PostgreSQL, SQLAlchemy/Alembic, cookie sessions, role/relationship authorization, metadata-only audit, readiness checks, connection pool optimization, and keep-alive cron.
 - Next.js/TypeScript frontend with student, teacher, parent, and admin portals using cookie-authenticated API calls and no browser token storage.
@@ -76,19 +75,17 @@ Students can safely recognize distress and quickly reach trusted adults before a
 - v1.2 phase artifacts: `.planning/milestones/v1.2-phases/`
 - Milestone summary: `.planning/MILESTONES.md`
 
-## Current Milestone: v2.0 Mobile-First & PWA
+## Current Milestone: v2.3 Content Management Polish
 
-**Goal:** Transform Peerlight AI into a mobile-first progressive web app with native-like experience — bottom tab navigation, responsive layouts across all pages, offline capability, installable on phones, and smooth animations.
+**Goal:** Formalize and polish the content management editor — threshold scoring reliability, cover image media, FE-BE publish alignment, and minor UX tweaks.
 
 **Target features:**
 
-- Full responsive overhaul for all pages (student, teacher, parent, admin)
-- Bottom tab navigation for student (app-like mobile experience)
-- Drawer/sidebar navigation for admin on mobile
-- PWA manifest, service worker, offline fallback
-- Native-like page transitions and micro-animations
-- Touch-friendly interactions (swipe, tap targets ≥44px)
-- Installable app prompt (Add to Home Screen)
+- Manual threshold scoring with visual coverage grid (gaps, overlaps, out-of-range detection)
+- FE publish checklist perfectly aligned with BE validation rules
+- Cover image upload for tests/scenarios across all roles
+- Vietnamese placeholders and helper text
+- Smart "add threshold" and explicit-only redistribute
 
 ## Completed Milestone: v1.9 Production Polish
 

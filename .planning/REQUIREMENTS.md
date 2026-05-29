@@ -1,51 +1,60 @@
-# Requirements: v2.2 UX Refinement & Usability Polish
+# Requirements: v2.3 Content Management Polish
 
-**Milestone:** v2.2
+**Milestone:** v2.3
 **Created:** 2026-05-28
-**Total:** 16 requirements across 4 categories
+**Total:** 9 requirements across 3 categories
 
-## GLOBAL: Global UX Foundations
-
-| ID | Requirement | Priority |
-|---|---|---|
-| GLOBAL-01 | Toast notification system: reusable component for success/error/info messages that auto-dismiss after 4s, stack vertically, accessible via aria-live | Must |
-| GLOBAL-02 | Universal retry pattern: all data-fetching pages show a "Thử lại" (retry) button on failure instead of dead-end error text | Must |
-| GLOBAL-03 | Consistent loading skeletons: replace plain-text "Đang tải..." with proper skeleton shimmer on all pages | Should |
-| GLOBAL-04 | Success feedback: all form submissions show toast confirmation instead of inline-only text | Must |
-
-## STUDENT: Student Features Polish
+## SCORE: Threshold Scoring & Publish Flow
 
 | ID | Requirement | Priority |
 |---|---|---|
-| STUDENT-01 | Chat thread search/filter: search input in sidebar filters threads by title/content keyword | Should |
-| STUDENT-02 | Mood check-in success toast: prominent confirmation after submission with encouragement message | Must |
-| STUDENT-03 | Support plan autosave: draft recovery via localStorage so partial edits aren't lost on navigation | Should |
-| STUDENT-04 | Self-check history filtering: filter by test name and date range on history page | Should |
-| STUDENT-05 | Notification settings: replace plain-text loading with proper skeleton, add save confirmation toast | Must |
+| SCORE-01 | Manual min/max score inputs on each threshold card with real-time validation (no forced auto-redistribute) | Must |
+| SCORE-02 | Visual score coverage grid showing green (covered), red (gap), yellow (overlap), with out-of-range detection | Must |
+| SCORE-03 | FE publish checklist matches BE validation exactly — no "all green but can't publish" scenario | Must |
+| SCORE-04 | Smart "add threshold" button fills first gap or splits largest range; redistribute is explicit-only | Should |
+| SCORE-05 | Empty choices and questions with <2 valid choices are auto-stripped before API submission | Must |
 
-## ADULT: Adult Portal Enhancement
-
-| ID | Requirement | Priority |
-|---|---|---|
-| ADULT-01 | Student list search & filter: text search by name/email + filter by safety status on teacher/parent student pages | Must |
-| ADULT-02 | Quick-status indicators: colored dot/badge on student cards showing latest mood/safety state at a glance | Should |
-| ADULT-03 | SOS urgency filter: filter alert list by status (pending/acknowledged/resolved) + visual unread state | Must |
-| ADULT-04 | Dashboard refresh: "last updated" timestamp + manual refresh button on teacher/parent home | Should |
-
-## ADMIN: Admin & System Polish
+## MEDIA: Content Media & Visual
 
 | ID | Requirement | Priority |
 |---|---|---|
-| ADMIN-01 | Fix silent error swallowing: admin dashboard preview fetch failures show error state, not blank content | Must |
-| ADMIN-02 | Unsaved changes warning: config pages (chatbot, mood, privacy) warn before navigating away with unsaved edits | Should |
-| ADMIN-03 | Clear-filters affordance: all filterable lists show a "Xóa bộ lọc" button when filters are active | Should |
+| MEDIA-01 | Admin can upload cover image (max 2MB, base64) for self-check tests and scenarios in Step 1 | Must |
+| MEDIA-02 | Student-facing test/scenario list cards display cover image as card header when available | Must |
+| MEDIA-03 | Teacher/parent views display cover image on content cards where applicable | Should |
+
+## UX: Content Editor UX Tweaks
+
+| ID | Requirement | Priority |
+|---|---|---|
+| UX-01 | Vietnamese placeholders and helper text on all content editor inputs | Must |
 
 ## Constraints
 
-- Must not break existing feature behavior — all changes are additive UX improvements
-- Toast system must work across all roles (student, teacher, parent, admin)
-- All new interactive elements must be keyboard-accessible and have proper ARIA labels
-- Mobile-first: improvements must work on 360px viewport minimum
-- No new backend endpoints required for Global/Student phases; Adult/Admin may add filter params
-- localStorage usage must handle quota exceeded gracefully
-- Retry pattern must respect existing API retry logic (no double-retry loops)
+- Must not break existing feature behavior — changes are additive
+- All threshold logic must match BE validation rules exactly
+- Cover image stored as base64 data URL (Text column)
+- Max 2MB file size enforced client-side
+- No new backend endpoints beyond what's already committed
+
+## Traceability
+
+| Requirement | Phase | Status |
+|---|---|---|
+| SCORE-01 | Phase 68 | Complete |
+| SCORE-02 | Phase 68 | Complete |
+| SCORE-03 | Phase 68 | Complete |
+| SCORE-04 | Phase 68 | Complete |
+| SCORE-05 | Phase 68 | Complete |
+| MEDIA-01 | Phase 69 | Complete |
+| MEDIA-02 | Phase 69 | Complete |
+| MEDIA-03 | Phase 70 | Pending |
+| UX-01 | Phase 68 | Complete |
+
+**Coverage:**
+- v2.3 requirements: 9 total
+- Mapped to phases: 9
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-05-28*
+*Last updated: 2026-05-28 after milestone creation*

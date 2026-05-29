@@ -1,14 +1,15 @@
-# Roadmap: Peerlight AI v2.2 UX Refinement & Usability Polish
+# Roadmap: Peerlight AI v2.3 Content Management Polish
 
 **Created:** 2026-05-28
-**Milestone:** v2.2 UX Refinement & Usability Polish
+**Milestone:** v2.3 Content Management Polish
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 **Granularity:** coarse
-**Phase range:** 64-67
-**Coverage:** 16/16 v2.2 requirements mapped, 0 unmapped
+**Phase range:** 68-70
+**Coverage:** 9/9 v2.3 requirements mapped, 0 unmapped
 
 ## Completed Milestones
 
+- [x] **v2.2 UX Refinement & Usability Polish** - Phases 64-67 (shipped 2026-05-28; 16/16 requirements) - [roadmap archive](milestones/v2.2-ROADMAP.md), [requirements archive](milestones/v2.2-REQUIREMENTS.md)
 - [x] **v2.1 AI Chat Enhancement** - Phases 60-63 (shipped 2026-05-28; 14/14 requirements, 6/6 integrations) - [roadmap archive](milestones/v2.1-ROADMAP.md), [requirements archive](milestones/v2.1-REQUIREMENTS.md), [audit](milestones/v2.1-MILESTONE-AUDIT.md)
 - [x] **v2.0 Mobile-First & PWA** - Phases 54-59 (shipped 2026-05-28; 16/16 requirements, 8/8 integrations) - [roadmap archive](milestones/v2.0-ROADMAP.md), [requirements archive](milestones/v2.0-REQUIREMENTS.md), [audit](milestones/v2.0-MILESTONE-AUDIT.md)
 - [x] **v1.9 Production Polish** - Phases 51-53 (shipped 2026-05-28)
@@ -24,65 +25,52 @@
 
 ## Phases
 
-- [x] **Phase 64: Global UX Foundations** - Toast notification system, universal retry/error recovery, consistent loading skeletons, success feedback.
-- [x] **Phase 65: Student Features Polish** - Chat thread search, mood check-in toasts, support plan autosave, self-check filtering, notification settings.
-- [x] **Phase 66: Adult Portal Enhancement** - Student list search/filter, quick-status indicators, SOS urgency filter, dashboard refresh.
-- [x] **Phase 67: Admin & System Polish** - Fix silent errors, unsaved-changes warnings, clear-filters affordance, mobile admin tables.
+- [x] **Phase 68: Content Editor Scoring & Publish** - Manual threshold scoring, visual validation grid, FE-BE checklist alignment, empty choice filtering, Vietnamese UX hints.
+- [x] **Phase 69: Content Media & Student Display** - Cover image upload (admin), base64 storage, student-facing card image display.
+- [ ] **Phase 70: Content Final Polish** - Teacher/parent cover image display, any remaining content editor minor tweaks.
 
 ## Phase Details
 
-### Phase 64: Global UX Foundations
+### Phase 68: Content Editor Scoring & Publish
 
-**Goal:** Establish shared UX infrastructure (toast, retry, skeletons) that all features build on.
-**Depends on:** Phase 63
-**Requirements:** GLOBAL-01, GLOBAL-02, GLOBAL-03, GLOBAL-04
-**Plans:** TBD
+**Goal:** Make threshold scoring work correctly with manual configuration, align FE publish checklist to BE rules exactly.
+**Depends on:** Phase 67
+**Requirements:** SCORE-01, SCORE-02, SCORE-03, SCORE-04, SCORE-05, UX-01
 **Status:** Complete (2026-05-28)
 
 **Success criteria:**
-1. Toast component renders success/error/info with auto-dismiss and accessible announcements.
-2. All existing error states replaced with retry-capable error component.
-3. At least 8 pages upgraded from plain-text loading to proper skeletons.
-4. Form submissions across all roles show toast feedback on success.
+1. Admin can manually set min/max on each threshold without auto-redistribute overriding.
+2. ScoreCoverageGrid shows visual feedback for gaps (red), overlaps (yellow), out-of-range (orange).
+3. Publish checklist passes if and only if BE would accept the payload.
+4. "Add threshold" fills the first gap or splits the largest range intelligently.
+5. Questions with <2 non-empty choices are stripped before submission.
+6. All editor inputs have Vietnamese placeholders/hints.
 
-### Phase 65: Student Features Polish
+**Commits:** `a0af47a`, `7046a5e`, `b422e04`, `26c5264`, `5549874`, `88c8bdd`, `485ae84`, `a7479af`, `f1b404b`, `80ed043`, `32e0211`, `64a0a54`
 
-**Goal:** Polish student-facing features for smoother daily use.
-**Depends on:** Phase 64
-**Requirements:** STUDENT-01, STUDENT-02, STUDENT-03, STUDENT-04, STUDENT-05
-**Plans:** TBD
+### Phase 69: Content Media & Student Display
+
+**Goal:** Allow admin to add cover images to tests/scenarios, display them on student-facing cards.
+**Depends on:** Phase 68
+**Requirements:** MEDIA-01, MEDIA-02
 **Status:** Complete (2026-05-28)
 
 **Success criteria:**
-1. Chat sidebar has working search input that filters threads by keyword.
-2. Mood check-in submit triggers success toast with encouragement.
-3. Support plan form persists draft to localStorage on every keystroke; restores on mount.
-4. Self-check history shows filter dropdowns (test name, date range).
-5. Notification preferences page uses skeleton and toast on save.
+1. CoverImagePicker in Step 1 accepts image upload (max 2MB), shows preview, allows delete.
+2. BE stores cover_image_url as Text column on both models.
+3. Student self-check list shows cover image as card header.
+4. Student scenario list shows cover image as card header.
 
-### Phase 66: Adult Portal Enhancement
+**Commits:** `d85bf66`, `d7efef7`
 
-**Goal:** Give teachers/parents faster access to relevant student info.
-**Depends on:** Phase 64
-**Requirements:** ADULT-01, ADULT-02, ADULT-03, ADULT-04
-**Plans:** TBD
-**Status:** Complete (2026-05-28)
+### Phase 70: Content Final Polish
 
-**Success criteria:**
-1. Student list has working search by name + filter by safety state.
-2. Student cards show colored status dot (green/amber/red) based on last mood/safety.
-3. SOS alert list has status tabs or filter dropdown with unread visual badge.
-4. Dashboard shows "Cập nhật lúc HH:MM" + refresh icon button.
-
-### Phase 67: Admin & System Polish
-
-**Goal:** Fix quality gaps in admin experience and add protective UX patterns.
-**Depends on:** Phase 64
-**Requirements:** ADMIN-01, ADMIN-02, ADMIN-03
-**Plans:** TBD
-**Status:** Complete (2026-05-28)
+**Goal:** Show cover images in teacher/parent views and apply any remaining minor tweaks.
+**Depends on:** Phase 69
+**Requirements:** MEDIA-03
+**Status:** Not started
 
 **Success criteria:**
-1. Admin dashboard preview fetch failures show visible error state.
-2. Config pages prompt "Bạn có thay đổi chưa lưu" on navigate-away.
-3. All filterable admin lists show clear-filter button when active.
+1. Teacher/parent pages that list content show cover images where available.
+2. TypeScript compiles clean.
+3. No regressions in existing functionality.

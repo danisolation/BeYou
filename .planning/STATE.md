@@ -1,57 +1,54 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Mobile-First & PWA
+milestone: v2.3
+milestone_name: Content Management Polish
 status: executing
-last_updated: "2026-05-28T10:10:47Z"
+last_updated: "2026-05-28T12:00:00Z"
 progress:
-  total_phases: 6
-  completed_phases: 0
-  total_plans: 1
-  completed_plans: 1
-  percent: 17
+  total_phases: 3
+  completed_phases: 2
+  total_plans: 0
+  completed_plans: 0
+  percent: 67
 ---
 
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-05-28 completed 54-01
-**Status:** Executing Phase 54
+**Last updated:** 2026-05-28 — v2.3 milestone created, phases 68-69 already complete
+**Status:** Executing Phase 70
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-05-28)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** Phase 54 — PWA Foundation & App Shell
+**Current focus:** Phase 70 — Content Final Polish (teacher/parent cover images)
 
 ## Planning Artifacts
 
 | Artifact | Path | Status |
 |---|---|---|
-| Project context | `.planning/PROJECT.md` | Updated for v2.0 |
+| Project context | `.planning/PROJECT.md` | Updated for v2.3 |
 | Workflow config | `.planning/config.json` | Current |
-| Milestone summary | `.planning/MILESTONES.md` | Current through v1.9 |
-| Active roadmap | `.planning/ROADMAP.md` | v2.0 roadmap (6 phases) |
-| Active requirements | `.planning/REQUIREMENTS.md` | v2.0 requirements (16 reqs) |
+| Milestone summary | `.planning/MILESTONES.md` | Current through v2.2 |
+| Active roadmap | `.planning/ROADMAP.md` | v2.3 roadmap (3 phases) |
+| Active requirements | `.planning/REQUIREMENTS.md` | v2.3 requirements (9 reqs) |
 
 ## Roadmap Summary
 
 | Phase | Title | Status |
 |---|---|---|
-| 54 | PWA Foundation & App Shell | Not started |
-| 55 | Mobile Navigation System | Not started |
-| 56 | Student Pages Responsive | Not started |
-| 57 | Admin Pages Responsive | Not started |
-| 58 | Teacher/Parent & Public Pages Responsive | Not started |
-| 59 | Animations & Polish | Not started |
+| 68 | Content Editor Scoring & Publish | Complete |
+| 69 | Content Media & Student Display | Complete |
+| 70 | Content Final Polish | Not started |
 
 ## Accumulated Context
 
-- App uses Tailwind CSS with custom design tokens (primary, on-background, outline-variant)
-- Current layout: sidebar nav for desktop, no mobile-specific nav
-- Student pages: dashboard, self-checks, scenarios, chat, support plan, mood check-ins
-- Admin pages: users, links, operations, content (wizard editor)
-- Teacher/Parent pages: linked students, SOS alerts, support summaries
-- All pages already use dark mode support
-- Next.js 16 app router with (authenticated) group layout
+- Content editor is 3-step wizard: Info → Questions → Thresholds
+- Threshold scoring uses manual min/max with ScoreCoverageGrid visualization
+- Cover image stored as base64 data URL in Text column
+- CoverImagePicker component handles upload/preview/delete (max 2MB)
+- StitchCard component now supports optional `image` prop
+- Student list pages pass cover_image_url to StitchCard
+- Teacher/parent views don't yet show content images
