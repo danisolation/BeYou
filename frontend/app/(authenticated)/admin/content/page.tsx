@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { FileText, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check, Copy } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FileText, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check, Copy, ImagePlus } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -204,6 +204,34 @@ function errorCopy(error: unknown): string {
 
 function nextSortOrder(items: Array<{ sort_order: number }>): number {
   return Math.max(0, ...items.map((item) => item.sort_order)) + 1;
+}
+
+function CoverImagePicker({ value, onChange }: { value: string | null | undefined; onChange: (url: string | null) => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  function handleFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { alert("Ảnh tối đa 2MB"); return; }
+    const reader = new FileReader();
+    reader.onload = () => onChange(reader.result as string);
+    reader.readAsDataURL(file);
+  }
+  return (
+    <div className="space-y-2">
+      <p className="text-xs font-medium text-on-background/70">Ảnh bìa <span className="font-normal text-on-background/50">(tùy chọn, tối đa 2MB)</span></p>
+      {value ? (
+        <div className="relative inline-block">
+          <img src={value} alt="Cover" className="h-32 w-auto max-w-full rounded-xl border border-outline-variant/30 object-cover" />
+          <button type="button" onClick={() => onChange(null)} className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white text-xs hover:bg-red-600" title="Xóa ảnh">✕</button>
+        </div>
+      ) : (
+        <button type="button" onClick={() => fileRef.current?.click()} className="flex items-center gap-2 rounded-xl border-2 border-dashed border-outline-variant/40 px-4 py-3 text-sm text-on-background/50 hover:border-primary/50 hover:text-primary transition-colors">
+          <ImagePlus size={18} /> Chọn ảnh bìa
+        </button>
+      )}
+      <input ref={fileRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
+    </div>
+  );
 }
 
 function newSelfCheckChoice(sortOrder: number): AdminSelfCheckContent["questions"][number]["choices"][number] {
@@ -1227,6 +1255,7 @@ export default function AdminContentPage() {
                 </div>
                 <Field label="Tên bài" required value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} placeholder="VD: Em đang cảm thấy thế nào?" hint="Tên ngắn gọn, dễ hiểu cho học sinh THCS/THPT" />
                 <TextAreaField label="Mô tả ngắn" required value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} placeholder="VD: Bài kiểm tra giúp em nhận biết cảm xúc hiện tại và tìm cách hỗ trợ phù hợp." hint="1-2 câu giải thích mục đích bài test — sẽ hiển thị trước khi học sinh bắt đầu" />
+                <CoverImagePicker value={selfCheckDraft.cover_image_url} onChange={(url) => setSelfCheckDraft((current) => ({ ...current, cover_image_url: url }))} />
               </section>
             ) : null}
 
@@ -1447,6 +1476,7 @@ export default function AdminContentPage() {
                 <Field label="Tiêu đề" required value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} placeholder="VD: Bạn rủ em trốn học đi chơi" hint="Mô tả ngắn tình huống — sẽ hiển thị trong danh sách cho học sinh chọn" />
                 <TextAreaField label="Mô tả tình huống" required value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} placeholder="VD: Đang giờ ra chơi, một nhóm bạn rủ em bỏ tiết chiều đi chơi game. Các bạn nói 'không sao đâu, cô không biết đâu'. Em đang phân vân..." hint="Viết bối cảnh rõ ràng, có chi tiết để học sinh hình dung — nên viết ở ngôi thứ 2 ('em')" />
                 <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} placeholder="VD: Từ chối áp lực nhóm" hint="Kỹ năng sống mà bài tình huống rèn luyện" />
+                <CoverImagePicker value={scenarioDraft.cover_image_url} onChange={(url) => setScenarioDraft((current) => ({ ...current, cover_image_url: url }))} />
               </section>
             ) : null}
 

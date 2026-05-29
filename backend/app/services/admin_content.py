@@ -218,6 +218,7 @@ def create_self_check_test(db: OrmSession, *, actor: User, payload: AdminSelfChe
     test = SelfCheckTest(
         title=payload.title,
         description=payload.description,
+        cover_image_url=payload.cover_image_url,
         status=payload.status or ContentStatus.DRAFT.value,
         is_active=True if payload.is_active is None else payload.is_active,
         is_demo=bool(payload.is_demo),
@@ -240,6 +241,7 @@ def update_self_check_test(
     test = get_self_check_test_or_404(db, test_id)
     test.title = payload.title
     test.description = payload.description
+    test.cover_image_url = payload.cover_image_url
     test.is_active = True if payload.is_active is None else payload.is_active
     test.is_demo = bool(payload.is_demo)
     if payload.status is not None:
@@ -340,6 +342,7 @@ def create_scenario(db: OrmSession, *, actor: User, payload: AdminScenarioUpsert
         title=payload.title,
         situation=payload.situation,
         skill_tag=payload.skill_tag,
+        cover_image_url=payload.cover_image_url,
         status=payload.status or ContentStatus.DRAFT.value,
         recommended_response=payload.recommended_response,
         lesson=payload.lesson,
@@ -362,6 +365,7 @@ def update_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID, payl
     scenario.title = payload.title
     scenario.situation = payload.situation
     scenario.skill_tag = payload.skill_tag
+    scenario.cover_image_url = payload.cover_image_url
     scenario.recommended_response = payload.recommended_response
     scenario.lesson = payload.lesson
     scenario.is_demo = bool(payload.is_demo)

@@ -83,6 +83,7 @@ class AdminSelfCheckThresholdUpsert(BaseModel):
 class AdminSelfCheckTestUpsert(BaseModel):
     title: str
     description: str | None = None
+    cover_image_url: str | None = None
     status: str | None = None
     is_active: bool | None = True
     is_demo: bool | None = False
@@ -138,6 +139,7 @@ class AdminSelfCheckTestResponse(BaseModel):
     id: uuid.UUID
     title: str
     description: str | None = None
+    cover_image_url: str | None = None
     status: str
     is_active: bool
     is_demo: bool = False
@@ -171,6 +173,7 @@ class AdminScenarioUpsert(BaseModel):
     title: str
     situation: str = ""
     skill_tag: str = ""
+    cover_image_url: str | None = None
     status: str | None = None
     recommended_response: str = ""
     lesson: str = ""
@@ -204,6 +207,7 @@ class AdminScenarioResponse(BaseModel):
     title: str
     situation: str
     skill_tag: str
+    cover_image_url: str | None = None
     status: str
     recommended_response: str
     lesson: str

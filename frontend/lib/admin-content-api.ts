@@ -36,6 +36,7 @@ export type AdminSelfCheckContent = {
   id?: string;
   title: string;
   description: string | null;
+  cover_image_url?: string | null;
   status: AdminContentStatus;
   is_active?: boolean;
   is_demo?: boolean | null;
@@ -59,6 +60,7 @@ export type AdminScenarioContent = {
   title: string;
   situation: string;
   skill_tag: string;
+  cover_image_url?: string | null;
   status: AdminContentStatus;
   recommended_response: string;
   lesson: string;
