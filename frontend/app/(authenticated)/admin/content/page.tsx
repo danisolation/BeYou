@@ -340,7 +340,7 @@ function StepIndicator({
   );
 }
 
-function ChecklistItem({ passed, label }: { passed: boolean; label: string }) {
+function ChecklistItem({ passed, label, fixHint, onFix }: { passed: boolean; label: string; fixHint?: string; onFix?: () => void }) {
   return (
     <li className={`flex items-center gap-2 text-sm ${passed ? "text-green-700 dark:text-green-300" : "text-red-600 dark:text-red-300"}`}>
       <span
@@ -352,7 +352,12 @@ function ChecklistItem({ passed, label }: { passed: boolean; label: string }) {
       >
         {passed ? "✓" : "✕"}
       </span>
-      <span>{label}</span>
+      <span className="flex-1">{label}</span>
+      {!passed && onFix ? (
+        <button type="button" onClick={onFix} className="shrink-0 rounded-lg bg-red-50 dark:bg-red-900/20 px-2 py-0.5 text-xs font-medium text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30">
+          {fixHint ?? "Đi sửa →"}
+        </button>
+      ) : null}
     </li>
   );
 }
@@ -412,8 +417,8 @@ export default function AdminContentPage() {
     (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
   ).length;
   const selfCheckReviewItems = [
-    { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0 },
-    { label: "Có ít nhất 1 câu hỏi", passed: selfCheckDraft.questions.some((question) => question.text.trim().length > 0) },
+    { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
+    { label: "Có ít nhất 1 câu hỏi", passed: selfCheckDraft.questions.some((question) => question.text.trim().length > 0), step: 2 as EditorStep, fixHint: "Bước 2 →" },
     {
       label: "Mỗi câu hỏi có ít nhất 2 lựa chọn",
       passed:
@@ -421,8 +426,10 @@ export default function AdminContentPage() {
         selfCheckDraft.questions.every(
           (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
         ),
+      step: 2 as EditorStep,
+      fixHint: "Bước 2 →",
     },
-    { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0 },
+    { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
     Boolean(selfCheckDraft.id) && selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
@@ -431,9 +438,9 @@ export default function AdminContentPage() {
   const filledScenarioChoices = scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length;
   const filledScenarioLessons = [scenarioDraft.recommended_response.trim(), scenarioDraft.lesson.trim()].filter(Boolean).length;
   const scenarioReviewItems = [
-    { label: "Tên bài đã được nhập", passed: scenarioDraft.title.trim().length > 0 },
-    { label: "Có ít nhất 2 lựa chọn", passed: scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length >= 2 },
-    { label: "Đã nhập bài học", passed: scenarioDraft.lesson.trim().length > 0 },
+    { label: "Tên bài đã được nhập", passed: scenarioDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
+    { label: "Có ít nhất 2 lựa chọn", passed: scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length >= 2, step: 2 as EditorStep, fixHint: "Bước 2 →" },
+    { label: "Đã nhập bài học", passed: scenarioDraft.lesson.trim().length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishScenario =
     Boolean(scenarioDraft.id) && scenarioDraft.status === "draft" && scenarioReviewItems.every((item) => item.passed);
@@ -1100,11 +1107,15 @@ export default function AdminContentPage() {
                   <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
                     <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
                     <ul className="mt-4 space-y-3">
-                      {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} />)}
+                      {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setSelfCheckStep(item.step)} />)}
                     </ul>
                     {!selfCheckDraft.id ? (
                       <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
                         Lưu bản nháp trước khi xuất bản.
+                      </p>
+                    ) : !selfCheckReviewItems.every((item) => item.passed) ? (
+                      <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+                        Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
                       </p>
                     ) : null}
                     {selfCheckDraft.status !== "draft" ? (
@@ -1291,11 +1302,15 @@ export default function AdminContentPage() {
                   <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
                     <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
                     <ul className="mt-4 space-y-3">
-                      {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} />)}
+                      {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setScenarioStep(item.step)} />)}
                     </ul>
                     {!scenarioDraft.id ? (
                       <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
                         Lưu bản nháp trước khi xuất bản.
+                      </p>
+                    ) : !scenarioReviewItems.every((item) => item.passed) ? (
+                      <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+                        Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
                       </p>
                     ) : null}
                     {scenarioDraft.status !== "draft" ? (
