@@ -13,7 +13,7 @@ export type ChatMessage = {
 export type ChatThread = {
   id: string;
   title: string;
-  safety_state: "supportive" | "high_risk";
+  safety_state: "supportive" | "high_risk" | "medium_risk";
   last_message_at: string | null;
   created_at: string;
   updated_at: string;
@@ -78,6 +78,61 @@ export function sendChatMessage(payload: SendChatMessagePayload) {
     method: "POST",
     body: JSON.stringify(payload),
   });
+}
+
+export type StreamEvent =
+  | { type: "meta"; thread_id: string; student_message_id: string }
+  | { type: "token"; content: string }
+  | { type: "done"; assistant_message_id: string; safety_level: string; thread_title: string };
+
+/**
+ * Stream chat response via SSE. Calls onEvent for each parsed event.
+ * Falls back to sync sendChatMessage on error.
+ */
+export async function sendChatMessageStream(
+  payload: SendChatMessagePayload,
+  onEvent: (event: StreamEvent) => void,
+  options?: { signal?: AbortSignal },
+): Promise<void> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+  const url = `${baseUrl}/api/student/chat/messages/stream`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    credentials: "include",
+    signal: options?.signal,
+  });
+
+  if (!response.ok || !response.body) {
+    throw new Error(`Stream request failed: ${response.status}`);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data: ")) continue;
+      const data = trimmed.slice(6);
+      if (data === "[DONE]") return;
+      try {
+        onEvent(JSON.parse(data) as StreamEvent);
+      } catch {
+        // skip malformed events
+      }
+    }
+  }
 }
 
 export function listChatThreads() {

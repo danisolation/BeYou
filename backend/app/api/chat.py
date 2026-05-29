@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 
 from fastapi import APIRouter, Depends, Request, status
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_role
@@ -26,6 +27,7 @@ from app.services.chat import (
     list_student_chat_threads,
     send_adult_chat_message,
     send_chat_message,
+    send_chat_message_stream,
     update_admin_safety_config,
 )
 
@@ -47,6 +49,30 @@ def post_student_chat_message(
     require_same_site_mutation(request, settings)
     require_role(current_user, UserRole.STUDENT)
     return send_chat_message(db, student=current_user, payload=payload, settings=settings)
+
+
+@router.post("/student/chat/messages/stream", status_code=status.HTTP_200_OK)
+def post_student_chat_message_stream(
+    payload: ChatMessageCreate,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> StreamingResponse:
+    """Stream chat response via Server-Sent Events."""
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.STUDENT)
+
+    def event_generator():
+        for event in send_chat_message_stream(db, student=current_user, payload=payload, settings=settings):
+            yield f"data: {event}\n\n"
+        yield "data: [DONE]\n\n"
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.get("/student/chat/threads", response_model=list[ChatThreadResponse])

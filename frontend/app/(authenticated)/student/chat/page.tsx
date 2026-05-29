@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 
 import { ChatSkeleton } from "@/components/skeletons";
 import {
   type ChatMessage,
   type ChatThread,
+  type StreamEvent,
   getChatTranscript,
   listChatThreads,
   sendChatMessage,
+  sendChatMessageStream,
 } from "@/lib/chat-api";
 
 const INTRO_COPY =
@@ -27,8 +29,11 @@ export default function StudentChatPage() {
   const [draft, setDraft] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingContent, setStreamingContent] = useState("");
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -84,37 +89,133 @@ export default function StudentChatPage() {
     }
     setIsSending(true);
     setError("");
+    setDraft("");
+
+    // Optimistically add the student message
+    const tempStudentMsg: ChatMessage = {
+      id: `temp-${Date.now()}`,
+      thread_id: threadId || "",
+      role: "student",
+      content: message,
+      safety_flagged: false,
+      created_at: new Date().toISOString(),
+      is_demo: false,
+    };
+    setMessages((current) => [...current, tempStudentMsg]);
+
     try {
-      const response = await sendChatMessage({ message, thread_id: threadId });
-      setThreadId(response.thread_id);
-      setMessages((current) => [...current, response.student_message, response.assistant_message]);
+      // Try streaming first
+      const controller = new AbortController();
+      abortRef.current = controller;
+      setIsStreaming(true);
+      setStreamingContent("");
+
+      let resolvedThreadId = threadId;
+      let assistantMsgId = "";
+      let threadTitle = "";
+
+      await sendChatMessageStream(
+        { message, thread_id: threadId },
+        (evt: StreamEvent) => {
+          if (evt.type === "meta") {
+            resolvedThreadId = evt.thread_id;
+            setThreadId(evt.thread_id);
+            // Update temp student message with real id
+            setMessages((current) =>
+              current.map((m) =>
+                m.id === tempStudentMsg.id
+                  ? { ...m, id: evt.student_message_id, thread_id: evt.thread_id }
+                  : m,
+              ),
+            );
+          } else if (evt.type === "token") {
+            setStreamingContent((prev) => prev + evt.content);
+          } else if (evt.type === "done") {
+            assistantMsgId = evt.assistant_message_id;
+            threadTitle = evt.thread_title;
+          }
+        },
+        { signal: controller.signal },
+      );
+
+      // Streaming complete — add final assistant message
+      setStreamingContent((finalContent) => {
+        const assistantMsg: ChatMessage = {
+          id: assistantMsgId || `stream-${Date.now()}`,
+          thread_id: resolvedThreadId || "",
+          role: "assistant",
+          content: finalContent,
+          safety_flagged: false,
+          created_at: new Date().toISOString(),
+          is_demo: false,
+        };
+        setMessages((current) => [...current, assistantMsg]);
+        return "";
+      });
+
       setThreads((current) => {
-        const existing = current.find((thread) => thread.id === response.thread_id);
+        const tid = resolvedThreadId || threadId || "";
+        const existing = current.find((t) => t.id === tid);
         if (existing) {
-          return current.map((thread) =>
-            thread.id === response.thread_id
-              ? { ...thread, last_message_at: response.assistant_message.created_at, updated_at: response.assistant_message.created_at }
-              : thread,
+          return current.map((t) =>
+            t.id === tid ? { ...t, title: threadTitle || t.title, updated_at: new Date().toISOString() } : t,
           );
         }
         return [
           {
-            id: response.thread_id,
-            title: message.slice(0, 48) || "Cuộc trò chuyện mới",
-            safety_state: response.safety.high_risk ? "high_risk" : "supportive",
-            last_message_at: response.assistant_message.created_at,
-            created_at: response.student_message.created_at,
-            updated_at: response.assistant_message.created_at,
-            is_demo: response.student_message.is_demo || response.assistant_message.is_demo,
+            id: tid,
+            title: threadTitle || message.slice(0, 30),
+            safety_state: "supportive" as const,
+            last_message_at: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            is_demo: false,
           },
           ...current,
         ];
       });
-      setDraft("");
     } catch {
-      setError("Chưa gửi được tin nhắn. Hãy thử lại hoặc dùng SOS nếu em đang cần hỗ trợ ngay.");
+      // Fallback to sync endpoint
+      setStreamingContent("");
+      try {
+        const response = await sendChatMessage({ message, thread_id: threadId });
+        setThreadId(response.thread_id);
+        setMessages((current) => [
+          ...current.filter((m) => m.id !== tempStudentMsg.id),
+          response.student_message,
+          response.assistant_message,
+        ]);
+        setThreads((current) => {
+          const existing = current.find((t) => t.id === response.thread_id);
+          if (existing) {
+            return current.map((t) =>
+              t.id === response.thread_id
+                ? { ...t, last_message_at: response.assistant_message.created_at, updated_at: response.assistant_message.created_at }
+                : t,
+            );
+          }
+          return [
+            {
+              id: response.thread_id,
+              title: message.slice(0, 48) || "Cuộc trò chuyện mới",
+              safety_state: response.safety.high_risk ? "high_risk" : "supportive",
+              last_message_at: response.assistant_message.created_at,
+              created_at: response.student_message.created_at,
+              updated_at: response.assistant_message.created_at,
+              is_demo: response.student_message.is_demo || response.assistant_message.is_demo,
+            },
+            ...current,
+          ];
+        });
+      } catch {
+        setError("Chưa gửi được tin nhắn. Hãy thử lại hoặc dùng SOS nếu em đang cần hỗ trợ ngay.");
+        // Remove optimistic message on total failure
+        setMessages((current) => current.filter((m) => m.id !== tempStudentMsg.id));
+      }
     } finally {
       setIsSending(false);
+      setIsStreaming(false);
+      abortRef.current = null;
     }
   }
 
@@ -193,6 +294,26 @@ export default function StudentChatPage() {
               {messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
+              {isStreaming && streamingContent && (
+                <article className="flex justify-start">
+                  <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-outline-variant/10 dark:bg-outline-variant/20 text-on-background">
+                    <p className="text-xs font-semibold opacity-70">Peerlight AI</p>
+                    <div className="mt-1 text-sm whitespace-pre-wrap">{streamingContent}</div>
+                  </div>
+                </article>
+              )}
+              {isSending && !streamingContent && (
+                <article className="flex justify-start">
+                  <div className="max-w-[80%] rounded-2xl px-4 py-3 bg-outline-variant/10 dark:bg-outline-variant/20 text-on-background">
+                    <p className="text-xs font-semibold opacity-70">Peerlight AI</p>
+                    <div className="mt-1 flex gap-1">
+                      <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0ms]" />
+                      <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:150ms]" />
+                      <span className="h-2 w-2 rounded-full bg-primary/60 animate-bounce [animation-delay:300ms]" />
+                    </div>
+                  </div>
+                </article>
+              )}
             </div>
             {error ? <p role="alert" className="mt-3 text-xs text-red-600 dark:text-red-400">{error}</p> : null}
           </div>

@@ -252,6 +252,66 @@ class FreemodelProvider:
                 return self._call_api(messages, retry=retry + 1, extra_context=extra_context)
             raise
 
+    def generate_stream(self, *, messages: list[dict[str, str]], extra_context: str | None = None):
+        """Yield tokens as they arrive from FreeModel streaming API."""
+        last_message = messages[-1]["content"] if messages else ""
+
+        boundary = self._detect_boundary(last_message)
+        if boundary:
+            yield self.BOUNDARY_RESPONSES[boundary]
+            return
+
+        if self._detect_injection(last_message):
+            yield "Mình ở đây để hỗ trợ cảm xúc của em. Em có muốn chia sẻ chuyện gì đang làm em bận tâm không?"
+            return
+
+        sanitized = self._sanitize_messages(messages)
+        system_content = self.SYSTEM_PROMPT
+        if extra_context:
+            system_content += f"\n\n{extra_context}"
+
+        headers = {
+            "Authorization": f"Bearer {self._settings.freemodel_api_key}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": self._settings.freemodel_model,
+            "stream": True,
+            "messages": [
+                {"role": "system", "content": system_content},
+                *sanitized,
+            ],
+        }
+        try:
+            with httpx.Client(timeout=self._settings.freemodel_timeout_seconds * 3) as client:
+                with client.stream(
+                    "POST",
+                    f"{self._settings.freemodel_base_url.rstrip('/')}/chat/completions",
+                    headers=headers,
+                    json=payload,
+                ) as response:
+                    response.raise_for_status()
+                    for line in response.iter_lines():
+                        if not line or not line.startswith("data: "):
+                            continue
+                        data_str = line[6:]
+                        if data_str.strip() == "[DONE]":
+                            break
+                        try:
+                            import json
+                            chunk = json.loads(data_str)
+                            delta = chunk.get("choices", [{}])[0].get("delta", {})
+                            content = delta.get("content", "")
+                            if content:
+                                yield content
+                        except (ValueError, KeyError, IndexError):
+                            continue
+        except Exception as exc:
+            logger.warning("Streaming failed: %s", type(exc).__name__)
+            # Fall back to non-streaming
+            result = self._call_api(sanitized, extra_context=extra_context)
+            yield result
+
 
 def get_chat_provider(settings: Settings):
     if settings.chat_provider == "freemodel" and settings.freemodel_api_key:
@@ -701,6 +761,30 @@ def _get_or_create_thread(
     return thread
 
 
+def _auto_generate_title(message: str) -> str:
+    """Generate a short thread title from the first message (≤30 chars, Vietnamese)."""
+    # Remove common greetings
+    greetings = ["chào", "xin chào", "hi", "hello", "hey", "mình muốn", "em muốn"]
+    cleaned = message.strip()
+    lower = cleaned.lower()
+    for greeting in greetings:
+        if lower.startswith(greeting):
+            cleaned = cleaned[len(greeting):].strip(" ,.")
+            break
+
+    if not cleaned:
+        return "Cuộc trò chuyện mới"
+
+    # Truncate to ~30 chars at word boundary
+    if len(cleaned) <= 30:
+        return cleaned
+    truncated = cleaned[:30]
+    last_space = truncated.rfind(" ")
+    if last_space > 15:
+        truncated = truncated[:last_space]
+    return truncated + "..."
+
+
 def send_chat_message(
     db: OrmSession,
     *,
@@ -719,6 +803,11 @@ def send_chat_message(
     config = get_or_create_safety_config(db)
     thread = _get_or_create_thread(db, student=student, thread_id=payload.thread_id)
     first_response = _first_response(db, thread.id)
+
+    # Auto-generate title from first message
+    if first_response and thread.title == "Cuộc trò chuyện với Peerlight AI":
+        thread.title = _auto_generate_title(payload.message)
+
     now = utc_now()
     student_message = ChatMessage(
         thread_id=thread.id,
@@ -899,6 +988,135 @@ def send_chat_message(
         ),
         provider=ChatProviderResponse(name=provider_name, used_fallback=used_fallback),
     )
+
+
+def send_chat_message_stream(
+    db: OrmSession,
+    *,
+    student: User,
+    payload: ChatMessageCreate,
+    settings: Settings,
+):
+    """Stream chat response tokens via SSE. Yields JSON strings for each event."""
+    import json as json_mod
+
+    require_permission(
+        db, student, resource_type="chat_thread", action="write",
+        purpose="student_private_support", student_id=student.id,
+    )
+    config = get_or_create_safety_config(db)
+    thread = _get_or_create_thread(db, student=student, thread_id=payload.thread_id)
+    first_response = _first_response(db, thread.id)
+
+    if first_response and thread.title == "Cuộc trò chuyện với Peerlight AI":
+        thread.title = _auto_generate_title(payload.message)
+
+    now = utc_now()
+    student_message = ChatMessage(
+        thread_id=thread.id, role=ChatMessageRole.STUDENT.value,
+        content=payload.message, safety_flagged=False,
+        is_demo=thread.is_demo, created_at=now,
+    )
+    db.add(student_message)
+    db.flush()
+
+    # Emit thread/message metadata first
+    yield json_mod.dumps({
+        "type": "meta",
+        "thread_id": str(thread.id),
+        "student_message_id": str(student_message.id),
+    })
+
+    # Safety classification
+    safety_class = _classify_safety(payload.message, config)
+    input_detection = _detect_high_risk(payload.message, config)
+
+    if safety_class.level == "high":
+        student_message.safety_flagged = True
+        content = _with_first_response_intro(_escalation_text(config), first_response=first_response, config=config)
+        _record_high_risk_signal(db, student=student, thread=thread, message_id=student_message.id,
+                                 stage=ChatSafetyStage.INPUT.value, categories=input_detection.categories or [safety_class.reason])
+        yield json_mod.dumps({"type": "token", "content": content})
+        assistant_content = content
+    elif safety_class.level == "medium":
+        # Medium: stream but with empathetic context
+        provider = get_chat_provider(settings)
+        if isinstance(provider, FreemodelProvider):
+            extra = "[Học sinh có dấu hiệu cảm xúc khó khăn. Phản chiếu cảm xúc trước, rồi gợi ý.]"
+            full_content = ""
+            for token in provider.generate_stream(
+                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+                extra_context=extra,
+            ):
+                full_content += token
+                yield json_mod.dumps({"type": "token", "content": token})
+            assistant_content = _with_first_response_intro(full_content, first_response=first_response, config=config)
+        else:
+            content = MEDIUM_RISK_RESPONSE
+            yield json_mod.dumps({"type": "token", "content": content})
+            assistant_content = _with_first_response_intro(content, first_response=first_response, config=config)
+    else:
+        # Low risk: stream normally
+        provider = get_chat_provider(settings)
+        extra_parts: list[str] = []
+        student_ctx = _get_student_context(db, student)
+        if student_ctx:
+            extra_parts.append(student_ctx)
+        returning_ctx = _get_returning_context(db, student, thread)
+        if returning_ctx:
+            extra_parts.append(returning_ctx)
+        extra_context = "\n".join(extra_parts) if extra_parts else None
+
+        if isinstance(provider, FreemodelProvider):
+            full_content = ""
+            for token in provider.generate_stream(
+                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+                extra_context=extra_context,
+            ):
+                full_content += token
+                yield json_mod.dumps({"type": "token", "content": token})
+            assistant_content = _with_first_response_intro(full_content, first_response=first_response, config=config)
+        else:
+            content = provider.generate(
+                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+                first_response=first_response,
+            )
+            yield json_mod.dumps({"type": "token", "content": content})
+            assistant_content = _with_first_response_intro(content, first_response=first_response, config=config)
+
+    # Output guardrail
+    if not _check_output_guardrail(assistant_content):
+        assistant_content = _with_first_response_intro(
+            DeterministicSupportProvider().generate(messages=[], first_response=first_response),
+            first_response=first_response, config=config,
+        )
+
+    # Save assistant message
+    assistant_message = ChatMessage(
+        thread_id=thread.id, role=ChatMessageRole.ASSISTANT.value,
+        content=assistant_content, safety_flagged=safety_class.level == "high",
+        is_demo=thread.is_demo,
+    )
+    db.add(assistant_message)
+    db.flush()
+
+    if safety_class.level == "high":
+        thread.safety_state = "high_risk"
+    elif safety_class.level == "medium":
+        thread.safety_state = "medium_risk"
+    else:
+        thread.safety_state = "supportive"
+    thread.last_message_at = assistant_message.created_at
+    thread.updated_at = assistant_message.created_at
+    db.commit()
+
+    # Final event with complete message
+    yield json_mod.dumps({
+        "type": "done",
+        "assistant_message_id": str(assistant_message.id),
+        "safety_level": safety_class.level,
+        "thread_title": thread.title,
+    })
 
 
 def list_student_chat_threads(db: OrmSession, *, student: User) -> list[ChatThreadResponse]:
