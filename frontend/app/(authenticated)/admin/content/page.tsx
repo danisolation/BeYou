@@ -423,6 +423,25 @@ export default function AdminContentPage() {
   const thresholdsComplete = selfCheckDraft.thresholds.length > 0 && selfCheckDraft.thresholds.every(
     (t) => (t.comment ?? "").trim().length > 0 && (t.advice ?? "").trim().length > 0 && (t.suggested_next_action ?? "").trim().length > 0,
   );
+  // Score range coverage: thresholds must cover [possibleMin..possibleMax] exactly
+  const validQuestions = selfCheckDraft.questions.filter((q) => q.text.trim().length > 0 && q.choices.filter((c) => c.text.trim().length > 0).length >= 2);
+  let possibleMin = 0;
+  let possibleMax = 0;
+  for (const q of validQuestions) {
+    const scores = q.choices.filter((c) => c.text.trim().length > 0).map((c) => c.score_value);
+    if (scores.length > 0) { possibleMin += Math.min(...scores); possibleMax += Math.max(...scores); }
+  }
+  const coveredScores = new Set<number>();
+  let thresholdRangesValid = selfCheckDraft.thresholds.length > 0;
+  for (const t of selfCheckDraft.thresholds) {
+    if (t.min_score > t.max_score) { thresholdRangesValid = false; break; }
+    for (let s = t.min_score; s <= t.max_score; s++) coveredScores.add(s);
+  }
+  const expectedScores = new Set<number>();
+  for (let s = possibleMin; s <= possibleMax; s++) expectedScores.add(s);
+  const scoresCovered = thresholdRangesValid && validQuestions.length > 0 &&
+    coveredScores.size === expectedScores.size && [...expectedScores].every((s) => coveredScores.has(s));
+
   const selfCheckReviewItems = [
     { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
     { label: "Có ít nhất 1 câu hỏi", passed: selfCheckDraft.questions.some((question) => question.text.trim().length > 0), step: 2 as EditorStep, fixHint: "Bước 2 →" },
@@ -438,6 +457,7 @@ export default function AdminContentPage() {
     },
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: "Mỗi ngưỡng có nhận xét, gợi ý và hành động", passed: thresholdsComplete, step: 3 as EditorStep, fixHint: "Bước 3 →" },
+    { label: `Ngưỡng phủ đúng dải điểm (${possibleMin}–${possibleMax})`, passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
     selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
@@ -695,12 +715,29 @@ export default function AdminContentPage() {
     }
   }
 
+  function cleanedSelfCheckPayload(draft: AdminSelfCheckContent): AdminSelfCheckContent {
+    return {
+      ...draft,
+      questions: draft.questions
+        .filter((q) => q.text.trim().length > 0)
+        .map((q) => ({ ...q, choices: q.choices.filter((c) => c.text.trim().length > 0) })),
+    };
+  }
+
+  function cleanedScenarioPayload(draft: AdminScenarioContent): AdminScenarioContent {
+    return {
+      ...draft,
+      choices: draft.choices.filter((c) => c.text.trim().length > 0),
+    };
+  }
+
   async function saveSelfCheckDraft() {
     try {
       setError("");
-      const saved = selfCheckDraft.id
-        ? await updateAdminSelfCheck(selfCheckDraft.id, selfCheckDraft)
-        : await createAdminSelfCheck(selfCheckDraft);
+      const payload = cleanedSelfCheckPayload(selfCheckDraft);
+      const saved = payload.id
+        ? await updateAdminSelfCheck(payload.id, payload)
+        : await createAdminSelfCheck(payload);
       const loadedSelfChecks = await listAdminSelfChecks();
       setSelfChecks(loadedSelfChecks);
       setSelfCheckDraft(cloneSelfCheck(saved));
@@ -713,9 +750,10 @@ export default function AdminContentPage() {
   async function saveScenarioDraft() {
     try {
       setError("");
-      const saved = scenarioDraft.id
-        ? await updateAdminScenario(scenarioDraft.id, scenarioDraft)
-        : await createAdminScenario(scenarioDraft);
+      const payload = cleanedScenarioPayload(scenarioDraft);
+      const saved = payload.id
+        ? await updateAdminScenario(payload.id, payload)
+        : await createAdminScenario(payload);
       const loadedScenarios = await listAdminScenarios();
       setScenarios(loadedScenarios);
       setScenarioDraft(cloneScenario(saved));
@@ -728,19 +766,16 @@ export default function AdminContentPage() {
   async function saveAndPublishSelfCheck() {
     try {
       setError("");
-      let item = selfCheckDraft;
-      if (!item.id) {
-        const saved = await createAdminSelfCheck(item);
-        item = cloneSelfCheck(saved);
-        setSelfCheckDraft(item);
+      const payload = cleanedSelfCheckPayload(selfCheckDraft);
+      let item: AdminSelfCheckContent;
+      if (!payload.id) {
+        item = await createAdminSelfCheck(payload);
       } else {
-        const saved = await updateAdminSelfCheck(item.id, item);
-        item = cloneSelfCheck(saved);
-        setSelfCheckDraft(item);
+        item = await updateAdminSelfCheck(payload.id, payload);
       }
       await publishAdminSelfCheck(item.id as string);
       await refreshContent();
-      setSelfCheckDraft((c) => ({ ...c, status: "published" }));
+      setSelfCheckDraft(cloneSelfCheck({ ...item, status: "published" }));
       toastSuccess("Đã xuất bản!");
     } catch (publishError) {
       setError(errorCopy(publishError));
@@ -750,19 +785,16 @@ export default function AdminContentPage() {
   async function saveAndPublishScenario() {
     try {
       setError("");
-      let item = scenarioDraft;
-      if (!item.id) {
-        const saved = await createAdminScenario(item);
-        item = cloneScenario(saved);
-        setScenarioDraft(item);
+      const payload = cleanedScenarioPayload(scenarioDraft);
+      let item: AdminScenarioContent;
+      if (!payload.id) {
+        item = await createAdminScenario(payload);
       } else {
-        const saved = await updateAdminScenario(item.id, item);
-        item = cloneScenario(saved);
-        setScenarioDraft(item);
+        item = await updateAdminScenario(payload.id, payload);
       }
       await publishAdminScenario(item.id as string);
       await refreshContent();
-      setScenarioDraft((c) => ({ ...c, status: "published" }));
+      setScenarioDraft(cloneScenario({ ...item, status: "published" }));
       toastSuccess("Đã xuất bản!");
     } catch (publishError) {
       setError(errorCopy(publishError));
