@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v2.1 AI Chat Enhancement shipped 2026-05-28
-**Milestone status:** v2.1 complete — 4 phases (60-63), 14/14 requirements satisfied
+**Milestone status:** v2.2 UX Refinement & Usability Polish — 4 phases (64-67), ready for execution
 **Scope shipped:** 14/14 requirements, 6/6 cross-phase integrations verified
 **Latest audit:** `.planning/milestones/v2.1-MILESTONE-AUDIT.md` — PASS with 0 blockers
-**Next milestone:** TBD
+**Next milestone:** v2.2 UX Refinement & Usability Polish (toast system, retry patterns, student/adult/admin polish)
 
 ### Built Product
 

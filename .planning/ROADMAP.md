@@ -1,14 +1,15 @@
-# Roadmap: Peerlight AI v2.1 AI Chat Enhancement
+# Roadmap: Peerlight AI v2.2 UX Refinement & Usability Polish
 
 **Created:** 2026-05-28
-**Milestone:** v2.1 AI Chat Enhancement
+**Milestone:** v2.2 UX Refinement & Usability Polish
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
 **Granularity:** coarse
-**Phase range:** 60-63
-**Coverage:** 14/14 v2.1 requirements mapped, 0 unmapped
+**Phase range:** 64-67
+**Coverage:** 16/16 v2.2 requirements mapped, 0 unmapped
 
 ## Completed Milestones
 
+- [x] **v2.1 AI Chat Enhancement** - Phases 60-63 (shipped 2026-05-28; 14/14 requirements, 6/6 integrations) - [roadmap archive](milestones/v2.1-ROADMAP.md), [requirements archive](milestones/v2.1-REQUIREMENTS.md), [audit](milestones/v2.1-MILESTONE-AUDIT.md)
 - [x] **v2.0 Mobile-First & PWA** - Phases 54-59 (shipped 2026-05-28; 16/16 requirements, 8/8 integrations) - [roadmap archive](milestones/v2.0-ROADMAP.md), [requirements archive](milestones/v2.0-REQUIREMENTS.md), [audit](milestones/v2.0-MILESTONE-AUDIT.md)
 - [x] **v1.9 Production Polish** - Phases 51-53 (shipped 2026-05-28)
 - [x] **v1.8 UI/UX Polish & Accessibility** - Phases 45-50 (shipped 2026-05-27)
@@ -23,71 +24,65 @@
 
 ## Phases
 
-- [x] **Phase 60: System Prompt & FreeModel Reliability** - Comprehensive Vietnamese psychological support prompt, topic boundaries, FreeModel retry/timeout, provider health check.
-- [x] **Phase 61: Context Memory & Student Awareness** - Conversation summary compression, cross-session awareness, mood/support-plan context injection.
-- [x] **Phase 62: Safety Classification & Vietnamese NLP** - LLM-based risk classification, progressive escalation, teen slang detection, output guardrails.
-- [x] **Phase 63: Streaming Chat UX** - SSE streaming responses, typing indicators, auto-generated thread titles, graceful degradation.
+- [ ] **Phase 64: Global UX Foundations** - Toast notification system, universal retry/error recovery, consistent loading skeletons, success feedback.
+- [ ] **Phase 65: Student Features Polish** - Chat thread search, mood check-in toasts, support plan autosave, self-check filtering, notification settings.
+- [ ] **Phase 66: Adult Portal Enhancement** - Student list search/filter, quick-status indicators, SOS urgency filter, dashboard refresh.
+- [ ] **Phase 67: Admin & System Polish** - Fix silent errors, unsaved-changes warnings, clear-filters affordance, mobile admin tables.
 
 ## Phase Details
 
-### Phase 60: System Prompt & FreeModel Reliability
+### Phase 64: Global UX Foundations
 
-**Goal:** Chatbot responds with high-quality Vietnamese psychological support via FreeModel with reliable error handling.
-**Depends on:** Phase 59
-**Requirements:** PROMPT-01, PROMPT-03, PROMPT-04
+**Goal:** Establish shared UX infrastructure (toast, retry, skeletons) that all features build on.
+**Depends on:** Phase 63
+**Requirements:** GLOBAL-01, GLOBAL-02, GLOBAL-03, GLOBAL-04
 **Plans:** TBD
 **Status:** Not started
 
 **Success criteria:**
-1. System prompt follows structured approach: reflect → validate → small step → trusted adult.
-2. Chatbot refuses homework/medical/legal queries with polite Vietnamese redirect.
-3. FreeModel calls succeed with retry logic (1 retry on timeout) and proper error logging.
-4. Provider health visible in admin chatbot config page.
-5. System prompt injection attacks detected and blocked.
+1. Toast component renders success/error/info with auto-dismiss and accessible announcements.
+2. All existing error states replaced with retry-capable error component.
+3. At least 8 pages upgraded from plain-text loading to proper skeletons.
+4. Form submissions across all roles show toast feedback on success.
 
-### Phase 61: Context Memory & Student Awareness
+### Phase 65: Student Features Polish
 
-**Goal:** Chatbot remembers conversation context and adapts to student's emotional state.
-**Depends on:** Phase 60
-**Requirements:** MEMORY-01, MEMORY-02, MEMORY-03, PROMPT-02
+**Goal:** Polish student-facing features for smoother daily use.
+**Depends on:** Phase 64
+**Requirements:** STUDENT-01, STUDENT-02, STUDENT-03, STUDENT-04, STUDENT-05
 **Plans:** TBD
 **Status:** Not started
 
 **Success criteria:**
-1. Threads >10 messages get compressed summary injected as system context.
-2. Returning students get acknowledgment ("Chào lại em...") without leaking private content.
-3. Recent mood check-in sentiment (happy/neutral/sad) influences chatbot tone.
-4. Support plan goals optionally referenced when relevant.
-5. No raw student data appears in system prompt — only aggregated summaries.
+1. Chat sidebar has working search input that filters threads by keyword.
+2. Mood check-in submit triggers success toast with encouragement.
+3. Support plan form persists draft to localStorage on every keystroke; restores on mount.
+4. Self-check history shows filter dropdowns (test name, date range).
+5. Notification preferences page uses skeleton and toast on save.
 
-### Phase 62: Safety Classification & Vietnamese NLP
+### Phase 66: Adult Portal Enhancement
 
-**Goal:** AI-powered safety detection catches nuanced risk beyond keyword matching.
-**Depends on:** Phase 60
-**Requirements:** SAFETY-01, SAFETY-02, SAFETY-03, SAFETY-04
+**Goal:** Give teachers/parents faster access to relevant student info.
+**Depends on:** Phase 64
+**Requirements:** ADULT-01, ADULT-02, ADULT-03, ADULT-04
 **Plans:** TBD
 **Status:** Not started
 
 **Success criteria:**
-1. LLM classifies input as low/medium/high risk before response generation.
-2. Medium-risk: gentle check-in ("Em có ổn không?") + continue conversation.
-3. High-risk: immediate escalation message + SOS suggestion (same as current).
-4. Vietnamese teen slang patterns detected (no-diacritics, abbreviations).
-5. Output guardrail rejects responses containing diagnoses or harmful advice.
-6. All safety signals flow through existing audit trail.
+1. Student list has working search by name + filter by safety state.
+2. Student cards show colored status dot (green/amber/red) based on last mood/safety.
+3. SOS alert list has status tabs or filter dropdown with unread visual badge.
+4. Dashboard shows "Cập nhật lúc HH:MM" + refresh icon button.
 
-### Phase 63: Streaming Chat UX
+### Phase 67: Admin & System Polish
 
-**Goal:** Chat feels instant with token-by-token streaming and modern UX.
-**Depends on:** Phase 60
-**Requirements:** UX-01, UX-02, UX-03
+**Goal:** Fix quality gaps in admin experience and add protective UX patterns.
+**Depends on:** Phase 64
+**Requirements:** ADMIN-01, ADMIN-02, ADMIN-03
 **Plans:** TBD
 **Status:** Not started
 
 **Success criteria:**
-1. Chat responses stream via SSE — first token appears within 500ms.
-2. Typing indicator shows while waiting for first token.
-3. Thread titles auto-generated from first message (Vietnamese, ≤30 chars).
-4. Client disconnect handled gracefully (no orphan connections).
-5. Fallback mode (no API key) still works synchronously.
-6. Safety check runs on complete response before final commit to DB.
+1. Admin dashboard preview fetch failures show visible error state.
+2. Config pages prompt "Bạn có thay đổi chưa lưu" on navigate-away.
+3. All filterable admin lists show clear-filter button when active.
