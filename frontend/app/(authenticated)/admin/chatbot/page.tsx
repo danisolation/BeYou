@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Bot } from "lucide-react";
 
 import { PageSkeleton } from "@/components/skeletons";
+import { useToast } from "@/components/toast";
 import {
   type ChatbotSafetyConfig,
   getAdminChatbotConfig,
@@ -11,13 +12,13 @@ import {
 } from "@/lib/chat-api";
 
 export default function AdminChatbotPage() {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [config, setConfig] = useState<ChatbotSafetyConfig | null>(null);
   const [keywordsText, setKeywordsText] = useState("");
   const [escalationMessage, setEscalationMessage] = useState("");
   const [trustedAdultMessage, setTrustedAdultMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -38,7 +39,6 @@ export default function AdminChatbotPage() {
       .split("\n")
       .map((keyword) => keyword.trim())
       .filter(Boolean);
-    setNotice("");
     setError("");
     if (highRiskKeywords.length === 0) {
       setError("Chưa lưu được cấu hình. Hãy giữ ít nhất một từ khóa nguy cơ và thử lại.");
@@ -53,9 +53,9 @@ export default function AdminChatbotPage() {
       });
       setConfig(updated);
       setKeywordsText(updated.high_risk_keywords.join("\n"));
-      setNotice("Đã lưu cấu hình an toàn. Guardrail backend vẫn luôn bật.");
+      toastSuccess("Đã lưu cấu hình an toàn. Guardrail backend vẫn luôn bật.");
     } catch {
-      setError("Chưa lưu được cấu hình. Hãy giữ ít nhất một từ khóa nguy cơ và thử lại.");
+      toastError("Chưa lưu được cấu hình. Hãy giữ ít nhất một từ khóa nguy cơ và thử lại.");
     } finally {
       setIsSaving(false);
     }
@@ -118,7 +118,6 @@ export default function AdminChatbotPage() {
             />
           </label>
 
-          {notice ? <p role="status" className="text-sm text-primary">{notice}</p> : null}
           {error ? <p role="alert" className="text-sm text-red-700">{error}</p> : null}
 
           <button

@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { Lock } from "lucide-react";
 
+import { PageSkeleton } from "@/components/skeletons";
+import { ErrorState } from "@/components/ui-primitives";
+import { useToast } from "@/components/toast";
 import {
   ACCESS_REASON_OPTIONS,
   getAdminPrivacyPolicy,
@@ -27,17 +30,23 @@ function policyPayload(policy: AdminPrivacyPolicy): AdminPrivacyPolicyUpdate {
 }
 
 export default function AdminPrivacyPolicyPage() {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [policy, setPolicy] = useState<AdminPrivacyPolicy | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  useEffect(() => {
+  function loadPolicy() {
+    setIsLoading(true);
+    setErrorMessage(null);
     getAdminPrivacyPolicy()
       .then(setPolicy)
       .catch(() => setErrorMessage("Chưa tải được chính sách riêng tư. Hãy thử lại từ cổng quản trị."))
       .finally(() => setIsLoading(false));
+  }
+
+  useEffect(() => {
+    loadPolicy();
   }, []);
 
   async function savePolicy() {
@@ -46,13 +55,12 @@ export default function AdminPrivacyPolicyPage() {
     }
     setIsSaving(true);
     setErrorMessage(null);
-    setSuccessMessage(null);
     try {
       const saved = await updateAdminPrivacyPolicy(policyPayload(policy));
       setPolicy(saved);
-      setSuccessMessage("Đã lưu chính sách riêng tư v1.4.");
+      toastSuccess("Đã lưu chính sách riêng tư v1.4.");
     } catch {
-      setErrorMessage("Chưa lưu được chính sách. Kiểm tra lại cài đặt an toàn và thử lần nữa.");
+      toastError("Chưa lưu được chính sách. Kiểm tra lại cài đặt an toàn và thử lần nữa.");
     } finally {
       setIsSaving(false);
     }
@@ -69,16 +77,11 @@ export default function AdminPrivacyPolicyPage() {
   }
 
   if (isLoading) {
-    return <p>Đang tải chính sách riêng tư...</p>;
+    return <PageSkeleton />;
   }
 
   if (policy === null) {
-    return (
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-        <h1 className="text-lg font-semibold">Chưa mở được chính sách riêng tư</h1>
-        <p className="mt-3 text-sm">{errorMessage ?? "Hãy thử lại từ cổng quản trị."}</p>
-      </section>
-    );
+    return <ErrorState title="Chưa mở được chính sách riêng tư" message={errorMessage ?? "Hãy thử lại từ cổng quản trị."} onRetry={loadPolicy} />;
   }
 
   return (
@@ -240,7 +243,6 @@ export default function AdminPrivacyPolicyPage() {
         </section>
 
         {errorMessage ? <p role="alert" className="text-sm text-red-700">{errorMessage}</p> : null}
-        {successMessage ? <p role="status" className="text-sm text-primary">{successMessage}</p> : null}
         <button
           type="submit"
           disabled={isSaving || policy.allowed_reason_codes.length === 0}

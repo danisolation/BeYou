@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { Shield } from "lucide-react";
 
@@ -116,7 +117,7 @@ export default function AdminReportsPage() {
         </select>
       </div>
 
-      {isLoading ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm">Đang tải...</p> : null}
+      {isLoading ? <PageSkeleton /> : null}
       {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm text-red-700">{error}</p> : null}
 
       {report ? (

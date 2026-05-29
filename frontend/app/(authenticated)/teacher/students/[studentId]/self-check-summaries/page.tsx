@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
@@ -70,7 +71,7 @@ export function AdultSummaryDetail({
   }, [loadSummary, params]);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError || summary === null) {

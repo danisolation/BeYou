@@ -10,6 +10,7 @@ import {
   KEEP_CONTENT_COPY,
 } from "@/components/admin/destructive-confirm-dialog";
 import { EmptyState } from "@/components/empty-state";
+import { useToast } from "@/components/toast";
 import {
   archiveAdminScenario,
   archiveAdminSelfCheck,
@@ -338,6 +339,7 @@ function previousEditorStep(step: EditorStep): EditorStep {
 }
 
 export default function AdminContentPage() {
+  const { success: toastSuccess } = useToast();
   const [selfChecks, setSelfChecks] = useState<AdminSelfCheckContent[]>([]);
   const [scenarios, setScenarios] = useState<AdminScenarioContent[]>([]);
   const [selfCheckDraft, setSelfCheckDraft] = useState<AdminSelfCheckContent>(cloneSelfCheck(emptySelfCheck));
@@ -347,7 +349,6 @@ export default function AdminContentPage() {
   const [confirmation, setConfirmation] = useState<ConfirmationState>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isConfirming, setIsConfirming] = useState(false);
-  const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [selfCheckStep, setSelfCheckStep] = useState<EditorStep>(1);
@@ -424,7 +425,6 @@ export default function AdminContentPage() {
     setSelfCheckDraft(cloneSelfCheck(item ?? emptySelfCheck));
     setSelfCheckStep(1);
     setIsEditing(true);
-    setNotice("");
     setError("");
   }
 
@@ -432,7 +432,6 @@ export default function AdminContentPage() {
     setScenarioDraft(cloneScenario(item ?? emptyScenario));
     setScenarioStep(1);
     setIsEditing(true);
-    setNotice("");
     setError("");
   }
 
@@ -440,7 +439,6 @@ export default function AdminContentPage() {
     setIsEditing(false);
     setSelfCheckStep(1);
     setScenarioStep(1);
-    setNotice("");
     setError("");
   }
 
@@ -571,10 +569,9 @@ export default function AdminContentPage() {
   async function runAction(action: () => Promise<unknown>, successMessage: string) {
     try {
       setError("");
-      setNotice("");
       await action();
       await refreshContent();
-      setNotice(successMessage);
+      toastSuccess(successMessage);
     } catch (actionError) {
       setError(errorCopy(actionError));
     }
@@ -583,14 +580,13 @@ export default function AdminContentPage() {
   async function saveSelfCheckDraft() {
     try {
       setError("");
-      setNotice("");
       const saved = selfCheckDraft.id
         ? await updateAdminSelfCheck(selfCheckDraft.id, selfCheckDraft)
         : await createAdminSelfCheck(selfCheckDraft);
       const loadedSelfChecks = await listAdminSelfChecks();
       setSelfChecks(loadedSelfChecks);
       setSelfCheckDraft(cloneSelfCheck(saved));
-      setNotice("Đã lưu thành công!");
+      toastSuccess("Đã lưu thành công!");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
@@ -599,14 +595,13 @@ export default function AdminContentPage() {
   async function saveScenarioDraft() {
     try {
       setError("");
-      setNotice("");
       const saved = scenarioDraft.id
         ? await updateAdminScenario(scenarioDraft.id, scenarioDraft)
         : await createAdminScenario(scenarioDraft);
       const loadedScenarios = await listAdminScenarios();
       setScenarios(loadedScenarios);
       setScenarioDraft(cloneScenario(saved));
-      setNotice("Đã lưu thành công!");
+      toastSuccess("Đã lưu thành công!");
     } catch (saveError) {
       setError(errorCopy(saveError));
     }
@@ -673,7 +668,6 @@ export default function AdminContentPage() {
       </header>
 
       {/* Notices */}
-      {notice ? <p role="status" className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-4 py-2.5 text-xs text-green-800 dark:text-green-300">{notice}</p> : null}
       {error ? <p role="alert" className="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 text-xs text-red-800 dark:text-red-300">{error}</p> : null}
       {isLoading ? (
         <div className="space-y-2">

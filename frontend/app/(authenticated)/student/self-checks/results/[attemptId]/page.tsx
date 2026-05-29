@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
@@ -35,7 +36,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
   }, [params]);
 
   if (isLoading) {
-    return <p className="p-6 text-sm text-on-background/70">Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError || attempt === null) {

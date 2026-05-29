@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
@@ -33,7 +34,7 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
   }, [params]);
 
   if (isLoading) {
-    return <p>Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError || attempt === null) {

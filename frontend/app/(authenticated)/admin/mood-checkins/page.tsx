@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import { FormEvent, useEffect, useState } from "react";
 import { Heart, Pencil } from "lucide-react";
 
@@ -128,7 +129,7 @@ export default function AdminMoodCheckInsPage() {
         </p>
       </header>
 
-      {isLoading ? <p className="text-sm text-on-background/70 dark:text-white/70">Đang tải cấu hình...</p> : null}
+      {isLoading ? <PageSkeleton /> : null}
       {configs.length > 0 ? (
         <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

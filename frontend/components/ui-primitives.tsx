@@ -40,6 +40,7 @@ type ErrorStateProps = {
   title?: string;
   message?: string;
   className?: string;
+  onRetry?: () => void;
 };
 
 type PrivacyBoundaryCardProps = PrimitiveProps & {
@@ -140,11 +141,21 @@ export function ErrorState({
   title = "Không thể tải thông tin",
   message = "Chưa tải được thông tin. Hãy thử lại hoặc quay về cổng phù hợp để tiếp tục an toàn.",
   className,
+  onRetry,
 }: ErrorStateProps) {
   return (
     <div role="alert" aria-live="assertive" className={cn("rounded-2xl border border-red-200 bg-red-50 p-6 text-red-700", className)}>
       <h2 className="text-sm font-semibold text-red-700">{title}</h2>
       <p className="mt-3 text-sm text-red-700">{message}</p>
+      {onRetry && (
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-4 rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors"
+        >
+          Thử lại
+        </button>
+      )}
     </div>
   );
 }

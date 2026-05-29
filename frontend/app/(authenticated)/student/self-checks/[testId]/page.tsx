@@ -1,5 +1,6 @@
 "use client";
 
+import { PageSkeleton } from "@/components/skeletons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -84,7 +85,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
   }
 
   if (isLoading) {
-    return <p className="p-6 text-sm text-on-background/70">Đang tải thông tin...</p>;
+    return <PageSkeleton />;
   }
 
   if (hasError || test === null || currentQuestion === undefined) {

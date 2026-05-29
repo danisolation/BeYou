@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { Bell, Lock, Monitor, Moon, ShieldAlert, Sun } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import { useTheme } from "@/components/theme-provider";
+import { useToast } from "@/components/toast";
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
@@ -35,40 +37,51 @@ function payloadFromState(preference: StudentNotificationPreference): StudentNot
 
 export default function StudentSettingsPage() {
   const { theme, setTheme } = useTheme();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [preference, setPreference] = useState<StudentNotificationPreference | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  useEffect(() => {
+  function loadPreferences() {
+    setIsLoading(true);
+    setErrorMessage(null);
     getNotificationPreferences()
       .then(setPreference)
       .catch(() => setErrorMessage("Chưa tải được cài đặt. Hãy thử lại sau."))
       .finally(() => setIsLoading(false));
+  }
+
+  useEffect(() => {
+    loadPreferences();
   }, []);
 
   async function save(nextPreference: StudentNotificationPreference, message: string) {
     setIsSaving(true);
     setErrorMessage(null);
-    setSuccessMessage(null);
     try {
       const saved = await updateNotificationPreferences(payloadFromState(nextPreference));
       setPreference(saved);
-      setSuccessMessage(message);
+      toastSuccess(message);
     } catch {
-      setErrorMessage("Chưa lưu được cài đặt. Hãy kiểm tra lại và thử lần nữa.");
+      toastError("Chưa lưu được cài đặt. Hãy kiểm tra lại và thử lần nữa.");
     } finally {
       setIsSaving(false);
     }
   }
 
   if (isLoading) {
-    return <p className="p-6 text-sm">Đang tải cài đặt...</p>;
+    return <PageSkeleton />;
   }
 
   if (preference === null) {
-    return <EmptyState heading="Chưa mở được cài đặt" body={errorMessage ?? undefined} />;
+    return (
+      <EmptyState heading="Chưa mở được cài đặt" body={errorMessage ?? undefined}>
+        <button type="button" onClick={loadPreferences} className="mt-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary">
+          Thử lại
+        </button>
+      </EmptyState>
+    );
   }
 
   const remindersEnabled = preference.in_app_reminders_enabled && preference.mood_checkin_reminders_enabled;
@@ -262,7 +275,6 @@ export default function StudentSettingsPage() {
         </div>
 
         {errorMessage ? <p role="alert" className="mt-4 text-sm text-error">{errorMessage}</p> : null}
-        {successMessage ? <p role="status" className="mt-4 text-sm text-primary">{successMessage}</p> : null}
         <button
           type="submit"
           disabled={isSaving}

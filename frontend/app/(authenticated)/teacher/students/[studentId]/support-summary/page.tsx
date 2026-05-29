@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { EmptyState } from "@/components/empty-state";
+import { PageSkeleton } from "@/components/skeletons";
 import { ApiError } from "@/lib/api";
 import {
   getTeacherSupportSummary,
@@ -95,7 +96,7 @@ export function AdultSupportSummaryDetail({
   }
 
   if (isLoading) {
-    return <p>Đang tải tóm tắt hỗ trợ...</p>;
+    return <PageSkeleton />;
   }
 
   if (reasonRequired !== null) {
