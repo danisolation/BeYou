@@ -514,7 +514,9 @@ export default function AdminContentPage() {
       return;
     }
     await saveSelfCheckDraft();
-    setSelfCheckStep(nextEditorStep(selfCheckStep));
+    const nextStep = nextEditorStep(selfCheckStep);
+    if (nextStep === 3) redistributeThresholds();
+    setSelfCheckStep(nextStep);
   }
 
   async function saveAndAdvanceScenario() {
@@ -663,11 +665,37 @@ export default function AdminContentPage() {
     }));
   }
 
+  function redistributeThresholds() {
+    setSelfCheckDraft((current) => {
+      const questions = current.questions.filter((q) => q.text.trim().length > 0 && q.choices.filter((c) => c.text.trim().length > 0).length >= 2);
+      let pMin = 0;
+      let pMax = 0;
+      for (const q of questions) {
+        const scores = q.choices.filter((c) => c.text.trim().length > 0).map((c) => c.score_value);
+        if (scores.length > 0) { pMin += Math.min(...scores); pMax += Math.max(...scores); }
+      }
+      const count = current.thresholds.length || 3;
+      const range = pMax - pMin + 1;
+      const perBucket = Math.floor(range / count);
+      const remainder = range - perBucket * count;
+      let cursor = pMin;
+      const updated = current.thresholds.map((t, i) => {
+        const extra = i < remainder ? 1 : 0;
+        const min = cursor;
+        const max = cursor + perBucket + extra - 1;
+        cursor = max + 1;
+        return { ...t, min_score: min, max_score: max };
+      });
+      return { ...current, thresholds: updated };
+    });
+  }
+
   function addThreshold() {
     setSelfCheckDraft((current) => ({
       ...current,
       thresholds: [...current.thresholds, newThreshold(current.thresholds.length + 1)],
     }));
+    setTimeout(redistributeThresholds, 0);
   }
 
   function removeThreshold(thresholdIndex: number) {
@@ -675,6 +703,7 @@ export default function AdminContentPage() {
       ...current,
       thresholds: current.thresholds.filter((_, index) => index !== thresholdIndex),
     }));
+    setTimeout(redistributeThresholds, 0);
   }
 
   function updateScenarioChoice(
@@ -1175,7 +1204,10 @@ export default function AdminContentPage() {
                   </p>
                 ) : null}
 
-                <div className="flex justify-end">
+                <div className="flex flex-wrap gap-2 justify-end">
+                  <button type="button" onClick={redistributeThresholds} className="rounded-xl border border-primary/30 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors">
+                    ↻ Tự phân dải điểm
+                  </button>
                   <button type="button" onClick={addThreshold} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
                     <Plus size={16} className="inline-flex" /> Thêm ngưỡng
                   </button>
@@ -1184,31 +1216,19 @@ export default function AdminContentPage() {
                 {selfCheckDraft.thresholds.map((threshold, ti) => (
                   <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div>
-                        <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Ngưỡng {ti + 1}</p>
-                        <p className="mt-1 text-sm text-on-background/70">Thiết lập khoảng điểm và nội dung phản hồi cho kết quả này.</p>
+                      <div className="flex items-center gap-3">
+                        <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-9 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
+                          {riskLabels.map((label) => <option key={label} value={label}>{riskLabelDisplay[label]}</option>)}
+                        </select>
+                        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{threshold.min_score}–{threshold.max_score} điểm</span>
                       </div>
-                      <button type="button" onClick={() => removeThreshold(ti)} className="rounded-xl border border-red-200 dark:border-red-800 px-4 py-2 text-sm text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
+                      <button type="button" onClick={() => removeThreshold(ti)} className="rounded-xl border border-red-200 dark:border-red-800 px-3 py-1.5 text-xs text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
                         Xóa
                       </button>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      <label className="space-y-1.5 text-xs font-medium text-on-background/70">
-                        <span>
-                          Mức
-                          <span className="ml-0.5 text-red-500">*</span>
-                        </span>
-                        <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
-                          {riskLabels.map((label) => <option key={label} value={label}>{riskLabelDisplay[label]}</option>)}
-                        </select>
-                      </label>
-                      <Field label="Min" required value={threshold.min_score} type="number" onChange={(value) => updateThreshold(ti, "min_score", value)} />
-                      <Field label="Max" required value={threshold.max_score} type="number" onChange={(value) => updateThreshold(ti, "max_score", value)} />
-                    </div>
-                    <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(value) => updateThreshold(ti, "comment", value)} placeholder="VD: Em đang ở trạng thái tâm lý khá ổn định." hint="Một câu mô tả trạng thái — sẽ hiển thị cho học sinh sau khi làm bài" />
-                    <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(value) => updateThreshold(ti, "advice", value)} placeholder="VD: Hãy tiếp tục duy trì thói quen tốt và chia sẻ với người em tin tưởng." hint="Lời khuyên ngắn gọn, hỗ trợ — không phán xét, không chẩn đoán" />
-                    <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(value) => updateThreshold(ti, "positive_content", value)} placeholder="VD: Em biết cách nhận ra cảm xúc của mình — đó là một điểm mạnh!" hint="Một câu động viên — giúp học sinh cảm thấy được ghi nhận" />
-                    <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} placeholder="VD: Thử làm bài kiểm tra lại sau 1 tuần, hoặc nói chuyện với giáo viên nếu em cần." hint="Gợi ý bước tiếp theo cụ thể cho học sinh" />
+                    <TextAreaField label="Nhận xét *" value={threshold.comment ?? ""} onChange={(value) => updateThreshold(ti, "comment", value)} placeholder="VD: Em đang ở trạng thái tâm lý khá ổn định." hint="Mô tả trạng thái — hiển thị cho học sinh sau khi làm bài" />
+                    <TextAreaField label="Gợi ý *" value={threshold.advice ?? ""} onChange={(value) => updateThreshold(ti, "advice", value)} placeholder="VD: Hãy tiếp tục duy trì thói quen tốt và chia sẻ với người em tin tưởng." hint="Lời khuyên ngắn gọn, hỗ trợ" />
+                    <TextAreaField label="Hành động tiếp theo *" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} placeholder="VD: Thử làm bài kiểm tra lại sau 1 tuần, hoặc nói chuyện với giáo viên nếu em cần." hint="Gợi ý bước tiếp theo cụ thể" />
                   </div>
                 ))}
               </section>
