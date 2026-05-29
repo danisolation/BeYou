@@ -41,6 +41,12 @@ services:
       - key: ALLOW_DEMO_LOGIN
         value: true
       - key: CHAT_PROVIDER
-        value: fallback
+        value: freemodel
+      - key: FREEMODEL_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: FREEMODEL_MODEL
+        value: gemini-2.0-flash
+      - key: FREEMODEL_TIMEOUT_SECONDS
+        value: "30"
       - key: SOS_EMAIL_PROVIDER
         value: disabled
