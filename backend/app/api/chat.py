@@ -109,51 +109,6 @@ def get_chatbot_config(
     return get_admin_safety_config(db, actor=current_user, settings=settings)
 
 
-@router.get("/admin/chatbot/diagnostics")
-def chatbot_diagnostics(
-    current_user: User = Depends(get_current_user),
-    settings: Settings = Depends(get_settings),
-) -> dict:
-    """Temporary diagnostic endpoint for Gemini API debugging."""
-    require_role(current_user, UserRole.ADMIN)
-    import httpx
-
-    results: dict = {
-        "chat_provider": settings.chat_provider,
-        "api_key_length": len(settings.effective_llm_api_key),
-        "api_key_prefix": settings.effective_llm_api_key[:6] + "..." if settings.effective_llm_api_key else "",
-        "base_url": settings.effective_llm_base_url,
-        "models": settings.effective_llm_models,
-        "timeout": settings.effective_llm_timeout,
-        "model_tests": {},
-    }
-
-    for model in settings.effective_llm_models[:2]:
-        try:
-            with httpx.Client(timeout=15) as client:
-                resp = client.post(
-                    f"{settings.effective_llm_base_url.rstrip('/')}/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {settings.effective_llm_api_key}",
-                        "Content-Type": "application/json",
-                    },
-                    json={
-                        "model": model,
-                        "messages": [{"role": "user", "content": "hi"}],
-                    },
-                )
-                if resp.status_code == 200:
-                    data = resp.json()
-                    content = data["choices"][0]["message"]["content"][:50]
-                    results["model_tests"][model] = {"status": "ok", "content": content}
-                else:
-                    results["model_tests"][model] = {"status": "error", "code": resp.status_code, "body": resp.text[:200]}
-        except Exception as e:
-            results["model_tests"][model] = {"status": "exception", "error": f"{type(e).__name__}: {e}"}
-
-    return results
-
-
 @router.patch("/admin/chatbot/config", response_model=ChatbotSafetyConfigResponse)
 def patch_chatbot_config(
     payload: ChatbotSafetyConfigUpdate,

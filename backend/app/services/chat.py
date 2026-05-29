@@ -223,7 +223,6 @@ class GeminiProvider:
     def _call_with_rotation(self, messages: list[dict[str, str]], *, extra_context: str | None = None) -> str:
         """Try each model in order; rotate on rate limit (429) or server error (5xx)."""
         last_error: Exception | None = None
-        logger.info("GeminiProvider: trying models %s, base_url=%s, key_len=%d", self._models, self._base_url, len(self._api_key))
         for model in self._models:
             try:
                 return self._call_api(messages, model=model, extra_context=extra_context)
