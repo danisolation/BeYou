@@ -13,10 +13,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 ## Current State
 
 **Shipped version:** v2.0 Mobile-First & PWA shipped 2026-05-28
-**Milestone status:** v2.0 complete — 59 total phases across 12 milestones
+**Milestone status:** v2.1 AI Chat Enhancement — 4 phases (60-63), ready for planning
 **Scope shipped:** 16/16 requirements satisfied, 8/8 cross-phase integrations verified
 **Latest audit:** `.planning/milestones/v2.0-MILESTONE-AUDIT.md` — PASS with 0 blockers
-**Next milestone:** To be defined with `/gsd-new-milestone`
+**Next milestone:** v2.1 AI Chat Enhancement (system prompt, context memory, safety NLP, streaming)
 
 ### Built Product
 
