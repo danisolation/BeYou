@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { FileText, Pencil, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check } from "lucide-react";
+import { FileText, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check, Copy } from "lucide-react";
 
 import {
   CONFIRM_ARCHIVE_CONTENT_COPY,
@@ -56,6 +56,7 @@ const emptySelfCheck: AdminSelfCheckContent = {
       choices: [
         { text: "", score_value: 0, sort_order: 1, is_demo: false },
         { text: "", score_value: 1, sort_order: 2, is_demo: false },
+        { text: "", score_value: 2, sort_order: 3, is_demo: false },
       ],
       is_demo: false,
     },
@@ -64,7 +65,27 @@ const emptySelfCheck: AdminSelfCheckContent = {
     {
       state_label: "On dinh",
       min_score: 0,
-      max_score: 1,
+      max_score: 3,
+      comment: "",
+      advice: "",
+      positive_content: "",
+      suggested_next_action: "",
+      is_demo: false,
+    },
+    {
+      state_label: "Can chu y",
+      min_score: 4,
+      max_score: 6,
+      comment: "",
+      advice: "",
+      positive_content: "",
+      suggested_next_action: "",
+      is_demo: false,
+    },
+    {
+      state_label: "Nen tim ho tro",
+      min_score: 7,
+      max_score: 10,
       comment: "",
       advice: "",
       positive_content: "",
@@ -84,13 +105,8 @@ const emptyScenario: AdminScenarioContent = {
   is_demo: false,
   choices: [
     { text: "", signal: "constructive", feedback: "", sort_order: 1, is_demo: false },
-    {
-      text: "Em đi theo dù không thoải mái.",
-      signal: "risky",
-      feedback: "Lựa chọn này có thể khiến tình huống khó hơn; em có thể dừng lại và tìm người hỗ trợ.",
-      sort_order: 2,
-      is_demo: false,
-    },
+    { text: "", signal: "risky", feedback: "", sort_order: 2, is_demo: false },
+    { text: "", signal: "constructive", feedback: "", sort_order: 3, is_demo: false },
   ],
 };
 
@@ -125,12 +141,16 @@ function Field({
   onChange,
   type = "text",
   required = false,
+  placeholder,
+  hint,
 }: {
   label: string;
   value: string | number;
   onChange: (value: string) => void;
   type?: "text" | "number";
   required?: boolean;
+  placeholder?: string;
+  hint?: string;
 }) {
   return (
     <label className="space-y-1.5 text-xs font-medium text-on-background/70">
@@ -143,8 +163,10 @@ function Field({
         type={type}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background"
+        placeholder={placeholder}
+        className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background placeholder:text-on-background/30"
       />
+      {hint ? <p className="text-[11px] text-on-background/50 font-normal">{hint}</p> : null}
     </label>
   );
 }
@@ -154,11 +176,15 @@ function TextAreaField({
   value,
   onChange,
   required = false,
+  placeholder,
+  hint,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   required?: boolean;
+  placeholder?: string;
+  hint?: string;
 }) {
   return (
     <label className="space-y-1.5 text-xs font-medium text-on-background/70">
@@ -170,8 +196,10 @@ function TextAreaField({
         aria-label={label}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="min-h-24 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 py-2 text-sm text-on-background"
+        placeholder={placeholder}
+        className="min-h-24 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 py-2 text-sm text-on-background placeholder:text-on-background/30"
       />
+      {hint ? <p className="text-[11px] text-on-background/50 font-normal">{hint}</p> : null}
     </label>
   );
 }
@@ -428,8 +456,30 @@ export default function AdminContentPage() {
     setError("");
   }
 
+  function duplicateSelfCheck(item: AdminSelfCheckContent) {
+    const clone = cloneSelfCheck(item);
+    delete (clone as Record<string, unknown>).id;
+    clone.title = `${clone.title} (bản sao)`;
+    clone.status = "draft";
+    setSelfCheckDraft(clone);
+    setSelfCheckStep(1);
+    setIsEditing(true);
+    setError("");
+  }
+
   function openScenarioEditor(item?: AdminScenarioContent) {
     setScenarioDraft(cloneScenario(item ?? emptyScenario));
+    setScenarioStep(1);
+    setIsEditing(true);
+    setError("");
+  }
+
+  function duplicateScenario(item: AdminScenarioContent) {
+    const clone = cloneScenario(item);
+    delete (clone as Record<string, unknown>).id;
+    clone.title = `${clone.title} (bản sao)`;
+    clone.status = "draft";
+    setScenarioDraft(clone);
     setScenarioStep(1);
     setIsEditing(true);
     setError("");
@@ -748,6 +798,16 @@ export default function AdminContentPage() {
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); duplicateSelfCheck(item); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); duplicateSelfCheck(item); } }}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-primary/10"
+                        title="Nhân bản"
+                      >
+                        <Copy size={15} className="text-primary/70" />
+                      </span>
                       {item.status === "published" ? (
                         <span
                           role="button"
@@ -800,6 +860,16 @@ export default function AdminContentPage() {
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-1">
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); duplicateScenario(item); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); duplicateScenario(item); } }}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-primary/10"
+                        title="Nhân bản"
+                      >
+                        <Copy size={15} className="text-primary/70" />
+                      </span>
                       {item.status === "published" ? (
                         <span
                           role="button"
@@ -865,8 +935,8 @@ export default function AdminContentPage() {
                   </div>
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckBasicCount}/3 trường đã nhập</div>
                 </div>
-                <Field label="Tên bài" required value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} />
-                <TextAreaField label="Mô tả ngắn" required value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} />
+                <Field label="Tên bài" required value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} placeholder="VD: Em đang cảm thấy thế nào?" hint="Tên ngắn gọn, dễ hiểu cho học sinh THCS/THPT" />
+                <TextAreaField label="Mô tả ngắn" required value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} placeholder="VD: Bài kiểm tra giúp em nhận biết cảm xúc hiện tại và tìm cách hỗ trợ phù hợp." hint="1-2 câu giải thích mục đích bài test — sẽ hiển thị trước khi học sinh bắt đầu" />
                 <label className="space-y-1.5 text-xs font-medium text-on-background/70">
                   <span>
                     Trạng thái nội dung
@@ -912,8 +982,7 @@ export default function AdminContentPage() {
                         Xóa
                       </button>
                     </div>
-                    <Field label="Nội dung câu hỏi" required value={question.text} onChange={(value) => updateSelfCheckQuestion(qi, "text", value)} />
-                    <Field label="Thứ tự" value={question.sort_order} type="number" onChange={(value) => updateSelfCheckQuestion(qi, "sort_order", value)} />
+                    <Field label="Nội dung câu hỏi" required value={question.text} onChange={(value) => updateSelfCheckQuestion(qi, "text", value)} placeholder="VD: Trong tuần qua, em có thường cảm thấy lo lắng không?" hint="Viết câu hỏi dễ hiểu, không phán xét — giúp em tự nhận biết cảm xúc" />
                     <div className="space-y-3">
                       <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Lựa chọn trả lời</p>
@@ -930,7 +999,7 @@ export default function AdminContentPage() {
                                   Lựa chọn {ci + 1}
                                   <span className="ml-0.5 text-red-500">*</span>
                                 </span>
-                                <input aria-label={`Lựa chọn ${ci + 1}`} type="text" value={choice.text} onChange={(event) => updateSelfCheckChoice(qi, ci, "text", event.target.value)} placeholder={`Lựa chọn ${ci + 1}`} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background" />
+                                <input aria-label={`Lựa chọn ${ci + 1}`} type="text" value={choice.text} onChange={(event) => updateSelfCheckChoice(qi, ci, "text", event.target.value)} placeholder={ci === 0 ? "VD: Hầu như không bao giờ" : ci === 1 ? "VD: Thỉnh thoảng" : "VD: Rất thường xuyên"} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background placeholder:text-on-background/30" />
                               </label>
                               <div className="grid grid-cols-1 gap-3 sm:grid-cols-[120px_1fr] sm:items-end">
                                 <label className="space-y-1.5 text-xs font-medium text-on-background/70">
@@ -940,7 +1009,7 @@ export default function AdminContentPage() {
                                   </span>
                                   <input aria-label="Điểm" type="number" value={choice.score_value} onChange={(event) => updateSelfCheckChoice(qi, ci, "score_value", event.target.value)} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background" />
                                 </label>
-                                <p className="pb-2 text-xs text-on-background/50">Điểm này sẽ được cộng vào tổng điểm của bài tự kiểm tra.</p>
+                                <p className="pb-2 text-xs text-on-background/50">Điểm cao hơn = mức độ lo ngại cao hơn (VD: 0 = ổn, 1 = nhẹ, 2 = cần hỗ trợ)</p>
                               </div>
                             </div>
                             <button type="button" onClick={() => removeSelfCheckChoice(qi, ci)} className="rounded-xl p-2 text-on-background/40 hover:bg-red-50 hover:text-destructive dark:hover:bg-red-900/20">
@@ -996,10 +1065,10 @@ export default function AdminContentPage() {
                       <Field label="Min" required value={threshold.min_score} type="number" onChange={(value) => updateThreshold(ti, "min_score", value)} />
                       <Field label="Max" required value={threshold.max_score} type="number" onChange={(value) => updateThreshold(ti, "max_score", value)} />
                     </div>
-                    <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(value) => updateThreshold(ti, "comment", value)} />
-                    <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(value) => updateThreshold(ti, "advice", value)} />
-                    <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(value) => updateThreshold(ti, "positive_content", value)} />
-                    <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} />
+                    <TextAreaField label="Nhận xét" value={threshold.comment ?? ""} onChange={(value) => updateThreshold(ti, "comment", value)} placeholder="VD: Em đang ở trạng thái tâm lý khá ổn định." hint="Một câu mô tả trạng thái — sẽ hiển thị cho học sinh sau khi làm bài" />
+                    <TextAreaField label="Gợi ý" value={threshold.advice ?? ""} onChange={(value) => updateThreshold(ti, "advice", value)} placeholder="VD: Hãy tiếp tục duy trì thói quen tốt và chia sẻ với người em tin tưởng." hint="Lời khuyên ngắn gọn, hỗ trợ — không phán xét, không chẩn đoán" />
+                    <TextAreaField label="Nội dung tích cực" value={threshold.positive_content ?? ""} onChange={(value) => updateThreshold(ti, "positive_content", value)} placeholder="VD: Em biết cách nhận ra cảm xúc của mình — đó là một điểm mạnh!" hint="Một câu động viên — giúp học sinh cảm thấy được ghi nhận" />
+                    <TextAreaField label="Hành động tiếp theo" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} placeholder="VD: Thử làm bài kiểm tra lại sau 1 tuần, hoặc nói chuyện với giáo viên nếu em cần." hint="Gợi ý bước tiếp theo cụ thể cho học sinh" />
                   </div>
                 ))}
               </section>
@@ -1064,17 +1133,17 @@ export default function AdminContentPage() {
                   Quay lại
                 </button>
                 {selfCheckStep < 4 ? (
-                  <button type="button" onClick={() => setSelfCheckStep(nextEditorStep(selfCheckStep))} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
-                    Tiếp theo
+                  <button type="button" onClick={async () => { await saveSelfCheckDraft(); setSelfCheckStep(nextEditorStep(selfCheckStep)); }} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+                    Lưu & Tiếp theo
                   </button>
                 ) : null}
               </div>
               <div className="hidden flex-1 sm:block" />
-              <button type="button" onClick={saveSelfCheckDraft} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+              <button type="button" onClick={saveSelfCheckDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
               {selfCheckStep === 4 && selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl border border-green-300 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20 sm:w-auto">
+                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
@@ -1125,10 +1194,10 @@ export default function AdminContentPage() {
                   </div>
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{scenarioBasicCount}/4 trường đã nhập</div>
                 </div>
-                <Field label="Tiêu đề" required value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} />
-                <TextAreaField label="Mô tả tình huống" required value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} />
+                <Field label="Tiêu đề" required value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} placeholder="VD: Bạn rủ em trốn học đi chơi" hint="Mô tả ngắn tình huống — sẽ hiển thị trong danh sách cho học sinh chọn" />
+                <TextAreaField label="Mô tả tình huống" required value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} placeholder="VD: Đang giờ ra chơi, một nhóm bạn rủ em bỏ tiết chiều đi chơi game. Các bạn nói 'không sao đâu, cô không biết đâu'. Em đang phân vân..." hint="Viết bối cảnh rõ ràng, có chi tiết để học sinh hình dung — nên viết ở ngôi thứ 2 ('em')" />
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} />
+                  <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} placeholder="VD: Từ chối áp lực nhóm" hint="Kỹ năng sống mà bài tình huống rèn luyện" />
                   <label className="space-y-1.5 text-xs font-medium text-on-background/70">
                     <span>
                       Trạng thái
@@ -1173,7 +1242,7 @@ export default function AdminContentPage() {
                         Xóa
                       </button>
                     </div>
-                    <Field label="Nội dung" required value={choice.text} onChange={(value) => updateScenarioChoice(ci, "text", value)} />
+                    <Field label="Nội dung" required value={choice.text} onChange={(value) => updateScenarioChoice(ci, "text", value)} placeholder={choice.signal === "constructive" ? "VD: Em từ chối nhẹ nhàng và quay lại lớp." : "VD: Em đi theo dù không thoải mái."} hint="Viết cách phản hồi mà học sinh có thể chọn trong tình huống này" />
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <label className="space-y-1.5 text-xs font-medium text-on-background/70">
                         <span>
@@ -1186,7 +1255,7 @@ export default function AdminContentPage() {
                       </label>
                       <Field label="Thứ tự" value={choice.sort_order} type="number" onChange={(value) => updateScenarioChoice(ci, "sort_order", value)} />
                     </div>
-                    <TextAreaField label="Phản hồi" required value={choice.feedback} onChange={(value) => updateScenarioChoice(ci, "feedback", value)} />
+                    <TextAreaField label="Phản hồi" required value={choice.feedback} onChange={(value) => updateScenarioChoice(ci, "feedback", value)} placeholder={choice.signal === "constructive" ? "VD: Cách phản hồi này giúp em giữ vững lập trường — tuyệt vời!" : "VD: Lựa chọn này có thể khiến em gặp rắc rối; em có thể tìm người hỗ trợ."} hint="Giải thích ngắn cho học sinh vì sao lựa chọn này tốt/rủi ro" />
                   </div>
                 ))}
               </section>
@@ -1202,8 +1271,8 @@ export default function AdminContentPage() {
                   </div>
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{filledScenarioLessons}/2 nội dung đã nhập</div>
                 </div>
-                <TextAreaField label="Cách phản hồi nên thử" required value={scenarioDraft.recommended_response} onChange={(value) => setScenarioDraft((current) => ({ ...current, recommended_response: value }))} />
-                <TextAreaField label="Điều em có thể rút ra" required value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} />
+                <TextAreaField label="Cách phản hồi nên thử" required value={scenarioDraft.recommended_response} onChange={(value) => setScenarioDraft((current) => ({ ...current, recommended_response: value }))} placeholder="VD: 'Mình không đi được đâu, cô sẽ gọi điện cho mẹ mình. Tụi mình chơi lúc khác nhé!'" hint="Một ví dụ cụ thể về cách nói/hành động tốt trong tình huống này" />
+                <TextAreaField label="Điều em có thể rút ra" required value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} placeholder="VD: Từ chối không có nghĩa là mất bạn. Em có quyền nói không khi cảm thấy không an toàn." hint="Bài học ngắn gọn — giúp học sinh ghi nhớ kỹ năng sau khi hoàn thành" />
               </section>
             ) : null}
 
@@ -1266,17 +1335,17 @@ export default function AdminContentPage() {
                   Quay lại
                 </button>
                 {scenarioStep < 4 ? (
-                  <button type="button" onClick={() => setScenarioStep(nextEditorStep(scenarioStep))} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
-                    Tiếp theo
+                  <button type="button" onClick={async () => { await saveScenarioDraft(); setScenarioStep(nextEditorStep(scenarioStep)); }} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+                    Lưu & Tiếp theo
                   </button>
                 ) : null}
               </div>
               <div className="hidden flex-1 sm:block" />
-              <button type="button" onClick={saveScenarioDraft} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+              <button type="button" onClick={saveScenarioDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
               {scenarioStep === 4 && scenarioDraft.id && scenarioDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl border border-green-300 px-5 py-2.5 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-green-700 dark:text-green-300 dark:hover:bg-green-900/20 sm:w-auto">
+                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
