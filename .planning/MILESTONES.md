@@ -1,5 +1,55 @@
 # Project Milestones: Peerlight AI
 
+## v2.3 Content Management Polish (Shipped: 2026-05-28)
+
+**Delivered:** Content editor threshold scoring reliability, cover image support across all roles (admin, student, teacher, parent), FE-BE publish validation alignment, and content editor UX improvements.
+
+**Phases completed:** 68-70 (3 phases)
+
+**Key accomplishments:**
+
+- Manual min/max threshold scoring with ScoreCoverageGrid visual validation (gap/overlap/out-of-range).
+- FE publish checklist aligned exactly to BE validation rules — no more "all green but can't publish".
+- Smart "add threshold" fills first gap or splits largest range; explicit-only redistribute.
+- Empty choices and questions with <2 valid choices auto-stripped before API submission.
+- Cover image upload (base64, max 2MB) for self-check tests and scenarios.
+- Cover image displayed on student list cards, teacher/parent summary cards.
+- Vietnamese placeholders, duplicate button, step validation gates.
+
+**Git range:** `a0af47a` -> `b68894f`
+
+---
+
+## v2.2 UX Refinement & Usability Polish (Shipped: 2026-05-28)
+
+**Delivered:** Toast notification system, universal retry/error patterns, consistent loading skeletons, student feature polish (chat search, mood toasts, autosave), adult portal search/filter/indicators, admin unsaved-changes warnings.
+
+**Phases completed:** 64-67 (4 phases)
+
+**Git tag:** v2.2
+
+---
+
+## v2.1 AI Chat Enhancement (Shipped: 2026-05-28)
+
+**Delivered:** AI chat enhancements including typing indicators, message streaming, thread management, and guardrail improvements.
+
+**Phases completed:** 60-63 (4 phases)
+
+**Git tag:** v2.1
+
+---
+
+## v2.0 Mobile-First & PWA (Shipped: 2026-05-28)
+
+**Delivered:** PWA foundation, bottom tab navigation, responsive layouts for all pages, animations, install prompt.
+
+**Phases completed:** 54-59 (6 phases)
+
+**Git tag:** v2.0
+
+---
+
 ## v1.9 Production Polish (Shipped: 2026-05-28)
 
 **Delivered:** Removed demo visual indicators, production tone updates, runtime mode switch to production_pilot, full admin page redesign (users, links, operations, content wizard), student page polish (time-based greeting, colored risk/signal badges), and 4-step content editor wizard.

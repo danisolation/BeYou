@@ -47,7 +47,7 @@
 | SCORE-05 | Phase 68 | Complete |
 | MEDIA-01 | Phase 69 | Complete |
 | MEDIA-02 | Phase 69 | Complete |
-| MEDIA-03 | Phase 70 | Pending |
+| MEDIA-03 | Phase 70 | Complete |
 | UX-01 | Phase 68 | Complete |
 
 **Coverage:**

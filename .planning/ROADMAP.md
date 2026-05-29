@@ -27,7 +27,7 @@
 
 - [x] **Phase 68: Content Editor Scoring & Publish** - Manual threshold scoring, visual validation grid, FE-BE checklist alignment, empty choice filtering, Vietnamese UX hints.
 - [x] **Phase 69: Content Media & Student Display** - Cover image upload (admin), base64 storage, student-facing card image display.
-- [ ] **Phase 70: Content Final Polish** - Teacher/parent cover image display, any remaining content editor minor tweaks.
+- [x] **Phase 70: Content Final Polish** - Teacher/parent cover image display, any remaining content editor minor tweaks.
 
 ## Phase Details
 
@@ -68,7 +68,7 @@
 **Goal:** Show cover images in teacher/parent views and apply any remaining minor tweaks.
 **Depends on:** Phase 69
 **Requirements:** MEDIA-03
-**Status:** Not started
+**Status:** Complete (2026-05-28)
 
 **Success criteria:**
 1. Teacher/parent pages that list content show cover images where available.
