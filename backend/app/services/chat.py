@@ -228,7 +228,7 @@ class GeminiProvider:
                 return self._call_api(messages, model=model, extra_context=extra_context)
             except httpx.HTTPStatusError as exc:
                 last_error = exc
-                if exc.response.status_code in {429, 500, 502, 503}:
+                if exc.response.status_code in {404, 429, 500, 502, 503}:
                     logger.warning("Model %s returned %d, rotating to next model", model, exc.response.status_code)
                     continue
                 raise
