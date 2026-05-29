@@ -396,6 +396,11 @@ function SidebarContent({
   onSelectThread: (id: string) => void;
   onNewThread: () => void;
 }) {
+  const [search, setSearch] = useState("");
+  const filtered = search.trim()
+    ? threads.filter((t) => t.title.toLowerCase().includes(search.toLowerCase()))
+    : threads;
+
   return (
     <>
       <button
@@ -405,11 +410,21 @@ function SidebarContent({
       >
         + Cuộc trò chuyện mới
       </button>
-      <div className="mt-3 space-y-1">
-        {threads.length === 0 ? (
-          <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50">Chưa có lịch sử.</p>
+      <input
+        type="search"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Tìm cuộc trò chuyện..."
+        aria-label="Tìm kiếm cuộc trò chuyện"
+        className="mt-2 w-full rounded-xl border border-outline-variant/30 bg-transparent px-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary"
+      />
+      <div className="mt-2 space-y-1">
+        {filtered.length === 0 ? (
+          <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50">
+            {search ? "Không tìm thấy cuộc trò chuyện." : "Chưa có lịch sử."}
+          </p>
         ) : (
-          threads.map((thread) => (
+          filtered.map((thread) => (
             <button
               key={thread.id}
               type="button"

@@ -5,6 +5,7 @@ import { Users } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageSkeleton } from "@/components/skeletons";
+import { useToast } from "@/components/toast";
 import {
   getStudentSupportPlan,
   saveStudentSupportPlan,
@@ -38,13 +39,15 @@ function textOrNull(value: string): string | null {
   return trimmed.length > 0 ? trimmed : null;
 }
 
+const DRAFT_KEY = "beyou-support-plan-draft";
+
 export default function StudentSupportPlanPage() {
+  const { success: toastSuccess, error: toastError } = useToast();
   const [data, setData] = useState<StudentSupportPlanResponse | null>(null);
   const [form, setForm] = useState<SupportPlanFormState>(emptyForm);
   const [selectedAdultIds, setSelectedAdultIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,6 +64,12 @@ export default function StudentSupportPlanPage() {
             shareable_note: payload.plan.shareable_note ?? "",
           });
           setSelectedAdultIds(payload.plan.selected_adults.map((adult) => adult.id));
+        } else {
+          // Restore draft from localStorage if no saved plan
+          try {
+            const draft = localStorage.getItem(DRAFT_KEY);
+            if (draft) setForm(JSON.parse(draft));
+          } catch { /* ignore */ }
         }
       })
       .catch(() => setErrorMessage("Chưa tải được kế hoạch hỗ trợ. Hãy thử lại sau."))
@@ -68,7 +77,11 @@ export default function StudentSupportPlanPage() {
   }, []);
 
   function updateField<K extends keyof SupportPlanFormState>(field: K, value: SupportPlanFormState[K]) {
-    setForm((current) => ({ ...current, [field]: value }));
+    setForm((current) => {
+      const next = { ...current, [field]: value };
+      try { localStorage.setItem(DRAFT_KEY, JSON.stringify(next)); } catch { /* quota */ }
+      return next;
+    });
   }
 
   function toggleAdult(adultId: string) {
@@ -83,7 +96,6 @@ export default function StudentSupportPlanPage() {
       return;
     }
     setIsSaving(true);
-    setSaveMessage(null);
     setErrorMessage(null);
     const payload: SupportPlanUpsertPayload = {
       adult_ids: selectedAdultIds,
@@ -108,9 +120,10 @@ export default function StudentSupportPlanPage() {
           shareable_note: saved.plan.shareable_note ?? "",
         });
       }
-      setSaveMessage("Đã lưu kế hoạch hỗ trợ của em.");
+      try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }
+      toastSuccess("Đã lưu kế hoạch hỗ trợ của em.");
     } catch {
-      setErrorMessage("Chưa lưu được kế hoạch. Hãy kiểm tra người lớn đã chọn và thử lại.");
+      toastError("Chưa lưu được kế hoạch. Hãy kiểm tra người lớn đã chọn và thử lại.");
     } finally {
       setIsSaving(false);
     }
@@ -245,7 +258,6 @@ export default function StudentSupportPlanPage() {
             Tạm dừng hoặc ngừng chia sẻ không xoá lịch sử metadata, nhưng người lớn sẽ không còn được chọn trong kế hoạch đang mở.
           </p>
           {errorMessage ? <p role="alert" className="mt-4 text-sm text-error">{errorMessage}</p> : null}
-          {saveMessage ? <p role="status" className="mt-4 text-sm text-primary">{saveMessage}</p> : null}
           <button
             type="submit"
             disabled={!canSave}

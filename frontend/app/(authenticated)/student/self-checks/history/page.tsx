@@ -22,6 +22,7 @@ export default function SelfCheckHistoryPage() {
   const [items, setItems] = useState<SelfCheckHistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [filterTest, setFilterTest] = useState("");
 
   useEffect(() => {
     listSelfCheckHistory()
@@ -32,6 +33,9 @@ export default function SelfCheckHistoryPage() {
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
   }, []);
+
+  const testNames = [...new Set(items.map((i) => i.test_title))];
+  const filtered = filterTest ? items.filter((i) => i.test_title === filterTest) : items;
 
   if (isLoading) {
     return <PageSkeleton />;
@@ -57,7 +61,27 @@ export default function SelfCheckHistoryPage() {
         />
       ) : (
         <section className="space-y-4">
-          {items.map((item) => (
+          {testNames.length > 1 && (
+            <div className="flex items-center gap-2">
+              <select
+                value={filterTest}
+                onChange={(e) => setFilterTest(e.target.value)}
+                aria-label="Lọc theo bài test"
+                className="rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-3 py-2 text-xs outline-none focus:border-primary"
+              >
+                <option value="">Tất cả bài test</option>
+                {testNames.map((name) => (
+                  <option key={name} value={name}>{name}</option>
+                ))}
+              </select>
+              {filterTest && (
+                <button type="button" onClick={() => setFilterTest("")} className="text-xs text-primary hover:underline">
+                  Xóa bộ lọc
+                </button>
+              )}
+            </div>
+          )}
+          {filtered.map((item) => (
             <Link
               key={item.attempt_id}
               className="block rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 transition-shadow hover:shadow-md"

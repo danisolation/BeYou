@@ -6,6 +6,7 @@ import { Heart, Clock } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageSkeleton } from "@/components/skeletons";
+import { useToast } from "@/components/toast";
 import {
   getMoodCheckInOptions,
   getMoodCheckInHistory,
@@ -70,6 +71,7 @@ function ScaleButtonGroup({
 }
 
 export default function StudentMoodCheckInPage() {
+  const { success: toastSuccess } = useToast();
   const [options, setOptions] = useState<MoodCheckInOptions | null>(null);
   const [history, setHistory] = useState<MoodCheckIn[]>([]);
   const [moodLabel, setMoodLabel] = useState<MoodLabel>("steady");
@@ -116,6 +118,7 @@ export default function StudentMoodCheckInPage() {
       setHistory((prev) => [saved, ...prev]);
       setPrivateNote("");
       setContextTags([]);
+      toastSuccess("Đã lưu check-in! Em đang chăm sóc bản thân rất tốt 💪");
     } catch {
       setErrorMessage("Chưa lưu được check-in. Hãy thử lại sau.");
     } finally {
