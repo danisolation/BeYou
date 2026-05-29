@@ -67,7 +67,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant/50 bg-white/95 px-2 py-1.5 pb-[env(safe-area-inset-bottom)] backdrop-blur-lg dark:bg-[#0d1c2e]/95 md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant/30 bg-white/95 px-1 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur-lg dark:bg-[#0d1c2e]/95 md:hidden"
         aria-label="Điều hướng học sinh"
       >
         {visibleItems.map((item) => {
@@ -77,8 +77,8 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 no-underline ${
-                active ? "text-primary border-b-2 border-primary" : "text-on-background/60 border-b-2 border-transparent"
+              className={`flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-1 no-underline transition-colors ${
+                active ? "text-primary font-semibold" : "text-on-background/60"
               }`}
               aria-current={active ? "page" : undefined}
             >
@@ -88,7 +88,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
           );
         })}
         <Link
-          href="/student#peerlight-sos"
+          href="/student/sos"
           className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 text-red-700 no-underline"
         >
           <ShieldAlert aria-hidden="true" size={20} />
