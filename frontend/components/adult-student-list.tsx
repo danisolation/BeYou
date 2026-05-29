@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Link from "next/link";
 
 import { DemoGuideCard } from "@/components/demo-guide-card";
@@ -47,11 +48,15 @@ export function AdultStudentList({
   supportOverviewState,
   notificationsState,
 }: AdultStudentListProps) {
+  const [search, setSearch] = useState("");
   const supportOverview = supportOverviewState.status === "ready" ? supportOverviewState.data : [];
   const supportUnavailable = supportOverviewState.status === "unavailable";
   const supportByStudent = new Map(supportOverview.map((item) => [item.student.id, item]));
-  const visibleStudents = supportUnavailable ? students : students.filter((student) => supportByStudent.has(student.id));
-  const firstStudent = visibleStudents[0];
+  const baseStudents = supportUnavailable ? students : students.filter((student) => supportByStudent.has(student.id));
+  const visibleStudents = search.trim()
+    ? baseStudents.filter((s) => s.full_name.toLowerCase().includes(search.toLowerCase()) || s.email.toLowerCase().includes(search.toLowerCase()))
+    : baseStudents;
+  const firstStudent = baseStudents[0];
   const isParent = roleContext === "parent";
 
   return (
@@ -93,17 +98,40 @@ export function AdultStudentList({
       <NotificationList notificationsState={notificationsState} />
       {students.length === 0 ? (
         <EmptyState heading="Chưa có học sinh được liên kết" body={emptyBody} />
-      ) : visibleStudents.length === 0 ? (
+      ) : visibleStudents.length === 0 && !search ? (
         <EmptyState
           heading="Chưa có học sinh SOS được phép xem"
           body="Khi có tín hiệu SOS hoặc tóm tắt hỗ trợ được phép xem, mục này sẽ hiển thị tại đây."
         />
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {visibleStudents.map((student) => (
+        <>
+          {baseStudents.length > 1 && (
+            <div className="flex items-center gap-2">
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Tìm theo tên hoặc email..."
+                aria-label="Tìm học sinh"
+                className="w-full max-w-xs rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary"
+              />
+              {search && (
+                <button type="button" onClick={() => setSearch("")} className="text-xs text-primary hover:underline">Xóa</button>
+              )}
+            </div>
+          )}
+          {visibleStudents.length === 0 ? (
+            <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50">Không tìm thấy học sinh phù hợp.</p>
+          ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+          {visibleStudents.map((student) => {
+            const overview = supportByStudent.get(student.id);
+            const safetyTone = overview?.open_sos_count ? "danger" : overview?.warning_group === "nguy_co_cao" ? "warning" : overview?.warning_group === "can_quan_tam" ? "warning" : "safe";
+            return (
             <EntryCard
               key={student.id}
               title={student.full_name}
+              badge={<span className={`inline-block h-2.5 w-2.5 rounded-full ${safetyTone === "danger" ? "bg-red-500" : safetyTone === "warning" ? "bg-amber-500" : "bg-green-500"}`} aria-label={safetyTone === "danger" ? "Có SOS" : safetyTone === "warning" ? "Cần quan tâm" : "Ổn định"} />}
               className="min-w-0 hover:-translate-y-0.5 hover:ring-[#D7EFE8]"
             >
               <p className="break-all text-xs">{student.email}</p>
@@ -135,8 +163,11 @@ export function AdultStudentList({
                 </div>
               </SurfaceCard>
             </EntryCard>
-          ))}
-        </div>
+            );
+          })}
+          </div>
+          )}
+        </>
       )}
     </section>
   );
