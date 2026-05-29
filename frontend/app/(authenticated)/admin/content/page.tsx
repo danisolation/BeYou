@@ -436,7 +436,7 @@ export default function AdminContentPage() {
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
-    Boolean(selfCheckDraft.id) && selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
+    selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
 
   const scenarioBasicCount = [scenarioDraft.title.trim(), scenarioDraft.situation.trim(), scenarioDraft.skill_tag.trim()].filter(Boolean).length;
   const filledScenarioChoices = scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length;
@@ -447,7 +447,7 @@ export default function AdminContentPage() {
     { label: "Đã nhập bài học", passed: scenarioDraft.lesson.trim().length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishScenario =
-    Boolean(scenarioDraft.id) && scenarioDraft.status === "draft" && scenarioReviewItems.every((item) => item.passed);
+    scenarioDraft.status === "draft" && scenarioReviewItems.every((item) => item.passed);
 
   function validateSelfCheckStep(step: EditorStep): string | null {
     if (step === 1) {
@@ -713,6 +713,50 @@ export default function AdminContentPage() {
       toastSuccess("Đã lưu thành công!");
     } catch (saveError) {
       setError(errorCopy(saveError));
+    }
+  }
+
+  async function saveAndPublishSelfCheck() {
+    try {
+      setError("");
+      let item = selfCheckDraft;
+      if (!item.id) {
+        const saved = await createAdminSelfCheck(item);
+        item = cloneSelfCheck(saved);
+        setSelfCheckDraft(item);
+      } else {
+        const saved = await updateAdminSelfCheck(item.id, item);
+        item = cloneSelfCheck(saved);
+        setSelfCheckDraft(item);
+      }
+      await publishAdminSelfCheck(item.id as string);
+      await refreshContent();
+      setSelfCheckDraft((c) => ({ ...c, status: "published" }));
+      toastSuccess("Đã xuất bản!");
+    } catch (publishError) {
+      setError(errorCopy(publishError));
+    }
+  }
+
+  async function saveAndPublishScenario() {
+    try {
+      setError("");
+      let item = scenarioDraft;
+      if (!item.id) {
+        const saved = await createAdminScenario(item);
+        item = cloneScenario(saved);
+        setScenarioDraft(item);
+      } else {
+        const saved = await updateAdminScenario(item.id, item);
+        item = cloneScenario(saved);
+        setScenarioDraft(item);
+      }
+      await publishAdminScenario(item.id as string);
+      await refreshContent();
+      setScenarioDraft((c) => ({ ...c, status: "published" }));
+      toastSuccess("Đã xuất bản!");
+    } catch (publishError) {
+      setError(errorCopy(publishError));
     }
   }
 
@@ -1162,11 +1206,7 @@ export default function AdminContentPage() {
                     <ul className="mt-4 space-y-3">
                       {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setSelfCheckStep(item.step)} />)}
                     </ul>
-                    {!selfCheckDraft.id ? (
-                      <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
-                        Lưu bản nháp trước khi xuất bản.
-                      </p>
-                    ) : !selfCheckReviewItems.every((item) => item.passed) ? (
+                    {!selfCheckReviewItems.every((item) => item.passed) ? (
                       <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
                         Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
                       </p>
@@ -1196,8 +1236,8 @@ export default function AdminContentPage() {
               <button type="button" onClick={saveSelfCheckDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {selfCheckStep === 4 && selfCheckDraft.id && selfCheckDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishSelfCheck} onClick={() => runAction(() => publishAdminSelfCheck(selfCheckDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
+              {selfCheckStep === 4 && selfCheckDraft.status === "draft" ? (
+                <button type="button" disabled={!canPublishSelfCheck} onClick={saveAndPublishSelfCheck} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
@@ -1357,11 +1397,7 @@ export default function AdminContentPage() {
                     <ul className="mt-4 space-y-3">
                       {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setScenarioStep(item.step)} />)}
                     </ul>
-                    {!scenarioDraft.id ? (
-                      <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-800 dark:bg-amber-900/20 dark:text-amber-300">
-                        Lưu bản nháp trước khi xuất bản.
-                      </p>
-                    ) : !scenarioReviewItems.every((item) => item.passed) ? (
+                    {!scenarioReviewItems.every((item) => item.passed) ? (
                       <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
                         Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
                       </p>
@@ -1391,8 +1427,8 @@ export default function AdminContentPage() {
               <button type="button" onClick={saveScenarioDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {scenarioStep === 4 && scenarioDraft.id && scenarioDraft.status === "draft" ? (
-                <button type="button" disabled={!canPublishScenario} onClick={() => runAction(() => publishAdminScenario(scenarioDraft.id as string), "Đã xuất bản!")} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
+              {scenarioStep === 4 && scenarioDraft.status === "draft" ? (
+                <button type="button" disabled={!canPublishScenario} onClick={saveAndPublishScenario} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
               ) : null}
