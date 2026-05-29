@@ -64,7 +64,7 @@ const emptySelfCheck: AdminSelfCheckContent = {
     {
       state_label: "On dinh",
       min_score: 0,
-      max_score: 3,
+      max_score: 0,
       comment: "",
       advice: "",
       positive_content: "",
@@ -73,8 +73,8 @@ const emptySelfCheck: AdminSelfCheckContent = {
     },
     {
       state_label: "Can chu y",
-      min_score: 4,
-      max_score: 6,
+      min_score: 1,
+      max_score: 1,
       comment: "",
       advice: "",
       positive_content: "",
@@ -83,8 +83,8 @@ const emptySelfCheck: AdminSelfCheckContent = {
     },
     {
       state_label: "Nen tim ho tro",
-      min_score: 7,
-      max_score: 10,
+      min_score: 2,
+      max_score: 2,
       comment: "",
       advice: "",
       positive_content: "",
@@ -457,7 +457,7 @@ export default function AdminContentPage() {
     },
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: "Mỗi ngưỡng có nhận xét, gợi ý và hành động", passed: thresholdsComplete, step: 3 as EditorStep, fixHint: "Bước 3 →" },
-    { label: `Ngưỡng phủ đúng dải điểm (${possibleMin}–${possibleMax})`, passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
+    { label: validQuestions.length > 0 ? `Ngưỡng phủ đúng dải điểm (${possibleMin}–${possibleMax})` : "Hoàn thành câu hỏi để tính dải điểm", passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
     selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
@@ -1169,6 +1169,11 @@ export default function AdminContentPage() {
                   </div>
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckDraft.thresholds.length} ngưỡng đã cấu hình</div>
                 </div>
+                {validQuestions.length > 0 ? (
+                  <p className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
+                    💡 Dải điểm có thể: <strong>{possibleMin}–{possibleMax}</strong> (dựa trên {validQuestions.length} câu hỏi). Các ngưỡng phải phủ hết dải này, không trùng và không bỏ sót.
+                  </p>
+                ) : null}
 
                 <div className="flex justify-end">
                   <button type="button" onClick={addThreshold} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
