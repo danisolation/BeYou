@@ -285,7 +285,7 @@ function StatusBadge({ status }: { status: AdminContentStatus }) {
   );
 }
 
-type EditorStep = 1 | 2 | 3 | 4;
+type EditorStep = 1 | 2 | 3;
 
 function StepIndicator({
   steps,
@@ -367,7 +367,7 @@ function ChecklistItem({ passed, label, fixHint, onFix }: { passed: boolean; lab
 }
 
 function nextEditorStep(step: EditorStep): EditorStep {
-  return (step === 4 ? 4 : step + 1) as EditorStep;
+  return (step === 3 ? 3 : step + 1) as EditorStep;
 }
 
 function previousEditorStep(step: EditorStep): EditorStep {
@@ -403,16 +403,14 @@ export default function AdminContentPage() {
   }, [scenarios, search]);
 
   const selfCheckSteps = [
-    "Bước 1: Thông tin cơ bản",
-    "Bước 2: Câu hỏi",
-    "Bước 3: Ngưỡng điểm",
-    "Bước 4: Xem lại & Xuất bản",
+    "Thông tin cơ bản",
+    "Câu hỏi & Lựa chọn",
+    "Ngưỡng & Xuất bản",
   ] as const;
   const scenarioSteps = [
-    "Bước 1: Thông tin cơ bản",
-    "Bước 2: Lựa chọn phản hồi",
-    "Bước 3: Bài học",
-    "Bước 4: Xem lại & Xuất bản",
+    "Thông tin cơ bản",
+    "Lựa chọn phản hồi",
+    "Bài học & Xuất bản",
   ] as const;
 
   const selfCheckBasicCount = [selfCheckDraft.title.trim(), selfCheckDraft.description?.trim() ?? ""].filter(Boolean).length;
@@ -1093,7 +1091,7 @@ export default function AdminContentPage() {
                   </h2>
                   <p className="text-sm text-on-background/60">Đi từng bước để soạn câu hỏi, ngưỡng điểm và kiểm tra trước khi xuất bản.</p>
                 </div>
-                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {selfCheckStep}/4</div>
+                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Bước {selfCheckStep}/3</div>
               </div>
               <StepIndicator steps={selfCheckSteps} currentStep={selfCheckStep} onStepChange={setSelfCheckStep} freeNavigation={Boolean(selfCheckDraft.id)} />
             </div>
@@ -1192,9 +1190,9 @@ export default function AdminContentPage() {
               <section className="space-y-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Ngưỡng điểm</p>
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Ngưỡng & Xuất bản</p>
                     <h3 className="text-lg font-semibold text-on-background">Thiết lập kết quả theo tổng điểm</h3>
-                    <p className="text-sm text-on-background/60">Mỗi ngưỡng xác định kết quả dựa trên tổng điểm.</p>
+                    <p className="text-sm text-on-background/60">Hệ thống tự chia dải điểm. Bạn chỉ cần nhập nội dung phản hồi cho mỗi mức.</p>
                   </div>
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckDraft.thresholds.length} ngưỡng đã cấu hình</div>
                 </div>
@@ -1231,58 +1229,12 @@ export default function AdminContentPage() {
                     <TextAreaField label="Hành động tiếp theo *" value={threshold.suggested_next_action ?? ""} onChange={(value) => updateThreshold(ti, "suggested_next_action", value)} placeholder="VD: Thử làm bài kiểm tra lại sau 1 tuần, hoặc nói chuyện với giáo viên nếu em cần." hint="Gợi ý bước tiếp theo cụ thể" />
                   </div>
                 ))}
-              </section>
-            ) : null}
-
-            {selfCheckStep === 4 ? (
-              <section className="space-y-4">
-                <div className="space-y-1">
-                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 4: Xem lại & Xuất bản</p>
-                  <h3 className="text-lg font-semibold text-on-background">Kiểm tra nhanh trước khi xuất bản</h3>
-                  <p className="text-sm text-on-background/60">Hệ thống sẽ chỉ cho phép xuất bản khi tất cả mục dưới đây đều đạt.</p>
-                </div>
-                <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tóm tắt nội dung</p>
-                    <dl className="mt-4 space-y-3 text-sm text-on-background/80">
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Tên bài</dt>
-                        <dd className="text-right font-medium">{selfCheckDraft.title.trim() || "Chưa nhập"}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Mô tả</dt>
-                        <dd className="max-w-[70%] text-right">{selfCheckDraft.description?.trim() || "Chưa nhập"}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Trạng thái</dt>
-                        <dd className="text-right"><StatusBadge status={selfCheckDraft.status} /></dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Câu hỏi</dt>
-                        <dd className="text-right font-medium">{filledSelfCheckQuestions}/{selfCheckDraft.questions.length} đã nhập</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Ngưỡng điểm</dt>
-                        <dd className="text-right font-medium">{selfCheckDraft.thresholds.length} ngưỡng</dd>
-                      </div>
-                    </dl>
-                  </div>
-                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
-                    <ul className="mt-4 space-y-3">
-                      {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setSelfCheckStep(item.step)} />)}
-                    </ul>
-                    {!selfCheckReviewItems.every((item) => item.passed) ? (
-                      <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-                        Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
-                      </p>
-                    ) : null}
-                    {selfCheckDraft.status !== "draft" ? (
-                      <p className="mt-4 rounded-xl border border-outline-variant/30 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
-                        Chỉ có thể xuất bản khi nội dung đang ở trạng thái nháp.
-                      </p>
-                    ) : null}
-                  </div>
+                {/* Publish checklist inline in step 3 */}
+                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-3">
+                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
+                  <ul className="space-y-2">
+                    {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setSelfCheckStep(item.step)} />)}
+                  </ul>
                 </div>
               </section>
             ) : null}
@@ -1292,7 +1244,7 @@ export default function AdminContentPage() {
                 <button type="button" onClick={() => setSelfCheckStep(previousEditorStep(selfCheckStep))} disabled={selfCheckStep === 1} className="btn-press min-h-11 w-full rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto">
                   Quay lại
                 </button>
-                {selfCheckStep < 4 ? (
+                {selfCheckStep < 3 ? (
                   <button type="button" onClick={saveAndAdvanceSelfCheck} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Lưu & Tiếp theo
                   </button>
@@ -1302,7 +1254,7 @@ export default function AdminContentPage() {
               <button type="button" onClick={saveSelfCheckDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {selfCheckDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {selfCheckStep === 4 && selfCheckDraft.status === "draft" ? (
+              {selfCheckStep === 3 && selfCheckDraft.status === "draft" ? (
                 <button type="button" disabled={!canPublishSelfCheck} onClick={saveAndPublishSelfCheck} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
@@ -1339,7 +1291,7 @@ export default function AdminContentPage() {
                   </h2>
                   <p className="text-sm text-on-background/60">Đi từng bước để soạn tình huống, lựa chọn phản hồi và kiểm tra trước khi xuất bản.</p>
                 </div>
-                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {scenarioStep}/4</div>
+                <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Bước {scenarioStep}/3</div>
               </div>
               <StepIndicator steps={scenarioSteps} currentStep={scenarioStep} onStepChange={setScenarioStep} freeNavigation={Boolean(scenarioDraft.id)} />
             </div>
@@ -1414,7 +1366,7 @@ export default function AdminContentPage() {
               <section className="space-y-4">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Bài học</p>
+                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Bài học & Xuất bản</p>
                     <h3 className="text-lg font-semibold text-on-background">Chốt thông điệp cho học sinh</h3>
                     <p className="text-sm text-on-background/60">Gợi ý cách phản hồi và bài học ngắn giúp học sinh biết nên làm gì tiếp theo.</p>
                   </div>
@@ -1422,58 +1374,13 @@ export default function AdminContentPage() {
                 </div>
                 <TextAreaField label="Cách phản hồi nên thử" required value={scenarioDraft.recommended_response} onChange={(value) => setScenarioDraft((current) => ({ ...current, recommended_response: value }))} placeholder="VD: 'Mình không đi được đâu, cô sẽ gọi điện cho mẹ mình. Tụi mình chơi lúc khác nhé!'" hint="Một ví dụ cụ thể về cách nói/hành động tốt trong tình huống này" />
                 <TextAreaField label="Điều em có thể rút ra" required value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} placeholder="VD: Từ chối không có nghĩa là mất bạn. Em có quyền nói không khi cảm thấy không an toàn." hint="Bài học ngắn gọn — giúp học sinh ghi nhớ kỹ năng sau khi hoàn thành" />
-              </section>
-            ) : null}
 
-            {scenarioStep === 4 ? (
-              <section className="space-y-4">
-                <div className="space-y-1">
-                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 4: Xem lại & Xuất bản</p>
-                  <h3 className="text-lg font-semibold text-on-background">Kiểm tra nhanh trước khi xuất bản</h3>
-                  <p className="text-sm text-on-background/60">Kiểm tra đủ các phần chính để tránh lỗi khi xuất bản nội dung.</p>
-                </div>
-                <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tóm tắt nội dung</p>
-                    <dl className="mt-4 space-y-3 text-sm text-on-background/80">
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Tiêu đề</dt>
-                        <dd className="text-right font-medium">{scenarioDraft.title.trim() || "Chưa nhập"}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Mô tả tình huống</dt>
-                        <dd className="max-w-[70%] text-right">{scenarioDraft.situation.trim() || "Chưa nhập"}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Kỹ năng liên quan</dt>
-                        <dd className="text-right font-medium">{scenarioDraft.skill_tag.trim() || "Chưa nhập"}</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Lựa chọn</dt>
-                        <dd className="text-right font-medium">{filledScenarioChoices}/{scenarioDraft.choices.length} đã nhập</dd>
-                      </div>
-                      <div className="flex items-start justify-between gap-3">
-                        <dt className="text-on-background/60">Bài học</dt>
-                        <dd className="text-right font-medium">{scenarioDraft.lesson.trim() ? "Đã nhập" : "Chưa nhập"}</dd>
-                      </div>
-                    </dl>
-                  </div>
-                  <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
-                    <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
-                    <ul className="mt-4 space-y-3">
-                      {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setScenarioStep(item.step)} />)}
-                    </ul>
-                    {!scenarioReviewItems.every((item) => item.passed) ? (
-                      <p className="mt-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-                        Chưa thể xuất bản — hãy bấm nút &quot;Đi sửa&quot; bên cạnh mục chưa đạt (✕) để quay lại bước cần hoàn thiện.
-                      </p>
-                    ) : null}
-                    {scenarioDraft.status !== "draft" ? (
-                      <p className="mt-4 rounded-xl border border-outline-variant/30 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
-                        Chỉ có thể xuất bản khi nội dung đang ở trạng thái nháp.
-                      </p>
-                    ) : null}
-                  </div>
+                {/* Publish checklist inline in step 3 */}
+                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-3">
+                  <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
+                  <ul className="space-y-2">
+                    {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setScenarioStep(item.step)} />)}
+                  </ul>
                 </div>
               </section>
             ) : null}
@@ -1483,7 +1390,7 @@ export default function AdminContentPage() {
                 <button type="button" onClick={() => setScenarioStep(previousEditorStep(scenarioStep))} disabled={scenarioStep === 1} className="btn-press min-h-11 w-full rounded-xl border border-outline-variant/30 px-4 py-2.5 text-sm font-medium text-on-background/70 transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto">
                   Quay lại
                 </button>
-                {scenarioStep < 4 ? (
+                {scenarioStep < 3 ? (
                   <button type="button" onClick={saveAndAdvanceScenario} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Lưu & Tiếp theo
                   </button>
@@ -1493,7 +1400,7 @@ export default function AdminContentPage() {
               <button type="button" onClick={saveScenarioDraft} className="btn-press min-h-11 w-full rounded-xl border border-primary/30 px-5 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary/5 sm:w-auto">
                 {scenarioDraft.id ? "Lưu thay đổi" : "Lưu bản nháp"}
               </button>
-              {scenarioStep === 4 && scenarioDraft.status === "draft" ? (
+              {scenarioStep === 3 && scenarioDraft.status === "draft" ? (
                 <button type="button" disabled={!canPublishScenario} onClick={saveAndPublishScenario} className="btn-press min-h-11 w-full rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
                   Xuất bản
                 </button>
