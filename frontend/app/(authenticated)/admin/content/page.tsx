@@ -291,10 +291,12 @@ function StepIndicator({
   steps,
   currentStep,
   onStepChange,
+  freeNavigation = false,
 }: {
   steps: readonly string[];
   currentStep: EditorStep;
   onStepChange: (step: EditorStep) => void;
+  freeNavigation?: boolean;
 }) {
   return (
     <div className="space-y-3">
@@ -303,13 +305,15 @@ function StepIndicator({
           const stepNumber = (index + 1) as EditorStep;
           const isCompleted = stepNumber < currentStep;
           const isActive = stepNumber === currentStep;
+          const canNavigate = freeNavigation || stepNumber <= currentStep;
 
           return (
             <div key={step} className="flex min-w-0 flex-1 items-center gap-2">
               <button
                 type="button"
-                onClick={() => onStepChange(stepNumber)}
-                className="flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition-colors hover:bg-primary/5"
+                onClick={() => canNavigate && onStepChange(stepNumber)}
+                disabled={!canNavigate}
+                className={`flex min-w-0 flex-1 items-center gap-2 rounded-xl px-2 py-1.5 text-left transition-colors ${canNavigate ? "hover:bg-primary/5" : "cursor-not-allowed opacity-50"}`}
               >
                 <span
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
@@ -371,7 +375,7 @@ function previousEditorStep(step: EditorStep): EditorStep {
 }
 
 export default function AdminContentPage() {
-  const { success: toastSuccess } = useToast();
+  const { success: toastSuccess, error: toastError } = useToast();
   const [selfChecks, setSelfChecks] = useState<AdminSelfCheckContent[]>([]);
   const [scenarios, setScenarios] = useState<AdminScenarioContent[]>([]);
   const [selfCheckDraft, setSelfCheckDraft] = useState<AdminSelfCheckContent>(cloneSelfCheck(emptySelfCheck));
@@ -444,6 +448,55 @@ export default function AdminContentPage() {
   ];
   const canPublishScenario =
     Boolean(scenarioDraft.id) && scenarioDraft.status === "draft" && scenarioReviewItems.every((item) => item.passed);
+
+  function validateSelfCheckStep(step: EditorStep): string | null {
+    if (step === 1) {
+      if (!selfCheckDraft.title.trim()) return "Hãy nhập tên bài trước khi tiếp tục.";
+    }
+    if (step === 2) {
+      if (!selfCheckDraft.questions.some((q) => q.text.trim().length > 0)) return "Hãy nhập ít nhất 1 câu hỏi.";
+      const incomplete = selfCheckDraft.questions.find((q) => q.text.trim().length > 0 && q.choices.filter((c) => c.text.trim().length > 0).length < 2);
+      if (incomplete) return "Mỗi câu hỏi cần ít nhất 2 lựa chọn đã nhập.";
+    }
+    if (step === 3) {
+      if (selfCheckDraft.thresholds.length === 0) return "Hãy thêm ít nhất 1 ngưỡng điểm.";
+    }
+    return null;
+  }
+
+  function validateScenarioStep(step: EditorStep): string | null {
+    if (step === 1) {
+      if (!scenarioDraft.title.trim()) return "Hãy nhập tiêu đề trước khi tiếp tục.";
+      if (!scenarioDraft.situation.trim()) return "Hãy nhập mô tả tình huống.";
+    }
+    if (step === 2) {
+      if (scenarioDraft.choices.filter((c) => c.text.trim().length > 0).length < 2) return "Hãy nhập ít nhất 2 lựa chọn phản hồi.";
+    }
+    if (step === 3) {
+      if (!scenarioDraft.lesson.trim()) return "Hãy nhập bài học rút ra trước khi tiếp tục.";
+    }
+    return null;
+  }
+
+  async function saveAndAdvanceSelfCheck() {
+    const validationError = validateSelfCheckStep(selfCheckStep);
+    if (validationError) {
+      toastError(validationError);
+      return;
+    }
+    await saveSelfCheckDraft();
+    setSelfCheckStep(nextEditorStep(selfCheckStep));
+  }
+
+  async function saveAndAdvanceScenario() {
+    const validationError = validateScenarioStep(scenarioStep);
+    if (validationError) {
+      toastError(validationError);
+      return;
+    }
+    await saveScenarioDraft();
+    setScenarioStep(nextEditorStep(scenarioStep));
+  }
 
   async function refreshContent() {
     const [loadedSelfChecks, loadedScenarios] = await Promise.all([listAdminSelfChecks(), listAdminScenarios()]);
@@ -928,7 +981,7 @@ export default function AdminContentPage() {
                 </div>
                 <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {selfCheckStep}/4</div>
               </div>
-              <StepIndicator steps={selfCheckSteps} currentStep={selfCheckStep} onStepChange={setSelfCheckStep} />
+              <StepIndicator steps={selfCheckSteps} currentStep={selfCheckStep} onStepChange={setSelfCheckStep} freeNavigation={Boolean(selfCheckDraft.id)} />
             </div>
 
             {selfCheckStep === 1 ? (
@@ -1134,7 +1187,7 @@ export default function AdminContentPage() {
                   Quay lại
                 </button>
                 {selfCheckStep < 4 ? (
-                  <button type="button" onClick={async () => { await saveSelfCheckDraft(); setSelfCheckStep(nextEditorStep(selfCheckStep)); }} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+                  <button type="button" onClick={saveAndAdvanceSelfCheck} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Lưu & Tiếp theo
                   </button>
                 ) : null}
@@ -1182,7 +1235,7 @@ export default function AdminContentPage() {
                 </div>
                 <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">Đang ở bước {scenarioStep}/4</div>
               </div>
-              <StepIndicator steps={scenarioSteps} currentStep={scenarioStep} onStepChange={setScenarioStep} />
+              <StepIndicator steps={scenarioSteps} currentStep={scenarioStep} onStepChange={setScenarioStep} freeNavigation={Boolean(scenarioDraft.id)} />
             </div>
 
             {scenarioStep === 1 ? (
@@ -1329,7 +1382,7 @@ export default function AdminContentPage() {
                   Quay lại
                 </button>
                 {scenarioStep < 4 ? (
-                  <button type="button" onClick={async () => { await saveScenarioDraft(); setScenarioStep(nextEditorStep(scenarioStep)); }} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
+                  <button type="button" onClick={saveAndAdvanceScenario} className="btn-press min-h-11 w-full rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary/90 sm:w-auto">
                     Lưu & Tiếp theo
                   </button>
                 ) : null}
