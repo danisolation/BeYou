@@ -420,6 +420,9 @@ export default function AdminContentPage() {
   const selfCheckQuestionsReady = selfCheckDraft.questions.filter(
     (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
   ).length;
+  const thresholdsComplete = selfCheckDraft.thresholds.length > 0 && selfCheckDraft.thresholds.every(
+    (t) => (t.comment ?? "").trim().length > 0 && (t.advice ?? "").trim().length > 0 && (t.suggested_next_action ?? "").trim().length > 0,
+  );
   const selfCheckReviewItems = [
     { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
     { label: "Có ít nhất 1 câu hỏi", passed: selfCheckDraft.questions.some((question) => question.text.trim().length > 0), step: 2 as EditorStep, fixHint: "Bước 2 →" },
@@ -434,6 +437,7 @@ export default function AdminContentPage() {
       fixHint: "Bước 2 →",
     },
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
+    { label: "Mỗi ngưỡng có nhận xét, gợi ý và hành động", passed: thresholdsComplete, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
     selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
@@ -441,9 +445,14 @@ export default function AdminContentPage() {
   const scenarioBasicCount = [scenarioDraft.title.trim(), scenarioDraft.situation.trim(), scenarioDraft.skill_tag.trim()].filter(Boolean).length;
   const filledScenarioChoices = scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length;
   const filledScenarioLessons = [scenarioDraft.recommended_response.trim(), scenarioDraft.lesson.trim()].filter(Boolean).length;
+  const scenarioChoicesComplete = scenarioDraft.choices.filter((c) => c.text.trim().length > 0).length >= 2 &&
+    scenarioDraft.choices.filter((c) => c.text.trim().length > 0).every((c) => (c.feedback ?? "").trim().length > 0 && c.signal);
   const scenarioReviewItems = [
     { label: "Tên bài đã được nhập", passed: scenarioDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
-    { label: "Có ít nhất 2 lựa chọn", passed: scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length >= 2, step: 2 as EditorStep, fixHint: "Bước 2 →" },
+    { label: "Nhập tình huống (situation)", passed: scenarioDraft.situation.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
+    { label: "Nhập kỹ năng (skill_tag)", passed: scenarioDraft.skill_tag.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
+    { label: "Có ít nhất 2 lựa chọn có text + feedback", passed: scenarioChoicesComplete, step: 2 as EditorStep, fixHint: "Bước 2 →" },
+    { label: "Đã nhập phản hồi gợi ý", passed: scenarioDraft.recommended_response.trim().length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: "Đã nhập bài học", passed: scenarioDraft.lesson.trim().length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishScenario =
