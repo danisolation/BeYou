@@ -1183,115 +1183,115 @@ def get_student_chat_transcript(
     )
 
 
-    # ---------------------------------------------------------------------------
-    # Adult (teacher/parent) chat — simplified version without safety escalation
-    # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Adult (teacher/parent) chat — simplified version without safety escalation
+# ---------------------------------------------------------------------------
 
 
-    def send_adult_chat_message(
-        db: OrmSession,
-        *,
-        user: User,
-        payload: ChatMessageCreate,
-        settings: Settings,
-    ) -> ChatSendResponse:
-        """Send a chat message as a teacher or parent (guidance mode, no SOS escalation)."""
-        thread = _get_or_create_thread(db, student=user, thread_id=payload.thread_id)
-        now = utc_now()
-        user_message = ChatMessage(
-            thread_id=thread.id,
-            role=ChatMessageRole.STUDENT.value,  # reuse same role column
-            content=payload.message,
-            safety_flagged=False,
-            is_demo=thread.is_demo,
-            created_at=now,
+def send_adult_chat_message(
+    db: OrmSession,
+    *,
+    user: User,
+    payload: ChatMessageCreate,
+    settings: Settings,
+) -> ChatSendResponse:
+    """Send a chat message as a teacher or parent (guidance mode, no SOS escalation)."""
+    thread = _get_or_create_thread(db, student=user, thread_id=payload.thread_id)
+    now = utc_now()
+    user_message = ChatMessage(
+        thread_id=thread.id,
+        role=ChatMessageRole.STUDENT.value,  # reuse same role column
+        content=payload.message,
+        safety_flagged=False,
+        is_demo=thread.is_demo,
+        created_at=now,
+    )
+    db.add(user_message)
+    db.flush()
+
+    provider = get_chat_provider(settings)
+    provider_name = provider.name
+    used_fallback = provider.used_fallback
+    first_response = _first_response(db, thread.id)
+    try:
+        assistant_content = provider.generate(
+            messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+            first_response=first_response,
         )
-        db.add(user_message)
-        db.flush()
-
-        provider = get_chat_provider(settings)
-        provider_name = provider.name
-        used_fallback = provider.used_fallback
-        first_response = _first_response(db, thread.id)
-        try:
-            assistant_content = provider.generate(
-                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
-                first_response=first_response,
-            )
-        except Exception:
-            fallback = DeterministicSupportProvider()
-            assistant_content = fallback.generate(
-                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
-                first_response=first_response,
-            )
-            provider_name = fallback.name
-            used_fallback = True
-
-        assistant_message = ChatMessage(
-            thread_id=thread.id,
-            role=ChatMessageRole.ASSISTANT.value,
-            content=assistant_content,
-            safety_flagged=False,
-            is_demo=thread.is_demo,
-            created_at=utc_now(),
+    except Exception:
+        fallback = DeterministicSupportProvider()
+        assistant_content = fallback.generate(
+            messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+            first_response=first_response,
         )
-        db.add(assistant_message)
-        thread.last_message_at = assistant_message.created_at
-        db.flush()
-        db.commit()
+        provider_name = fallback.name
+        used_fallback = True
 
-        return ChatSendResponse(
-            thread_id=thread.id,
-            student_message=_message_response(user_message),
-            assistant_message=_message_response(assistant_message),
-            safety=ChatSafetyResponse(
-                high_risk=False,
-                input_flagged=False,
-                output_flagged=False,
-                categories=[],
-                suggested_action="supportive_chat",
-                sos_suggested=False,
-                escalation_message=None,
-            ),
-            provider=ChatProviderResponse(
-                name=provider_name,
-                configured=not used_fallback,
-                using_fallback=used_fallback,
-            ),
+    assistant_message = ChatMessage(
+        thread_id=thread.id,
+        role=ChatMessageRole.ASSISTANT.value,
+        content=assistant_content,
+        safety_flagged=False,
+        is_demo=thread.is_demo,
+        created_at=utc_now(),
+    )
+    db.add(assistant_message)
+    thread.last_message_at = assistant_message.created_at
+    db.flush()
+    db.commit()
+
+    return ChatSendResponse(
+        thread_id=thread.id,
+        student_message=_message_response(user_message),
+        assistant_message=_message_response(assistant_message),
+        safety=ChatSafetyResponse(
+            high_risk=False,
+            input_flagged=False,
+            output_flagged=False,
+            categories=[],
+            suggested_action="supportive_chat",
+            sos_suggested=False,
+            escalation_message=None,
+        ),
+        provider=ChatProviderResponse(
+            name=provider_name,
+            configured=not used_fallback,
+            using_fallback=used_fallback,
+        ),
+    )
+
+
+def list_adult_chat_threads(db: OrmSession, *, user: User) -> list[ChatThreadResponse]:
+    """List chat threads owned by a teacher or parent."""
+    threads = list(
+        db.scalars(
+            select(ChatThread)
+            .where(ChatThread.student_id == user.id)
+            .order_by(ChatThread.last_message_at.desc().nullslast(), ChatThread.created_at.desc())
+            .limit(25)
         )
+    )
+    return [_thread_response(thread) for thread in threads]
 
 
-    def list_adult_chat_threads(db: OrmSession, *, user: User) -> list[ChatThreadResponse]:
-        """List chat threads owned by a teacher or parent."""
-        threads = list(
-            db.scalars(
-                select(ChatThread)
-                .where(ChatThread.student_id == user.id)
-                .order_by(ChatThread.last_message_at.desc().nullslast(), ChatThread.created_at.desc())
-                .limit(25)
-            )
+def get_adult_chat_transcript(
+    db: OrmSession,
+    *,
+    user: User,
+    thread_id: uuid.UUID,
+) -> ChatTranscriptResponse:
+    """Get a chat transcript for a teacher or parent."""
+    thread = db.get(ChatThread, thread_id)
+    if thread is None or thread.student_id != user.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy cuộc trò chuyện.")
+    messages = list(
+        db.scalars(
+            select(ChatMessage)
+            .where(ChatMessage.thread_id == thread.id)
+            .order_by(ChatMessage.created_at.asc())
         )
-        return [_thread_response(thread) for thread in threads]
-
-
-    def get_adult_chat_transcript(
-        db: OrmSession,
-        *,
-        user: User,
-        thread_id: uuid.UUID,
-    ) -> ChatTranscriptResponse:
-        """Get a chat transcript for a teacher or parent."""
-        thread = db.get(ChatThread, thread_id)
-        if thread is None or thread.student_id != user.id:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy cuộc trò chuyện.")
-        messages = list(
-            db.scalars(
-                select(ChatMessage)
-                .where(ChatMessage.thread_id == thread.id)
-                .order_by(ChatMessage.created_at.asc())
-            )
-        )
-        return ChatTranscriptResponse(
-            thread=_thread_response(thread),
-            messages=[_message_response(message) for message in messages],
-        )
+    )
+    return ChatTranscriptResponse(
+        thread=_thread_response(thread),
+        messages=[_message_response(message) for message in messages],
+    )
