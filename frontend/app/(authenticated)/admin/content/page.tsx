@@ -250,19 +250,6 @@ function newSelfCheckQuestion(sortOrder: number): AdminSelfCheckContent["questio
   };
 }
 
-function newThreshold(sortOrder: number): AdminSelfCheckContent["thresholds"][number] {
-  return {
-    state_label: "On dinh",
-    min_score: sortOrder - 1,
-    max_score: sortOrder - 1,
-    comment: "",
-    advice: "",
-    positive_content: "",
-    suggested_next_action: "",
-    is_demo: false,
-  };
-}
-
 function newScenarioChoice(sortOrder: number): AdminScenarioContent["choices"][number] {
   return { text: "", signal: "constructive", feedback: "", sort_order: sortOrder, is_demo: false };
 }
@@ -366,6 +353,83 @@ function ChecklistItem({ passed, label, fixHint, onFix }: { passed: boolean; lab
   );
 }
 
+/** Compute per-score coverage count for threshold validation */
+function computeScoreCoverage(thresholds: AdminSelfCheckContent["thresholds"], possibleMin: number, possibleMax: number) {
+  const coverage: Record<number, number> = {};
+  for (let s = possibleMin; s <= possibleMax; s++) coverage[s] = 0;
+  for (const t of thresholds) {
+    if (t.min_score > t.max_score) continue;
+    for (let s = t.min_score; s <= t.max_score; s++) {
+      coverage[s] = (coverage[s] ?? 0) + 1;
+    }
+  }
+  const gaps: number[] = [];
+  const overlaps: number[] = [];
+  for (let s = possibleMin; s <= possibleMax; s++) {
+    if ((coverage[s] ?? 0) === 0) gaps.push(s);
+    if ((coverage[s] ?? 0) > 1) overlaps.push(s);
+  }
+  const isValid = gaps.length === 0 && overlaps.length === 0 && thresholds.length > 0 && thresholds.every((t) => t.min_score <= t.max_score);
+  return { coverage, gaps, overlaps, isValid };
+}
+
+/** Format a list of numbers into readable ranges like "4–6, 9" */
+function formatScoreRanges(scores: number[]): string {
+  if (scores.length === 0) return "";
+  const sorted = [...scores].sort((a, b) => a - b);
+  const ranges: string[] = [];
+  let start = sorted[0];
+  let end = sorted[0];
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] === end + 1) { end = sorted[i]; }
+    else { ranges.push(start === end ? `${start}` : `${start}–${end}`); start = sorted[i]; end = sorted[i]; }
+  }
+  ranges.push(start === end ? `${start}` : `${start}–${end}`);
+  return ranges.join(", ");
+}
+
+/** Visual score coverage grid */
+function ScoreCoverageGrid({ thresholds, possibleMin, possibleMax }: { thresholds: AdminSelfCheckContent["thresholds"]; possibleMin: number; possibleMax: number }) {
+  const rangeLen = possibleMax - possibleMin + 1;
+  if (rangeLen <= 0 || rangeLen > 100) return null;
+  const { coverage, gaps, overlaps } = computeScoreCoverage(thresholds, possibleMin, possibleMax);
+  const useCompact = rangeLen > 30;
+
+  if (useCompact) {
+    return (
+      <div className="rounded-xl border border-outline-variant/30 bg-primary/5 p-3 space-y-1.5">
+        <p className="text-xs font-medium text-on-background/70">Phạm vi điểm: {possibleMin}–{possibleMax} ({rangeLen} giá trị)</p>
+        {gaps.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">⚠ Thiếu: {formatScoreRanges(gaps)}</p>}
+        {overlaps.length > 0 && <p className="text-xs text-amber-600 dark:text-amber-400">⚠ Trùng: {formatScoreRanges(overlaps)}</p>}
+        {gaps.length === 0 && overlaps.length === 0 && <p className="text-xs text-green-600 dark:text-green-400">✓ Đã phủ đúng toàn bộ dải điểm</p>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-outline-variant/30 bg-primary/5 p-3 space-y-2">
+      <p className="text-xs font-medium text-on-background/70">Phạm vi điểm: {possibleMin}–{possibleMax}</p>
+      <div className="flex flex-wrap gap-1">
+        {Array.from({ length: rangeLen }, (_, i) => {
+          const score = possibleMin + i;
+          const count = coverage[score] ?? 0;
+          let bg = "bg-green-200 dark:bg-green-800 text-green-900 dark:text-green-100";
+          if (count === 0) bg = "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 ring-1 ring-red-300";
+          if (count > 1) bg = "bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 ring-1 ring-amber-400";
+          return <span key={score} className={`inline-flex h-7 w-7 items-center justify-center rounded-lg text-xs font-medium ${bg}`}>{score}</span>;
+        })}
+      </div>
+      <div className="flex flex-wrap gap-3 text-[11px]">
+        <span className="flex items-center gap-1"><span className="h-3 w-3 rounded bg-green-200 dark:bg-green-800" /> Đã phủ</span>
+        <span className="flex items-center gap-1"><span className="h-3 w-3 rounded bg-red-100 dark:bg-red-900/40 ring-1 ring-red-300" /> Thiếu</span>
+        <span className="flex items-center gap-1"><span className="h-3 w-3 rounded bg-amber-200 dark:bg-amber-800 ring-1 ring-amber-400" /> Trùng</span>
+      </div>
+      {gaps.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">Thiếu điểm: {formatScoreRanges(gaps)}</p>}
+      {overlaps.length > 0 && <p className="text-xs text-amber-600 dark:text-amber-400">Trùng điểm: {formatScoreRanges(overlaps)}</p>}
+    </div>
+  );
+}
+
 function nextEditorStep(step: EditorStep): EditorStep {
   return (step === 3 ? 3 : step + 1) as EditorStep;
 }
@@ -421,7 +485,7 @@ export default function AdminContentPage() {
   const thresholdsComplete = selfCheckDraft.thresholds.length > 0 && selfCheckDraft.thresholds.every(
     (t) => (t.comment ?? "").trim().length > 0 && (t.advice ?? "").trim().length > 0 && (t.suggested_next_action ?? "").trim().length > 0,
   );
-  // Score range coverage: thresholds must cover [possibleMin..possibleMax] exactly
+  // Score range coverage: thresholds must cover [possibleMin..possibleMax] exactly (no gaps, no overlaps)
   const validQuestions = selfCheckDraft.questions.filter((q) => q.text.trim().length > 0 && q.choices.filter((c) => c.text.trim().length > 0).length >= 2);
   let possibleMin = 0;
   let possibleMax = 0;
@@ -429,16 +493,8 @@ export default function AdminContentPage() {
     const scores = q.choices.filter((c) => c.text.trim().length > 0).map((c) => c.score_value);
     if (scores.length > 0) { possibleMin += Math.min(...scores); possibleMax += Math.max(...scores); }
   }
-  const coveredScores = new Set<number>();
-  let thresholdRangesValid = selfCheckDraft.thresholds.length > 0;
-  for (const t of selfCheckDraft.thresholds) {
-    if (t.min_score > t.max_score) { thresholdRangesValid = false; break; }
-    for (let s = t.min_score; s <= t.max_score; s++) coveredScores.add(s);
-  }
-  const expectedScores = new Set<number>();
-  for (let s = possibleMin; s <= possibleMax; s++) expectedScores.add(s);
-  const scoresCovered = thresholdRangesValid && validQuestions.length > 0 &&
-    coveredScores.size === expectedScores.size && [...expectedScores].every((s) => coveredScores.has(s));
+  const scoreCoverageResult = computeScoreCoverage(selfCheckDraft.thresholds, possibleMin, possibleMax);
+  const scoresCovered = validQuestions.length > 0 && scoreCoverageResult.isValid;
 
   const selfCheckReviewItems = [
     { label: "Tên bài đã được nhập", passed: selfCheckDraft.title.trim().length > 0, step: 1 as EditorStep, fixHint: "Bước 1 →" },
@@ -455,7 +511,13 @@ export default function AdminContentPage() {
     },
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: "Mỗi ngưỡng có nhận xét, gợi ý và hành động", passed: thresholdsComplete, step: 3 as EditorStep, fixHint: "Bước 3 →" },
-    { label: validQuestions.length > 0 ? `Ngưỡng phủ đúng dải điểm (${possibleMin}–${possibleMax})` : "Hoàn thành câu hỏi để tính dải điểm", passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
+    { label: validQuestions.length > 0
+        ? scoreCoverageResult.gaps.length > 0
+          ? `Thiếu điểm: ${formatScoreRanges(scoreCoverageResult.gaps)}`
+          : scoreCoverageResult.overlaps.length > 0
+            ? `Trùng điểm: ${formatScoreRanges(scoreCoverageResult.overlaps)}`
+            : `Ngưỡng phủ đúng dải ${possibleMin}–${possibleMax} ✓`
+        : "Hoàn thành câu hỏi để tính dải điểm", passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
     selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
@@ -512,9 +574,7 @@ export default function AdminContentPage() {
       return;
     }
     await saveSelfCheckDraft();
-    const nextStep = nextEditorStep(selfCheckStep);
-    if (nextStep === 3) redistributeThresholds();
-    setSelfCheckStep(nextStep);
+    setSelfCheckStep(nextEditorStep(selfCheckStep));
   }
 
   async function saveAndAdvanceScenario() {
@@ -689,11 +749,73 @@ export default function AdminContentPage() {
   }
 
   function addThreshold() {
-    setSelfCheckDraft((current) => ({
-      ...current,
-      thresholds: [...current.thresholds, newThreshold(current.thresholds.length + 1)],
-    }));
-    setTimeout(redistributeThresholds, 0);
+    setSelfCheckDraft((current) => {
+      const questions = current.questions.filter((q) => q.text.trim().length > 0 && q.choices.filter((c) => c.text.trim().length > 0).length >= 2);
+      let pMin = 0;
+      let pMax = 0;
+      for (const q of questions) {
+        const scores = q.choices.filter((c) => c.text.trim().length > 0).map((c) => c.score_value);
+        if (scores.length > 0) { pMin += Math.min(...scores); pMax += Math.max(...scores); }
+      }
+      // Find the first gap in coverage
+      const { gaps } = computeScoreCoverage(current.thresholds, pMin, pMax);
+      let newMin = pMin;
+      let newMax = pMax;
+      if (gaps.length > 0) {
+        // Default to the first contiguous gap range
+        newMin = gaps[0];
+        newMax = gaps[0];
+        for (let i = 1; i < gaps.length; i++) {
+          if (gaps[i] === newMax + 1) newMax = gaps[i];
+          else break;
+        }
+      } else if (pMax >= pMin) {
+        // No gap: split the largest existing threshold
+        let largestIdx = -1;
+        let largestSize = 0;
+        for (let i = 0; i < current.thresholds.length; i++) {
+          const size = current.thresholds[i].max_score - current.thresholds[i].min_score + 1;
+          if (size > largestSize) { largestSize = size; largestIdx = i; }
+        }
+        if (largestIdx >= 0 && largestSize > 1) {
+          const t = current.thresholds[largestIdx];
+          const mid = Math.floor((t.min_score + t.max_score) / 2);
+          // Shrink the existing one, new one gets the upper half
+          const updatedThresholds = current.thresholds.map((th, i) =>
+            i === largestIdx ? { ...th, max_score: mid } : th
+          );
+          return {
+            ...current,
+            thresholds: [...updatedThresholds, {
+              state_label: riskLabels[Math.min(updatedThresholds.length, riskLabels.length - 1)] as AdminRiskStateLabel,
+              min_score: mid + 1,
+              max_score: t.max_score,
+              comment: "",
+              advice: "",
+              positive_content: "",
+              suggested_next_action: "",
+              is_demo: false,
+            }],
+          };
+        }
+        // Can't split further — just add a placeholder
+        newMin = pMax;
+        newMax = pMax;
+      }
+      return {
+        ...current,
+        thresholds: [...current.thresholds, {
+          state_label: riskLabels[Math.min(current.thresholds.length, riskLabels.length - 1)] as AdminRiskStateLabel,
+          min_score: newMin,
+          max_score: newMax,
+          comment: "",
+          advice: "",
+          positive_content: "",
+          suggested_next_action: "",
+          is_demo: false,
+        }],
+      };
+    });
   }
 
   function removeThreshold(thresholdIndex: number) {
@@ -701,7 +823,6 @@ export default function AdminContentPage() {
       ...current,
       thresholds: current.thresholds.filter((_, index) => index !== thresholdIndex),
     }));
-    setTimeout(redistributeThresholds, 0);
   }
 
   function updateScenarioChoice(
@@ -1192,18 +1313,21 @@ export default function AdminContentPage() {
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Bước 3: Ngưỡng & Xuất bản</p>
                     <h3 className="text-lg font-semibold text-on-background">Thiết lập kết quả theo tổng điểm</h3>
-                    <p className="text-sm text-on-background/60">Hệ thống tự chia dải điểm. Bạn chỉ cần nhập nội dung phản hồi cho mỗi mức.</p>
+                    <p className="text-sm text-on-background/60">Nhập dải điểm (min–max) cho mỗi ngưỡng. Các ngưỡng phải phủ hết dải điểm, không trùng, không bỏ sót.</p>
                   </div>
-                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckDraft.thresholds.length} ngưỡng đã cấu hình</div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckDraft.thresholds.length} ngưỡng</div>
                 </div>
+
                 {validQuestions.length > 0 ? (
-                  <p className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-on-background/70">
-                    💡 Dải điểm có thể: <strong>{possibleMin}–{possibleMax}</strong> (dựa trên {validQuestions.length} câu hỏi). Các ngưỡng phải phủ hết dải này, không trùng và không bỏ sót.
+                  <ScoreCoverageGrid thresholds={selfCheckDraft.thresholds} possibleMin={possibleMin} possibleMax={possibleMax} />
+                ) : (
+                  <p className="rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-900/20 dark:border-amber-700 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+                    ⚠ Chưa có câu hỏi hợp lệ — quay lại Bước 2 để nhập câu hỏi trước.
                   </p>
-                ) : null}
+                )}
 
                 <div className="flex flex-wrap gap-2 justify-end">
-                  <button type="button" onClick={redistributeThresholds} className="rounded-xl border border-primary/30 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors">
+                  <button type="button" onClick={redistributeThresholds} className="rounded-xl border border-primary/30 px-4 py-2.5 text-sm font-medium text-primary hover:bg-primary/5 transition-colors" title="Chia đều dải điểm cho các ngưỡng hiện có">
                     ↻ Tự phân dải điểm
                   </button>
                   <button type="button" onClick={addThreshold} className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90 transition-colors">
@@ -1214,11 +1338,20 @@ export default function AdminContentPage() {
                 {selfCheckDraft.thresholds.map((threshold, ti) => (
                   <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-3">
                         <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-9 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
                           {riskLabels.map((label) => <option key={label} value={label}>{riskLabelDisplay[label]}</option>)}
                         </select>
-                        <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{threshold.min_score}–{threshold.max_score} điểm</span>
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-xs text-on-background/60">Từ</label>
+                          <input aria-label="Điểm tối thiểu" type="number" value={threshold.min_score} onChange={(event) => updateThreshold(ti, "min_score", event.target.value)} className="h-9 w-16 rounded-lg border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-2 text-center text-sm text-on-background" />
+                          <label className="text-xs text-on-background/60">đến</label>
+                          <input aria-label="Điểm tối đa" type="number" value={threshold.max_score} onChange={(event) => updateThreshold(ti, "max_score", event.target.value)} className="h-9 w-16 rounded-lg border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-2 text-center text-sm text-on-background" />
+                          <span className="text-xs text-on-background/50">điểm</span>
+                        </div>
+                        {threshold.min_score > threshold.max_score && (
+                          <span className="text-xs text-red-500">⚠ Min &gt; Max</span>
+                        )}
                       </div>
                       <button type="button" onClick={() => removeThreshold(ti)} className="rounded-xl border border-red-200 dark:border-red-800 px-3 py-1.5 text-xs text-destructive hover:bg-red-50 dark:hover:bg-red-900/20">
                         Xóa
