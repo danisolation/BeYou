@@ -407,7 +407,7 @@ def update_admin_safety_config(
 
 
 def _detect_high_risk(text: str, config: ChatbotSafetyConfig) -> SafetyDetection:
-    normalized = text.casefold()
+    normalized = _normalize_vietnamese_slang(text).casefold()
     categories: list[str] = []
     for category, keywords in DEFAULT_KEYWORDS_BY_CATEGORY.items():
         if any(keyword.casefold() in normalized for keyword in keywords):
@@ -418,6 +418,90 @@ def _detect_high_risk(text: str, config: ChatbotSafetyConfig) -> SafetyDetection
     if any(keyword in normalized for keyword in custom_keywords) and not categories:
         categories.append("configured_high_risk")
     return SafetyDetection(high_risk=bool(categories), categories=categories)
+
+
+# Vietnamese teen slang/abbreviation normalization
+VIETNAMESE_SLANG_MAP: dict[str, str] = {
+    "ko": "không", "k": "không", "hk": "không", "kh": "không",
+    "bt": "biết", "bít": "biết",
+    "dc": "được", "đc": "được", "dk": "được",
+    "lm": "làm", "lam": "làm",
+    "ns": "nói", "noi": "nói",
+    "bn": "bạn", "ban": "bạn",
+    "r": "rồi", "roi": "rồi",
+    "cx": "cũng", "cung": "cũng",
+    "vs": "với", "voi": "với",
+    "ng": "người", "nguoi": "người",
+    "j": "gì", "ji": "gì", "gi": "gì",
+    "sao": "sao",
+    "chan": "chán", "buon": "buồn",
+    "met": "mệt", "moi": "mỏi",
+    "so": "sợ", "lo": "lo",
+}
+
+
+def _normalize_vietnamese_slang(text: str) -> str:
+    """Expand common Vietnamese teen texting abbreviations for better detection."""
+    words = text.split()
+    expanded = []
+    for word in words:
+        lower = word.lower().strip(".,!?")
+        expanded.append(VIETNAMESE_SLANG_MAP.get(lower, word))
+    return " ".join(expanded)
+
+
+@dataclass
+class SafetyClassification:
+    level: str  # "low", "medium", "high"
+    reason: str
+
+
+MEDIUM_RISK_PATTERNS: list[str] = [
+    "buồn quá", "buon qua", "chán lắm", "chan lam",
+    "mệt mỏi", "met moi", "không muốn đi học", "khong muon di hoc",
+    "áp lực", "ap luc", "stress", "lo lắng", "lo lang",
+    "cô đơn", "co don", "lonely", "không ai hiểu", "khong ai hieu",
+    "khóc", "khoc", "cry", "đau", "dau",
+    "tức giận", "tuc gian", "angry", "bực", "buc",
+    "thất vọng", "that vong", "disappointed",
+    "không có bạn", "khong co ban", "bị bắt nạt", "bi bat nat",
+]
+
+MEDIUM_RISK_RESPONSE = (
+    "Mình nghe thấy em đang trải qua cảm xúc khó khăn. Em có ổn không? "
+    "Nếu em muốn, hãy kể thêm để mình hiểu hơn. "
+    "Và nếu cảm xúc này kéo dài, em có thể nói với người lớn tin tưởng nhé."
+)
+
+
+def _classify_safety(text: str, config: ChatbotSafetyConfig) -> SafetyClassification:
+    """Two-tier safety: keyword high-risk (fast) + pattern medium-risk."""
+    high_risk = _detect_high_risk(text, config)
+    if high_risk.high_risk:
+        return SafetyClassification(level="high", reason=", ".join(high_risk.categories))
+
+    normalized = _normalize_vietnamese_slang(text).casefold()
+    for pattern in MEDIUM_RISK_PATTERNS:
+        if pattern in normalized:
+            return SafetyClassification(level="medium", reason="emotional_distress")
+
+    return SafetyClassification(level="low", reason="normal")
+
+
+def _check_output_guardrail(response: str) -> bool:
+    """Verify LLM output doesn't contain harmful content. Returns True if safe."""
+    unsafe_patterns = [
+        "chẩn đoán", "chan doan",
+        "bạn bị", "ban bi",
+        "bạn mắc", "ban mac",
+        "uống thuốc", "uong thuoc",
+        "tự điều trị", "tu dieu tri",
+        "bỏ học đi", "bo hoc di",
+        "không cần", "khong can",
+        "đừng nói ai", "dung noi ai",
+    ]
+    normalized = response.casefold()
+    return not any(pattern in normalized for pattern in unsafe_patterns)
 
 
 def _escalation_text(config: ChatbotSafetyConfig) -> str:
@@ -646,11 +730,15 @@ def send_chat_message(
     )
     db.add(student_message)
     db.flush()
+
+    # Two-tier safety classification: high → escalate, medium → gentle check-in, low → normal
+    safety_class = _classify_safety(payload.message, config)
     input_detection = _detect_high_risk(payload.message, config)
     provider_name = "guardrail"
     used_fallback = True
     output_detection = SafetyDetection(high_risk=False, categories=[])
-    if input_detection.high_risk:
+
+    if safety_class.level == "high":
         student_message.safety_flagged = True
         assistant_content = _with_first_response_intro(
             _escalation_text(config),
@@ -663,7 +751,43 @@ def send_chat_message(
             thread=thread,
             message_id=student_message.id,
             stage=ChatSafetyStage.INPUT.value,
-            categories=input_detection.categories,
+            categories=input_detection.categories or [safety_class.reason],
+        )
+    elif safety_class.level == "medium":
+        # Medium risk: generate response but prepend gentle check-in
+        provider = get_chat_provider(settings)
+        provider_name = provider.name
+        used_fallback = provider.used_fallback
+
+        extra_context_parts: list[str] = [
+            "[Học sinh có dấu hiệu cảm xúc khó khăn. Bắt đầu bằng hỏi thăm nhẹ nhàng, "
+            "sau đó phản chiếu và gợi ý. Nhắc người lớn tin tưởng ở cuối.]"
+        ]
+        student_ctx = _get_student_context(db, student)
+        if student_ctx:
+            extra_context_parts.append(student_ctx)
+        extra_context = "\n".join(extra_context_parts)
+
+        try:
+            provider_content = provider.generate(
+                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+                first_response=first_response,
+                extra_context=extra_context,
+            )
+        except Exception:
+            provider_content = MEDIUM_RISK_RESPONSE
+            provider_name = "fallback"
+            used_fallback = True
+
+        # Output guardrail check
+        if not _check_output_guardrail(provider_content):
+            logger.warning("Output guardrail triggered — replacing LLM response")
+            provider_content = MEDIUM_RISK_RESPONSE
+
+        assistant_content = _with_first_response_intro(
+            provider_content,
+            first_response=first_response,
+            config=config,
         )
     else:
         provider = get_chat_provider(settings)
@@ -699,6 +823,18 @@ def send_chat_message(
             )
             provider_name = fallback.name
             used_fallback = True
+
+        # Output guardrail: check for harmful content in LLM response
+        if not _check_output_guardrail(provider_content):
+            logger.warning("Output guardrail triggered on low-risk path — replacing LLM response")
+            fallback = DeterministicSupportProvider()
+            provider_content = fallback.generate(
+                messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
+                first_response=first_response,
+            )
+            provider_name = "fallback"
+            used_fallback = True
+
         assistant_content = _with_first_response_intro(
             provider_content,
             first_response=first_response,
@@ -729,7 +865,12 @@ def send_chat_message(
             stage=ChatSafetyStage.OUTPUT.value,
             categories=output_detection.categories,
         )
-    thread.safety_state = "high_risk" if input_detection.high_risk or output_detection.high_risk else "supportive"
+    if safety_class.level == "high" or output_detection.high_risk:
+        thread.safety_state = "high_risk"
+    elif safety_class.level == "medium":
+        thread.safety_state = "medium_risk"
+    else:
+        thread.safety_state = "supportive"
     thread.last_message_at = assistant_message.created_at
     thread.updated_at = assistant_message.created_at
     db.commit()
