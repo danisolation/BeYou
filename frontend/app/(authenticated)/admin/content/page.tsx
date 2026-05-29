@@ -60,38 +60,7 @@ const emptySelfCheck: AdminSelfCheckContent = {
       is_demo: false,
     },
   ],
-  thresholds: [
-    {
-      state_label: "On dinh",
-      min_score: 0,
-      max_score: 0,
-      comment: "",
-      advice: "",
-      positive_content: "",
-      suggested_next_action: "",
-      is_demo: false,
-    },
-    {
-      state_label: "Can chu y",
-      min_score: 1,
-      max_score: 1,
-      comment: "",
-      advice: "",
-      positive_content: "",
-      suggested_next_action: "",
-      is_demo: false,
-    },
-    {
-      state_label: "Nen tim ho tro",
-      min_score: 2,
-      max_score: 2,
-      comment: "",
-      advice: "",
-      positive_content: "",
-      suggested_next_action: "",
-      is_demo: false,
-    },
-  ],
+  thresholds: [],
 };
 
 const emptyScenario: AdminScenarioContent = {
@@ -742,12 +711,30 @@ export default function AdminContentPage() {
         const scores = q.choices.filter((c) => c.text.trim().length > 0).map((c) => c.score_value);
         if (scores.length > 0) { pMin += Math.min(...scores); pMax += Math.max(...scores); }
       }
-      const count = current.thresholds.length || 3;
       const range = pMax - pMin + 1;
+      if (range <= 0) return current;
+
+      // If no thresholds exist, create defaults (up to 4 matching riskLabels, capped by range)
+      let thresholds = current.thresholds;
+      if (thresholds.length === 0) {
+        const defaultCount = Math.min(riskLabels.length, range);
+        thresholds = riskLabels.slice(0, defaultCount).map((label) => ({
+          state_label: label,
+          min_score: 0,
+          max_score: 0,
+          comment: "",
+          advice: "",
+          positive_content: "",
+          suggested_next_action: "",
+          is_demo: false,
+        }));
+      }
+
+      const count = thresholds.length;
       const perBucket = Math.floor(range / count);
       const remainder = range - perBucket * count;
       let cursor = pMin;
-      const updated = current.thresholds.map((t, i) => {
+      const updated = thresholds.map((t, i) => {
         const extra = i < remainder ? 1 : 0;
         const min = cursor;
         const max = cursor + perBucket + extra - 1;
@@ -1345,6 +1332,13 @@ export default function AdminContentPage() {
                     <Plus size={16} className="inline-flex" /> Thêm ngưỡng
                   </button>
                 </div>
+
+                {selfCheckDraft.thresholds.length === 0 ? (
+                  <div className="rounded-2xl border-2 border-dashed border-outline-variant/40 p-6 text-center space-y-2">
+                    <p className="text-sm text-on-background/70">Chưa có ngưỡng điểm nào.</p>
+                    <p className="text-xs text-on-background/50">Bấm <strong>"Tự phân dải điểm"</strong> để tự động tạo ngưỡng dựa trên câu hỏi, hoặc <strong>"Thêm ngưỡng"</strong> để tự cấu hình từng mức.</p>
+                  </div>
+                ) : null}
 
                 {selfCheckDraft.thresholds.map((threshold, ti) => (
                   <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
