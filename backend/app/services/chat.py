@@ -655,10 +655,15 @@ def _first_response(db: OrmSession, thread_id: uuid.UUID) -> bool:
     return existing_assistant is None
 
 
+def _map_role(role: str) -> str:
+    """Map internal roles to OpenAI-compatible roles ('student' → 'user')."""
+    return "user" if role == ChatMessageRole.STUDENT.value else role
+
+
 def _prepare_provider_messages(messages: list[ChatMessage]) -> list[dict[str, str]]:
     """Prepare messages for the LLM provider with context compression."""
     if len(messages) <= 10:
-        return [{"role": message.role, "content": message.content} for message in messages]
+        return [{"role": _map_role(message.role), "content": message.content} for message in messages]
 
     # Compress older messages into a summary, keep last 8 recent
     older = messages[:-8]
@@ -667,14 +672,13 @@ def _prepare_provider_messages(messages: list[ChatMessage]) -> list[dict[str, st
     summary_parts: list[str] = []
     for msg in older:
         role_label = "Em" if msg.role == ChatMessageRole.STUDENT.value else "Mình"
-        # Truncate long messages in summary
         content = msg.content[:80] + "..." if len(msg.content) > 80 else msg.content
         summary_parts.append(f"{role_label}: {content}")
 
     summary = "[Tóm tắt cuộc trò chuyện trước đó]\n" + "\n".join(summary_parts[-6:])
 
     result = [{"role": "assistant", "content": summary}]
-    result.extend({"role": msg.role, "content": msg.content} for msg in recent)
+    result.extend({"role": _map_role(msg.role), "content": msg.content} for msg in recent)
     return result
 
 
