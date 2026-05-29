@@ -25,6 +25,7 @@ export interface StitchCardProps extends VariantProps<typeof cardVariants> {
   icon: ReactNode;
   title: string;
   description?: string;
+  image?: string | null;
   ctaLabel?: string;
   ctaHref?: string;
   onCtaClick?: () => void;
@@ -36,6 +37,7 @@ export function StitchCard({
   icon,
   title,
   description,
+  image,
   ctaLabel,
   ctaHref,
   onCtaClick,
@@ -43,7 +45,11 @@ export function StitchCard({
 }: StitchCardProps) {
   return (
     <div className={cn(cardVariants({ variant }), className)}>
-      {variant === "circular" ? (
+      {image ? (
+        <div className="mb-3 -mx-5 -mt-5 overflow-hidden rounded-t-2xl">
+          <img src={image} alt="" className="h-36 w-full object-cover" />
+        </div>
+      ) : variant === "circular" ? (
         <div className="mb-4 flex items-center justify-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">{icon}</div>
         </div>

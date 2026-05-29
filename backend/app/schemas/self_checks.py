@@ -56,6 +56,7 @@ class SelfCheckTestListItem(BaseModel):
     id: uuid.UUID
     title: str
     description: str | None = None
+    cover_image_url: str | None = None
     status: str
     is_active: bool
     is_demo: bool = False

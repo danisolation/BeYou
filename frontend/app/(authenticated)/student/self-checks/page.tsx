@@ -87,6 +87,7 @@ export default function SelfCheckListPage() {
               icon={<Brain className="h-5 w-5" />}
               title={test.title}
               description={test.description ?? `${questionCount(test)} câu hỏi`}
+              image={test.cover_image_url}
               ctaLabel="Bắt đầu"
               ctaHref={`/student/self-checks/${test.id}`}
             />

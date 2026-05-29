@@ -74,6 +74,7 @@ export default function ScenarioListPage() {
                 icon={<MessageCircle className="h-5 w-5" />}
                 title={scenario.title}
                 description={scenario.situation}
+                image={scenario.cover_image_url}
                 ctaLabel="Thực hành"
                 ctaHref={`/student/scenarios/${scenario.id}`}
               />

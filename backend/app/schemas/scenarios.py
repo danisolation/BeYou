@@ -42,6 +42,7 @@ class ScenarioListItem(BaseModel):
     title: str
     situation: str
     skill_tag: str
+    cover_image_url: str | None = None
     status: str
     is_demo: bool = False
 

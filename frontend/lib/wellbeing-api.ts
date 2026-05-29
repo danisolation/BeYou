@@ -7,6 +7,7 @@ export type SelfCheckListItem = {
   id: string;
   title: string;
   description: string | null;
+  cover_image_url?: string | null;
   status: string;
   is_active: boolean;
   is_demo: boolean;
@@ -86,6 +87,7 @@ export type ScenarioListItem = {
   title: string;
   situation: string;
   skill_tag: string;
+  cover_image_url?: string | null;
   status: string;
   is_demo: boolean;
 };
