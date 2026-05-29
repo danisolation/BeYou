@@ -32,7 +32,6 @@ import {
 } from "@/lib/admin-content-api";
 import { ApiError } from "@/lib/api";
 
-const statusOptions: AdminContentStatus[] = ["draft", "published", "archived"];
 const riskLabels: AdminRiskStateLabel[] = ["On dinh", "Can chu y", "Nen tim ho tro", "Can ho tro som"];
 const riskLabelDisplay: Record<AdminRiskStateLabel, string> = {
   "On dinh": "Ổn định",
@@ -407,7 +406,7 @@ export default function AdminContentPage() {
     "Bước 4: Xem lại & Xuất bản",
   ] as const;
 
-  const selfCheckBasicCount = [selfCheckDraft.title.trim(), selfCheckDraft.description?.trim() ?? "", selfCheckDraft.status].filter(Boolean).length;
+  const selfCheckBasicCount = [selfCheckDraft.title.trim(), selfCheckDraft.description?.trim() ?? ""].filter(Boolean).length;
   const filledSelfCheckQuestions = selfCheckDraft.questions.filter((question) => question.text.trim().length > 0).length;
   const selfCheckQuestionsReady = selfCheckDraft.questions.filter(
     (question) => question.text.trim().length > 0 && question.choices.filter((choice) => choice.text.trim().length > 0).length >= 2,
@@ -428,7 +427,7 @@ export default function AdminContentPage() {
   const canPublishSelfCheck =
     Boolean(selfCheckDraft.id) && selfCheckDraft.status === "draft" && selfCheckReviewItems.every((item) => item.passed);
 
-  const scenarioBasicCount = [scenarioDraft.title.trim(), scenarioDraft.situation.trim(), scenarioDraft.skill_tag.trim(), scenarioDraft.status].filter(Boolean).length;
+  const scenarioBasicCount = [scenarioDraft.title.trim(), scenarioDraft.situation.trim(), scenarioDraft.skill_tag.trim()].filter(Boolean).length;
   const filledScenarioChoices = scenarioDraft.choices.filter((choice) => choice.text.trim().length > 0).length;
   const filledScenarioLessons = [scenarioDraft.recommended_response.trim(), scenarioDraft.lesson.trim()].filter(Boolean).length;
   const scenarioReviewItems = [
@@ -933,19 +932,10 @@ export default function AdminContentPage() {
                     <h3 className="text-lg font-semibold text-on-background">Đặt tên và mô tả bài test</h3>
                     <p className="text-sm text-on-background/60">Các trường có dấu <span className="text-red-500">*</span> nên được hoàn thiện trước khi xuất bản.</p>
                   </div>
-                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckBasicCount}/3 trường đã nhập</div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{selfCheckBasicCount}/2 trường đã nhập</div>
                 </div>
                 <Field label="Tên bài" required value={selfCheckDraft.title} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, title: value }))} placeholder="VD: Em đang cảm thấy thế nào?" hint="Tên ngắn gọn, dễ hiểu cho học sinh THCS/THPT" />
                 <TextAreaField label="Mô tả ngắn" required value={selfCheckDraft.description ?? ""} onChange={(value) => setSelfCheckDraft((current) => ({ ...current, description: value }))} placeholder="VD: Bài kiểm tra giúp em nhận biết cảm xúc hiện tại và tìm cách hỗ trợ phù hợp." hint="1-2 câu giải thích mục đích bài test — sẽ hiển thị trước khi học sinh bắt đầu" />
-                <label className="space-y-1.5 text-xs font-medium text-on-background/70">
-                  <span>
-                    Trạng thái nội dung
-                    <span className="ml-0.5 text-red-500">*</span>
-                  </span>
-                  <select aria-label="Trạng thái nội dung" value={selfCheckDraft.status} onChange={(event) => setSelfCheckDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
-                    {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
-                  </select>
-                </label>
               </section>
             ) : null}
 
@@ -1192,22 +1182,11 @@ export default function AdminContentPage() {
                     <h3 className="text-lg font-semibold text-on-background">Giới thiệu tình huống</h3>
                     <p className="text-sm text-on-background/60">Các trường có dấu <span className="text-red-500">*</span> sẽ giúp giáo viên dễ kiểm tra trước khi xuất bản.</p>
                   </div>
-                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{scenarioBasicCount}/4 trường đã nhập</div>
+                  <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{scenarioBasicCount}/3 trường đã nhập</div>
                 </div>
                 <Field label="Tiêu đề" required value={scenarioDraft.title} onChange={(value) => setScenarioDraft((current) => ({ ...current, title: value }))} placeholder="VD: Bạn rủ em trốn học đi chơi" hint="Mô tả ngắn tình huống — sẽ hiển thị trong danh sách cho học sinh chọn" />
                 <TextAreaField label="Mô tả tình huống" required value={scenarioDraft.situation} onChange={(value) => setScenarioDraft((current) => ({ ...current, situation: value }))} placeholder="VD: Đang giờ ra chơi, một nhóm bạn rủ em bỏ tiết chiều đi chơi game. Các bạn nói 'không sao đâu, cô không biết đâu'. Em đang phân vân..." hint="Viết bối cảnh rõ ràng, có chi tiết để học sinh hình dung — nên viết ở ngôi thứ 2 ('em')" />
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} placeholder="VD: Từ chối áp lực nhóm" hint="Kỹ năng sống mà bài tình huống rèn luyện" />
-                  <label className="space-y-1.5 text-xs font-medium text-on-background/70">
-                    <span>
-                      Trạng thái
-                      <span className="ml-0.5 text-red-500">*</span>
-                    </span>
-                    <select aria-label="Trạng thái" value={scenarioDraft.status} onChange={(event) => setScenarioDraft((current) => ({ ...current, status: event.target.value as AdminContentStatus }))} className="min-h-11 w-full rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
-                      {statusOptions.map((s) => <option key={s} value={s}>{s === "draft" ? "Nháp" : s === "published" ? "Đã xuất bản" : "Đã lưu trữ"}</option>)}
-                    </select>
-                  </label>
-                </div>
+                <Field label="Kỹ năng liên quan" required value={scenarioDraft.skill_tag} onChange={(value) => setScenarioDraft((current) => ({ ...current, skill_tag: value }))} placeholder="VD: Từ chối áp lực nhóm" hint="Kỹ năng sống mà bài tình huống rèn luyện" />
               </section>
             ) : null}
 
