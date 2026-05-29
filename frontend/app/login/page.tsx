@@ -18,17 +18,17 @@ const brandingCards = [
   {
     icon: Leaf,
     title: "Góc nhỏ bình yên",
-    description: "Không gian an toàn để bạn là chính mình, không phán xét, không áp lực.",
+    description: "Không gian an toàn để em là chính mình, không phán xét, không áp lực.",
   },
   {
     icon: Heart,
-    title: "Nâng niu từng xao động",
-    description: "Mỗi cảm xúc đều có giá trị — chúng tôi lắng nghe và đồng hành cùng bạn.",
+    title: "Lắng nghe từng cảm xúc",
+    description: "Mỗi cảm xúc đều có giá trị — Peerlight AI lắng nghe và đồng hành cùng em.",
   },
   {
     icon: Sunrise,
-    title: "Điểm hẹn chữa lành",
-    description: "Hành trình chữa lành bắt đầu từ bước đầu tiên — và bạn không đi một mình.",
+    title: "Bắt đầu từ bước nhỏ",
+    description: "Em không cần hoàn hảo — chỉ cần bắt đầu, và em không đi một mình.",
   },
 ];
 
@@ -123,41 +123,8 @@ export default function LoginPage() {
                 Chào mừng em quay lại! Đăng nhập để tiếp tục nhé.
               </p>
 
-              {/* Demo accounts section */}
-              <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
-                <p className="text-xs font-semibold text-primary">Đăng nhập thử</p>
-                {!capabilitiesLoaded ? (
-                  <p className="mt-1 text-xs text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
-                ) : publicDemoEntryEnabled ? (
-                  <>
-                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để vào nhanh.</p>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {demoAccounts.map((account) => (
-                        <button
-                          key={account.email}
-                          type="button"
-                          onClick={() => {
-                            setEmail(account.email);
-                            setPassword(DEMO_PASSWORD);
-                            setError("");
-                          }}
-                          className="btn-press min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
-                        >
-                          {account.label}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
-                    <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
-                    {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
-                  </div>
-                )}
-              </div>
-
-              {/* Login form */}
-              <form className="mt-7 space-y-5" onSubmit={handleSubmit}>
+              {/* Login form — shown immediately */}
+              <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
                 <div>
                   <label className="block text-xs font-semibold text-on-background" htmlFor="email">
                     Email
@@ -218,6 +185,42 @@ export default function LoginPage() {
                   {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
               </form>
+
+              {/* Demo accounts — loads async below form */}
+              <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
+                <p className="text-xs font-semibold text-primary">Đăng nhập thử</p>
+                {!capabilitiesLoaded ? (
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <p className="text-xs text-on-background/50">Đang kết nối...</p>
+                  </div>
+                ) : publicDemoEntryEnabled ? (
+                  <>
+                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để vào nhanh.</p>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {demoAccounts.map((account) => (
+                        <button
+                          key={account.email}
+                          type="button"
+                          onClick={() => {
+                            setEmail(account.email);
+                            setPassword(DEMO_PASSWORD);
+                            setError("");
+                          }}
+                          className="btn-press min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+                        >
+                          {account.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
+                    <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
+                    {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Right: 3 Branding cards */}
