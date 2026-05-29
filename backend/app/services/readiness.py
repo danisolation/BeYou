@@ -301,14 +301,14 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
-    if settings.chat_provider == "freemodel" and _has_placeholder_value(settings.freemodel_api_key):
+    if settings.chat_provider == "gemini" and _has_placeholder_value(settings.effective_llm_api_key):
         checks.append(
             _safe_check(
                 key="provider_secrets",
                 category="configuration",
                 status="fail" if is_production or is_production_pilot else "warn",
                 summary="Configured chatbot provider is missing a usable backend API key.",
-                remediation="Configure the backend provider API key and never expose it in frontend code.",
+                remediation="Configure GEMINI_API_KEY and never expose it in frontend code.",
             )
         )
     elif is_production and settings.chat_provider == "fallback" and not is_production_pilot:

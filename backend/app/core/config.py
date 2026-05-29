@@ -54,13 +54,21 @@ class Settings(BaseSettings):
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
     allow_demo_login: bool = Field(default=True, validation_alias="ALLOW_DEMO_LOGIN")
     chat_provider: str = Field(default="fallback", validation_alias="CHAT_PROVIDER")
-    freemodel_api_key: str = Field(default="", validation_alias="FREEMODEL_API_KEY")
-    freemodel_base_url: str = Field(
-        default="https://freemodel.dev/api/v1",
-        validation_alias="FREEMODEL_BASE_URL",
+    gemini_api_key: str = Field(default="", validation_alias="GEMINI_API_KEY")
+    gemini_base_url: str = Field(
+        default="https://generativelanguage.googleapis.com/v1beta/openai",
+        validation_alias="GEMINI_BASE_URL",
     )
-    freemodel_model: str = Field(default="freemodel-default", validation_alias="FREEMODEL_MODEL")
-    freemodel_timeout_seconds: float = Field(default=20.0, validation_alias="FREEMODEL_TIMEOUT_SECONDS")
+    gemini_models: str = Field(
+        default="gemini-2.0-flash,gemini-1.5-flash,gemini-2.0-flash-lite",
+        validation_alias="GEMINI_MODELS",
+    )
+    gemini_timeout_seconds: float = Field(default=30.0, validation_alias="GEMINI_TIMEOUT_SECONDS")
+    # Legacy aliases (fallback to GEMINI_* if not set)
+    freemodel_api_key: str = Field(default="", validation_alias="FREEMODEL_API_KEY")
+    freemodel_base_url: str = Field(default="", validation_alias="FREEMODEL_BASE_URL")
+    freemodel_model: str = Field(default="", validation_alias="FREEMODEL_MODEL")
+    freemodel_timeout_seconds: float = Field(default=0, validation_alias="FREEMODEL_TIMEOUT_SECONDS")
     sos_email_provider: str = Field(default="disabled", validation_alias="SOS_EMAIL_PROVIDER")
     smtp_host: str = Field(default="", validation_alias="SMTP_HOST")
     smtp_port: int = Field(default=587, validation_alias="SMTP_PORT")
@@ -119,8 +127,11 @@ class Settings(BaseSettings):
     @classmethod
     def validate_chat_provider(cls, value: str) -> str:
         normalized = value.strip().lower()
-        if normalized not in {"fallback", "freemodel"}:
-            raise ValueError("CHAT_PROVIDER must be fallback or freemodel")
+        if normalized not in {"fallback", "freemodel", "gemini"}:
+            raise ValueError("CHAT_PROVIDER must be fallback, gemini, or freemodel")
+        # Treat "freemodel" as alias for "gemini"
+        if normalized == "freemodel":
+            normalized = "gemini"
         return normalized
 
     @field_validator("sos_email_provider")
@@ -182,6 +193,32 @@ class Settings(BaseSettings):
         origins = [self.frontend_origin]
         origins.extend(origin for origin in self.frontend_origins.split(",") if origin)
         return list(dict.fromkeys(origins))
+
+    @property
+    def effective_llm_api_key(self) -> str:
+        """Resolve API key: GEMINI_API_KEY > FREEMODEL_API_KEY."""
+        return self.gemini_api_key or self.freemodel_api_key
+
+    @property
+    def effective_llm_base_url(self) -> str:
+        """Resolve base URL: GEMINI_BASE_URL > FREEMODEL_BASE_URL > default."""
+        return self.gemini_base_url if self.gemini_base_url else (self.freemodel_base_url or "https://generativelanguage.googleapis.com/v1beta/openai")
+
+    @property
+    def effective_llm_models(self) -> list[str]:
+        """Resolve model list: GEMINI_MODELS > FREEMODEL_MODEL > defaults."""
+        if self.gemini_models:
+            return [m.strip() for m in self.gemini_models.split(",") if m.strip()]
+        if self.freemodel_model:
+            return [self.freemodel_model]
+        return ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.0-flash-lite"]
+
+    @property
+    def effective_llm_timeout(self) -> float:
+        """Resolve timeout: GEMINI_TIMEOUT_SECONDS > FREEMODEL_TIMEOUT_SECONDS > 30."""
+        if self.gemini_timeout_seconds:
+            return self.gemini_timeout_seconds
+        return self.freemodel_timeout_seconds or 30.0
 
     @property
     def is_local_demo(self) -> bool:

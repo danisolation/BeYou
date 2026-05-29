@@ -116,8 +116,10 @@ class DeterministicSupportProvider:
         )
 
 
-class FreemodelProvider:
-    name = "freemodel"
+class GeminiProvider:
+    """LLM provider using Google Gemini (OpenAI-compatible endpoint) with model rotation."""
+
+    name = "gemini"
     used_fallback = False
 
     SYSTEM_PROMPT = (
@@ -180,6 +182,10 @@ class FreemodelProvider:
 
     def __init__(self, settings: Settings) -> None:
         self._settings = settings
+        self._models = settings.effective_llm_models
+        self._base_url = settings.effective_llm_base_url
+        self._api_key = settings.effective_llm_api_key
+        self._timeout = settings.effective_llm_timeout
 
     def _detect_boundary(self, message: str) -> str | None:
         normalized = message.casefold()
@@ -212,11 +218,29 @@ class FreemodelProvider:
             return "Mình ở đây để hỗ trợ cảm xúc của em. Em có muốn chia sẻ chuyện gì đang làm em bận tâm không?"
 
         sanitized = self._sanitize_messages(messages)
-        return self._call_api(sanitized, extra_context=extra_context)
+        return self._call_with_rotation(sanitized, extra_context=extra_context)
 
-    def _call_api(self, messages: list[dict[str, str]], *, retry: int = 0, extra_context: str | None = None) -> str:
+    def _call_with_rotation(self, messages: list[dict[str, str]], *, extra_context: str | None = None) -> str:
+        """Try each model in order; rotate on rate limit (429) or server error (5xx)."""
+        last_error: Exception | None = None
+        for model in self._models:
+            try:
+                return self._call_api(messages, model=model, extra_context=extra_context)
+            except httpx.HTTPStatusError as exc:
+                last_error = exc
+                if exc.response.status_code in {429, 500, 502, 503}:
+                    logger.warning("Model %s returned %d, rotating to next model", model, exc.response.status_code)
+                    continue
+                raise
+            except httpx.TimeoutException as exc:
+                last_error = exc
+                logger.warning("Model %s timed out, rotating to next model", model)
+                continue
+        raise last_error or RuntimeError("All models exhausted")
+
+    def _call_api(self, messages: list[dict[str, str]], *, model: str, extra_context: str | None = None) -> str:
         headers = {
-            "Authorization": f"Bearer {self._settings.freemodel_api_key}",
+            "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
         }
         system_content = self.SYSTEM_PROMPT
@@ -224,36 +248,30 @@ class FreemodelProvider:
             system_content += f"\n\n{extra_context}"
 
         payload = {
-            "model": self._settings.freemodel_model,
+            "model": model,
             "messages": [
                 {"role": "system", "content": system_content},
                 *messages,
             ],
         }
+        with httpx.Client(timeout=self._timeout) as client:
+            response = client.post(
+                f"{self._base_url.rstrip('/')}/chat/completions",
+                headers=headers,
+                json=payload,
+            )
+            response.raise_for_status()
+            data = response.json()
         try:
-            with httpx.Client(timeout=self._settings.freemodel_timeout_seconds) as client:
-                response = client.post(
-                    f"{self._settings.freemodel_base_url.rstrip('/')}/chat/completions",
-                    headers=headers,
-                    json=payload,
-                )
-                response.raise_for_status()
-                data = response.json()
-            try:
-                return str(data["choices"][0]["message"]["content"]).strip()
-            except (KeyError, IndexError, TypeError):
-                text = data.get("text") if isinstance(data, dict) else None
-                if isinstance(text, str) and text.strip():
-                    return text.strip()
-                raise ValueError("freemodel response did not include assistant content")
-        except (httpx.TimeoutException, httpx.HTTPStatusError) as exc:
-            if retry < 1:
-                logger.warning("FreeModel attempt %d failed (%s), retrying...", retry + 1, type(exc).__name__)
-                return self._call_api(messages, retry=retry + 1, extra_context=extra_context)
-            raise
+            return str(data["choices"][0]["message"]["content"]).strip()
+        except (KeyError, IndexError, TypeError):
+            text = data.get("text") if isinstance(data, dict) else None
+            if isinstance(text, str) and text.strip():
+                return text.strip()
+            raise ValueError("LLM response did not include assistant content")
 
     def generate_stream(self, *, messages: list[dict[str, str]], extra_context: str | None = None):
-        """Yield tokens as they arrive from FreeModel streaming API."""
+        """Yield tokens from streaming API with model rotation on failure."""
         last_message = messages[-1]["content"] if messages else ""
 
         boundary = self._detect_boundary(last_message)
@@ -270,62 +288,74 @@ class FreemodelProvider:
         if extra_context:
             system_content += f"\n\n{extra_context}"
 
+        for model in self._models:
+            try:
+                yield from self._stream_model(sanitized, model=model, system_content=system_content)
+                return
+            except Exception as exc:
+                logger.warning("Streaming model %s failed (%s), trying next", model, type(exc).__name__)
+                continue
+
+        # All models failed — non-streaming fallback
+        result = self._call_with_rotation(sanitized, extra_context=extra_context)
+        yield result
+
+    def _stream_model(self, messages: list[dict[str, str]], *, model: str, system_content: str):
+        """Stream from a single model."""
         headers = {
-            "Authorization": f"Bearer {self._settings.freemodel_api_key}",
+            "Authorization": f"Bearer {self._api_key}",
             "Content-Type": "application/json",
         }
         payload = {
-            "model": self._settings.freemodel_model,
+            "model": model,
             "stream": True,
             "messages": [
                 {"role": "system", "content": system_content},
-                *sanitized,
+                *messages,
             ],
         }
-        try:
-            with httpx.Client(timeout=self._settings.freemodel_timeout_seconds * 3) as client:
-                with client.stream(
-                    "POST",
-                    f"{self._settings.freemodel_base_url.rstrip('/')}/chat/completions",
-                    headers=headers,
-                    json=payload,
-                ) as response:
-                    response.raise_for_status()
-                    for line in response.iter_lines():
-                        if not line or not line.startswith("data: "):
-                            continue
-                        data_str = line[6:]
-                        if data_str.strip() == "[DONE]":
-                            break
-                        try:
-                            import json
-                            chunk = json.loads(data_str)
-                            delta = chunk.get("choices", [{}])[0].get("delta", {})
-                            content = delta.get("content", "")
-                            if content:
-                                yield content
-                        except (ValueError, KeyError, IndexError):
-                            continue
-        except Exception as exc:
-            logger.warning("Streaming failed: %s", type(exc).__name__)
-            # Fall back to non-streaming
-            result = self._call_api(sanitized, extra_context=extra_context)
-            yield result
+        with httpx.Client(timeout=self._timeout * 3) as client:
+            with client.stream(
+                "POST",
+                f"{self._base_url.rstrip('/')}/chat/completions",
+                headers=headers,
+                json=payload,
+            ) as response:
+                response.raise_for_status()
+                for line in response.iter_lines():
+                    if not line or not line.startswith("data: "):
+                        continue
+                    data_str = line[6:]
+                    if data_str.strip() == "[DONE]":
+                        break
+                    try:
+                        import json
+                        chunk = json.loads(data_str)
+                        delta = chunk.get("choices", [{}])[0].get("delta", {})
+                        content = delta.get("content", "")
+                        if content:
+                            yield content
+                    except (ValueError, KeyError, IndexError):
+                        continue
+
+
+# Keep backward-compatible alias
+FreemodelProvider = GeminiProvider
 
 
 def get_chat_provider(settings: Settings):
-    if settings.chat_provider == "freemodel" and settings.freemodel_api_key:
-        return FreemodelProvider(settings)
+    if settings.chat_provider == "gemini" and settings.effective_llm_api_key:
+        return GeminiProvider(settings)
     return DeterministicSupportProvider()
 
 
 def _provider_status(settings: Settings) -> ChatbotProviderStatus:
-    freemodel_configured = bool(settings.freemodel_api_key)
-    using_freemodel = settings.chat_provider == "freemodel" and freemodel_configured
+    gemini_configured = bool(settings.effective_llm_api_key)
+    using_gemini = settings.chat_provider == "gemini" and gemini_configured
     return ChatbotProviderStatus(
-        name="freemodel" if using_freemodel else "fallback",
-        configured=freemodel_configured,
-        using_fallback=not using_freemodel,
+        name="gemini" if using_gemini else "fallback",
+        configured=gemini_configured,
+        using_fallback=not using_gemini,
     )
 
 
