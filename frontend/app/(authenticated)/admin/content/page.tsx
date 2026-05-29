@@ -357,10 +357,15 @@ function ChecklistItem({ passed, label, fixHint, onFix }: { passed: boolean; lab
 function computeScoreCoverage(thresholds: AdminSelfCheckContent["thresholds"], possibleMin: number, possibleMax: number) {
   const coverage: Record<number, number> = {};
   for (let s = possibleMin; s <= possibleMax; s++) coverage[s] = 0;
+  const outOfRange: number[] = [];
   for (const t of thresholds) {
     if (t.min_score > t.max_score) continue;
     for (let s = t.min_score; s <= t.max_score; s++) {
-      coverage[s] = (coverage[s] ?? 0) + 1;
+      if (s < possibleMin || s > possibleMax) {
+        outOfRange.push(s);
+      } else {
+        coverage[s] = (coverage[s] ?? 0) + 1;
+      }
     }
   }
   const gaps: number[] = [];
@@ -369,8 +374,9 @@ function computeScoreCoverage(thresholds: AdminSelfCheckContent["thresholds"], p
     if ((coverage[s] ?? 0) === 0) gaps.push(s);
     if ((coverage[s] ?? 0) > 1) overlaps.push(s);
   }
-  const isValid = gaps.length === 0 && overlaps.length === 0 && thresholds.length > 0 && thresholds.every((t) => t.min_score <= t.max_score);
-  return { coverage, gaps, overlaps, isValid };
+  const uniqueOutOfRange = [...new Set(outOfRange)].sort((a, b) => a - b);
+  const isValid = gaps.length === 0 && overlaps.length === 0 && uniqueOutOfRange.length === 0 && thresholds.length > 0 && thresholds.every((t) => t.min_score <= t.max_score);
+  return { coverage, gaps, overlaps, outOfRange: uniqueOutOfRange, isValid };
 }
 
 /** Format a list of numbers into readable ranges like "4–6, 9" */
@@ -392,7 +398,7 @@ function formatScoreRanges(scores: number[]): string {
 function ScoreCoverageGrid({ thresholds, possibleMin, possibleMax }: { thresholds: AdminSelfCheckContent["thresholds"]; possibleMin: number; possibleMax: number }) {
   const rangeLen = possibleMax - possibleMin + 1;
   if (rangeLen <= 0 || rangeLen > 100) return null;
-  const { coverage, gaps, overlaps } = computeScoreCoverage(thresholds, possibleMin, possibleMax);
+  const { coverage, gaps, overlaps, outOfRange } = computeScoreCoverage(thresholds, possibleMin, possibleMax);
   const useCompact = rangeLen > 30;
 
   if (useCompact) {
@@ -401,7 +407,8 @@ function ScoreCoverageGrid({ thresholds, possibleMin, possibleMax }: { threshold
         <p className="text-xs font-medium text-on-background/70">Phạm vi điểm: {possibleMin}–{possibleMax} ({rangeLen} giá trị)</p>
         {gaps.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">⚠ Thiếu: {formatScoreRanges(gaps)}</p>}
         {overlaps.length > 0 && <p className="text-xs text-amber-600 dark:text-amber-400">⚠ Trùng: {formatScoreRanges(overlaps)}</p>}
-        {gaps.length === 0 && overlaps.length === 0 && <p className="text-xs text-green-600 dark:text-green-400">✓ Đã phủ đúng toàn bộ dải điểm</p>}
+        {outOfRange.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">⚠ Ngoài dải: {formatScoreRanges(outOfRange)} (chỉ dùng {possibleMin}–{possibleMax})</p>}
+        {gaps.length === 0 && overlaps.length === 0 && outOfRange.length === 0 && <p className="text-xs text-green-600 dark:text-green-400">✓ Đã phủ đúng toàn bộ dải điểm</p>}
       </div>
     );
   }
@@ -426,6 +433,7 @@ function ScoreCoverageGrid({ thresholds, possibleMin, possibleMax }: { threshold
       </div>
       {gaps.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">Thiếu điểm: {formatScoreRanges(gaps)}</p>}
       {overlaps.length > 0 && <p className="text-xs text-amber-600 dark:text-amber-400">Trùng điểm: {formatScoreRanges(overlaps)}</p>}
+      {outOfRange.length > 0 && <p className="text-xs text-red-600 dark:text-red-400">Ngoài dải: {formatScoreRanges(outOfRange)} (dải cho phép: {possibleMin}–{possibleMax})</p>}
     </div>
   );
 }
@@ -512,11 +520,13 @@ export default function AdminContentPage() {
     { label: "Có ít nhất 1 ngưỡng điểm", passed: selfCheckDraft.thresholds.length > 0, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: "Mỗi ngưỡng có nhận xét, gợi ý và hành động", passed: thresholdsComplete, step: 3 as EditorStep, fixHint: "Bước 3 →" },
     { label: validQuestions.length > 0
-        ? scoreCoverageResult.gaps.length > 0
-          ? `Thiếu điểm: ${formatScoreRanges(scoreCoverageResult.gaps)}`
-          : scoreCoverageResult.overlaps.length > 0
-            ? `Trùng điểm: ${formatScoreRanges(scoreCoverageResult.overlaps)}`
-            : `Ngưỡng phủ đúng dải ${possibleMin}–${possibleMax} ✓`
+        ? scoreCoverageResult.outOfRange.length > 0
+          ? `Ngưỡng vượt ngoài dải (chỉ dùng ${possibleMin}–${possibleMax})`
+          : scoreCoverageResult.gaps.length > 0
+            ? `Thiếu điểm: ${formatScoreRanges(scoreCoverageResult.gaps)}`
+            : scoreCoverageResult.overlaps.length > 0
+              ? `Trùng điểm: ${formatScoreRanges(scoreCoverageResult.overlaps)}`
+              : `Ngưỡng phủ đúng dải ${possibleMin}–${possibleMax} ✓`
         : "Hoàn thành câu hỏi để tính dải điểm", passed: scoresCovered, step: 3 as EditorStep, fixHint: "Bước 3 →" },
   ];
   const canPublishSelfCheck =
@@ -868,7 +878,8 @@ export default function AdminContentPage() {
       ...draft,
       questions: draft.questions
         .filter((q) => q.text.trim().length > 0)
-        .map((q) => ({ ...q, choices: q.choices.filter((c) => c.text.trim().length > 0) })),
+        .map((q) => ({ ...q, choices: q.choices.filter((c) => c.text.trim().length > 0) }))
+        .filter((q) => q.choices.length >= 2),
     };
   }
 
