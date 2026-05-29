@@ -64,8 +64,13 @@ def post_student_chat_message_stream(
     require_role(current_user, UserRole.STUDENT)
 
     def event_generator():
-        for event in send_chat_message_stream(db, student=current_user, payload=payload, settings=settings):
-            yield f"data: {event}\n\n"
+        import json as _json, logging as _log, traceback as _tb
+        try:
+            for event in send_chat_message_stream(db, student=current_user, payload=payload, settings=settings):
+                yield f"data: {event}\n\n"
+        except Exception as exc:
+            _log.getLogger("beyou.chat.stream").error("SSE generator error: %s\n%s", exc, _tb.format_exc())
+            yield f"data: {_json.dumps({'type': 'error', 'message': str(exc)})}\n\n"
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(
