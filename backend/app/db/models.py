@@ -566,6 +566,7 @@ class SelfCheckAttempt(Base):
     answers: Mapped[list["SelfCheckAttemptAnswer"]] = relationship(
         back_populates="attempt", cascade="all, delete-orphan"
     )
+    test: Mapped["SelfCheckTest"] = relationship()
 
     __table_args__ = (
         Index("ix_self_check_attempts_student_completed", "student_id", "completed_at"),

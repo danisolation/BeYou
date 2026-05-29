@@ -25,6 +25,7 @@ class AdultSelfCheckSummaryItem(BaseModel):
     state_label: str
     advice_summary: str | None = None
     support_suggestion: str | None = None
+    cover_image_url: str | None = None
     is_demo: bool = False
 
     @field_validator("state_label")

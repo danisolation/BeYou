@@ -14,6 +14,7 @@ export type AdultSelfCheckSummaryItem = {
   state_label: "On dinh" | "Can chu y" | "Nen tim ho tro" | "Can ho tro som";
   advice_summary: string | null;
   support_suggestion: string | null;
+  cover_image_url?: string | null;
   is_demo: boolean;
 };
 

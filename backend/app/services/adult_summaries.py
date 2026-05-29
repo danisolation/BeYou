@@ -5,7 +5,7 @@ from datetime import timedelta
 
 from fastapi import HTTPException, status
 from sqlalchemy import case, exists, func, select
-from sqlalchemy.orm import Session as OrmSession
+from sqlalchemy.orm import Session as OrmSession, joinedload
 
 from app.core.authorization import require_permission
 from app.db.models import (
@@ -209,6 +209,7 @@ def _summary_item(attempt: SelfCheckAttempt) -> AdultSelfCheckSummaryItem:
         state_label=attempt.state_label,
         advice_summary=attempt.advice_summary,
         support_suggestion=attempt.support_suggestion,
+        cover_image_url=attempt.test.cover_image_url if attempt.test else None,
         is_demo=attempt.is_demo,
     )
 
@@ -235,6 +236,7 @@ def get_adult_self_check_summaries(
 
     latest_attempt = db.scalar(
         select(SelfCheckAttempt)
+        .options(joinedload(SelfCheckAttempt.test))
         .where(SelfCheckAttempt.student_id == student_id)
         .order_by(SelfCheckAttempt.completed_at.desc(), SelfCheckAttempt.id.desc())
         .limit(1)
@@ -243,6 +245,7 @@ def get_adult_self_check_summaries(
     recent_attempts = list(
         db.scalars(
             select(SelfCheckAttempt)
+            .options(joinedload(SelfCheckAttempt.test))
             .where(
                 SelfCheckAttempt.student_id == student_id,
                 SelfCheckAttempt.completed_at >= recent_cutoff,

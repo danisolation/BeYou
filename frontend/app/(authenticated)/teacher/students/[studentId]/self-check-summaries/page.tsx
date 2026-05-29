@@ -27,7 +27,11 @@ function displayRiskLabel(label: string) {
 
 function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] overflow-hidden">
+      {summary.cover_image_url ? (
+        <img src={summary.cover_image_url} alt="" className="h-32 w-full object-cover" />
+      ) : null}
+      <div className="p-6">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-sm font-semibold">{testName(summary)}</h3>
         <span className="rounded-full border border-outline-variant/30 px-3 py-1 text-xs">{displayRiskLabel(summary.state_label)}</span>
@@ -42,6 +46,7 @@ function SummaryCard({ summary }: { summary: AdultSelfCheckSummaryItem }) {
           <h4 className="text-sm font-semibold">Gợi ý hỗ trợ</h4>
           <p className="mt-2 text-sm">{summary.support_suggestion ?? "học sinh cần được quan tâm bằng cách lắng nghe và khích lệ đúng lúc."}</p>
         </div>
+      </div>
       </div>
     </article>
   );
