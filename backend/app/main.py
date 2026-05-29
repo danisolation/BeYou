@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy import text
 from sqlalchemy.orm import Session as OrmSession
 
 from app.api import (
@@ -97,6 +98,13 @@ def create_app() -> FastAPI:
     app.include_router(admin_reports.router, prefix="/api/admin/reports", tags=["admin"])
     app.include_router(admin_operations.router, prefix="/api/admin/operations", tags=["admin"])
     app.include_router(admin_privacy_policy.router, prefix="/api/admin/privacy-policy", tags=["admin"])
+
+    @app.on_event("startup")
+    def warm_db_pool() -> None:
+        """Pre-warm a DB connection so first request isn't slow after cold start."""
+        from app.db.session import engine
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
 
     return app
 
