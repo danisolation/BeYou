@@ -378,6 +378,16 @@ def _default_keywords() -> list[str]:
 def get_or_create_safety_config(db: OrmSession) -> ChatbotSafetyConfig:
     config = db.scalar(select(ChatbotSafetyConfig).where(ChatbotSafetyConfig.name == CONFIG_NAME))
     if config is not None:
+        # Migrate legacy "BeYou" branding → "Peerlight AI"
+        updated = False
+        if config.first_response_disclaimer and "BeYou" in config.first_response_disclaimer:
+            config.first_response_disclaimer = FIRST_RESPONSE_DISCLAIMER
+            updated = True
+        if config.escalation_message and "BeYou" in config.escalation_message:
+            config.escalation_message = DEFAULT_ESCALATION_MESSAGE
+            updated = True
+        if updated:
+            db.flush()
         return config
     config = ChatbotSafetyConfig(
         name=CONFIG_NAME,
