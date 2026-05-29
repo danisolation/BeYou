@@ -1,8 +1,10 @@
 "use client";
 
 import { PageSkeleton } from "@/components/skeletons";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { Heart, Pencil } from "lucide-react";
+
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 
 import {
   createMoodCheckInConfig,
@@ -35,11 +37,15 @@ export default function AdminMoodCheckInsPage() {
   const [configs, setConfigs] = useState<AdminMoodCheckInConfig[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<AdminMoodCheckInConfigPayload>(defaultMoodConfigPayload);
+  const savedSnapshot = useRef<string>(JSON.stringify(defaultMoodConfigPayload));
   const [preview, setPreview] = useState<AdminMoodCheckInPreview | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const isDirty = JSON.stringify(draft) !== savedSnapshot.current;
+  useUnsavedChanges(isDirty);
 
   useEffect(() => {
     listMoodCheckInConfigs()
@@ -55,7 +61,7 @@ export default function AdminMoodCheckInsPage() {
 
   function selectConfig(config: AdminMoodCheckInConfig) {
     setSelectedId(config.id);
-    setDraft({
+    const payload: AdminMoodCheckInConfigPayload = {
       name: config.name,
       status: config.status,
       student_prompt: config.student_prompt,
@@ -63,7 +69,9 @@ export default function AdminMoodCheckInsPage() {
       mood_options: config.mood_options,
       context_tags: config.context_tags,
       sort_order: config.sort_order,
-    });
+    };
+    setDraft(payload);
+    savedSnapshot.current = JSON.stringify(payload);
     setPreview(null);
     setMessage("");
     setError("");

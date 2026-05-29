@@ -21,6 +21,7 @@ import Link from "next/link";
 export default function AdminDashboardPage() {
   const [previews, setPreviews] = useState({ users: 0, links: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let isActive = true;
@@ -30,7 +31,9 @@ export default function AdminDashboardPage() {
         if (!isActive) return;
         setPreviews({ users: users.length, links: links.length });
       })
-      .catch(() => {})
+      .catch(() => {
+        if (isActive) setLoadError(true);
+      })
       .finally(() => {
         if (isActive) setIsLoading(false);
       });
@@ -47,6 +50,12 @@ export default function AdminDashboardPage() {
         <h1 className="text-lg font-semibold text-on-background">Quản trị hệ thống</h1>
         <p className="mt-1 text-sm text-on-background/60">Tổng quan và truy cập nhanh các chức năng quản trị.</p>
       </div>
+
+      {loadError && (
+        <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-xs text-on-background">
+          Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
+        </p>
+      )}
 
       {/* Quick stats */}
       <div className="grid gap-4 sm:grid-cols-3">

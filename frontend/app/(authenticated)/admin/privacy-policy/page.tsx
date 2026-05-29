@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Lock } from "lucide-react";
 
 import { PageSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/ui-primitives";
 import { useToast } from "@/components/toast";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import {
   ACCESS_REASON_OPTIONS,
   getAdminPrivacyPolicy,
@@ -32,15 +33,22 @@ function policyPayload(policy: AdminPrivacyPolicy): AdminPrivacyPolicyUpdate {
 export default function AdminPrivacyPolicyPage() {
   const { success: toastSuccess, error: toastError } = useToast();
   const [policy, setPolicy] = useState<AdminPrivacyPolicy | null>(null);
+  const savedSnapshot = useRef<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const isDirty = policy !== null && JSON.stringify(policyPayload(policy)) !== savedSnapshot.current;
+  useUnsavedChanges(isDirty);
 
   function loadPolicy() {
     setIsLoading(true);
     setErrorMessage(null);
     getAdminPrivacyPolicy()
-      .then(setPolicy)
+      .then((loaded) => {
+        setPolicy(loaded);
+        savedSnapshot.current = JSON.stringify(policyPayload(loaded));
+      })
       .catch(() => setErrorMessage("Chưa tải được chính sách riêng tư. Hãy thử lại từ cổng quản trị."))
       .finally(() => setIsLoading(false));
   }
@@ -58,6 +66,7 @@ export default function AdminPrivacyPolicyPage() {
     try {
       const saved = await updateAdminPrivacyPolicy(policyPayload(policy));
       setPolicy(saved);
+      savedSnapshot.current = JSON.stringify(policyPayload(saved));
       toastSuccess("Đã lưu chính sách riêng tư v1.4.");
     } catch {
       toastError("Chưa lưu được chính sách. Kiểm tra lại cài đặt an toàn và thử lần nữa.");

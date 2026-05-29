@@ -285,6 +285,15 @@ export default function AdminUsersPage() {
           <option value="active">Hoạt động ({stats.activeCount})</option>
           <option value="disabled">Đã khóa ({stats.total - stats.activeCount})</option>
         </select>
+        {(search || roleFilter !== "all" || statusFilter !== "all") && (
+          <button
+            type="button"
+            onClick={() => { setSearch(""); setRoleFilter("all"); setStatusFilter("all"); }}
+            className="min-h-11 rounded-xl border border-outline-variant/30 bg-white px-3 text-xs font-medium text-on-background/70 hover:bg-primary/5 dark:bg-[#1e2d40] sm:w-auto"
+          >
+            Xóa bộ lọc
+          </button>
+        )}
       </div>
 
       {/* User List */}

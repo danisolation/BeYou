@@ -5,6 +5,7 @@ import { Bot } from "lucide-react";
 
 import { PageSkeleton } from "@/components/skeletons";
 import { useToast } from "@/components/toast";
+import { useUnsavedChanges } from "@/hooks/use-unsaved-changes";
 import {
   type ChatbotSafetyConfig,
   getAdminChatbotConfig,
@@ -20,6 +21,13 @@ export default function AdminChatbotPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const isDirty = config !== null && (
+    keywordsText !== config.high_risk_keywords.join("\n") ||
+    escalationMessage !== config.escalation_message ||
+    trustedAdultMessage !== config.trusted_adult_message
+  );
+  useUnsavedChanges(isDirty);
 
   useEffect(() => {
     getAdminChatbotConfig()
