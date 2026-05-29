@@ -223,18 +223,23 @@ class GeminiProvider:
     def _call_with_rotation(self, messages: list[dict[str, str]], *, extra_context: str | None = None) -> str:
         """Try each model in order; rotate on rate limit (429) or server error (5xx)."""
         last_error: Exception | None = None
+        logger.info("GeminiProvider: trying models %s, base_url=%s, key_len=%d", self._models, self._base_url, len(self._api_key))
         for model in self._models:
             try:
                 return self._call_api(messages, model=model, extra_context=extra_context)
             except httpx.HTTPStatusError as exc:
                 last_error = exc
+                logger.warning("Model %s returned %d: %s", model, exc.response.status_code, exc.response.text[:200])
                 if exc.response.status_code in {404, 429, 500, 502, 503}:
-                    logger.warning("Model %s returned %d, rotating to next model", model, exc.response.status_code)
                     continue
                 raise
             except httpx.TimeoutException as exc:
                 last_error = exc
-                logger.warning("Model %s timed out, rotating to next model", model)
+                logger.warning("Model %s timed out after %.0fs", model, self._timeout)
+                continue
+            except Exception as exc:
+                last_error = exc
+                logger.warning("Model %s unexpected error: %s: %s", model, type(exc).__name__, exc)
                 continue
         raise last_error or RuntimeError("All models exhausted")
 
