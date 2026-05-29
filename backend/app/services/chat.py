@@ -3,10 +3,11 @@ from __future__ import annotations
 import logging
 import uuid
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 import httpx
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
@@ -18,6 +19,8 @@ from app.db.models import (
     ChatSafetyStage,
     ChatThread,
     ChatbotSafetyConfig,
+    MoodCheckIn,
+    StudentSupportPlan,
     User,
     utc_now,
 )
@@ -104,7 +107,7 @@ class DeterministicSupportProvider:
     name = "fallback"
     used_fallback = True
 
-    def generate(self, *, messages: list[dict[str, str]], first_response: bool) -> str:
+    def generate(self, *, messages: list[dict[str, str]], first_response: bool, extra_context: str | None = None) -> str:
         return (
             "Cảm ơn em đã chia sẻ. Mình nghe thấy chuyện này có thể đang làm em nặng lòng. "
             "Em có thể thử dừng lại một chút, hít thở chậm, gọi tên cảm xúc chính, chọn một việc nhỏ "
@@ -198,7 +201,7 @@ class FreemodelProvider:
             sanitized.append({"role": msg["role"], "content": content})
         return sanitized
 
-    def generate(self, *, messages: list[dict[str, str]], first_response: bool) -> str:
+    def generate(self, *, messages: list[dict[str, str]], first_response: bool, extra_context: str | None = None) -> str:
         last_message = messages[-1]["content"] if messages else ""
 
         boundary = self._detect_boundary(last_message)
@@ -209,17 +212,21 @@ class FreemodelProvider:
             return "Mình ở đây để hỗ trợ cảm xúc của em. Em có muốn chia sẻ chuyện gì đang làm em bận tâm không?"
 
         sanitized = self._sanitize_messages(messages)
-        return self._call_api(sanitized)
+        return self._call_api(sanitized, extra_context=extra_context)
 
-    def _call_api(self, messages: list[dict[str, str]], *, retry: int = 0) -> str:
+    def _call_api(self, messages: list[dict[str, str]], *, retry: int = 0, extra_context: str | None = None) -> str:
         headers = {
             "Authorization": f"Bearer {self._settings.freemodel_api_key}",
             "Content-Type": "application/json",
         }
+        system_content = self.SYSTEM_PROMPT
+        if extra_context:
+            system_content += f"\n\n{extra_context}"
+
         payload = {
             "model": self._settings.freemodel_model,
             "messages": [
-                {"role": "system", "content": self.SYSTEM_PROMPT},
+                {"role": "system", "content": system_content},
                 *messages,
             ],
         }
@@ -242,7 +249,7 @@ class FreemodelProvider:
         except (httpx.TimeoutException, httpx.HTTPStatusError) as exc:
             if retry < 1:
                 logger.warning("FreeModel attempt %d failed (%s), retrying...", retry + 1, type(exc).__name__)
-                return self._call_api(messages, retry=retry + 1)
+                return self._call_api(messages, retry=retry + 1, extra_context=extra_context)
             raise
 
 
@@ -460,7 +467,80 @@ def _first_response(db: OrmSession, thread_id: uuid.UUID) -> bool:
 
 
 def _prepare_provider_messages(messages: list[ChatMessage]) -> list[dict[str, str]]:
-    return [{"role": message.role, "content": message.content} for message in messages[-10:]]
+    """Prepare messages for the LLM provider with context compression."""
+    if len(messages) <= 10:
+        return [{"role": message.role, "content": message.content} for message in messages]
+
+    # Compress older messages into a summary, keep last 8 recent
+    older = messages[:-8]
+    recent = messages[-8:]
+
+    summary_parts: list[str] = []
+    for msg in older:
+        role_label = "Em" if msg.role == ChatMessageRole.STUDENT.value else "Mình"
+        # Truncate long messages in summary
+        content = msg.content[:80] + "..." if len(msg.content) > 80 else msg.content
+        summary_parts.append(f"{role_label}: {content}")
+
+    summary = "[Tóm tắt cuộc trò chuyện trước đó]\n" + "\n".join(summary_parts[-6:])
+
+    result = [{"role": "assistant", "content": summary}]
+    result.extend({"role": msg.role, "content": msg.content} for msg in recent)
+    return result
+
+
+def _get_student_context(db: OrmSession, student: User) -> str | None:
+    """Build privacy-safe student context from recent mood and support plan."""
+    from datetime import timedelta
+    context_parts: list[str] = []
+
+    # Recent mood check-in (last 3 days)
+    three_days_ago = datetime.now(timezone.utc) - timedelta(days=3)
+    recent_mood = db.scalar(
+        select(MoodCheckIn)
+        .where(
+            MoodCheckIn.student_id == student.id,
+            MoodCheckIn.created_at >= three_days_ago,
+        )
+        .order_by(MoodCheckIn.created_at.desc())
+        .limit(1)
+    )
+    if recent_mood:
+        context_parts.append(
+            f"Tâm trạng gần đây: {recent_mood.mood_label} "
+            f"(năng lượng: {recent_mood.energy_level}/5, stress: {recent_mood.stress_level}/5)"
+        )
+        if recent_mood.context_tags:
+            context_parts.append(f"Ngữ cảnh: {', '.join(recent_mood.context_tags[:3])}")
+
+    # Support plan goals (if active)
+    support_plan = db.scalar(
+        select(StudentSupportPlan)
+        .where(
+            StudentSupportPlan.student_id == student.id,
+            StudentSupportPlan.status == "active",
+        )
+    )
+    if support_plan and support_plan.what_helps:
+        helps_summary = support_plan.what_helps[:100]
+        context_parts.append(f"Điều giúp em: {helps_summary}")
+
+    if not context_parts:
+        return None
+
+    return "[Bối cảnh học sinh - chỉ dùng để điều chỉnh giọng, KHÔNG nhắc lại trực tiếp]\n" + "\n".join(context_parts)
+
+
+def _get_returning_context(db: OrmSession, student: User, thread: ChatThread) -> str | None:
+    """Check if student is returning and build acknowledgment context."""
+    # Count previous threads
+    thread_count = db.scalar(
+        select(func.count(ChatThread.id))
+        .where(ChatThread.student_id == student.id)
+    )
+    if thread_count and thread_count > 1 and _first_response(db, thread.id):
+        return "[Đây là học sinh quay lại, đã chat trước đó. Bắt đầu bằng 'Chào lại em' hoặc tương tự.]"
+    return None
 
 
 def _with_first_response_intro(text: str, *, first_response: bool, config: ChatbotSafetyConfig) -> str:
@@ -589,10 +669,22 @@ def send_chat_message(
         provider = get_chat_provider(settings)
         provider_name = provider.name
         used_fallback = provider.used_fallback
+
+        # Build extra context for LLM (student awareness + returning user)
+        extra_context_parts: list[str] = []
+        student_ctx = _get_student_context(db, student)
+        if student_ctx:
+            extra_context_parts.append(student_ctx)
+        returning_ctx = _get_returning_context(db, student, thread)
+        if returning_ctx:
+            extra_context_parts.append(returning_ctx)
+        extra_context = "\n".join(extra_context_parts) if extra_context_parts else None
+
         try:
             provider_content = provider.generate(
                 messages=_prepare_provider_messages(_thread_messages(db, thread.id)),
                 first_response=first_response,
+                extra_context=extra_context,
             )
         except Exception as exc:
             logger.warning(

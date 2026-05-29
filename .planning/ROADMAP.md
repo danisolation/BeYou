@@ -23,7 +23,7 @@
 
 ## Phases
 
-- [ ] **Phase 60: System Prompt & FreeModel Reliability** - Comprehensive Vietnamese psychological support prompt, topic boundaries, FreeModel retry/timeout, provider health check.
+- [x] **Phase 60: System Prompt & FreeModel Reliability** - Comprehensive Vietnamese psychological support prompt, topic boundaries, FreeModel retry/timeout, provider health check.
 - [ ] **Phase 61: Context Memory & Student Awareness** - Conversation summary compression, cross-session awareness, mood/support-plan context injection.
 - [ ] **Phase 62: Safety Classification & Vietnamese NLP** - LLM-based risk classification, progressive escalation, teen slang detection, output guardrails.
 - [ ] **Phase 63: Streaming Chat UX** - SSE streaming responses, typing indicators, auto-generated thread titles, graceful degradation.
