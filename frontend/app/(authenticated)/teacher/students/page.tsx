@@ -35,7 +35,7 @@ export default function TeacherStudentsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold text-on-background sm:text-2xl">
-          Học sinh liên kết
+          Học sinh đang đồng hành
         </h1>
         <p className="mt-2 text-base text-on-background/70">
           {students.length} học sinh đang được đồng hành
@@ -45,7 +45,7 @@ export default function TeacherStudentsPage() {
       {students.length === 0 ? (
         <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-8 text-center dark:bg-[var(--surface)]">
           <Users className="mx-auto mb-4 text-on-background/30" size={48} />
-          <p className="text-on-background/70">Chưa có học sinh nào được liên kết</p>
+          <p className="text-on-background/70">Chưa có học sinh nào được kết nối</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

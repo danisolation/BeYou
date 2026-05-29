@@ -87,7 +87,7 @@ export default function AdminDashboardPage() {
               <Activity size={18} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-on-background">Pilot</p>
+              <p className="text-sm font-semibold text-on-background">Thử nghiệm</p>
               <p className="text-xs text-on-background/50">Xem trạng thái →</p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function AdminDashboardPage() {
             href="/admin/operations"
             icon={<Activity size={18} />}
             title="Bảng vận hành"
-            description="Readiness pilot, checklist launch, SOS audit"
+            description="Mức sẵn sàng thử nghiệm, kiểm tra trước khi mở và rà soát SOS"
           />
           <AdminCard
             href="/admin/reports"

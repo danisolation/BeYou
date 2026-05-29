@@ -45,7 +45,7 @@ export default function ParentStudentsPage() {
       {students.length === 0 ? (
         <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-8 text-center dark:bg-[var(--surface)]">
           <Users className="mx-auto mb-4 text-on-background/30" size={48} />
-          <p className="text-on-background/70">Chưa có con nào được liên kết</p>
+          <p className="text-on-background/70">Chưa có con nào được kết nối</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

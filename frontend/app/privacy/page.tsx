@@ -43,8 +43,8 @@ function PrivacyContent() {
         <p className="text-xs font-semibold text-primary">Quyền riêng tư</p>
         <h1 className="mt-2 text-2xl font-bold">Ai có thể xem thông tin của em?</h1>
         <p className="mt-4 text-sm">
-          Thông tin của em được giữ riêng tư trong Peerlight AI. Một số người lớn tin tưởng chỉ xem
-          phần tóm tắt cần thiết để hỗ trợ em, không xem mọi câu trả lời riêng tư.
+          Thông tin của em được giữ riêng tư trong Peerlight AI. Một số người lớn tin tưởng chỉ thấy
+          những phần thật sự cần để hỗ trợ em, không xem mọi câu trả lời riêng tư.
         </p>
 
         <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 dark:bg-[#1a2940] sm:p-5">
@@ -52,24 +52,23 @@ function PrivacyContent() {
             <h2 className="text-sm font-semibold">Ai thấy gì?</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
               <li>Em xem được thông tin của chính mình.</li>
-              <li>Giáo viên hoặc phụ huynh được liên kết chỉ xem phần tóm tắt cần thiết.</li>
+              <li>Giáo viên hoặc phụ huynh được liên kết chỉ thấy những phần thật sự cần để hỗ trợ em.</li>
               <li>Câu trả lời tự kiểm tra chi tiết và nội dung trò chuyện riêng tư không được hiển thị cho người lớn theo mặc định.</li>
-              <li>Quản trị viên chỉ dùng thông tin trong phạm vi vận hành an toàn, phân quyền, và kiểm tra hệ thống.</li>
+              <li>Quản trị viên chỉ xem khi cần để giữ hệ thống hoạt động an toàn.</li>
             </ul>
           </section>
 
           <section>
             <h2 className="text-sm font-semibold">Khi nào cần báo người lớn?</h2>
             <p className="mt-3 text-sm">
-              Nếu có dấu hiệu em có thể không an toàn, Peerlight AI có thể cần báo cho người lớn tin tưởng
-              để giúp em kịp thời. Peerlight AI không hứa giữ bí mật tuyệt đối trong tình huống có nguy cơ an toàn.
+              Nếu em đang gặp nguy hiểm, Peerlight AI có thể cần báo cho người lớn tin tưởng để giúp em kịp thời.
             </p>
           </section>
 
           <section>
             <h2 className="text-sm font-semibold">Dữ liệu của em được bảo vệ thế nào?</h2>
             <p className="mt-3 text-sm">
-              Mọi dữ liệu cá nhân được mã hóa và lưu trữ an toàn. Chỉ những người được ủy quyền mới có thể truy cập thông tin hỗ trợ khi cần thiết.
+              Mọi dữ liệu cá nhân được mã hóa và lưu trữ an toàn. Chỉ người thật sự cần để hỗ trợ em mới có thể xem thông tin đó.
             </p>
           </section>
         </div>
@@ -91,7 +90,7 @@ function PrivacyContent() {
           onClick={handleContinue}
           className="btn-press mt-6 min-h-12 w-full rounded-2xl bg-primary px-4 font-semibold text-white hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Tiếp tục vào Peerlight AI
+          Tiếp tục
         </button>
       </section>
     </main>

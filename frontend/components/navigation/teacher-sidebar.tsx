@@ -13,7 +13,7 @@ import {
 export const teacherNav = [
   { href: "/teacher", label: "Bảng điều khiển", icon: Home },
   { href: "/teacher/students", label: "Học sinh", icon: Users },
-  { href: "/teacher/sos-alerts", label: "Cảnh báo SOS", icon: ShieldAlert },
+  { href: "/teacher/sos-alerts", label: "Tình huống khẩn cấp", icon: ShieldAlert },
   { href: "/teacher/chat", label: "Peerlight AI", icon: Bot },
 ];
 

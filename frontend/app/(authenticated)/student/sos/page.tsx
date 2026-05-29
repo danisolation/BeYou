@@ -38,7 +38,7 @@ export default function StudentSosPage() {
           </div>
           <h1 className="text-lg font-semibold text-on-error-container">SOS đã được gửi</h1>
           <p className="text-sm text-on-error-container">
-            Người lớn tin tưởng của em đã được thông báo. Họ sẽ liên hệ sớm nhất có thể.
+            Người em tin đã được báo rồi. Họ sẽ liên hệ với em sớm nhất có thể.
           </p>
           <p className="text-xs text-on-error-container/80">
             Em không cần làm gì thêm. Hãy ở nơi an toàn và chờ người lớn liên hệ.
@@ -70,7 +70,7 @@ export default function StudentSosPage() {
       <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
         <h2 className="text-sm font-semibold">Khi em nhấn SOS:</h2>
         <ul className="mt-3 space-y-2 text-sm">
-          <li>• Người lớn tin tưởng của em sẽ được thông báo ngay lập tức</li>
+          <li>• Người em tin sẽ được thông báo ngay lập tức</li>
           <li>• Họ sẽ nhận được tín hiệu rằng em cần hỗ trợ khẩn cấp</li>
           <li>• Em không cần giải thích gì thêm nếu chưa sẵn sàng</li>
           <li>• Thông tin cá nhân của em được bảo mật</li>
@@ -90,7 +90,7 @@ export default function StudentSosPage() {
           disabled={state === "loading"}
           className="min-h-14 w-full rounded-2xl bg-error px-6 text-lg font-bold text-on-error shadow-md hover:bg-error/90 disabled:opacity-60"
         >
-          {state === "loading" ? "Đang gửi..." : "Đúng, tôi cần giúp ngay"}
+          {state === "loading" ? "Đang gửi..." : "Đúng, em cần giúp ngay"}
         </button>
         <Link
           href="/student"

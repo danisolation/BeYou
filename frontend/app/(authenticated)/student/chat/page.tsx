@@ -16,11 +16,11 @@ import {
 } from "@/lib/chat-api";
 
 const INTRO_COPY =
-  "Peerlight AI không thay thế chuyên gia tư vấn hay bác sĩ. Mình có thể lắng nghe và giúp em nghĩ về bước an toàn tiếp theo.";
+  "Peerlight AI luôn ở đây lắng nghe, nhưng không thay thế chuyên gia tâm lý hay bác sĩ nhé. Mình sẽ cùng em nghĩ về bước an toàn tiếp theo.";
 const IMMEDIATE_SUPPORT_COPY =
-  "Nếu em đang thấy không an toàn ngay lúc này, hãy tìm một người lớn tin tưởng ở gần em hoặc dùng SOS trong Peerlight AI.";
+  "Nếu lúc này em thấy không an toàn, hãy tìm ngay một người em tin ở gần mình hoặc dùng SOS trong Peerlight AI nhé.";
 const PRIVATE_CHAT_COPY =
-  "Em có thể viết ngắn, chưa cần hoàn hảo. Nội dung trò chuyện riêng tư không hiển thị cho người lớn theo mặc định.";
+  "Em có thể viết ngắn thôi, chưa cần hoàn hảo. Cuộc trò chuyện của em được giữ riêng tư.";
 
 export default function StudentChatPage() {
   const [threadId, setThreadId] = useState<string | null>(null);
@@ -287,6 +287,9 @@ export default function StudentChatPage() {
                 <p className="mt-3 text-sm font-medium text-on-background">Chào em!</p>
                 <p className="mt-1 max-w-sm text-xs text-on-background/60">
                   {PRIVATE_CHAT_COPY}
+                </p>
+                <p className="mt-2 max-w-sm text-[11px] text-on-background/50">
+                  {IMMEDIATE_SUPPORT_COPY}
                 </p>
               </div>
             ) : null}

@@ -148,16 +148,16 @@ export default function StudentSupportPlanPage() {
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Users size={20} className="text-primary" aria-hidden="true" />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Người lớn tin tưởng</h1>
+          <h1 className="text-lg font-semibold text-on-background">Người em tin</h1>
         </div>
         <p className="mt-4 text-sm">
-          Em có thể chuẩn bị trước cách người lớn tin tưởng nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
+          Em có thể viết trước cách người em tin nên hỗ trợ khi em căng thẳng, buồn hoặc cần được lắng nghe.
         </p>
         <p className="mt-3 text-xs">
-          Kế hoạch này giúp em nói trước điều mình cần; em vẫn quyết định người lớn nào được chọn để xem phần chia sẻ.
+          Mọi điều ở đây giúp em nói trước điều mình cần; em vẫn là người quyết định ai được xem phần em muốn chia sẻ.
         </p>
         <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-5">
-          <h2 className="text-sm font-semibold">Ranh giới chia sẻ</h2>
+          <h2 className="text-sm font-semibold">Em muốn chia sẻ gì</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {data.privacy_notes.map((note) => (
               <li key={note}>{note}</li>
@@ -168,9 +168,9 @@ export default function StudentSupportPlanPage() {
 
       <form className="space-y-6" onSubmit={handleSubmit}>
         <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-          <h2 className="text-sm font-semibold">Chọn người lớn tin tưởng</h2>
+          <h2 className="text-sm font-semibold">Chọn người em tin</h2>
           <p className="mt-3 text-sm">
-            Chỉ những người lớn đang được liên kết với em mới có thể được chọn trong kế hoạch này.
+            Em có thể chọn từ những người đang được liên kết với tài khoản của mình.
           </p>
           {hasLinkedAdults ? (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -193,12 +193,12 @@ export default function StudentSupportPlanPage() {
             </div>
           ) : (
             <EmptyState
-              heading="Chưa có người lớn được liên kết"
-              body="Khi tài khoản của em có người lớn hỗ trợ được liên kết, em có thể thêm họ vào kế hoạch."
+              heading="Chưa có ai được chọn"
+              body="Khi em có người lớn phù hợp, em có thể thêm họ vào đây."
             />
           )}
           {activeWithoutAdult ? (
-            <p className="mt-3 text-sm text-error">Kế hoạch đang chia sẻ cần ít nhất một người lớn tin tưởng.</p>
+            <p className="mt-3 text-sm text-error">Nếu muốn bật chia sẻ, em cần chọn ít nhất một người em tin.</p>
           ) : null}
         </section>
 
@@ -255,7 +255,7 @@ export default function StudentSupportPlanPage() {
             ))}
           </select>
           <p className="mt-3 text-xs">
-            Tạm dừng hoặc ngừng chia sẻ không xoá lịch sử metadata, nhưng người lớn sẽ không còn được chọn trong kế hoạch đang mở.
+            Khi em tạm dừng hoặc ngừng chia sẻ, các thông tin đã lưu vẫn còn, nhưng người lớn sẽ không còn được chọn trong kế hoạch đang mở.
           </p>
           {errorMessage ? <p role="alert" className="mt-4 text-sm text-error">{errorMessage}</p> : null}
           <button

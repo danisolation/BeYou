@@ -55,7 +55,7 @@ export default function SelfCheckListPage() {
   }
 
   if (hasError) {
-    return <EmptyState heading="Chưa tải được thông tin. Hãy thử lại." body="Em có thể quay lại trang chính rồi mở lại test tâm lý." />;
+    return <EmptyState heading="Chưa tải được rồi, em thử lại nhé." body="Em có thể quay lại trang chính rồi mở lại phần khám phá cảm xúc." />;
   }
 
   return (
@@ -66,7 +66,7 @@ export default function SelfCheckListPage() {
           <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <Brain className="h-6 w-6" />
           </div>
-          <h1 className="text-lg font-semibold text-on-background">Test tâm lý</h1>
+          <h1 className="text-lg font-semibold text-on-background">Khám phá cảm xúc</h1>
         </div>
         <p className="mt-3 text-sm text-on-background/70">
           Chọn một bài ngắn để hiểu trạng thái hiện tại của em. Kết quả không phải chẩn đoán.
@@ -76,8 +76,8 @@ export default function SelfCheckListPage() {
       {/* Available tests */}
       {tests.length === 0 ? (
         <EmptyState
-          heading="Chưa có test tâm lý đang mở"
-          body="Khi nhà trường bật nội dung phù hợp, em sẽ thấy các bài test tại đây."
+          heading="Chưa có bài nào lúc này"
+          body="Khi có bài phù hợp, em sẽ thấy ở đây."
         />
       ) : (
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -99,7 +99,7 @@ export default function SelfCheckListPage() {
       <section className="space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold text-on-background">Lịch sử test tâm lý</h2>
+          <h2 className="text-lg font-semibold text-on-background">Lịch sử làm bài</h2>
         </div>
 
         {history.length === 0 ? (
@@ -131,7 +131,7 @@ export default function SelfCheckListPage() {
                 href="/student/self-checks/history"
                 className="inline-flex items-center gap-1 px-1 font-semibold text-primary"
               >
-                Xem tất cả lịch sử ({history.length} lần)
+                Xem thêm ({history.length} lần)
               </Link>
             ) : null}
           </div>

@@ -66,11 +66,11 @@ export default function HomePage() {
               <Leaf className="h-4 w-4" /> Không gian an toàn cho học sinh
             </span>
             <h1 className="mt-6 text-3xl font-bold font-bold-stitch leading-tight text-on-background sm:text-4xl">
-              Peerlight AI — Bến đỗ an toàn cho tâm hồn học đường
+              Peerlight AI — Nơi em có thể dừng lại, thở sâu và được lắng nghe
             </h1>
             <p className="mt-4 max-w-xl text-base text-on-background/70">
-              Giúp học sinh THPT tự nhìn lại cảm xúc, luyện tình huống thực tế, trò chuyện với AI thấu cảm,
-              và nhanh chóng kết nối người lớn tin tưởng khi cần hỗ trợ.
+              Dành cho học sinh THPT muốn hiểu cảm xúc của mình, tập cách xử lý những tình huống khó,
+              và tìm đến người lớn em tin khi cần.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
               <Link
@@ -98,12 +98,9 @@ export default function HomePage() {
       {/* Safe Harbor Philosophy */}
       <section id="mission" className="bg-white dark:bg-[#1e2d40] px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl text-on-background">Triết lý Safe Harbor</h2>
-          <p className="mt-4 text-base text-on-background/70">
-            Peerlight AI xây dựng trên triết lý &quot;Bến đỗ an toàn&quot; — nơi học sinh được lắng nghe,
-            được bảo vệ, và được trao quyền tự chăm sóc sức khỏe tinh thần.
-            Mọi tính năng đều đặt sự riêng tư và cảm xúc của học sinh lên hàng đầu.
-          </p>
+          <h2 className="text-2xl text-on-background">
+            Peerlight AI là nơi an toàn để em được lắng nghe, được tôn trọng và học cách tự chăm sóc mình.
+          </h2>
         </div>
       </section>
 
@@ -140,8 +137,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="mt-4 text-lg text-on-background">Trợ lý AI thấu cảm</h3>
                 <p className="mt-2 max-w-lg text-sm text-on-background/70">
-                  Trò chuyện với AI được huấn luyện để lắng nghe, hỗ trợ và không bao giờ phán xét.
-                  Phát hiện tín hiệu nguy cơ và hướng dẫn tìm giúp đỡ kịp thời.
+                  Trò chuyện với AI biết lắng nghe, không phán xét, và gợi ý bước tiếp theo khi em cần.
                 </p>
               </div>
             </ScrollReveal>
@@ -178,7 +174,7 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                   <Shield className="h-7 w-7" aria-hidden="true" />
                 </div>
-                <h3 className="mt-4 text-lg text-on-background">An tâm tuyệt đối</h3>
+                <h3 className="mt-4 text-lg text-on-background">Riêng tư của em luôn được tôn trọng</h3>
                 <p className="mt-2 max-w-lg text-sm text-on-background/70">
                   Dữ liệu của bạn thuộc về bạn. Không ai có thể đọc nhật ký hay trò chuyện mà không có sự đồng ý.
                 </p>
@@ -212,7 +208,7 @@ export default function HomePage() {
       <ScrollReveal>
         <section className="bg-primary px-5 py-16 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl text-on-primary">Bắt đầu hành trình chữa lành của bạn</h2>
+          <h2 className="text-2xl text-on-primary">Bắt đầu từ một bước nhỏ, khi em sẵn sàng</h2>
           <p className="mt-4 text-base text-on-primary/80">
             Chỉ cần vài bước đơn giản, bạn đã có một không gian an toàn để chia sẻ và được hỗ trợ.
           </p>
@@ -240,7 +236,7 @@ export default function HomePage() {
           <div className="card-lift rounded-2xl bg-gradient-to-br from-primary/5 to-primary/10 p-6 text-center ring-1 ring-primary/20 sm:p-8">
             <h2 className="text-lg font-bold text-on-background">Sẵn sàng bắt đầu?</h2>
             <p className="mt-2 text-sm text-on-background/70">
-              Đăng nhập để trải nghiệm Peerlight AI — nền tảng chăm sóc sức khỏe tinh thần dành cho học sinh.
+              Đăng nhập để vào không gian riêng của em trên Peerlight AI.
             </p>
             <Link
               href="/login"
@@ -262,7 +258,7 @@ export default function HomePage() {
               Peerlight AI
             </Link>
             <p className="mt-3 text-sm text-on-background/60">
-              Bến đỗ an toàn cho tâm hồn học đường. Giúp học sinh THPT chăm sóc sức khỏe tinh thần.
+              Nơi em có thể dừng lại, thở sâu và được lắng nghe. Đồng hành cùng học sinh THPT và gia đình trên hành trình chăm sóc sức khỏe tinh thần.
             </p>
           </div>
           <div>

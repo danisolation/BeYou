@@ -127,7 +127,7 @@ export function AdultSupportSummaryDetail({
     <main className="mx-auto max-w-[960px] space-y-6">
       <header className="rounded-2xl border border-outline-variant/30 bg-primary/5 p-6">
         <div className="flex flex-wrap items-center gap-2">
-          <h1 className="text-lg font-semibold">Tóm tắt hỗ trợ được phép xem</h1>
+          <h1 className="text-lg font-semibold">Tóm tắt hỗ trợ</h1>
         </div>
         <p className="mt-3 text-sm">{sectionTitle}</p>
         <p className="mt-2 text-xs">
@@ -137,7 +137,7 @@ export function AdultSupportSummaryDetail({
       </header>
 
       <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-        <h2 className="text-sm font-semibold">Ranh giới riêng tư</h2>
+        <h2 className="text-sm font-semibold">Về quyền riêng tư</h2>
         <ul className="mt-3 space-y-2 text-sm">
           {summary.privacy_notes.map((note) => (
             <li key={note}>{note}</li>
@@ -192,8 +192,8 @@ function AccessReasonPrompt({
       <p className="mt-3 text-sm">{detail.message}</p>
       <div className="mt-4 rounded-2xl bg-primary/5 p-4 text-sm">
         {(detail.copy ?? [
-          "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
-          "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
+          "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong dữ liệu rà soát.",
+          "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và kết nối đang hoạt động.",
         ]).map((copy) => (
           <p key={copy}>{copy}</p>
         ))}
@@ -232,10 +232,10 @@ function AccessReasonAcceptedCard({ summary }: { summary: AdultSupportSummaryRes
     <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
       <h2 className="text-sm font-semibold">Lý do truy cập đã ghi nhận</h2>
       <p className="mt-3 text-sm">
-        {summary.access_reason.reason_label ?? "Lý do hỗ trợ đã được ghi nhận"} — chỉ lưu dưới dạng mã metadata để minh bạch
+        {summary.access_reason.reason_label ?? "Lý do hỗ trợ đã được ghi nhận"} — chỉ lưu dưới dạng mã dữ liệu để minh bạch
         thao tác xem.
       </p>
-      <p className="mt-2 text-xs">Lý do này không mở rộng quyền xem ngoài liên kết đang hoạt động.</p>
+      <p className="mt-2 text-xs">Lý do này không mở rộng quyền xem ngoài kết nối đang hoạt động.</p>
     </section>
   );
 }
@@ -306,7 +306,7 @@ function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
   const mood = summary.mood_summary;
   return (
     <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
-      <h2 className="text-sm font-semibold">Xu hướng check-in cảm xúc</h2>
+      <h2 className="text-sm font-semibold">Xu hướng cảm xúc</h2>
       <p className="mt-3 text-xs">Tóm tắt tổng hợp</p>
       {mood.latest_trend_label ? (
         <>
@@ -315,7 +315,7 @@ function MoodTrendCard({ summary }: { summary: AdultSupportSummaryResponse }) {
             {mood.latest_checkin_at ? ` · ${new Date(mood.latest_checkin_at).toLocaleString("vi-VN")}` : ""}
           </p>
           <p className="mt-2 text-sm">
-            {mood.recent_checkin_count} check-in gần đây · {mood.high_concern_count} lần cần hỗ trợ sớm.
+            {mood.recent_checkin_count} lần ghi nhận gần đây · {mood.high_concern_count} lần cần hỗ trợ sớm.
           </p>
           <p className="mt-3 text-sm">{mood.suggested_supportive_action}</p>
           <p className="mt-3 text-xs">Các nhãn gần đây: {mood.recent_trend_labels.join(", ")}</p>
@@ -341,7 +341,7 @@ export default function TeacherSupportSummaryPage({ params }: PageProps) {
     <AdultSupportSummaryDetail
       params={params}
       loadSummary={getTeacherSupportSummary}
-      sectionTitle="Tóm tắt kế hoạch hỗ trợ và xu hướng check-in được phép xem"
+      sectionTitle="Tóm tắt kế hoạch hỗ trợ và xu hướng cảm xúc đang được chia sẻ"
     />
   );
 }

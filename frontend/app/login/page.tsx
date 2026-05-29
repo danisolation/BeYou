@@ -9,7 +9,7 @@ import { AuthCapabilities, getAuthCapabilities, login, loginErrorCopy } from "@/
 import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 
 const DEMO_DISABLED_COPY =
-  "Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên.";
+  "Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp.";
 const PROVIDER_DISABLED_COPY = "Đăng nhập bên ngoài chưa được kích hoạt.";
 const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình hệ thống...";
 const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp.";
@@ -120,17 +120,17 @@ export default function LoginPage() {
             <div className="order-1 rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
               <h1 className="text-2xl text-on-background">Đăng nhập</h1>
               <p className="mt-2 text-sm text-on-background/70">
-                Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.
+                Chào mừng em quay lại! Đăng nhập để tiếp tục nhé.
               </p>
 
               {/* Demo accounts section */}
               <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
-                <p className="text-xs font-semibold text-primary">Tài khoản demo</p>
+                <p className="text-xs font-semibold text-primary">Đăng nhập thử</p>
                 {!capabilitiesLoaded ? (
                   <p className="mt-1 text-xs text-on-background/60">{CAPABILITIES_LOADING_COPY}</p>
                 ) : publicDemoEntryEnabled ? (
                   <>
-                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để đăng nhập nhanh.</p>
+                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để vào nhanh.</p>
                     <div className="mt-3 grid gap-2 sm:grid-cols-2">
                       {demoAccounts.map((account) => (
                         <button

@@ -14,7 +14,7 @@ function formatDate(value: string) {
 }
 
 function signalLabel(signal: ScenarioHistoryItem["signal"]) {
-  return signal === "risky" ? "Cần cân nhắc thêm" : "Có điểm tích cực";
+  return signal === "risky" ? "Nên xem lại" : "Em đang làm tốt lắm";
 }
 
 function signalBadgeStyle(signal: ScenarioHistoryItem["signal"]) {

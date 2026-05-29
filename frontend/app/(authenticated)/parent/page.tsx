@@ -63,7 +63,7 @@ export default function ParentDashboardPage() {
             href="/parent/chat"
             className="btn-press inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90 sm:w-auto"
           >
-            Chat
+            Trò chuyện
           </Link>
         </div>
       </div>

@@ -79,7 +79,7 @@ export default function AdminChatbotPage() {
           <h1 className="text-lg font-semibold text-on-background">Cấu hình chatbot</h1>
         </div>
         <p className="mt-3 text-sm text-on-background/70">
-          Quản lý từ khóa nguy cơ và lời nhắc hỗ trợ an toàn. Guardrail backend luôn bật.
+          Quản lý từ khóa nguy cơ và lời nhắc hỗ trợ an toàn. Lớp bảo vệ hệ thống luôn được bật.
         </p>
       </header>
 
@@ -87,9 +87,9 @@ export default function AdminChatbotPage() {
       {config ? (
         <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
           <section className="rounded-2xl bg-primary/5 p-4">
-            <h2 className="text-sm font-semibold">Thông tin provider</h2>
+            <h2 className="text-sm font-semibold">Nguồn xử lý AI</h2>
             <p className="mt-2 text-sm">
-              Đang dùng: {config.provider.name === "fallback" ? "fallback an toàn" : "provider backend đã cấu hình"}.
+              Đang dùng: {config.provider.name === "fallback" ? "chế độ dự phòng an toàn" : "nguồn xử lý AI đã được cấu hình"}.
             </p>
             <p className="mt-1 text-xs">
               Guardrail backend: {config.guardrails_locked ? "luôn bật" : "cần kiểm tra lại"}

@@ -72,7 +72,7 @@ export default function TeacherDashboardPage() {
             href="/teacher/chat"
             className="btn-press inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90 sm:w-auto"
           >
-            Chat
+            Trò chuyện
           </Link>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default function TeacherDashboardPage() {
         <StitchCard
           variant="circular"
           icon={<Users size={22} />}
-          title="Học sinh liên kết"
+          title="Học sinh đang đồng hành"
           description={`${studentCount} học sinh đang được đồng hành`}
           ctaLabel="Xem danh sách"
           ctaHref="/teacher/students"

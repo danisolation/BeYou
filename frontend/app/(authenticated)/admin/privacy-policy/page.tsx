@@ -103,7 +103,7 @@ export default function AdminPrivacyPolicyPage() {
           <h1 className="text-lg font-semibold text-on-background">Chính sách riêng tư v1.4</h1>
         </div>
         <p className="mt-3 text-sm text-on-background/70">
-          Quản lý mặc định đồng ý nhắc nhở, chia sẻ ghi chú và lý do truy cập.
+          Quản lý thiết lập mặc định cho nhắc nhở, chia sẻ ghi chú và yêu cầu lý do truy cập.
         </p>
       </header>
 
@@ -119,7 +119,7 @@ export default function AdminPrivacyPolicyPage() {
           <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
-              aria-label="Bật mặc định nhắc nhở trong Peerlight AI"
+              aria-label="Bật nhắc nhở mặc định"
               checked={policy.default_in_app_reminders_enabled}
               onChange={(event) =>
                 setPolicy({ ...policy, default_in_app_reminders_enabled: event.target.checked })
@@ -207,12 +207,12 @@ export default function AdminPrivacyPolicyPage() {
               }
               className="mt-1"
             />
-            <span>Yêu cầu lý do trước khi người lớn xem tóm tắt hỗ trợ được bảo vệ.</span>
-          </label>
+            <span>            Yêu cầu nhập lý do trước khi người lớn xem tóm tắt hỗ trợ.
+</span>          </label>
           <label className="flex items-start gap-3 rounded-2xl border border-outline-variant/20 p-4">
             <input
               type="checkbox"
-              aria-label="Yêu cầu lý do cho các lượt đọc ghi chú/tóm tắt học sinh đã chia sẻ"
+              aria-label="Yêu cầu nhập lý do khi mở ghi chú hoặc tóm tắt mà học sinh đã chia sẻ"
               checked={policy.reason_required_for_shared_mood_notes}
               onChange={(event) =>
                 setPolicy({ ...policy, reason_required_for_shared_mood_notes: event.target.checked })
@@ -243,11 +243,11 @@ export default function AdminPrivacyPolicyPage() {
         <section className="rounded-2xl bg-primary/5 p-4">
           <h2 className="text-sm font-semibold">Ranh giới vận hành</h2>
           <p className="mt-2 text-sm">
-            Operations chỉ hiển thị count/status metadata, không xuất dữ liệu thô, không drilldown học sinh, không dùng để
-            xếp hạng hay giám sát.
+            Vận hành chỉ hiển thị số lượng và trạng thái từ dữ liệu tổng hợp, không xuất dữ liệu thô, không xem chi tiết
+            từng học sinh, không dùng để xếp hạng hay giám sát.
           </p>
           <p className="mt-2 text-xs">
-            Lý do truy cập dùng để minh bạch hỗ trợ, không mở rộng quyền xem ngoài vai trò và liên kết đang hoạt động.
+            Lý do truy cập dùng để minh bạch hỗ trợ, không mở rộng quyền xem ngoài vai trò và kết nối đang hoạt động.
           </p>
         </section>
 

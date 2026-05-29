@@ -17,10 +17,10 @@ import {
 export const studentNav = [
   { href: "/student", label: "Bảng điều khiển", icon: BarChart3 },
   { href: "/student/chat", label: "Peerlight AI", icon: Bot },
-  { href: "/student/self-checks", label: "Test tâm lý", icon: Brain },
-  { href: "/student/mood-check-ins", label: "Check-in cảm xúc", icon: CalendarCheck },
-  { href: "/student/scenarios", label: "Tình huống xử lý thực tế", icon: MessageCircle },
-  { href: "/student/support-plan", label: "Người lớn tin tưởng", icon: Users },
+  { href: "/student/self-checks", label: "Khám phá cảm xúc", icon: Brain },
+  { href: "/student/mood-check-ins", label: "Nhật ký cảm xúc", icon: CalendarCheck },
+  { href: "/student/scenarios", label: "Tập xử lý tình huống", icon: MessageCircle },
+  { href: "/student/support-plan", label: "Người em tin", icon: Users },
 ];
 
 interface StudentSidebarProps {

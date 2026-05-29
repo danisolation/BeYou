@@ -48,7 +48,7 @@ export function DemoRoleEntry({ compact = false }: DemoRoleEntryProps) {
             className="min-h-14 rounded-2xl border border-outline-variant/30 bg-white p-4 text-left shadow-sm hover:-translate-y-0.5 hover:border-primary hover:shadow-md disabled:opacity-60"
           >
             <span className="block font-semibold text-on-background">
-              {loadingRole === account.role ? "Đang vào..." : `Vào vai ${account.label}`}
+              {loadingRole === account.role ? "Đang vào..." : `Vào với vai ${account.label}`}
             </span>
             {!compact ? <span className="mt-1 block text-xs text-primary/70">{account.summary}</span> : null}
           </button>

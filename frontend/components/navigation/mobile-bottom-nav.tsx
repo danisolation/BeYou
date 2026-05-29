@@ -12,7 +12,7 @@ interface MobileBottomNavProps {
 
 const mainTabs = [
   { href: "/student", label: "Trang chủ", icon: BarChart3 },
-  { href: "/student/chat", label: "Chat AI", icon: Bot },
+  { href: "/student/chat", label: "Trò chuyện", icon: Bot },
   { href: "/student/mood-check-ins", label: "Cảm xúc", icon: Heart },
 ];
 

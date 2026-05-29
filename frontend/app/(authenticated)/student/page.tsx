@@ -75,9 +75,9 @@ export default function StudentDashboardPage() {
         <StitchCard
           variant="circular"
           icon={<Brain size={22} />}
-          title="Test tâm lý"
-          description="Kiểm tra sức khỏe tâm lý qua các bài test ngắn"
-          ctaLabel="Vào test"
+          title="Khám phá cảm xúc"
+          description="Làm bài ngắn để hiểu cảm xúc của mình hơn"
+          ctaLabel="Bắt đầu"
           ctaHref="/student/self-checks"
           className="animate-fade-in-up delay-100"
         />

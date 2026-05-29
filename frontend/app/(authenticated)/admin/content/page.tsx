@@ -39,6 +39,10 @@ const riskLabelDisplay: Record<AdminRiskStateLabel, string> = {
   "Nen tim ho tro": "Nên tìm hỗ trợ",
   "Can ho tro som": "Cần hỗ trợ sớm",
 };
+
+function getRiskLabelDisplay(label: AdminRiskStateLabel) {
+  return riskLabelDisplay[label];
+}
 const signalOptions: AdminScenarioSignal[] = ["constructive", "risky"];
 const defaultErrorCopy = "Chưa lưu được nội dung. Hãy kiểm tra lại các trường bắt buộc và thử lại.";
 
@@ -1374,7 +1378,7 @@ export default function AdminContentPage() {
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-3">
                         <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-9 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
-                          {riskLabels.map((label) => <option key={label} value={label}>{riskLabelDisplay[label]}</option>)}
+                          {riskLabels.map((label) => <option key={label} value={label}>{getRiskLabelDisplay(label)}</option>)}
                         </select>
                         <div className="flex items-center gap-1.5">
                           <label className="text-xs text-on-background/60">Từ</label>

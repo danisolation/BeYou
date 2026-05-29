@@ -9,8 +9,8 @@ type EmptyStateProps = {
 };
 
 export function EmptyState({
-  heading = "Chưa có dữ liệu để hiển thị",
-  body = "Khi tài khoản hoặc liên kết được tạo, Peerlight AI sẽ hiển thị thông tin phù hợp với vai trò của bạn tại đây.",
+  heading = "Chưa có gì ở đây",
+  body = "Khi có nội dung mới, em sẽ thấy ngay tại đây.",
   action,
   children,
   className,
