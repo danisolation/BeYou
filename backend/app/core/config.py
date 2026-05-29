@@ -60,7 +60,7 @@ class Settings(BaseSettings):
         validation_alias="GEMINI_BASE_URL",
     )
     gemini_models: str = Field(
-        default="gemini-2.5-flash,gemini-2.5-flash-lite,gemini-2.0-flash,gemini-2.0-flash-lite",
+        default="gemini-3.1-flash-lite,gemini-3-flash-preview,gemini-2.5-flash,gemini-2.5-flash-lite",
         validation_alias="GEMINI_MODELS",
     )
     gemini_timeout_seconds: float = Field(default=30.0, validation_alias="GEMINI_TIMEOUT_SECONDS")
@@ -211,7 +211,7 @@ class Settings(BaseSettings):
             return [m.strip() for m in self.gemini_models.split(",") if m.strip()]
         if self.freemodel_model:
             return [self.freemodel_model]
-        return ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-2.0-flash-lite"]
+        return ["gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-2.5-flash-lite"]
 
     @property
     def effective_llm_timeout(self) -> float:
