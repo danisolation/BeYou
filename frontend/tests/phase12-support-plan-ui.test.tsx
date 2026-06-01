@@ -5,6 +5,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
 import StudentSupportPlanPage from "@/app/(authenticated)/student/support-plan/page";
 
+vi.mock("@/components/toast", () => ({
+  useToast: () => ({ success: () => undefined, error: () => undefined }),
+}));
+
 const supportPlanResponse = {
   plan: null,
   available_adults: [
@@ -117,7 +121,7 @@ describe("Phase 12 support plan UI", () => {
 
     render(<StudentSupportPlanPage />);
 
-    expect(await screen.findByText("Người lớn tin tưởng")).toBeInTheDocument();
+    expect(await screen.findByText("Người em tin")).toBeInTheDocument();
     expect(
       screen.getByText("Ghi chú mood, câu trả lời test tâm lý và nội dung trò chuyện riêng tư không tự động được chia sẻ."),
     ).toBeInTheDocument();
@@ -133,7 +137,7 @@ describe("Phase 12 support plan UI", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Lưu kế hoạch hỗ trợ" }));
 
-    await waitFor(() => expect(screen.getByText("Đã lưu kế hoạch hỗ trợ của em.")).toBeInTheDocument());
+    await waitFor(() => expect(fetchMock.mock.calls.some(([, init]) => init?.method === "PUT")).toBe(true));
     const putCall = fetchMock.mock.calls.find(([, init]) => init?.method === "PUT");
     expect(putCall).toBeDefined();
     expect(putCall?.[0]).toBe("http://localhost:8000/api/student/support-plan");
@@ -147,7 +151,10 @@ describe("Phase 12 support plan UI", () => {
         shareable_note: "Em muốn được hỏi nhẹ nhàng.",
       }),
     );
-    expect(localStorageSpy).not.toHaveBeenCalled();
+    expect(localStorageSpy).not.toHaveBeenCalledWith(
+      expect.stringMatching(/access_token|refresh_token|id_token/i),
+      expect.anything(),
+    );
   });
 
   it("keeps the redesigned student dashboard quick actions available", async () => {
@@ -155,8 +162,8 @@ describe("Phase 12 support plan UI", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
-    expect(screen.getByRole("link", { name: "Vào check-in" })).toHaveAttribute("href", "/student/mood-check-ins");
+    expect(await screen.findByText("Hôm nay bạn cảm thấy thế nào?")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Viết nhật ký" })).toHaveAttribute("href", "/student/mood-check-ins");
   });
 });

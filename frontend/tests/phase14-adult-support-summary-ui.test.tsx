@@ -130,7 +130,7 @@ describe("Phase 14 adult support summary UI", () => {
 
     render(<TeacherSupportSummaryPage params={{ studentId: "student-1" }} />);
 
-    expect(await screen.findByText("Tóm tắt hỗ trợ được phép xem")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Tóm tắt hỗ trợ" })).toBeInTheDocument();
     expect(screen.getByText("Em dễ bình tĩnh hơn khi người lớn nói chậm.")).toBeInTheDocument();
     expect(screen.getByText("Em đồng ý chia sẻ ghi chú này.")).toBeInTheDocument();
     expect(screen.getAllByText(/Cần hỗ trợ sớm/).length).toBeGreaterThan(0);
@@ -154,7 +154,7 @@ describe("Phase 14 adult support summary UI", () => {
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Học sinh đang đồng hành" })).toBeInTheDocument();
     expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
   });

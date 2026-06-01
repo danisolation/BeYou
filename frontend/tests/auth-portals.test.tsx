@@ -71,7 +71,7 @@ describe("Phase 2 frontend auth foundation", () => {
     render(<LoginPage />);
 
     const submit = screen.getByRole("button", { name: "Đăng nhập" });
-    expect(screen.getByText("Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng em quay lại! Đăng nhập để tiếp tục nhé.")).toBeInTheDocument();
     expect(submit).toBeEnabled();
     expect(screen.getByLabelText("Email")).toBeRequired();
     expect(screen.getByLabelText("Mật khẩu")).toBeRequired();
@@ -113,7 +113,7 @@ describe("Phase 2 frontend auth foundation", () => {
 
     render(<LoginPage />);
 
-    expect(screen.getByText("Đang kiểm tra cấu hình hệ thống...")).toBeInTheDocument();
+    expect(screen.getByText("Đang kết nối...")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Học sinh" })).not.toBeInTheDocument();
     await waitFor(() => {
       expect(
@@ -145,7 +145,7 @@ describe("Phase 2 frontend auth foundation", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên."),
+        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp."),
       ).toBeInTheDocument();
     });
     expect(screen.getByText("Đăng nhập bên ngoài chưa được kích hoạt.")).toBeInTheDocument();
@@ -162,7 +162,7 @@ describe("Phase 2 frontend auth foundation", () => {
     const checkbox = screen.getByRole("checkbox", {
       name: "Em đã đọc và hiểu ai có thể xem thông tin của em.",
     });
-    const continueButton = screen.getByRole("button", { name: "Tiếp tục vào Peerlight AI" });
+    const continueButton = screen.getByRole("button", { name: "Tiếp tục" });
 
     expect(continueButton).toBeDisabled();
     await userEvent.click(checkbox);

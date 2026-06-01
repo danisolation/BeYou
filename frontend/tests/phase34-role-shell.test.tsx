@@ -115,7 +115,7 @@ describe("Phase 34 role shell", () => {
     expect(await screen.findByText("Nguyễn An Demo")).toBeInTheDocument();
     expect(screen.getByText("Bỏ qua điều hướng")).toHaveAttribute("href", "#main-content");
     const nav = screen.getAllByRole("navigation", { name: "Điều hướng học sinh" })[0];
-    expect(within(nav).getByRole("link", { name: "Test tâm lý" })).toHaveAttribute("aria-current", "page");
+    expect(within(nav).getByRole("link", { name: "Khám phá cảm xúc" })).toHaveAttribute("aria-current", "page");
     expect(screen.getAllByRole("link", { name: "SOS" })[0].className).toMatch(/red/);
   });
 

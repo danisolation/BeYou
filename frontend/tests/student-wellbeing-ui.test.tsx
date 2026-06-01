@@ -125,11 +125,11 @@ describe("student wellbeing dashboard and API helpers", () => {
     render(<StudentDashboardPage />);
 
     expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Vào test" })).toHaveAttribute("href", "/student/self-checks");
-    expect(screen.getByText("Kiểm tra sức khỏe tâm lý qua các bài test ngắn")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Vào thực hành" })).toHaveAttribute("href", "/student/scenarios");
-    expect(screen.getByText("Luyện tập xử lý các tình huống thực tế ở trường")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Khám phá ngay" })).toHaveAttribute("href", "/student/self-checks");
+    expect(screen.getByText("Nhận diện và hiểu rõ cảm xúc của bạn")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Luyện tập ngay" })).toHaveAttribute("href", "/student/scenarios");
+    expect(screen.getByText("Rèn luyện kỹ năng ứng phó với áp lực")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/student/chat");
   });
 });
 
@@ -156,10 +156,10 @@ describe("student self-check UI flow", () => {
 
     render(<SelfCheckListPage />);
 
-    expect(await screen.findByText("Test tâm lý")).toBeInTheDocument();
+    expect(await screen.findByText("Khám phá cảm xúc")).toBeInTheDocument();
     expect(screen.getByText("Một bài ngắn để em nhìn lại cảm xúc gần đây.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Bắt đầu" })).toHaveAttribute("href", "/student/self-checks/test-1");
-    expect(screen.getByRole("heading", { name: "Lịch sử test tâm lý" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Lịch sử làm bài" })).toBeInTheDocument();
     expect(screen.getByText("Sau khi hoàn thành một bài, kết quả và gợi ý của em sẽ xuất hiện ở đây.")).toBeInTheDocument();
   });
 

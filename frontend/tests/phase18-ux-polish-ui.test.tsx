@@ -167,12 +167,12 @@ describe("Phase 18 supportive copy and critical interaction polish", () => {
     render(<StudentDashboardPage />);
 
     expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
-    expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
-    expect(screen.getByText("Peerlight AI")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
-    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+    expect(screen.getByText("Hôm nay bạn cảm thấy thế nào?")).toBeInTheDocument();
+    expect(screen.getByText("Trò chuyện cùng Peerlight AI")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: "Ghi vào nhật ký cảm xúc" })).toHaveAttribute(
       "href",
-      "/student/notification-preferences",
+      "/student/mood-check-ins",
     );
     expect(screen.queryByText(/^Demo$/i)).not.toBeInTheDocument();
   });

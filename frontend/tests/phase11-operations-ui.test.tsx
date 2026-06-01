@@ -244,7 +244,7 @@ describe("Phase 11 operations visibility UI", () => {
       "href",
       "/admin/operations",
     );
-    expect(screen.getByText("Readiness pilot, checklist launch, SOS audit")).toBeInTheDocument();
+    expect(screen.getByText("Mức sẵn sàng thử nghiệm, kiểm tra trước khi mở và rà soát SOS")).toBeInTheDocument();
   });
 
   it("renders operations metadata, filters audit events, and excludes raw sensitive fields", async () => {
@@ -256,31 +256,31 @@ describe("Phase 11 operations visibility UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Vận hành Pilot")).toBeInTheDocument();
-    expect(screen.getByText("Readiness")).toBeInTheDocument();
-    expect(screen.getByText("Tài khoản demo")).toBeInTheDocument();
+    expect(await screen.findByText("Vận hành thử nghiệm")).toBeInTheDocument();
+    expect(screen.getByText("Trạng thái mở thử nghiệm")).toBeInTheDocument();
+    expect(screen.getByText("Tài khoản mẫu")).toBeInTheDocument();
     expect(screen.getByText("Kết nối hệ thống")).toBeInTheDocument();
-    expect(screen.getByText("Guardrails triển khai")).toBeInTheDocument();
-    expect(screen.getByText("Kiểm tra Render, Vercel, API target, CORS và cookie.")).toBeInTheDocument();
-    expect(screen.getByText("Smoke profiles")).toBeInTheDocument();
+    expect(screen.getByText("Lớp bảo vệ khi triển khai")).toBeInTheDocument();
+    expect(screen.getByText("Kiểm tra Render, Vercel, đích API, CORS và cookie.")).toBeInTheDocument();
+    expect(screen.getByText("Nhóm kiểm tra nhanh")).toBeInTheDocument();
     expect(screen.getByText("Demo smoke")).toBeInTheDocument();
     expect(screen.getByText("Production pilot smoke")).toBeInTheDocument();
-    expect(screen.getByText(/không phụ thuộc tài khoản demo hoặc dữ liệu walkthrough/)).toBeInTheDocument();
+    expect(screen.getByText(/không phụ thuộc tài khoản mẫu hoặc dữ liệu hướng dẫn/)).toBeInTheDocument();
     expect(screen.getAllByText("npm --prefix frontend run guard:deploy")).toHaveLength(2);
     expect(screen.getByText("npm --prefix frontend run smoke:demo")).toBeInTheDocument();
     expect(screen.getByText("npm --prefix frontend run smoke:pilot")).toBeInTheDocument();
-    expect(screen.getByText(/Không hiển thị cookie value hoặc secret/)).toBeInTheDocument();
+    expect(screen.getByText(/Không hiển thị giá trị cookie hoặc thông tin nhạy cảm/)).toBeInTheDocument();
     expect(screen.getAllByText("Email SOS").length).toBeGreaterThan(0);
-    expect(screen.getByText("Lịch sử Audit")).toBeInTheDocument();
+    expect(screen.getByText("Lịch sử rà soát")).toBeInTheDocument();
     expect(screen.getByText("local_outbox · queued · teacher")).toBeInTheDocument();
-    expect(screen.getByText("account_status_changed · success")).toBeInTheDocument();
+    expect(screen.getByText("account_status_changed · Thành công")).toBeInTheDocument();
     expect(screen.getByText("safe_count: 1")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /Bộ lọc Audit/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Bộ lọc rà soát/ }));
     await userEvent.selectOptions(screen.getByLabelText("Vai trò người thực hiện"), "admin");
     await userEvent.type(screen.getByLabelText("Loại hành động"), "account_status_changed");
     await userEvent.type(screen.getByLabelText("Loại mục tiêu"), "account_profile");
-    await userEvent.type(screen.getByLabelText("Trạng thái audit"), "success");
+    await userEvent.type(screen.getByLabelText("Trạng thái rà soát"), "success");
     await userEvent.click(screen.getByRole("button", { name: "Áp dụng bộ lọc" }));
 
     await waitFor(() =>
@@ -353,19 +353,18 @@ describe("Phase 11 operations visibility UI", () => {
     expect(await screen.findByText("Xác thực đăng nhập ngoài")).toBeInTheDocument();
     expect(screen.getByText("Liên kết danh tính")).toBeInTheDocument();
     expect(screen.getAllByText("Phương thức đăng nhập").length).toBeGreaterThan(0);
-    expect(screen.getByText("Cấu hình provider đăng nhập (không hiển thị secret).")).toBeInTheDocument();
+    expect(screen.getByText("Cấu hình nguồn đăng nhập (không hiển thị thông tin nhạy cảm).")).toBeInTheDocument();
     expect(screen.getAllByText("Pilot SSO").length).toBeGreaterThan(0);
     expect(screen.getByText("Đã liên kết")).toBeInTheDocument();
-    expect(screen.getByText("Chờ duyệt")).toBeInTheDocument();
-    expect(screen.getAllByText("Provider").length).toBeGreaterThan(0);
-    expect(screen.getByText("Pending review")).toBeInTheDocument();
-    expect(screen.getByText("Disabled")).toBeInTheDocument();
-    expect(screen.getByText("Deprovisioned")).toBeInTheDocument();
+    expect(screen.getAllByText("Chờ duyệt").length).toBeGreaterThan(0);
+    expect(screen.getByText("Nguồn xác thực")).toBeInTheDocument();
+    expect(screen.getByText("Đã tắt")).toBeInTheDocument();
+    expect(screen.getByText("Đã thu hồi")).toBeInTheDocument();
     expect(
       screen.getByText("Một số liên kết danh tính đang chờ duyệt. Không có tài khoản nào được tự động cấp quyền."),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Session vẫn dùng cookie HttpOnly do backend sở hữu; UI không đọc hoặc lưu access token."),
+      screen.getByText("Phiên đăng nhập vẫn dùng cookie HttpOnly do hệ thống sở hữu; giao diện không đọc hoặc lưu mã truy cập."),
     ).toBeInTheDocument();
 
     const rendered = document.body.textContent ?? "";
@@ -386,22 +385,22 @@ describe("Phase 11 operations visibility UI", () => {
     render(<AdminOperationsPage />);
 
     expect(await screen.findByText("Xác thực đăng nhập ngoài")).toBeInTheDocument();
-    expect(screen.getByText("Chưa có metadata danh tính.")).toBeInTheDocument();
-    expect(screen.getByText("Hãy kiểm tra cấu hình provider và tải lại trang vận hành.")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có dữ liệu tổng hợp về danh tính.")).toBeInTheDocument();
+    expect(screen.getByText("Hãy kiểm tra cấu hình nguồn đăng nhập và tải lại trang vận hành.")).toBeInTheDocument();
 
     const mappingPanel = screen.getByText("Liên kết danh tính").closest("section");
     if (mappingPanel === null) {
       throw new Error("missing identity mapping panel");
     }
     expect(
-      within(mappingPanel).getByText("Chưa có metadata liên kết danh tính. Không có tài khoản nào được tự động cấp quyền từ claim bên ngoài."),
+      within(mappingPanel).getByText("Chưa có dữ liệu tổng hợp về kết nối danh tính. Không có tài khoản nào được tự động cấp quyền từ thông tin xác thực bên ngoài."),
     ).toBeInTheDocument();
 
     const sessionPanel = screen.getAllByText("Phương thức đăng nhập")[0].closest("section");
     if (sessionPanel === null) {
       throw new Error("missing session auth panel");
     }
-    expect(within(sessionPanel).getAllByText("Chưa có metadata session theo phương thức đăng nhập.").length).toBeGreaterThan(0);
+    expect(within(sessionPanel).getAllByText("Chưa có dữ liệu tổng hợp về phiên đăng nhập theo phương thức.").length).toBeGreaterThan(0);
   });
 });
 

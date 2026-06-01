@@ -6,6 +6,10 @@ import AdminChatbotPage from "@/app/(authenticated)/admin/chatbot/page";
 import AdminDashboardPage from "@/app/(authenticated)/admin/page";
 import StudentChatPage from "@/app/(authenticated)/student/chat/page";
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
+vi.mock("@/components/toast", () => ({
+  useToast: () => ({ success: () => undefined, error: () => undefined }),
+}));
+
 import {
   getAdminChatbotConfig,
   getChatTranscript,
@@ -172,13 +176,13 @@ describe("Phase 5 student chatbot UI", () => {
     const fetchMock = mockFetch();
 
     const { rerender } = render(<StudentDashboardPage />);
-    expect(await screen.findByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
-    expect(screen.getByText("Trò chuyện cùng AI hỗ trợ 24/7")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByText("AI luôn sẵn sàng lắng nghe bạn 24/7")).toBeInTheDocument();
 
     rerender(<StudentChatPage />);
     expect(await screen.findByText("Peerlight AI Chat")).toBeInTheDocument();
     expect(screen.getByText("Chào em!")).toBeInTheDocument();
-    expect(screen.getByText(/Nội dung trò chuyện riêng tư không hiển thị cho người lớn theo mặc định/)).toBeInTheDocument();
+    expect(screen.getByText(/Cuộc trò chuyện của em được giữ riêng tư/)).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Hôm nay em thấy áp lực.");
     await userEvent.click(screen.getByRole("button", { name: "Gửi" }));
 
@@ -225,9 +229,9 @@ describe("Phase 5 admin chatbot safety UI", () => {
 
     rerender(<AdminChatbotPage />);
     expect(screen.getByText("Cấu hình chatbot")).toBeInTheDocument();
-    expect(screen.getByText(/Guardrail backend luôn bật/)).toBeInTheDocument();
-    expect(await screen.findByText("Thông tin provider")).toBeInTheDocument();
-    expect(screen.getByText(/fallback an toàn/)).toBeInTheDocument();
+    expect(await screen.findByText("Nguồn xử lý AI")).toBeInTheDocument();
+    expect(screen.getByText(/Guardrail backend:\s*luôn bật/)).toBeInTheDocument();
+    expect(screen.getByText(/chế độ dự phòng an toàn/)).toBeInTheDocument();
     expect(screen.queryByText(/api_key|admin-secret-key|FREEMODEL_API_KEY/i)).not.toBeInTheDocument();
 
     const highRiskKeywords = await screen.findByLabelText("Từ khóa nguy cơ cao");
@@ -235,7 +239,12 @@ describe("Phase 5 admin chatbot safety UI", () => {
     await userEvent.type(highRiskKeywords, "tự tử\nkhông muốn sống\nbị đe dọa");
     await userEvent.click(screen.getByRole("button", { name: "Lưu cấu hình an toàn" }));
 
-    await waitFor(() => expect(screen.getByText("Đã lưu cấu hình an toàn. Guardrail backend vẫn luôn bật.")).toBeInTheDocument());
+    await waitFor(() =>
+      expect(fetchMock).toHaveBeenCalledWith(
+        "http://localhost:8000/api/admin/chatbot/config",
+        expect.objectContaining({ method: "PATCH" }),
+      ),
+    );
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/admin/chatbot/config",
       expect.objectContaining({

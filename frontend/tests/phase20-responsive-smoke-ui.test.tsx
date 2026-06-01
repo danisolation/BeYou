@@ -127,7 +127,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
     mockFetch({ "/api/auth/capabilities": demoCapabilities });
     render(<LoginPage />);
 
-    expect(screen.getByText("Chào mừng đến với Peerlight AI. Đăng nhập để tiếp tục.")).toBeInTheDocument();
+    expect(screen.getByText("Chào mừng em quay lại! Đăng nhập để tiếp tục nhé.")).toBeInTheDocument();
     expect(await screen.findByRole("button", { name: "Học sinh" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Giáo viên" })).toBeEnabled();
     expect(screen.getByRole("button", { name: "Phụ huynh" })).toBeEnabled();
@@ -152,7 +152,7 @@ describe("Phase 20 responsive and demo-readiness smoke", () => {
 
     const { unmount: unmountStudent } = render(<StudentDashboardPage />);
     expect(await screen.findByRole("heading", { name: /Nguyễn An Demo/ })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Vào test" })).toHaveAttribute("href", "/student/self-checks");
+    expect(screen.getByRole("link", { name: /Khám phá ngay/ })).toHaveAttribute("href", "/student/self-checks");
     unmountStudent();
 
     const { unmount: unmountTeacher } = render(<TeacherDashboardPage />);

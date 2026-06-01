@@ -207,7 +207,7 @@ describe("Phase 15 admin metadata closure UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Audit v1.2")).toBeInTheDocument();
+    expect(await screen.findByText("Rà soát v1.2")).toBeInTheDocument();
     expect(screen.getByText("Mood check-ins")).toBeInTheDocument();
     expect(screen.getByText("mood_option_count: 6")).toBeInTheDocument();
     expect(document.body.textContent ?? "").not.toMatch(/RAW_PRIVATE|private_note|student_id|raw_answers/i);

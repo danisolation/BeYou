@@ -6,6 +6,10 @@ import StudentDashboardPage from "@/app/(authenticated)/student/page";
 import StudentMoodCheckInHistoryPage from "@/app/(authenticated)/student/mood-check-ins/history/page";
 import StudentMoodCheckInPage from "@/app/(authenticated)/student/mood-check-ins/page";
 
+vi.mock("@/components/toast", () => ({
+  useToast: () => ({ success: () => undefined, error: () => undefined }),
+}));
+
 const optionsResponse = {
   student_prompt: "Dành một phút gọi tên cảm xúc hiện tại của em.",
   adult_guidance: "Bắt đầu bằng lắng nghe.",
@@ -184,8 +188,8 @@ describe("Phase 13 mood check-in UI", () => {
 
     render(<StudentDashboardPage />);
 
-    expect(await screen.findByRole("link", { name: "Vào check-in" })).toHaveAttribute("href", "/student/mood-check-ins");
-    expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
-    expect(screen.getByText("Ghi nhận cảm xúc mỗi ngày, theo dõi xu hướng tâm trạng")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: "Viết nhật ký" })).toHaveAttribute("href", "/student/mood-check-ins");
+    expect(screen.getByText("Nhật ký cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Ghi lại cảm xúc mỗi ngày và nhìn lại bản thân")).toBeInTheDocument();
   });
 });

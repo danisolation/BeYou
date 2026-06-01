@@ -226,29 +226,29 @@ describe("Phase 31 school pilot operations UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Vận hành Pilot")).toBeInTheDocument();
-    expect(screen.getByText("Trạng thái launch pilot")).toBeInTheDocument();
+    expect(await screen.findByText("Vận hành thử nghiệm")).toBeInTheDocument();
+    expect(screen.getByText("Trạng thái mở thử nghiệm")).toBeInTheDocument();
     expect(screen.getByText("Checklist trước khi mở")).toBeInTheDocument();
-    expect(screen.getByText("An toàn dữ liệu Demo/Thật")).toBeInTheDocument();
+    expect(screen.getByText("An toàn dữ liệu mẫu/thực tế")).toBeInTheDocument();
     expect(screen.getByText("Thiết lập ban đầu")).toBeInTheDocument();
-    expect(screen.getByText("Hướng dẫn rollback")).toBeInTheDocument();
+    expect(screen.getByText("Hướng dẫn khôi phục")).toBeInTheDocument();
     expect(
       screen.getByText(
-        "Kiểm tra sẵn sàng, bộ lọc audit và trạng thái hệ thống. Chỉ metadata, không mở nội dung riêng tư.",
+        "Kiểm tra mức sẵn sàng, bộ lọc rà soát và trạng thái hệ thống. Chỉ dữ liệu tổng hợp, không mở nội dung riêng tư.",
       ),
     ).toBeInTheDocument();
 
-    expect(within(screen.getByTestId("pilot-launch-status")).getByText("ready")).toBeInTheDocument();
+    expect(within(screen.getByTestId("pilot-launch-status")).getByText("Sẵn sàng")).toBeInTheDocument();
     expect(
       within(screen.getByTestId("pilot-launch-status")).getByText(
-        "Pilot sẵn sàng theo metadata hiện tại. Vẫn cần xác nhận vận hành với trường trước khi mở thực tế.",
+        "Thử nghiệm đã sẵn sàng theo dữ liệu tổng hợp hiện tại. Vẫn cần xác nhận vận hành với nhà trường trước khi mở thực tế.",
       ),
     ).toBeInTheDocument();
     expect(within(screen.getByTestId("pilot-launch-checklist")).getByText("Runtime mode")).toBeInTheDocument();
     expect(within(screen.getByTestId("pilot-launch-checklist")).getByText("npm --prefix frontend run smoke:pilot")).toBeInTheDocument();
     expect(within(screen.getByTestId("pilot-data-safety")).getByText("Demo active users")).toBeInTheDocument();
     expect(within(screen.getByTestId("pilot-baseline-setup")).getByText("Baseline self-checks")).toBeInTheDocument();
-    expect(within(screen.getByTestId("pilot-handoff-guidance")).getByText("Rollback")).toBeInTheDocument();
+    expect(within(screen.getByTestId("pilot-handoff-guidance")).getByText("Khôi phục")).toBeInTheDocument();
     expect(
       within(screen.getByTestId("pilot-handoff-guidance")).getByText(
         "Redeploy the last known good Vercel frontend and Render backend build.",
@@ -268,11 +268,11 @@ describe("Phase 31 school pilot operations UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Chưa có checklist pilot. Hãy kiểm tra readiness và tải lại trang vận hành.")).toBeInTheDocument();
-    expect(screen.getByText("Chưa có metadata an toàn dữ liệu pilot. Không có dữ liệu thô được hiển thị.")).toBeInTheDocument();
-    expect(screen.getByText("Chưa có metadata thiết lập. Hãy xác nhận nội dung và cấu hình pilot trước khi mở.")).toBeInTheDocument();
+    expect(await screen.findByText("Chưa có danh sách kiểm tra thử nghiệm. Hãy kiểm tra mức sẵn sàng và tải lại trang vận hành.")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có dữ liệu tổng hợp về an toàn dữ liệu thử nghiệm. Không có dữ liệu thô nào được hiển thị.")).toBeInTheDocument();
+    expect(screen.getByText("Chưa có dữ liệu tổng hợp về thiết lập. Hãy xác nhận nội dung và cấu hình thử nghiệm trước khi mở.")).toBeInTheDocument();
     expect(
-      screen.getByText("Chưa có hướng dẫn handoff. Hãy dùng quy trình rollback an toàn trong README và kiểm tra lại readiness."),
+      screen.getByText("Chưa có hướng dẫn bàn giao. Hãy dùng quy trình khôi phục an toàn trong README và kiểm tra lại mức sẵn sàng."),
     ).toBeInTheDocument();
   });
 });

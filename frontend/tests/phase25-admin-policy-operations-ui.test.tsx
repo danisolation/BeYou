@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import AdminDashboardPage from "@/app/(authenticated)/admin/page";
 import AdminOperationsPage from "@/app/(authenticated)/admin/operations/page";
 import AdminPrivacyPolicyPage from "@/app/(authenticated)/admin/privacy-policy/page";
+import { ToastProvider } from "@/components/toast";
 import { getAdminPrivacyPolicy, updateAdminPrivacyPolicy } from "@/lib/admin-privacy-policy-api";
 
 const policyResponse = {
@@ -198,14 +199,18 @@ describe("Phase 25 admin policy and operations UI", () => {
     );
     dashboard.unmount();
 
-    render(<AdminPrivacyPolicyPage />);
+    render(
+      <ToastProvider>
+        <AdminPrivacyPolicyPage />
+      </ToastProvider>,
+    );
     expect(await screen.findByText("Chính sách riêng tư v1.4")).toBeInTheDocument();
     expect(screen.getByText("Zalo")).toBeInTheDocument();
     expect(screen.getAllByText(/Đang hoãn để cần thêm đồng ý và vận hành an toàn/).length).toBeGreaterThan(0);
     expect(screen.queryByRole("textbox", { name: /lý do/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("checkbox", { name: /Zalo|SMS|Email|Thông báo thiết bị/i })).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByLabelText("Bật mặc định nhắc nhở trong Peerlight AI"));
+    await userEvent.click(screen.getByLabelText("Bật nhắc nhở mặc định"));
     await userEvent.clear(screen.getByLabelText("Yên lặng từ"));
     await userEvent.type(screen.getByLabelText("Yên lặng từ"), "22:00");
     await userEvent.clear(screen.getByLabelText("Đến"));
@@ -234,11 +239,11 @@ describe("Phase 25 admin policy and operations UI", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Audit v1.4")).toBeInTheDocument();
+    expect(await screen.findByText("Rà soát v1.4")).toBeInTheDocument();
     expect(screen.getByText("Notification preferences")).toBeInTheDocument();
     expect(screen.getByText("Reason-gated support summaries")).toBeInTheDocument();
-    expect(screen.getByText("v1.4 policy")).toBeInTheDocument();
-    expect(screen.getByText("v1.4 shares")).toBeInTheDocument();
+    expect(screen.getByText("Chính sách v1.4")).toBeInTheDocument();
+    expect(screen.getByText("Chia sẻ v1.4")).toBeInTheDocument();
 
     const rendered = document.body.textContent ?? "";
     expect(rendered).not.toMatch(/RAW_|access_reason_text|private_note|student.demo@|teacher.demo@|recipient_id/i);

@@ -21,6 +21,7 @@ import {
   updateAdminScenario,
 } from "@/lib/admin-content-api";
 import { getParentSelfCheckSummaries, getTeacherSelfCheckSummaries } from "@/lib/adult-summary-api";
+import { ToastProvider } from "@/components/toast";
 
 function mockFetch(responses: Record<string, unknown>) {
   const fetchMock = vi.fn((url: string) => {
@@ -81,6 +82,15 @@ const adultSummary = {
   ],
 };
 
+
+function renderAdminContentPage() {
+  return render(
+    <ToastProvider>
+      <AdminContentPage />
+    </ToastProvider>,
+  );
+}
+
 const supportOverview = [
   {
     student: {
@@ -137,17 +147,17 @@ describe("adult summary-only UI", () => {
 
     const { rerender } = render(<TeacherDashboardPage />);
     expect(await screen.findByText("Xin chào, thầy/cô! 👋")).toBeInTheDocument();
-    expect(screen.getByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Học sinh đang đồng hành" })).toBeInTheDocument();
     expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/teacher/chat");
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/teacher/chat");
 
     rerender(<ParentDashboardPage />);
     expect(await screen.findByText("Xin chào, phụ huynh! 👋")).toBeInTheDocument();
     expect(screen.getByText("Con của bạn")).toBeInTheDocument();
     expect(screen.getByText("1 con đang được đồng hành")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/parent/chat");
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/parent/chat");
   });
 
   it("renders teacher summary detail with privacy boundaries and no raw answer exposure", async () => {
@@ -272,7 +282,7 @@ describe("admin content management UI", () => {
 
   it("uses admin content API helpers for lifecycle endpoints", async () => {
     const fetchMock = mockFetch({
-      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/self-checks": [{ ...selfCheckContent, thresholds: [{ ...selfCheckContent.thresholds[0], max_score: 2 }] }],
       "/api/admin/content/scenarios": [scenarioContent],
       "/api/admin/content/self-checks/self-check-1/publish": selfCheckContent,
       "/api/admin/content/self-checks/self-check-1": selfCheckContent,
@@ -321,7 +331,7 @@ describe("admin content management UI", () => {
       "/api/admin/content/scenarios": [scenarioContent],
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     expect(await screen.findByText("Quản lý nội dung")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Bài tự kiểm tra/ })).toBeInTheDocument();
@@ -334,23 +344,21 @@ describe("admin content management UI", () => {
     expect(screen.getByText("Chỉnh sửa bài tự kiểm tra")).toBeInTheDocument();
     expect(screen.getByLabelText("Tên bài")).toBeInTheDocument();
     expect(screen.getByLabelText("Mô tả ngắn")).toBeInTheDocument();
-    expect(screen.getByLabelText("Trạng thái nội dung")).toBeInTheDocument();
+    expect(screen.getByText("Bước 1: Thông tin cơ bản")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Câu hỏi & Lựa chọn/ }));
     expect(screen.getByLabelText("Nội dung câu hỏi")).toBeInTheDocument();
     expect(screen.getByLabelText("Lựa chọn 1")).toBeInTheDocument();
     expect(screen.getAllByLabelText("Điểm").length).toBeGreaterThan(0);
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Ngưỡng & Xuất bản/ }));
     expect(screen.getByLabelText("Mức")).toBeInTheDocument();
-    expect(screen.getByLabelText("Min")).toBeInTheDocument();
-    expect(screen.getByLabelText("Max")).toBeInTheDocument();
-    expect(screen.getByLabelText("Nhận xét")).toBeInTheDocument();
-    expect(screen.getByLabelText("Gợi ý")).toBeInTheDocument();
-    expect(screen.getByLabelText("Nội dung tích cực")).toBeInTheDocument();
-    expect(screen.getByLabelText("Hành động tiếp theo")).toBeInTheDocument();
+    expect(screen.getByLabelText("Điểm tối thiểu")).toBeInTheDocument();
+    expect(screen.getByLabelText("Điểm tối đa")).toBeInTheDocument();
+    expect(screen.getByLabelText("Nhận xét *")).toBeInTheDocument();
+    expect(screen.getByLabelText("Gợi ý *")).toBeInTheDocument();
+        expect(screen.getByLabelText("Hành động tiếp theo *")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
     expect(screen.getByRole("button", { name: "Lưu thay đổi" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xuất bản" })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Xóa" }).length).toBeGreaterThan(0);
@@ -364,18 +372,17 @@ describe("admin content management UI", () => {
     expect(screen.getByLabelText("Tiêu đề")).toBeInTheDocument();
     expect(screen.getByLabelText("Mô tả tình huống")).toBeInTheDocument();
     expect(screen.getByLabelText("Kỹ năng liên quan")).toBeInTheDocument();
-    expect(screen.getByLabelText("Trạng thái")).toBeInTheDocument();
+    expect(screen.getByText("Bước 1: Thông tin cơ bản")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Lựa chọn phản hồi/ }));
     expect(screen.getAllByLabelText("Nội dung").length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText("Tín hiệu").length).toBeGreaterThan(0);
     expect(screen.getAllByLabelText("Phản hồi").length).toBeGreaterThan(0);
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Bài học & Xuất bản/ }));
     expect(screen.getByLabelText("Cách phản hồi nên thử")).toBeInTheDocument();
     expect(screen.getByLabelText("Điều em có thể rút ra")).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
     expect(screen.getByRole("button", { name: "Lưu thay đổi" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Lưu trữ" })).toBeInTheDocument();
   });
@@ -387,11 +394,11 @@ describe("admin content management UI", () => {
       "/api/admin/content/self-checks/self-check-1": selfCheckContent,
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Câu hỏi & Lựa chọn/ }));
 
     await userEvent.click(screen.getByRole("button", { name: /Thêm câu hỏi/ }));
     fireEvent.change(screen.getAllByLabelText("Nội dung câu hỏi")[1], {
@@ -403,13 +410,13 @@ describe("admin content management UI", () => {
     fireEvent.change(screen.getAllByLabelText("Lựa chọn 2")[1], { target: { value: "Chưa chắc." } });
     fireEvent.change(screen.getAllByLabelText("Điểm")[3], { target: { value: "2" } });
 
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Ngưỡng & Xuất bản/ }));
     await userEvent.click(screen.getByRole("button", { name: /Thêm ngưỡng/ }));
-    fireEvent.change(screen.getAllByLabelText("Min")[1], { target: { value: "2" } });
-    fireEvent.change(screen.getAllByLabelText("Max")[1], { target: { value: "3" } });
+    fireEvent.change(screen.getAllByLabelText("Điểm tối thiểu")[1], { target: { value: "2" } });
+    fireEvent.change(screen.getAllByLabelText("Điểm tối đa")[1], { target: { value: "3" } });
     await userEvent.selectOptions(screen.getAllByLabelText("Mức")[1], "Can chu y");
-    fireEvent.change(screen.getAllByLabelText("Nhận xét")[1], { target: { value: "Em nên được hỏi thăm thêm." } });
-    fireEvent.change(screen.getAllByLabelText("Gợi ý")[1], { target: { value: "Chọn một bước an toàn." } });
+    fireEvent.change(screen.getAllByLabelText("Nhận xét *")[1], { target: { value: "Em nên được hỏi thăm thêm." } });
+    fireEvent.change(screen.getAllByLabelText("Gợi ý *")[1], { target: { value: "Chọn một bước an toàn." } });
 
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
 
@@ -447,12 +454,12 @@ describe("admin content management UI", () => {
       "/api/admin/content/scenarios/scenario-1": scenarioContent,
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
     await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Lựa chọn phản hồi/ }));
     fireEvent.change(screen.getAllByLabelText("Nội dung")[1], {
       target: { value: "Em dừng lại và gọi người lớn." },
     });
@@ -487,21 +494,20 @@ describe("admin content management UI", () => {
 
   it("surfaces backend publish validation detail instead of generic failure copy", async () => {
     mockFetch({
-      "/api/admin/content/self-checks": [selfCheckContent],
+      "/api/admin/content/self-checks": [{ ...selfCheckContent, thresholds: [{ ...selfCheckContent.thresholds[0], max_score: 2 }] }],
       "/api/admin/content/scenarios": [scenarioContent],
+      "/api/admin/content/self-checks/self-check-1": { ...selfCheckContent, thresholds: [{ ...selfCheckContent.thresholds[0], max_score: 2 }] },
       "/api/admin/content/self-checks/self-check-1/publish": new Response(
         JSON.stringify({ detail: "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm." }),
         { status: 400, headers: { "Content-Type": "application/json" } },
       ),
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Ngưỡng & Xuất bản/ }));
     await userEvent.click(screen.getByRole("button", { name: "Xuất bản" }));
 
     expect(
@@ -519,7 +525,10 @@ describe("admin content management UI", () => {
           text: "Em có người lớn tin cậy để trò chuyện không?",
           sort_order: 2,
           is_demo: true,
-          choices: [{ id: "choice-3", text: "Có", score_value: 0, sort_order: 1, is_demo: true }],
+          choices: [
+              { id: "choice-3", text: "Có", score_value: 0, sort_order: 1, is_demo: true },
+              { id: "choice-4", text: "Chưa", score_value: 1, sort_order: 2, is_demo: true },
+            ],
         },
       ],
       thresholds: [
@@ -543,19 +552,19 @@ describe("admin content management UI", () => {
       "/api/admin/content/self-checks/self-check-1": multiQuestionSelfCheck,
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
+    await userEvent.click(screen.getByRole("button", { name: /Câu hỏi & Lựa chọn/ }));
     const questionField = await screen.findByDisplayValue("Hôm nay em thấy thế nào?");
     await userEvent.clear(questionField);
     await userEvent.type(questionField, "Câu hỏi đã cập nhật");
     await userEvent.clear(screen.getAllByLabelText("Lựa chọn 1")[0]);
     await userEvent.type(screen.getAllByLabelText("Lựa chọn 1")[0], "Câu trả lời đã cập nhật");
-    await userEvent.click(screen.getByRole("button", { name: "Tiếp theo" }));
-    await userEvent.clear(screen.getAllByLabelText("Min")[0]);
-    await userEvent.type(screen.getAllByLabelText("Min")[0], "1");
+    await userEvent.click(screen.getByRole("button", { name: /Ngưỡng & Xuất bản/ }));
+    await userEvent.clear(screen.getAllByLabelText("Điểm tối thiểu")[0]);
+    await userEvent.type(screen.getAllByLabelText("Điểm tối thiểu")[0], "1");
     await userEvent.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
 
     await waitFor(() =>
@@ -588,7 +597,7 @@ describe("admin content management UI", () => {
       "/api/admin/content/scenarios": [scenarioContent],
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
@@ -606,7 +615,7 @@ describe("admin content management UI", () => {
     await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
     await userEvent.click(screen.getAllByRole("button", { name: "Xóa" }).at(-1)!);
     expect(
-      screen.getByText("Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành."),
+      screen.getByText("Xóa nội dung này? Nếu đã có học sinh hoàn thành, lịch sử của các em sẽ bị xóa theo."),
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa bản nháp" })).toBeInTheDocument();
   });
@@ -619,14 +628,14 @@ describe("admin content management UI", () => {
       "/api/admin/content/scenarios/scenario-1": draftScenarioContent,
     });
 
-    render(<AdminContentPage />);
+    renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
     await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
     await userEvent.click(screen.getAllByRole("button", { name: "Xóa" }).at(-1)!);
     expect(
-      screen.getByText("Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành."),
+      screen.getByText("Xóa nội dung này? Nếu đã có học sinh hoàn thành, lịch sử của các em sẽ bị xóa theo."),
     ).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Xóa bản nháp" }));

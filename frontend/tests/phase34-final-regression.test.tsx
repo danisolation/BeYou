@@ -68,7 +68,7 @@ describe("Phase 34 final UI regression", () => {
     expect(container.querySelector('[aria-hidden="true"]')).not.toBeNull();
   });
 
-  it("preserves the redesigned Student greeting, chat entry, and settings shortcut", async () => {
+  it("preserves the redesigned Student greeting, chat entries, and self-check shortcut", async () => {
     mockFetch({
       "/api/student/profile": studentProfile,
     });
@@ -76,10 +76,10 @@ describe("Phase 34 final UI regression", () => {
     render(<StudentDashboardPage />);
 
     expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
-    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Trò chuyện cùng AI/ })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByRole("link", { name: /Khám phá ngay/ })).toHaveAttribute(
       "href",
-      "/student/notification-preferences",
+      "/student/self-checks",
     );
     expect(screen.queryByText(/^Demo$/i)).not.toBeInTheDocument();
   });

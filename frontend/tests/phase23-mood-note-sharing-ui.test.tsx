@@ -381,7 +381,7 @@ describe("Phase 23 mood note sharing UI", () => {
     expect(screen.getByText("Tóm tắt học sinh tự viết")).toBeInTheDocument();
     expect(screen.getAllByText("Nội dung này có thể không còn hiển thị nếu học sinh thu hồi quyền xem.")).toHaveLength(2);
     expect(document.body.textContent?.indexOf("Ghi chú được học sinh đồng ý chia sẻ")).toBeLessThan(
-      document.body.textContent?.indexOf("Xu hướng check-in cảm xúc") ?? -1,
+      document.body.textContent?.indexOf("Xu hướng cảm xúc") ?? -1,
     );
 
     vi.restoreAllMocks();

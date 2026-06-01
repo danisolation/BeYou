@@ -153,10 +153,10 @@ describe("Phase 4 student SOS UI", () => {
     expect(screen.getByText("Nếu em đang gặp nguy hiểm hoặc cần giúp đỡ ngay lập tức, hãy nhấn nút bên dưới.")).toBeInTheDocument();
     expect(screen.queryByText("SOS đã được gửi")).not.toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: "Đúng, tôi cần giúp ngay" }));
+    await userEvent.click(screen.getByRole("button", { name: "Đúng, em cần giúp ngay" }));
 
     expect(await screen.findByText("SOS đã được gửi")).toBeInTheDocument();
-    expect(screen.getByText("Người lớn tin tưởng của em đã được thông báo. Họ sẽ liên hệ sớm nhất có thể.")).toBeInTheDocument();
+    expect(screen.getByText("Người em tin đã được báo rồi. Họ sẽ liên hệ với em sớm nhất có thể.")).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "http://localhost:8000/api/student/sos-alerts",
       expect.objectContaining({
@@ -179,7 +179,7 @@ describe("Phase 4 adult support portals", () => {
 
     render(<TeacherDashboardPage />);
 
-    expect(await screen.findByText("Học sinh liên kết")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Học sinh đang đồng hành" })).toBeInTheDocument();
     expect(screen.getByText("1 học sinh đang được đồng hành")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem cảnh báo" })).toHaveAttribute("href", "/teacher/sos-alerts");
     expect(screen.queryByText(/RAW|choice_text_snapshot|answers/i)).not.toBeInTheDocument();

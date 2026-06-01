@@ -326,7 +326,7 @@ describe("Phase 32 frontend release gates", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy dùng tài khoản được cấp bởi quản trị viên."),
+        screen.getByText("Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp."),
       ).toBeInTheDocument();
     });
     expect(screen.getByText("Đăng nhập bên ngoài chưa được kích hoạt.")).toBeInTheDocument();
@@ -350,7 +350,7 @@ describe("Phase 32 frontend release gates", () => {
   it("QA-04 frontend sources do not add raw private data display markers", () => {
     const operationsSource = source("app/(authenticated)/admin/operations/page.tsx");
     const sourceWithoutSanitizer = operationsSource.replace(
-      /const forbiddenMetadataKeyPattern[\s\S]*?const safeMetadataFallback = "metadata_an_toan";/,
+      /const forbiddenMetadataKeyPattern[\s\S]*?const safeMetadataFallback = "dữ liệu tổng hợp an toàn";/,
       "",
     );
     const forbidden = /private_note|sos_note|transcript|self_check_answer|scenario_answer|provider_subject|raw_claims|student_id|recipient_id|access_reason_text/i;
@@ -366,7 +366,7 @@ describe("Phase 32 frontend release gates", () => {
 
     render(<AdminOperationsPage />);
 
-    expect(await screen.findByText("Vận hành Pilot")).toBeInTheDocument();
+    expect(await screen.findByText("Vận hành thử nghiệm")).toBeInTheDocument();
     expect(screen.getAllByText("npm --prefix frontend run guard:deploy").length).toBeGreaterThan(0);
     expect(screen.getByText("npm --prefix frontend run smoke:demo")).toBeInTheDocument();
     expect(screen.getAllByText("npm --prefix frontend run smoke:pilot").length).toBeGreaterThan(0);

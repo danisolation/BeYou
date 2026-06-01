@@ -100,7 +100,7 @@ describe("Phase 37 frontend integration redlines", () => {
     }
     expect(studentSource).toContain("{greeting}, {name}!");
     expect(studentSource).toContain("Peerlight AI");
-    expect(studentSource).toContain("Vào thiết lập");
+    expect(studentSource).toContain("Khám phá cảm xúc");
     expect(adminSource).toContain("Bảng vận hành");
   });
 });

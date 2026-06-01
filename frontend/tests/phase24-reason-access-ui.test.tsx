@@ -140,7 +140,7 @@ describe("Phase 24 reason-for-access UI", () => {
     await userEvent.click(within(prompt).getByLabelText("Xem bối cảnh kế hoạch hỗ trợ"));
     await userEvent.click(within(prompt).getByRole("button", { name: "Tiếp tục xem tóm tắt" }));
 
-    expect(await screen.findByText("Tóm tắt hỗ trợ được phép xem")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Tóm tắt hỗ trợ" })).toBeInTheDocument();
     expect(screen.getByText("Em dễ bình tĩnh hơn khi người lớn nói chậm.")).toBeInTheDocument();
     expect(screen.getByText("Em muốn cô biết hôm nay em hơi mệt.")).toBeInTheDocument();
     expect(screen.getByText("Lý do truy cập đã ghi nhận")).toBeInTheDocument();
@@ -167,7 +167,7 @@ describe("Phase 24 reason-for-access UI", () => {
     await userEvent.click(within(prompt).getByLabelText("Theo dõi sau một check-in gần đây"));
     await userEvent.click(within(prompt).getByRole("button", { name: "Tiếp tục xem tóm tắt" }));
 
-    expect(await screen.findByText("Tóm tắt hỗ trợ được phép xem")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Tóm tắt hỗ trợ" })).toBeInTheDocument();
     expect(screen.getByText(/Theo dõi sau một check-in gần đây/)).toBeInTheDocument();
     expect(
       fetchMock.mock.calls.some(

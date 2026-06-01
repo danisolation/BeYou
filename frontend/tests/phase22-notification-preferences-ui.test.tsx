@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import StudentNotificationPreferencesPage from "@/app/(authenticated)/student/notification-preferences/page";
 import StudentDashboardPage from "@/app/(authenticated)/student/page";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/toast";
 
 const preferenceResponse = {
   id: "pref-1",
@@ -106,7 +107,9 @@ describe("Phase 22 notification preferences UI", () => {
 
     render(
       <ThemeProvider>
-        <StudentNotificationPreferencesPage />
+        <ToastProvider>
+          <StudentNotificationPreferencesPage />
+        </ToastProvider>
       </ThemeProvider>,
     );
 
@@ -138,7 +141,7 @@ describe("Phase 22 notification preferences UI", () => {
     );
   });
 
-  it("shows the redesigned dashboard settings shortcut instead of the old inline reminder banner", async () => {
+  it("keeps the redesigned dashboard free of the old inline reminder banner and reminder side effects", async () => {
     const fetchMock = vi.fn((url: string) => {
       const path = new URL(url).pathname;
       if (path === "/api/student/profile") {
@@ -158,9 +161,9 @@ describe("Phase 22 notification preferences UI", () => {
 
     expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
     expect(screen.queryByText("Nhắc nhẹ: em muốn check-in cảm xúc không?")).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Vào thiết lập" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Viết nhật ký/ })).toHaveAttribute(
       "href",
-      "/student/notification-preferences",
+      "/student/mood-check-ins",
     );
     expect(
       fetchMock.mock.calls.some(([url]) => new URL(String(url)).pathname === "/api/student/reminders/mood-check-in"),
