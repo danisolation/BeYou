@@ -21,6 +21,7 @@ from app.schemas.chat import (
 )
 from app.services.chat import (
     delete_student_chat_thread,
+    delete_adult_chat_thread,
     get_admin_safety_config,
     get_adult_chat_transcript,
     get_student_chat_transcript,
@@ -68,11 +69,16 @@ def post_student_chat_message_stream(
         import json as _json
         import logging as _log
         import traceback as _tb
+
         try:
-            for event in send_chat_message_stream(db, student=current_user, payload=payload, settings=settings):
+            for event in send_chat_message_stream(
+                db, student=current_user, payload=payload, settings=settings
+            ):
                 yield f"data: {event}\n\n"
         except Exception as exc:
-            _log.getLogger("beyou.chat.stream").error("SSE generator error: %s\n%s", exc, _tb.format_exc())
+            _log.getLogger("beyou.chat.stream").error(
+                "SSE generator error: %s\n%s", exc, _tb.format_exc()
+            )
             yield f"data: {_json.dumps({'type': 'error', 'message': str(exc)})}\n\n"
         yield "data: [DONE]\n\n"
 
@@ -179,6 +185,19 @@ def get_teacher_chat_messages(
     return get_adult_chat_transcript(db, user=current_user, thread_id=thread_id)
 
 
+@router.delete("/teacher/chat/threads/{thread_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_teacher_chat(
+    thread_id: uuid.UUID,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.TEACHER)
+    delete_adult_chat_thread(db, user=current_user, thread_id=thread_id)
+
+
 # ---------------------------------------------------------------------------
 # Parent chat endpoints
 # ---------------------------------------------------------------------------
@@ -218,3 +237,16 @@ def get_parent_chat_messages(
 ) -> ChatTranscriptResponse:
     require_role(current_user, UserRole.PARENT)
     return get_adult_chat_transcript(db, user=current_user, thread_id=thread_id)
+
+
+@router.delete("/parent/chat/threads/{thread_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_parent_chat(
+    thread_id: uuid.UUID,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.PARENT)
+    delete_adult_chat_thread(db, user=current_user, thread_id=thread_id)

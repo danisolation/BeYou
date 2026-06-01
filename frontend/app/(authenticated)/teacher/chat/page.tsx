@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Trash2 } from "lucide-react";
 
 import {
   type ChatMessage,
@@ -9,6 +9,7 @@ import {
   getTeacherChatTranscript,
   listTeacherChatThreads,
   sendTeacherChatMessage,
+  deleteTeacherChatThread,
 } from "@/lib/chat-api";
 
 const INTRO_COPY =
@@ -57,6 +58,34 @@ export default function TeacherChatPage() {
       setError("Chưa tải được cuộc trò chuyện này.");
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function handleDeleteThread(targetThreadId: string, event: React.MouseEvent) {
+    event.stopPropagation();
+    if (!confirm("Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Toàn bộ tin nhắn sẽ bị xóa vĩnh viễn.")) {
+      return;
+    }
+    setError("");
+    try {
+      await deleteTeacherChatThread(targetThreadId);
+      const remainingThreads = threads.filter((t) => t.id !== targetThreadId);
+      setThreads(remainingThreads);
+      if (threadId === targetThreadId) {
+        if (remainingThreads.length > 0) {
+          const nextThread = remainingThreads[0];
+          setIsLoading(true);
+          const transcript = await getTeacherChatTranscript(nextThread.id);
+          setThreadId(transcript.thread.id);
+          setMessages(transcript.messages);
+          setIsLoading(false);
+        } else {
+          setThreadId(null);
+          setMessages([]);
+        }
+      }
+    } catch {
+      setError("Không thể xóa cuộc trò chuyện này. Vui lòng thử lại.");
     }
   }
 
@@ -110,6 +139,7 @@ export default function TeacherChatPage() {
             threadId={threadId}
             onSelectThread={handleSelectThread}
             onNewThread={() => { setThreadId(null); setMessages([]); setError(""); }}
+            onDeleteThread={handleDeleteThread}
           />
         </aside>
 
@@ -138,6 +168,7 @@ export default function TeacherChatPage() {
                 threadId={threadId}
                 onSelectThread={(id) => { void handleSelectThread(id); setSidebarOpen(false); }}
                 onNewThread={() => { setThreadId(null); setMessages([]); setError(""); setSidebarOpen(false); }}
+                onDeleteThread={(id, e) => { void handleDeleteThread(id, e); setSidebarOpen(false); }}
               />
             </aside>
           </div>
@@ -225,11 +256,13 @@ function SidebarContent({
   threadId,
   onSelectThread,
   onNewThread,
+  onDeleteThread,
 }: {
   threads: ChatThread[];
   threadId: string | null;
   onSelectThread: (id: string) => void;
   onNewThread: () => void;
+  onDeleteThread: (id: string, event: React.MouseEvent) => void;
 }) {
   return (
     <>
@@ -245,16 +278,25 @@ function SidebarContent({
           <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50">Chưa có lịch sử.</p>
         ) : (
           threads.map((thread) => (
-            <button
-              key={thread.id}
-              type="button"
-              onClick={() => onSelectThread(thread.id)}
-              className={`w-full rounded-xl px-3 py-2 text-left text-xs font-medium transition-colors ${
-                thread.id === threadId ? "bg-primary/10 text-primary" : "text-on-background/70 hover:bg-outline-variant/10"
-              }`}
-            >
-              <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>
-            </button>
+            <div key={thread.id} className="group relative flex items-center">
+              <button
+                type="button"
+                onClick={() => onSelectThread(thread.id)}
+                className={`w-full rounded-xl pl-3 pr-8 py-2 text-left text-xs font-medium transition-colors ${
+                  thread.id === threadId ? "bg-primary/10 text-primary" : "text-on-background/70 hover:bg-outline-variant/10"
+                }`}
+              >
+                <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Xóa cuộc trò chuyện"
+                onClick={(e) => onDeleteThread(thread.id, e)}
+                className="absolute right-2 opacity-0 group-hover:opacity-100 focus:opacity-100 rounded-md p-1 text-on-background/45 hover:text-red-500 hover:bg-red-500/10 transition-all"
+              >
+                <Trash2 size={13} />
+              </button>
+            </div>
           ))
         )}
       </div>

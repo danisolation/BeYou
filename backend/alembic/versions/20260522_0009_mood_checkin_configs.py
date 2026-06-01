@@ -28,12 +28,16 @@ def upgrade() -> None:
         sa.Column("mood_options", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
         sa.Column("context_tags", postgresql.JSONB(astext_type=sa.Text()), nullable=False),
         sa.Column("sort_order", sa.Integer(), nullable=False, server_default="0"),
-        sa.Column("updated_by_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=True),
+        sa.Column(
+            "updated_by_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=True
+        ),
         sa.Column("is_demo", sa.Boolean(), nullable=False, server_default=sa.false()),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False),
     )
-    op.create_index("ix_mood_checkin_configs_status_sort", "mood_checkin_configs", ["status", "sort_order"])
+    op.create_index(
+        "ix_mood_checkin_configs_status_sort", "mood_checkin_configs", ["status", "sort_order"]
+    )
     op.create_index("ix_mood_checkin_configs_is_demo", "mood_checkin_configs", ["is_demo"])
 
 

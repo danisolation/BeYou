@@ -1,6 +1,11 @@
 from pathlib import Path
 
-from app.db.models import AuthSessionMethod, ExternalIdentity, ExternalIdentityStatus, Session as UserSession
+from app.db.models import (
+    AuthSessionMethod,
+    ExternalIdentity,
+    ExternalIdentityStatus,
+    Session as UserSession,
+)
 
 
 def test_identity_foundation_enums_and_models_expose_safe_metadata_only() -> None:
@@ -41,7 +46,9 @@ def test_identity_foundation_enums_and_models_expose_safe_metadata_only() -> Non
 
 
 def test_identity_foundation_migration_contract() -> None:
-    migration = Path("alembic/versions/20260525_0011_identity_foundation.py").read_text(encoding="utf-8")
+    migration = Path("alembic/versions/20260525_0011_identity_foundation.py").read_text(
+        encoding="utf-8"
+    )
 
     assert 'revision: str = "20260525_0011"' in migration
     assert 'down_revision: str | None = "20260522_0010"' in migration

@@ -70,12 +70,24 @@ def _clean_database() -> None:
             )
         )
         if phase_user_ids:
-            mood_checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(phase_user_ids))))
+            mood_checkin_ids = list(
+                db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(phase_user_ids)))
+            )
             if mood_checkin_ids:
-                db.execute(delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(mood_checkin_ids)))
+                db.execute(
+                    delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(mood_checkin_ids))
+                )
                 db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(mood_checkin_ids)))
-            db.execute(delete(MoodCheckinReminderState).where(MoodCheckinReminderState.student_id.in_(phase_user_ids)))
-            db.execute(delete(StudentNotificationPreference).where(StudentNotificationPreference.student_id.in_(phase_user_ids)))
+            db.execute(
+                delete(MoodCheckinReminderState).where(
+                    MoodCheckinReminderState.student_id.in_(phase_user_ids)
+                )
+            )
+            db.execute(
+                delete(StudentNotificationPreference).where(
+                    StudentNotificationPreference.student_id.in_(phase_user_ids)
+                )
+            )
             db.execute(
                 delete(StudentAdultLink).where(
                     or_(
@@ -87,7 +99,9 @@ def _clean_database() -> None:
             )
             db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(phase_user_ids)))
             db.execute(delete(UserSession).where(UserSession.user_id.in_(phase_user_ids)))
-            db.execute(delete(ExternalIdentity).where(ExternalIdentity.linked_user_id.in_(phase_user_ids)))
+            db.execute(
+                delete(ExternalIdentity).where(ExternalIdentity.linked_user_id.in_(phase_user_ids))
+            )
         db.execute(delete(SelfCheckTest).where(SelfCheckTest.title.like("%PHASE31%")))
         db.execute(delete(Scenario).where(Scenario.title.like("%PHASE31%")))
         db.execute(delete(MoodCheckInConfig).where(MoodCheckInConfig.name.like("%phase31%")))
@@ -305,7 +319,13 @@ def _assert_phase31_privacy_redlines(rendered: str) -> None:
 
 
 def test_phase31_requirement_ids_are_documented_for_backend_gate() -> None:
-    assert set(PHASE31_REQUIREMENT_IDS) == {"PILOT-01", "PILOT-02", "PILOT-03", "PILOT-04", "PILOT-05"}
+    assert set(PHASE31_REQUIREMENT_IDS) == {
+        "PILOT-01",
+        "PILOT-02",
+        "PILOT-03",
+        "PILOT-04",
+        "PILOT-05",
+    }
 
 
 def test_pilot_launch_checklist_blocks_non_pilot_runtime_and_demo_policy(db: OrmSession) -> None:
@@ -355,7 +375,14 @@ def test_pilot_launch_checklist_can_report_ready_for_safe_pilot_metadata(db: Orm
     assert '"pilot_data_safety"' in rendered
     assert '"pilot_handoff"' in rendered
     _assert_phase31_privacy_redlines(rendered)
-    for forbidden in ("access_token", "refresh_token", "id_token", "answer", RAW_SELF_CHECK_TITLE, RAW_SCENARIO_TITLE):
+    for forbidden in (
+        "access_token",
+        "refresh_token",
+        "id_token",
+        "answer",
+        RAW_SELF_CHECK_TITLE,
+        RAW_SCENARIO_TITLE,
+    ):
         assert forbidden not in rendered
 
 

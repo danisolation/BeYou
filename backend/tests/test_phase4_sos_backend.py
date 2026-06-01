@@ -133,7 +133,9 @@ def _attempt(
     test = SelfCheckTest(title=f"Bài {label}", status="published", is_active=True, is_demo=True)
     db.add(test)
     db.flush()
-    question = SelfCheckQuestion(test_id=test.id, text=f"Câu hỏi {label}", sort_order=1, is_demo=True)
+    question = SelfCheckQuestion(
+        test_id=test.id, text=f"Câu hỏi {label}", sort_order=1, is_demo=True
+    )
     db.add(question)
     db.flush()
     choice = SelfCheckChoice(
@@ -232,7 +234,9 @@ def test_student_creates_sos_alert_notifications_status_event_and_audit(
     assert payload["is_demo"] is True
 
     alert_id = uuid.UUID(payload["id"])
-    notifications = list(db.scalars(select(InAppNotification).where(InAppNotification.resource_id == str(alert_id))))
+    notifications = list(
+        db.scalars(select(InAppNotification).where(InAppNotification.resource_id == str(alert_id)))
+    )
     assert {notification.recipient_id for notification in notifications} == {teacher.id, parent.id}
     assert all(notification.resource_type == "sos_alert" for notification in notifications)
     assert all(notification.read_at is None for notification in notifications)
@@ -320,7 +324,14 @@ def test_teacher_updates_status_forward_and_parent_is_read_only(
     ]
     assert events[-1].actor_id == teacher.id
     assert events[-1].note == "Đã có bước hỗ trợ phù hợp."
-    assert db.scalar(select(func.count()).select_from(AuditEvent).where(AuditEvent.action == "sos_status_changed")) == 4
+    assert (
+        db.scalar(
+            select(func.count())
+            .select_from(AuditEvent)
+            .where(AuditEvent.action == "sos_status_changed")
+        )
+        == 4
+    )
 
     _login(client, student.email)
     student_list = client.get("/api/student/sos-alerts")
@@ -334,7 +345,9 @@ def test_sos_routes_enforce_relationship_and_audit_sensitive_reads(
 ) -> None:
     student = _user(db, email="student-sos-link@example.test", role=UserRole.STUDENT.value)
     teacher = _user(db, email="teacher-sos-link@example.test", role=UserRole.TEACHER.value)
-    unlinked_teacher = _user(db, email="teacher-sos-unlinked@example.test", role=UserRole.TEACHER.value)
+    unlinked_teacher = _user(
+        db, email="teacher-sos-unlinked@example.test", role=UserRole.TEACHER.value
+    )
     parent = _user(db, email="parent-sos-link@example.test", role=UserRole.PARENT.value)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
@@ -354,7 +367,9 @@ def test_sos_routes_enforce_relationship_and_audit_sensitive_reads(
     unlinked_response = client.get(f"/api/teacher/students/{student.id}/sos-alerts")
     assert unlinked_response.status_code == 403
 
-    read_events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read")))
+    read_events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read"))
+    )
     assert any(event.resource_type == "sos_alert" for event in read_events)
     assert "Em đang cần người lớn" not in str([event.metadata_summary for event in read_events])
 
@@ -379,7 +394,10 @@ def test_support_overview_groups_warning_summaries_without_raw_answers(
     teacher_payload = teacher_overview.json()
     assert teacher_payload[0]["warning_group"] == "nguy_co_cao"
     assert teacher_payload[0]["warning_group_label"] == "Nguy cơ cao"
-    assert teacher_payload[0]["latest_self_check_summary"]["support_suggestion"] == "Hỏi em cần hỗ trợ gì ngay lúc này."
+    assert (
+        teacher_payload[0]["latest_self_check_summary"]["support_suggestion"]
+        == "Hỏi em cần hỗ trợ gì ngay lúc này."
+    )
     assert teacher_payload[0]["open_sos_count"] == 2
     assert "RAW_PHASE4_PRIVATE_ANSWER" not in teacher_text
     assert "choice_text_snapshot" not in teacher_text

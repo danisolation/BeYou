@@ -68,7 +68,11 @@ class AdminMoodCheckInConfigUpsert(BaseModel):
     @field_validator("status")
     @classmethod
     def validate_status(cls, value: str) -> str:
-        allowed = {ContentStatus.DRAFT.value, ContentStatus.PUBLISHED.value, ContentStatus.ARCHIVED.value}
+        allowed = {
+            ContentStatus.DRAFT.value,
+            ContentStatus.PUBLISHED.value,
+            ContentStatus.ARCHIVED.value,
+        }
         if value not in allowed:
             raise ValueError("Trạng thái cấu hình không hợp lệ.")
         return value

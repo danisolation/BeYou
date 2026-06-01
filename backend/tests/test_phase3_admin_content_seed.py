@@ -236,10 +236,15 @@ def test_admin_content_service_validates_lifecycle_audits_and_draft_delete(db: O
         validate_self_check_publishable(invalid)
     assert publish_exc.value.status_code == 400
 
-    valid = create_self_check_test(db, actor=admin, payload=AdminSelfCheckTestUpsert(**_self_check_payload()))
+    valid = create_self_check_test(
+        db, actor=admin, payload=AdminSelfCheckTestUpsert(**_self_check_payload())
+    )
     published = publish_self_check_test(db, actor=admin, test_id=valid.id)
     assert published.status == ContentStatus.PUBLISHED.value
-    assert archive_self_check_test(db, actor=admin, test_id=valid.id).status == ContentStatus.ARCHIVED.value
+    assert (
+        archive_self_check_test(db, actor=admin, test_id=valid.id).status
+        == ContentStatus.ARCHIVED.value
+    )
 
     draft = create_self_check_test(
         db,
@@ -292,7 +297,10 @@ def test_admin_content_api_requires_admin_same_site_and_returns_publish_validati
         headers=ORIGIN_HEADERS,
     )
     assert publish.status_code == 400
-    assert publish.json()["detail"] == "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
+    assert (
+        publish.json()["detail"]
+        == "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
+    )
 
     patched = client.patch(
         f"/api/admin/content/self-checks/{test_id}",
@@ -329,7 +337,10 @@ def test_admin_content_api_manages_scenarios_with_validation_and_archive(
         headers=ORIGIN_HEADERS,
     )
     assert publish_invalid.status_code == 400
-    assert publish_invalid.json()["detail"] == "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+    assert (
+        publish_invalid.json()["detail"]
+        == "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+    )
 
     patched = client.patch(
         f"/api/admin/content/scenarios/{scenario_id}",
@@ -339,8 +350,15 @@ def test_admin_content_api_manages_scenarios_with_validation_and_archive(
     assert patched.status_code == 200
     assert patched.json()["choices"][0]["signal"] == "constructive"
 
-    assert client.post(f"/api/admin/content/scenarios/{scenario_id}/publish", headers=ORIGIN_HEADERS).status_code == 200
-    archived = client.post(f"/api/admin/content/scenarios/{scenario_id}/archive", headers=ORIGIN_HEADERS)
+    assert (
+        client.post(
+            f"/api/admin/content/scenarios/{scenario_id}/publish", headers=ORIGIN_HEADERS
+        ).status_code
+        == 200
+    )
+    archived = client.post(
+        f"/api/admin/content/scenarios/{scenario_id}/archive", headers=ORIGIN_HEADERS
+    )
     assert archived.status_code == 200
     assert archived.json()["status"] == ContentStatus.ARCHIVED.value
 
@@ -375,7 +393,9 @@ def test_demo_seed_creates_locked_phase3_content_and_recent_attempts(db: OrmSess
     assert "học" in scenario_text or "điểm" in scenario_text
     assert all(item.status == ContentStatus.PUBLISHED.value and item.is_demo for item in scenarios)
 
-    attempts = db.scalars(select(SelfCheckAttempt).order_by(SelfCheckAttempt.completed_at.desc())).all()
+    attempts = db.scalars(
+        select(SelfCheckAttempt).order_by(SelfCheckAttempt.completed_at.desc())
+    ).all()
     assert len(attempts) == 6
     assert all(attempt.is_demo for attempt in attempts)
     assert attempts[0].completed_at - attempts[-1].completed_at <= timedelta(days=30)

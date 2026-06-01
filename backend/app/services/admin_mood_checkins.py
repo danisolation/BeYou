@@ -89,7 +89,9 @@ def _response(config: MoodCheckInConfig) -> AdminMoodCheckInConfigResponse:
 def list_mood_checkin_configs(db: OrmSession) -> list[AdminMoodCheckInConfigResponse]:
     configs = list(
         db.scalars(
-            select(MoodCheckInConfig).order_by(MoodCheckInConfig.sort_order.asc(), MoodCheckInConfig.updated_at.desc())
+            select(MoodCheckInConfig).order_by(
+                MoodCheckInConfig.sort_order.asc(), MoodCheckInConfig.updated_at.desc()
+            )
         )
     )
     return [_response(config) for config in configs]
@@ -98,7 +100,9 @@ def list_mood_checkin_configs(db: OrmSession) -> list[AdminMoodCheckInConfigResp
 def get_mood_checkin_config(db: OrmSession, config_id: uuid.UUID) -> MoodCheckInConfig:
     config = db.get(MoodCheckInConfig, config_id)
     if config is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy cấu hình.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy cấu hình."
+        )
     return config
 
 
@@ -161,7 +165,9 @@ def save_mood_checkin_config(
     return _response(config)
 
 
-def preview_mood_checkin_config(db: OrmSession, config_id: uuid.UUID) -> AdminMoodCheckInPreviewResponse:
+def preview_mood_checkin_config(
+    db: OrmSession, config_id: uuid.UUID
+) -> AdminMoodCheckInPreviewResponse:
     config = get_mood_checkin_config(db, config_id)
     return AdminMoodCheckInPreviewResponse(
         student_prompt=config.student_prompt,

@@ -137,8 +137,16 @@ def test_disabled_email_provider_preserves_existing_sos_behavior(
     assert response.status_code == 201
     alert_id = uuid.UUID(response.json()["id"])
     assert db.get(SosAlert, alert_id) is not None
-    assert db.scalar(select(InAppNotification).where(InAppNotification.resource_id == str(alert_id))) is not None
-    assert db.scalar(select(SosNotificationDelivery).where(SosNotificationDelivery.alert_id == alert_id)) is None
+    assert (
+        db.scalar(select(InAppNotification).where(InAppNotification.resource_id == str(alert_id)))
+        is not None
+    )
+    assert (
+        db.scalar(
+            select(SosNotificationDelivery).where(SosNotificationDelivery.alert_id == alert_id)
+        )
+        is None
+    )
 
 
 def test_local_outbox_records_metadata_without_sending_or_raw_content(db: OrmSession) -> None:
@@ -170,7 +178,9 @@ def test_local_outbox_records_metadata_without_sending_or_raw_content(db: OrmSes
     }
     assert all(delivery.channel == "email" for delivery in deliveries)
     assert all(delivery.provider == "local_outbox" for delivery in deliveries)
-    assert all(delivery.status == SosNotificationDeliveryStatus.QUEUED.value for delivery in deliveries)
+    assert all(
+        delivery.status == SosNotificationDeliveryStatus.QUEUED.value for delivery in deliveries
+    )
     assert all(delivery.attempt_count == 0 for delivery in deliveries)
 
     audit_events = list(
@@ -211,18 +221,24 @@ def test_smtp_failure_records_failed_delivery_without_rolling_back_sos(
     alert = db.get(SosAlert, response.id)
     assert alert is not None
     assert alert.current_status == SosAlertStatus.SENT.value
-    assert db.scalar(select(InAppNotification).where(InAppNotification.resource_id == str(alert.id))) is not None
+    assert (
+        db.scalar(select(InAppNotification).where(InAppNotification.resource_id == str(alert.id)))
+        is not None
+    )
 
-    delivery = db.scalar(select(SosNotificationDelivery).where(SosNotificationDelivery.alert_id == alert.id))
+    delivery = db.scalar(
+        select(SosNotificationDelivery).where(SosNotificationDelivery.alert_id == alert.id)
+    )
     assert delivery is not None
     assert delivery.status == SosNotificationDeliveryStatus.FAILED.value
     assert delivery.attempt_count == 1
     assert delivery.error_code == "smtp_error"
     assert delivery.delivered_at is None
 
-    failed_audit = db.scalar(select(AuditEvent).where(AuditEvent.action == "sos_email_delivery_failed"))
+    failed_audit = db.scalar(
+        select(AuditEvent).where(AuditEvent.action == "sos_email_delivery_failed")
+    )
     assert failed_audit is not None
     assert failed_audit.metadata_summary["status"] == "failed"
     assert PRIVATE_NOTE not in str(failed_audit.metadata_summary)
     assert teacher.email not in str(failed_audit.metadata_summary)
-

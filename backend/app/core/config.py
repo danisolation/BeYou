@@ -44,11 +44,15 @@ class Settings(BaseSettings):
         validation_alias="DATABASE_URL",
     )
     environment: str = Field(default="development", validation_alias="ENVIRONMENT")
-    session_cookie_name: str = Field(default="beyou_session", validation_alias="SESSION_COOKIE_NAME")
+    session_cookie_name: str = Field(
+        default="beyou_session", validation_alias="SESSION_COOKIE_NAME"
+    )
     session_cookie_secure: bool = Field(default=False, validation_alias="SESSION_COOKIE_SECURE")
     session_cookie_samesite: str = Field(default="lax", validation_alias="SESSION_COOKIE_SAMESITE")
     session_max_age_seconds: int = Field(default=86400, validation_alias="SESSION_MAX_AGE_SECONDS")
-    frontend_origin: str = Field(default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN")
+    frontend_origin: str = Field(
+        default="http://localhost:3000", validation_alias="FRONTEND_ORIGIN"
+    )
     frontend_origins: str = Field(default="", validation_alias="FRONTEND_ORIGINS")
     runtime_mode: RuntimeMode = Field(default="production_pilot", validation_alias="RUNTIME_MODE")
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
@@ -68,7 +72,9 @@ class Settings(BaseSettings):
     freemodel_api_key: str = Field(default="", validation_alias="FREEMODEL_API_KEY")
     freemodel_base_url: str = Field(default="", validation_alias="FREEMODEL_BASE_URL")
     freemodel_model: str = Field(default="", validation_alias="FREEMODEL_MODEL")
-    freemodel_timeout_seconds: float = Field(default=0, validation_alias="FREEMODEL_TIMEOUT_SECONDS")
+    freemodel_timeout_seconds: float = Field(
+        default=0, validation_alias="FREEMODEL_TIMEOUT_SECONDS"
+    )
     sos_email_provider: str = Field(default="disabled", validation_alias="SOS_EMAIL_PROVIDER")
     smtp_host: str = Field(default="", validation_alias="SMTP_HOST")
     smtp_port: int = Field(default=587, validation_alias="SMTP_PORT")
@@ -79,7 +85,9 @@ class Settings(BaseSettings):
     smtp_timeout_seconds: float = Field(default=10.0, validation_alias="SMTP_TIMEOUT_SECONDS")
     auth_provider_enabled: bool = Field(default=False, validation_alias="AUTH_PROVIDER_ENABLED")
     auth_provider_key: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_KEY")
-    auth_provider_label: str = Field(default="Chưa cấu hình", validation_alias="AUTH_PROVIDER_LABEL")
+    auth_provider_label: str = Field(
+        default="Chưa cấu hình", validation_alias="AUTH_PROVIDER_LABEL"
+    )
     auth_provider_mode: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_MODE")
     auth_provider_last_check_status: str | None = Field(
         default=None,
@@ -177,16 +185,22 @@ class Settings(BaseSettings):
         if not normalized:
             return
         if any(marker in compact for marker in FORBIDDEN_PROVIDER_MARKERS):
-            raise ValueError("Auth provider metadata cannot contain secret, token, claim, or raw identity markers")
+            raise ValueError(
+                "Auth provider metadata cannot contain secret, token, claim, or raw identity markers"
+            )
         if any(symbol in normalized for symbol in ("://", "/", "\\", "@", "?", "#")):
-            raise ValueError("Auth provider metadata cannot contain URLs, emails, or path-like values")
+            raise ValueError(
+                "Auth provider metadata cannot contain URLs, emails, or path-like values"
+            )
         if re.search(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\b", normalized):
             raise ValueError("Auth provider metadata cannot contain raw domains")
         if re.search(r"\$argon2(?:id|i|d)\$", normalized) or re.search(
             r"\beyJ[A-Za-z0-9_-]{10,}\b",
             value,
         ):
-            raise ValueError("Auth provider metadata cannot contain password hashes or token-like values")
+            raise ValueError(
+                "Auth provider metadata cannot contain password hashes or token-like values"
+            )
 
     @property
     def allowed_frontend_origins(self) -> list[str]:
@@ -203,7 +217,9 @@ class Settings(BaseSettings):
     def effective_llm_base_url(self) -> str:
         """Resolve base URL with fallback logic."""
         if not self.gemini_api_key and self.freemodel_api_key:
-            return self.freemodel_base_url or "https://generativelanguage.googleapis.com/v1beta/openai"
+            return (
+                self.freemodel_base_url or "https://generativelanguage.googleapis.com/v1beta/openai"
+            )
         return self.gemini_base_url or "https://generativelanguage.googleapis.com/v1beta/openai"
 
     @property
@@ -215,7 +231,12 @@ class Settings(BaseSettings):
             return [m.strip() for m in self.gemini_models.split(",") if m.strip()]
         if self.freemodel_model:
             return [self.freemodel_model]
-        return ["gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-2.5-flash", "gemini-2.5-flash-lite"]
+        return [
+            "gemini-3.1-flash-lite",
+            "gemini-3-flash-preview",
+            "gemini-2.5-flash",
+            "gemini-2.5-flash-lite",
+        ]
 
     @property
     def effective_llm_timeout(self) -> float:

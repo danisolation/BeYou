@@ -32,7 +32,9 @@ SUPPORT_PLAN_PRIVACY_NOTES = [
 ]
 
 
-def _active_linked_adult_rows(db: OrmSession, student_id: uuid.UUID) -> list[tuple[StudentAdultLink, User]]:
+def _active_linked_adult_rows(
+    db: OrmSession, student_id: uuid.UUID
+) -> list[tuple[StudentAdultLink, User]]:
     return list(
         db.execute(
             select(StudentAdultLink, User)
@@ -67,7 +69,9 @@ def _selected_adults(plan: StudentSupportPlan) -> list[SupportPlanSelectedAdult]
             relationship_type=adult.relationship_type_snapshot,
             is_demo=adult.is_demo,
         )
-        for adult in sorted(plan.selected_adults, key=lambda item: (item.adult_full_name_snapshot, str(item.id)))
+        for adult in sorted(
+            plan.selected_adults, key=lambda item: (item.adult_full_name_snapshot, str(item.id))
+        )
     ]
 
 
@@ -121,7 +125,9 @@ def _validate_selected_adults(
             detail="Kế hoạch đang bật cần ít nhất một người lớn tin tưởng đã liên kết.",
         )
 
-    linked_by_adult_id = {adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)}
+    linked_by_adult_id = {
+        adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)
+    }
     missing = [adult_id for adult_id in adult_ids if adult_id not in linked_by_adult_id]
     if missing:
         raise HTTPException(
@@ -173,7 +179,9 @@ def upsert_student_support_plan(
     plan.is_demo = student.is_demo
     _apply_lifecycle(plan, payload.status)
 
-    db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id == plan.id))
+    db.execute(
+        delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id == plan.id)
+    )
     db.flush()
     plan.selected_adults = [
         StudentSupportPlanAdult(
@@ -200,7 +208,9 @@ def upsert_student_support_plan(
             "student_id": str(student.id),
             "status": plan.status,
             "selected_adult_count": len(selected_rows),
-            "selected_relationship_types": sorted({link.relationship_type for link, _ in selected_rows}),
+            "selected_relationship_types": sorted(
+                {link.relationship_type for link, _ in selected_rows}
+            ),
             "has_what_helps": payload.what_helps is not None,
             "has_what_does_not_help": payload.what_does_not_help is not None,
             "has_preferred_contact_method": payload.preferred_contact_method is not None,

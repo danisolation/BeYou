@@ -470,7 +470,9 @@ def list_notifications(db: OrmSession, user: User) -> list[InAppNotificationResp
             .limit(50)
         )
     )
-    return [InAppNotificationResponse.model_validate(notification) for notification in notifications]
+    return [
+        InAppNotificationResponse.model_validate(notification) for notification in notifications
+    ]
 
 
 def mark_notification_read(
@@ -480,7 +482,9 @@ def mark_notification_read(
 ) -> InAppNotificationResponse:
     notification = db.get(InAppNotification, notification_id)
     if notification is None or notification.recipient_id != user.id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy thông báo.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy thông báo."
+        )
     if notification.read_at is None:
         notification.read_at = utc_now()
         db.commit()
@@ -505,7 +509,8 @@ def _latest_self_checks_by_student(
     ranked = (
         select(
             SelfCheckAttempt.id.label("attempt_id"),
-            func.row_number().over(
+            func.row_number()
+            .over(
                 partition_by=SelfCheckAttempt.student_id,
                 order_by=(SelfCheckAttempt.completed_at.desc(), SelfCheckAttempt.id.desc()),
             )
@@ -541,7 +546,8 @@ def _latest_sos_alerts_by_student(
     ranked = (
         select(
             SosAlert.id.label("alert_id"),
-            func.row_number().over(
+            func.row_number()
+            .over(
                 partition_by=SosAlert.student_id,
                 order_by=(SosAlert.created_at.desc(), SosAlert.id.desc()),
             )
@@ -572,7 +578,9 @@ def _open_sos_count(db: OrmSession, student_id: uuid.UUID) -> int:
     )
 
 
-def _open_sos_counts_by_student(db: OrmSession, student_ids: list[uuid.UUID]) -> dict[uuid.UUID, int]:
+def _open_sos_counts_by_student(
+    db: OrmSession, student_ids: list[uuid.UUID]
+) -> dict[uuid.UUID, int]:
     if not student_ids:
         return {}
     rows = db.execute(
@@ -586,7 +594,9 @@ def _open_sos_counts_by_student(db: OrmSession, student_ids: list[uuid.UUID]) ->
     return {student_id: int(count) for student_id, count in rows}
 
 
-def _events_by_alert_id(db: OrmSession, alert_ids: list[uuid.UUID]) -> dict[uuid.UUID, list[SosStatusEvent]]:
+def _events_by_alert_id(
+    db: OrmSession, alert_ids: list[uuid.UUID]
+) -> dict[uuid.UUID, list[SosStatusEvent]]:
     if not alert_ids:
         return {}
     events_by_alert: dict[uuid.UUID, list[SosStatusEvent]] = {}
@@ -602,7 +612,9 @@ def _events_by_alert_id(db: OrmSession, alert_ids: list[uuid.UUID]) -> dict[uuid
     return events_by_alert
 
 
-def _warning_group(latest_summary: SelfCheckAttempt | None, latest_alert: SosAlert | None) -> tuple[str, str]:
+def _warning_group(
+    latest_summary: SelfCheckAttempt | None, latest_alert: SosAlert | None
+) -> tuple[str, str]:
     if latest_alert is not None and latest_alert.current_status in ACTIVE_SOS_STATUSES:
         if latest_alert.severity == SosSeverity.URGENT.value:
             return "nguy_co_cao", "Nguy cơ cao"

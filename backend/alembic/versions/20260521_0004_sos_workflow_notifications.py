@@ -21,7 +21,9 @@ def upgrade() -> None:
     op.create_table(
         "sos_alerts",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("student_full_name_snapshot", sa.String(length=255), nullable=False),
         sa.Column("student_school_snapshot", sa.String(length=255), nullable=True),
         sa.Column("student_class_name_snapshot", sa.String(length=64), nullable=True),
@@ -42,8 +44,15 @@ def upgrade() -> None:
     op.create_table(
         "sos_status_events",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("alert_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("sos_alerts.id"), nullable=False),
-        sa.Column("actor_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "alert_id",
+            postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("sos_alerts.id"),
+            nullable=False,
+        ),
+        sa.Column(
+            "actor_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("actor_role", sa.String(length=32), nullable=False),
         sa.Column("previous_status", sa.String(length=32), nullable=True),
         sa.Column("new_status", sa.String(length=32), nullable=False),
@@ -53,14 +62,20 @@ def upgrade() -> None:
     )
     op.create_index("ix_sos_status_events_alert_id", "sos_status_events", ["alert_id"])
     op.create_index("ix_sos_status_events_actor_id", "sos_status_events", ["actor_id"])
-    op.create_index("ix_sos_status_events_alert_created", "sos_status_events", ["alert_id", "created_at"])
+    op.create_index(
+        "ix_sos_status_events_alert_created", "sos_status_events", ["alert_id", "created_at"]
+    )
     op.create_index("ix_sos_status_events_is_demo", "sos_status_events", ["is_demo"])
 
     op.create_table(
         "in_app_notifications",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("recipient_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
-        sa.Column("actor_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=True),
+        sa.Column(
+            "recipient_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
+        sa.Column(
+            "actor_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=True
+        ),
         sa.Column("resource_type", sa.String(length=96), nullable=False),
         sa.Column("resource_id", sa.String(length=128), nullable=False),
         sa.Column("title", sa.String(length=255), nullable=False),
@@ -70,7 +85,9 @@ def upgrade() -> None:
         sa.Column("is_demo", sa.Boolean(), nullable=False, server_default=sa.false()),
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
     )
-    op.create_index("ix_in_app_notifications_recipient_id", "in_app_notifications", ["recipient_id"])
+    op.create_index(
+        "ix_in_app_notifications_recipient_id", "in_app_notifications", ["recipient_id"]
+    )
     op.create_index("ix_in_app_notifications_actor_id", "in_app_notifications", ["actor_id"])
     op.create_index(
         "ix_in_app_notifications_recipient_created",

@@ -32,15 +32,27 @@ PASSWORD = "secret123"
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%phase22%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%phase22%@example.test")))
+        )
         if not user_ids:
             return
         db.execute(delete(MoodNoteShare).where(MoodNoteShare.student_id.in_(user_ids)))
-        db.execute(delete(MoodCheckinReminderState).where(MoodCheckinReminderState.student_id.in_(user_ids)))
-        db.execute(delete(StudentNotificationPreference).where(StudentNotificationPreference.student_id.in_(user_ids)))
+        db.execute(
+            delete(MoodCheckinReminderState).where(
+                MoodCheckinReminderState.student_id.in_(user_ids)
+            )
+        )
+        db.execute(
+            delete(StudentNotificationPreference).where(
+                StudentNotificationPreference.student_id.in_(user_ids)
+            )
+        )
         db.execute(delete(MoodCheckIn).where(MoodCheckIn.student_id.in_(user_ids)))
         db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(user_ids)))
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids)))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids))
+        )
         db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
         db.execute(delete(User).where(User.id.in_(user_ids)))
         db.commit()
@@ -130,7 +142,9 @@ def test_student_controls_in_app_reminders_and_reminder_actions_create_no_sos(
     default_payload = default_response.json()
     assert default_payload["in_app_reminders_enabled"] is False
     assert default_payload["mood_checkin_reminders_enabled"] is False
-    assert {channel["key"]: channel["status"] for channel in default_payload["channel_boundaries"]}["sms"] == "deferred"
+    assert {channel["key"]: channel["status"] for channel in default_payload["channel_boundaries"]}[
+        "sms"
+    ] == "deferred"
 
     update_response = client.put(
         "/api/student/notification-preferences",
@@ -179,7 +193,9 @@ def test_student_controls_in_app_reminders_and_reminder_actions_create_no_sos(
 
     audit_text = "\n".join(
         str(event.metadata_summary)
-        for event in db.scalars(select(AuditEvent).where(AuditEvent.resource_type == "mood_checkin_reminder"))
+        for event in db.scalars(
+            select(AuditEvent).where(AuditEvent.resource_type == "mood_checkin_reminder")
+        )
     )
     assert "no_auto_sos_no_adult_alert" in audit_text
     assert "private_note" not in audit_text
@@ -206,7 +222,9 @@ def test_quiet_hours_and_pause_suppress_in_app_reminder(db: OrmSession, client: 
     pause_until = (datetime.now(ZoneInfo("UTC")) + timedelta(days=1)).isoformat()
     response = client.put(
         "/api/student/notification-preferences",
-        json=_preference_payload(quiet_hours_start=None, quiet_hours_end=None, paused_until=pause_until),
+        json=_preference_payload(
+            quiet_hours_start=None, quiet_hours_end=None, paused_until=pause_until
+        ),
         headers=ORIGIN_HEADERS,
     )
     assert response.status_code == 200

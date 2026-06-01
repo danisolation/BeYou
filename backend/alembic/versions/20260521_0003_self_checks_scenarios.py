@@ -88,7 +88,9 @@ def upgrade() -> None:
     op.create_table(
         "self_check_attempts",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column(
             "test_id",
             postgresql.UUID(as_uuid=True),
@@ -184,8 +186,15 @@ def upgrade() -> None:
     op.create_table(
         "scenario_attempts",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
-        sa.Column("scenario_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("scenarios.id"), nullable=False),
+        sa.Column(
+            "student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
+        sa.Column(
+            "scenario_id",
+            postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("scenarios.id"),
+            nullable=False,
+        ),
         sa.Column(
             "selected_choice_id",
             postgresql.UUID(as_uuid=True),
@@ -224,7 +233,9 @@ def downgrade() -> None:
     op.drop_index("ix_scenarios_is_demo", table_name="scenarios")
     op.drop_index("ix_scenarios_status", table_name="scenarios")
     op.drop_table("scenarios")
-    op.drop_index("ix_self_check_attempt_answers_attempt_id", table_name="self_check_attempt_answers")
+    op.drop_index(
+        "ix_self_check_attempt_answers_attempt_id", table_name="self_check_attempt_answers"
+    )
     op.drop_table("self_check_attempt_answers")
     op.drop_index("ix_self_check_attempts_is_demo", table_name="self_check_attempts")
     op.drop_index("ix_self_check_attempts_student_completed", table_name="self_check_attempts")

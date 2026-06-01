@@ -6,7 +6,14 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session as OrmSession, selectinload
 
-from app.db.models import ContentStatus, Scenario, ScenarioAttempt, ScenarioChoice, ScenarioSignal, User
+from app.db.models import (
+    ContentStatus,
+    Scenario,
+    ScenarioAttempt,
+    ScenarioChoice,
+    ScenarioSignal,
+    User,
+)
 
 VALID_SCENARIO_SIGNALS = {ScenarioSignal.CONSTRUCTIVE.value, ScenarioSignal.RISKY.value}
 MAX_FEEDBACK_LENGTH = 500
@@ -28,7 +35,11 @@ def _ordered_choices(scenario: Scenario) -> list[ScenarioChoice]:
 
 
 def _validate_scenario_content(scenario: Scenario) -> None:
-    if not scenario.recommended_response.strip() or not scenario.lesson.strip() or not scenario.skill_tag.strip():
+    if (
+        not scenario.recommended_response.strip()
+        or not scenario.lesson.strip()
+        or not scenario.skill_tag.strip()
+    ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Nội dung tình huống chưa đủ gợi ý hỗ trợ.",
@@ -60,7 +71,9 @@ def list_published_scenarios(db: OrmSession) -> list[Scenario]:
 def get_published_scenario_detail(db: OrmSession, scenario_id: uuid.UUID) -> Scenario:
     scenario = db.scalar(_published_scenario_query(scenario_id))
     if scenario is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy tình huống.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy tình huống."
+        )
     _validate_scenario_content(scenario)
     scenario.choices.sort(key=lambda choice: (choice.sort_order, str(choice.id)))
     return scenario

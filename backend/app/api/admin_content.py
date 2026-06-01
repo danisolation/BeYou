@@ -21,8 +21,12 @@ from app.services import admin_content
 
 router = APIRouter()
 
-SELF_CHECK_PUBLISH_VALIDATION_DETAIL = "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
-SCENARIO_PUBLISH_VALIDATION_DETAIL = "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+SELF_CHECK_PUBLISH_VALIDATION_DETAIL = (
+    "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
+)
+SCENARIO_PUBLISH_VALIDATION_DETAIL = (
+    "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+)
 
 
 def _self_check_response(test) -> AdminSelfCheckTestResponse:
@@ -47,7 +51,9 @@ def get_self_checks(
     return [_self_check_response(item) for item in admin_content.list_self_check_tests(db)]
 
 
-@router.post("/self-checks", response_model=AdminSelfCheckTestResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/self-checks", response_model=AdminSelfCheckTestResponse, status_code=status.HTTP_201_CREATED
+)
 def post_self_check(
     payload: AdminSelfCheckTestUpsert,
     request: Request,
@@ -57,7 +63,9 @@ def post_self_check(
 ) -> AdminSelfCheckTestResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _self_check_response(admin_content.create_self_check_test(db, actor=current_user, payload=payload))
+    return _self_check_response(
+        admin_content.create_self_check_test(db, actor=current_user, payload=payload)
+    )
 
 
 @router.patch("/self-checks/{test_id}", response_model=AdminSelfCheckTestResponse)
@@ -72,7 +80,9 @@ def patch_self_check(
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
     return _self_check_response(
-        admin_content.update_self_check_test(db, actor=current_user, test_id=test_id, payload=payload)
+        admin_content.update_self_check_test(
+            db, actor=current_user, test_id=test_id, payload=payload
+        )
     )
 
 
@@ -86,7 +96,9 @@ def publish_self_check(
 ) -> AdminSelfCheckTestResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _self_check_response(admin_content.publish_self_check_test(db, actor=current_user, test_id=test_id))
+    return _self_check_response(
+        admin_content.publish_self_check_test(db, actor=current_user, test_id=test_id)
+    )
 
 
 @router.post("/self-checks/{test_id}/archive", response_model=AdminSelfCheckTestResponse)
@@ -99,7 +111,9 @@ def archive_self_check(
 ) -> AdminSelfCheckTestResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _self_check_response(admin_content.archive_self_check_test(db, actor=current_user, test_id=test_id))
+    return _self_check_response(
+        admin_content.archive_self_check_test(db, actor=current_user, test_id=test_id)
+    )
 
 
 @router.delete("/self-checks/{test_id}", response_model=AdminSelfCheckTestResponse | None)
@@ -113,7 +127,9 @@ def delete_self_check(
 ) -> AdminSelfCheckTestResponse | None:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    deleted = admin_content.delete_unused_draft_self_check_test(db, actor=current_user, test_id=test_id)
+    deleted = admin_content.delete_unused_draft_self_check_test(
+        db, actor=current_user, test_id=test_id
+    )
     response.status_code = status.HTTP_200_OK
     return _self_check_response(deleted)
 
@@ -127,7 +143,9 @@ def get_scenarios(
     return [_scenario_response(item) for item in admin_content.list_scenarios(db)]
 
 
-@router.post("/scenarios", response_model=AdminScenarioResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/scenarios", response_model=AdminScenarioResponse, status_code=status.HTTP_201_CREATED
+)
 def post_scenario(
     payload: AdminScenarioUpsert,
     request: Request,
@@ -137,7 +155,9 @@ def post_scenario(
 ) -> AdminScenarioResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _scenario_response(admin_content.create_scenario(db, actor=current_user, payload=payload))
+    return _scenario_response(
+        admin_content.create_scenario(db, actor=current_user, payload=payload)
+    )
 
 
 @router.patch("/scenarios/{scenario_id}", response_model=AdminScenarioResponse)
@@ -152,7 +172,9 @@ def patch_scenario(
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
     return _scenario_response(
-        admin_content.update_scenario(db, actor=current_user, scenario_id=scenario_id, payload=payload)
+        admin_content.update_scenario(
+            db, actor=current_user, scenario_id=scenario_id, payload=payload
+        )
     )
 
 
@@ -166,7 +188,9 @@ def publish_scenario(
 ) -> AdminScenarioResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _scenario_response(admin_content.publish_scenario(db, actor=current_user, scenario_id=scenario_id))
+    return _scenario_response(
+        admin_content.publish_scenario(db, actor=current_user, scenario_id=scenario_id)
+    )
 
 
 @router.post("/scenarios/{scenario_id}/archive", response_model=AdminScenarioResponse)
@@ -179,7 +203,9 @@ def archive_scenario(
 ) -> AdminScenarioResponse:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    return _scenario_response(admin_content.archive_scenario(db, actor=current_user, scenario_id=scenario_id))
+    return _scenario_response(
+        admin_content.archive_scenario(db, actor=current_user, scenario_id=scenario_id)
+    )
 
 
 @router.delete("/scenarios/{scenario_id}", response_model=AdminScenarioResponse | None)
@@ -193,6 +219,8 @@ def delete_scenario(
 ) -> AdminScenarioResponse | None:
     _require_admin(db, current_user)
     require_same_site_mutation(request, settings)
-    deleted = admin_content.delete_unused_draft_scenario(db, actor=current_user, scenario_id=scenario_id)
+    deleted = admin_content.delete_unused_draft_scenario(
+        db, actor=current_user, scenario_id=scenario_id
+    )
     response.status_code = status.HTTP_200_OK
     return _scenario_response(deleted)

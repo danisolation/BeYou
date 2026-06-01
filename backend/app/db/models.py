@@ -134,12 +134,16 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(512), nullable=False)
     role: Mapped[str] = mapped_column(String(32), nullable=False)
-    status: Mapped[str] = mapped_column(String(32), default=AccountStatus.ACTIVE.value, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(32), default=AccountStatus.ACTIVE.value, nullable=False
+    )
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     school: Mapped[str | None] = mapped_column(String(255), nullable=True)
     class_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -153,7 +157,9 @@ class Session(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True, nullable=False)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -175,7 +181,9 @@ class ExternalIdentity(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     provider_key: Mapped[str] = mapped_column(String(96), nullable=False, index=True)
     provider_subject_hash: Mapped[str] = mapped_column(String(128), nullable=False)
-    linked_user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    linked_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True, index=True
+    )
     status: Mapped[str] = mapped_column(
         String(32), default=ExternalIdentityStatus.PENDING_REVIEW.value, nullable=False
     )
@@ -183,14 +191,18 @@ class ExternalIdentity(Base):
     email_verified: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     email_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     display_label: Mapped[str | None] = mapped_column(String(160), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
     last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
     __table_args__ = (
-        UniqueConstraint("provider_key", "provider_subject_hash", name="uq_external_identities_provider_subject"),
+        UniqueConstraint(
+            "provider_key", "provider_subject_hash", name="uq_external_identities_provider_subject"
+        ),
         Index("ix_external_identities_status", "status"),
         Index("ix_external_identities_linked_user_id", "linked_user_id"),
     )
@@ -214,13 +226,17 @@ class StudentAdultLink(Base):
     __tablename__ = "student_adult_links"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     adult_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     relationship_type: Mapped[str] = mapped_column(String(32), nullable=False)
     status: Mapped[str] = mapped_column(String(32), default=LinkStatus.ACTIVE.value, nullable=False)
     created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     revoked_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -243,15 +259,21 @@ class StudentSupportPlan(Base):
     __tablename__ = "student_support_plans"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    status: Mapped[str] = mapped_column(String(32), default=SupportPlanStatus.ACTIVE.value, nullable=False)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
+    status: Mapped[str] = mapped_column(
+        String(32), default=SupportPlanStatus.ACTIVE.value, nullable=False
+    )
     what_helps: Mapped[str | None] = mapped_column(Text, nullable=True)
     what_does_not_help: Mapped[str | None] = mapped_column(Text, nullable=True)
     preferred_contact_method: Mapped[str | None] = mapped_column(Text, nullable=True)
     safe_contact_times: Mapped[str | None] = mapped_column(Text, nullable=True)
     shareable_note: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -280,7 +302,9 @@ class StudentSupportPlanAdult(Base):
     relationship_type_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
     adult_full_name_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     support_plan: Mapped[StudentSupportPlan] = relationship(back_populates="selected_adults")
 
@@ -294,7 +318,9 @@ class MoodCheckIn(Base):
     __tablename__ = "mood_check_ins"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     mood_label: Mapped[str] = mapped_column(String(64), nullable=False)
     energy_level: Mapped[int] = mapped_column(Integer, nullable=False)
     stress_level: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -306,7 +332,9 @@ class MoodCheckIn(Base):
     suggest_support_plan: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     suggest_sos: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     __table_args__ = (
         Index("ix_mood_check_ins_student_created", "student_id", "created_at"),
@@ -320,7 +348,9 @@ class MoodCheckInConfig(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(96), nullable=False, unique=True)
-    status: Mapped[str] = mapped_column(String(32), nullable=False, default=ContentStatus.DRAFT.value)
+    status: Mapped[str] = mapped_column(
+        String(32), nullable=False, default=ContentStatus.DRAFT.value
+    )
     student_prompt: Mapped[str] = mapped_column(Text, nullable=False)
     adult_guidance: Mapped[str] = mapped_column(Text, nullable=False)
     mood_options: Mapped[list[dict]] = mapped_column(JSONB, default=list, nullable=False)
@@ -328,7 +358,9 @@ class MoodCheckInConfig(Base):
     sort_order: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -345,8 +377,12 @@ class StudentNotificationPreference(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
     in_app_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    mood_checkin_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    reminder_cadence: Mapped[str] = mapped_column(String(32), default=ReminderCadence.WEEKLY.value, nullable=False)
+    mood_checkin_reminders_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    reminder_cadence: Mapped[str] = mapped_column(
+        String(32), default=ReminderCadence.WEEKLY.value, nullable=False
+    )
     allowed_channels: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
     consent_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
     consented_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -356,7 +392,9 @@ class StudentNotificationPreference(Base):
     paused_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     pause_reason_code: Mapped[str | None] = mapped_column(String(64), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -373,21 +411,29 @@ class MoodCheckinReminderState(Base):
     __tablename__ = "mood_checkin_reminder_states"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     reminder_type: Mapped[str] = mapped_column(String(64), default="mood_check_in", nullable=False)
     last_shown_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    last_dismissed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    last_dismissed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     last_opened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     snoozed_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     next_due_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
 
     __table_args__ = (
-        UniqueConstraint("student_id", "reminder_type", name="uq_mood_checkin_reminder_state_student_type"),
+        UniqueConstraint(
+            "student_id", "reminder_type", name="uq_mood_checkin_reminder_state_student_type"
+        ),
         Index("ix_mood_checkin_reminder_states_due", "next_due_at"),
         Index("ix_mood_checkin_reminder_states_is_demo", "is_demo"),
     )
@@ -400,13 +446,17 @@ class MoodNoteShare(Base):
     mood_checkin_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("mood_check_ins.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     adult_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     relationship_type_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
     share_scope: Mapped[str] = mapped_column(String(32), nullable=False)
     student_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     revoked_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
 
@@ -428,20 +478,32 @@ class SchoolPrivacyPolicyDefault(Base):
     __tablename__ = "school_privacy_policy_defaults"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_scope: Mapped[str] = mapped_column(String(96), default="default", nullable=False, unique=True)
-    default_in_app_reminders_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    school_scope: Mapped[str] = mapped_column(
+        String(96), default="default", nullable=False, unique=True
+    )
+    default_in_app_reminders_enabled: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
     default_quiet_hours_start: Mapped[str | None] = mapped_column(String(5), nullable=True)
     default_quiet_hours_end: Mapped[str | None] = mapped_column(String(5), nullable=True)
-    default_timezone: Mapped[str] = mapped_column(String(64), default="Asia/Ho_Chi_Minh", nullable=False)
+    default_timezone: Mapped[str] = mapped_column(
+        String(64), default="Asia/Ho_Chi_Minh", nullable=False
+    )
     allowed_channels: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
     external_channels_enabled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     note_sharing_enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    reason_required_for_adult_summaries: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
-    reason_required_for_shared_mood_notes: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    reason_required_for_adult_summaries: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False
+    )
+    reason_required_for_shared_mood_notes: Mapped[bool] = mapped_column(
+        Boolean, default=True, nullable=False
+    )
     allowed_reason_codes: Mapped[list[str]] = mapped_column(JSONB, default=list, nullable=False)
     updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -461,7 +523,9 @@ class AuditEvent(Base):
     action: Mapped[str] = mapped_column(String(96), nullable=False)
     resource_type: Mapped[str] = mapped_column(String(96), nullable=False)
     resource_id: Mapped[str] = mapped_column(String(128), nullable=False)
-    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     reason: Mapped[str | None] = mapped_column(String(128), nullable=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False)
     metadata_summary: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
@@ -476,10 +540,14 @@ class SelfCheckTest(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     cover_image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
-    status: Mapped[str] = mapped_column(String(32), default=ContentStatus.DRAFT.value, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(32), default=ContentStatus.DRAFT.value, nullable=False
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -501,7 +569,9 @@ class SelfCheckQuestion(Base):
     __tablename__ = "self_check_questions"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    test_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("self_check_tests.id"), nullable=False, index=True
+    )
     text: Mapped[str] = mapped_column(Text, nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
@@ -531,7 +601,9 @@ class SelfCheckThreshold(Base):
     __tablename__ = "self_check_thresholds"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    test_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("self_check_tests.id"), nullable=False, index=True
+    )
     state_label: Mapped[str] = mapped_column(String(64), nullable=False)
     min_score: Mapped[int] = mapped_column(Integer, nullable=False)
     max_score: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -548,8 +620,12 @@ class SelfCheckAttempt(Base):
     __tablename__ = "self_check_attempts"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    test_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("self_check_tests.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
+    test_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("self_check_tests.id"), nullable=False, index=True
+    )
     score: Mapped[int] = mapped_column(Integer, nullable=False)
     state_label: Mapped[str] = mapped_column(String(64), nullable=False)
     supportive_headline: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -561,7 +637,9 @@ class SelfCheckAttempt(Base):
     test_title_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
     test_snapshot: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     answers: Mapped[list["SelfCheckAttemptAnswer"]] = relationship(
         back_populates="attempt", cascade="all, delete-orphan"
@@ -584,7 +662,9 @@ class SelfCheckAttemptAnswer(Base):
     question_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("self_check_questions.id"), nullable=True
     )
-    choice_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("self_check_choices.id"), nullable=True)
+    choice_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("self_check_choices.id"), nullable=True
+    )
     question_text_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
     choice_text_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
     score_value_snapshot: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -602,11 +682,15 @@ class Scenario(Base):
     situation: Mapped[str] = mapped_column(Text, nullable=False)
     skill_tag: Mapped[str] = mapped_column(String(96), nullable=False)
     cover_image_url: Mapped[str | None] = mapped_column(Text, nullable=True)
-    status: Mapped[str] = mapped_column(String(32), default=ContentStatus.DRAFT.value, nullable=False)
+    status: Mapped[str] = mapped_column(
+        String(32), default=ContentStatus.DRAFT.value, nullable=False
+    )
     recommended_response: Mapped[str] = mapped_column(Text, nullable=False)
     lesson: Mapped[str] = mapped_column(Text, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -625,7 +709,9 @@ class ScenarioChoice(Base):
     __tablename__ = "scenario_choices"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    scenario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scenarios.id"), nullable=False, index=True)
+    scenario_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("scenarios.id"), nullable=False, index=True
+    )
     text: Mapped[str] = mapped_column(Text, nullable=False)
     signal: Mapped[str] = mapped_column(String(32), nullable=False)
     feedback: Mapped[str] = mapped_column(Text, nullable=False)
@@ -639,8 +725,12 @@ class ScenarioAttempt(Base):
     __tablename__ = "scenario_attempts"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    scenario_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("scenarios.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
+    scenario_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("scenarios.id"), nullable=False, index=True
+    )
     selected_choice_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("scenario_choices.id"), nullable=True
     )
@@ -653,7 +743,9 @@ class ScenarioAttempt(Base):
     lesson_snapshot: Mapped[str] = mapped_column(Text, nullable=False)
     skill_tag_snapshot: Mapped[str] = mapped_column(String(96), nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    completed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    completed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     __table_args__ = (
         Index("ix_scenario_attempts_student_completed", "student_id", "completed_at"),
@@ -665,7 +757,9 @@ class SosAlert(Base):
     __tablename__ = "sos_alerts"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     student_full_name_snapshot: Mapped[str] = mapped_column(String(255), nullable=False)
     student_school_snapshot: Mapped[str | None] = mapped_column(String(255), nullable=True)
     student_class_name_snapshot: Mapped[str | None] = mapped_column(String(64), nullable=True)
@@ -676,7 +770,9 @@ class SosAlert(Base):
         String(32), default=SosAlertStatus.SENT.value, nullable=False
     )
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -700,14 +796,18 @@ class SosStatusEvent(Base):
     __tablename__ = "sos_status_events"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    alert_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("sos_alerts.id"), nullable=False, index=True)
+    alert_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("sos_alerts.id"), nullable=False, index=True
+    )
     actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     actor_role: Mapped[str] = mapped_column(String(32), nullable=False)
     previous_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
     new_status: Mapped[str] = mapped_column(String(32), nullable=False)
     note: Mapped[str | None] = mapped_column(Text, nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     alert: Mapped[SosAlert] = relationship(back_populates="status_events")
 
@@ -724,7 +824,9 @@ class SosNotificationDelivery(Base):
     alert_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("sos_alerts.id", ondelete="CASCADE"), nullable=False, index=True
     )
-    recipient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    recipient_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
     channel: Mapped[str] = mapped_column(String(32), nullable=False)
     provider: Mapped[str] = mapped_column(String(32), nullable=False)
     recipient_role_snapshot: Mapped[str] = mapped_column(String(32), nullable=False)
@@ -734,7 +836,9 @@ class SosNotificationDelivery(Base):
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     error_code: Mapped[str | None] = mapped_column(String(96), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -752,8 +856,12 @@ class InAppNotification(Base):
     __tablename__ = "in_app_notifications"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    recipient_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    actor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    recipient_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
+    actor_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True, index=True
+    )
     resource_type: Mapped[str] = mapped_column(String(96), nullable=False)
     resource_id: Mapped[str] = mapped_column(String(128), nullable=False)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -761,7 +869,9 @@ class InAppNotification(Base):
     href: Mapped[str | None] = mapped_column(String(512), nullable=True)
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     __table_args__ = (
         Index("ix_in_app_notifications_recipient_created", "recipient_id", "created_at"),
@@ -774,11 +884,17 @@ class ChatThread(Base):
     __tablename__ = "chat_threads"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    student_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
-    title: Mapped[str] = mapped_column(String(255), default="Cuộc trò chuyện với Peerlight AI", nullable=False)
+    student_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("users.id"), nullable=False, index=True
+    )
+    title: Mapped[str] = mapped_column(
+        String(255), default="Cuộc trò chuyện với Peerlight AI", nullable=False
+    )
     safety_state: Mapped[str] = mapped_column(String(32), default="supportive", nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )
@@ -801,12 +917,16 @@ class ChatMessage(Base):
     __tablename__ = "chat_messages"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    thread_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("chat_threads.id"), nullable=False, index=True)
+    thread_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("chat_threads.id"), nullable=False, index=True
+    )
     role: Mapped[str] = mapped_column(String(32), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
     safety_flagged: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     thread: Mapped[ChatThread] = relationship(back_populates="messages")
 
@@ -820,7 +940,9 @@ class ChatSafetySignal(Base):
     __tablename__ = "chat_safety_signals"
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    thread_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("chat_threads.id"), nullable=False, index=True)
+    thread_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("chat_threads.id"), nullable=False, index=True
+    )
     message_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("chat_messages.id"), nullable=True, index=True
     )
@@ -830,7 +952,9 @@ class ChatSafetySignal(Base):
     escalation_suggestion: Mapped[str] = mapped_column(String(128), nullable=False)
     sos_suggested: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
 
     thread: Mapped[ChatThread] = relationship(back_populates="safety_signals")
 
@@ -853,7 +977,9 @@ class ChatbotSafetyConfig(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now, nullable=False
     )

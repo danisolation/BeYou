@@ -139,7 +139,11 @@ def get_scenario_detail(
     return _scenario_detail(get_published_scenario_detail(db, scenario_id))
 
 
-@router.post("/{scenario_id}/attempts", response_model=ScenarioFeedbackResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/{scenario_id}/attempts",
+    response_model=ScenarioFeedbackResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_scenario_attempt(
     scenario_id: uuid.UUID,
     payload: ScenarioAttemptRequest,
@@ -158,4 +162,6 @@ def create_scenario_attempt(
         purpose="student_reflection",
         student_id=student.id,
     )
-    return _feedback_response(submit_scenario_attempt(db, student, scenario_id, payload.selected_choice_id))
+    return _feedback_response(
+        submit_scenario_attempt(db, student, scenario_id, payload.selected_choice_id)
+    )

@@ -44,7 +44,11 @@ def _clean_database() -> None:
         db.execute(delete(MoodCheckinReminderState))
         db.execute(delete(StudentNotificationPreference))
         db.execute(delete(SchoolPrivacyPolicyDefault))
-        db.execute(delete(AuditEvent).where(AuditEvent.actor_role.in_([UserRole.STUDENT.value, UserRole.ADMIN.value])))
+        db.execute(
+            delete(AuditEvent).where(
+                AuditEvent.actor_role.in_([UserRole.STUDENT.value, UserRole.ADMIN.value])
+            )
+        )
         db.execute(delete(StudentAdultLink))
         db.execute(delete(UserSession))
         db.execute(delete(User).where(User.email.like("%phase21%@example.test")))
@@ -96,7 +100,9 @@ def _sos_signal(db: OrmSession, student: User) -> None:
 
 
 def test_v14_policy_and_preference_contracts_default_to_in_app_only(db: OrmSession) -> None:
-    student = _user(db, email=f"student-phase21-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value)
+    student = _user(
+        db, email=f"student-phase21-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value
+    )
 
     policy = get_or_create_school_privacy_policy(db, school_scope="phase21", is_demo=True)
     preference = get_or_create_student_notification_preference(db, student=student)
@@ -128,10 +134,18 @@ def test_v14_policy_and_preference_contracts_default_to_in_app_only(db: OrmSessi
 
 
 def test_v14_authorization_resources_are_explicit_and_relationship_bound(db: OrmSession) -> None:
-    student = _user(db, email=f"student-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email=f"teacher-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.TEACHER.value)
-    parent = _user(db, email=f"parent-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.PARENT.value)
-    admin = _user(db, email=f"admin-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.ADMIN.value)
+    student = _user(
+        db, email=f"student-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email=f"teacher-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.TEACHER.value
+    )
+    parent = _user(
+        db, email=f"parent-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.PARENT.value
+    )
+    admin = _user(
+        db, email=f"admin-phase21-auth-{uuid.uuid4()}@example.test", role=UserRole.ADMIN.value
+    )
     db.add(
         StudentAdultLink(
             student_id=student.id,
@@ -197,9 +211,16 @@ def test_v14_authorization_resources_are_explicit_and_relationship_bound(db: Orm
 
 
 def test_v14_audit_rejects_new_sensitive_metadata_keys(db: OrmSession) -> None:
-    actor = _user(db, email=f"admin-phase21-audit-{uuid.uuid4()}@example.test", role=UserRole.ADMIN.value)
+    actor = _user(
+        db, email=f"admin-phase21-audit-{uuid.uuid4()}@example.test", role=UserRole.ADMIN.value
+    )
 
-    for forbidden_key in ("shared_note_text", "student_summary", "reason_detail", "notification_body"):
+    for forbidden_key in (
+        "shared_note_text",
+        "student_summary",
+        "reason_detail",
+        "notification_body",
+    ):
         with pytest.raises(HTTPException):
             record_audit_event(
                 db,

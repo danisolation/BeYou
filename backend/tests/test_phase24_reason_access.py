@@ -49,21 +49,35 @@ FORBIDDEN_AUDIT_KEYS = {
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%phase24-reason%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%phase24-reason%@example.test")))
+        )
         if not user_ids:
-            db.execute(delete(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+            db.execute(
+                delete(SchoolPrivacyPolicyDefault).where(
+                    SchoolPrivacyPolicyDefault.school_scope == "default"
+                )
+            )
             db.commit()
             return
-        checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids))))
+        checkin_ids = list(
+            db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids)))
+        )
         plan_ids = list(
-            db.scalars(select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids)))
+            db.scalars(
+                select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids))
+            )
         )
         if checkin_ids:
             db.execute(delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(checkin_ids)))
             db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
         db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
         if plan_ids:
-            db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids)))
+            db.execute(
+                delete(StudentSupportPlanAdult).where(
+                    StudentSupportPlanAdult.support_plan_id.in_(plan_ids)
+                )
+            )
             db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
         db.execute(
             delete(AuditEvent).where(
@@ -83,7 +97,11 @@ def _clean_database() -> None:
                 )
             )
         )
-        db.execute(delete(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+        db.execute(
+            delete(SchoolPrivacyPolicyDefault).where(
+                SchoolPrivacyPolicyDefault.school_scope == "default"
+            )
+        )
         db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
         db.execute(delete(User).where(User.id.in_(user_ids)))
         db.commit()
@@ -182,9 +200,17 @@ def _seed_policy(db: OrmSession, *, require_reasons: bool = True) -> None:
 
 
 def _seed_summary_data(db: OrmSession) -> tuple[User, User, User]:
-    student = _user(db, email=f"student-{uuid.uuid4()}-phase24-reason@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email=f"teacher-{uuid.uuid4()}-phase24-reason@example.test", role=UserRole.TEACHER.value)
-    outsider = _user(db, email=f"outsider-{uuid.uuid4()}-phase24-reason@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email=f"student-{uuid.uuid4()}-phase24-reason@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email=f"teacher-{uuid.uuid4()}-phase24-reason@example.test", role=UserRole.TEACHER.value
+    )
+    outsider = _user(
+        db,
+        email=f"outsider-{uuid.uuid4()}-phase24-reason@example.test",
+        role=UserRole.TEACHER.value,
+    )
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     plan = StudentSupportPlan(
         student_id=student.id,
@@ -263,13 +289,21 @@ def test_missing_reason_blocks_linked_adult_and_audits_without_content(
     assert response.status_code == 428
     detail = response.json()["detail"]
     assert detail["code"] == "access_reason_required"
-    assert {reason["code"] for reason in detail["allowed_reasons"]} == {ALLOWED_REASON, "follow_up_after_checkin"}
+    assert {reason["code"] for reason in detail["allowed_reasons"]} == {
+        ALLOWED_REASON,
+        "follow_up_after_checkin",
+    }
     assert PRIVATE_MARKER not in response.text
     assert SUPPORT_PLAN_MARKER not in response.text
 
-    events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked")))
+    events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked"))
+    )
     assert {event.status for event in events} == {"missing"}
-    assert {event.resource_type for event in events} == {"adult_support_summary", "shared_mood_note"}
+    assert {event.resource_type for event in events} == {
+        "adult_support_summary",
+        "shared_mood_note",
+    }
     for event in events:
         assert event.reason is None
         assert event.metadata_summary["reason_required"] is True
@@ -284,7 +318,9 @@ def test_allowed_reason_returns_summary_shared_notes_and_metadata_only_audit(
     student, teacher, _ = _seed_summary_data(db)
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code={ALLOWED_REASON}")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code={ALLOWED_REASON}"
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -293,9 +329,14 @@ def test_allowed_reason_returns_summary_shared_notes_and_metadata_only_audit(
     assert payload["support_plan"]["what_helps"] == SUPPORT_PLAN_MARKER
     assert payload["shared_mood_notes"][0]["content"] == PRIVATE_MARKER
 
-    reason_events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked")))
+    reason_events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked"))
+    )
     assert {event.status for event in reason_events} == {"allowed"}
-    assert {event.resource_type for event in reason_events} == {"adult_support_summary", "shared_mood_note"}
+    assert {event.resource_type for event in reason_events} == {
+        "adult_support_summary",
+        "shared_mood_note",
+    }
     for event in reason_events:
         assert event.reason == ALLOWED_REASON
         assert event.metadata_summary["reason_code"] == ALLOWED_REASON
@@ -312,7 +353,9 @@ def test_allowed_reason_returns_summary_shared_notes_and_metadata_only_audit(
     assert summary_event.metadata_summary["access_reason_code"] == ALLOWED_REASON
     _assert_no_forbidden_audit(summary_event.metadata_summary)
 
-    share_read_event = db.scalar(select(AuditEvent).where(AuditEvent.action == "mood_note_share_read"))
+    share_read_event = db.scalar(
+        select(AuditEvent).where(AuditEvent.action == "mood_note_share_read")
+    )
     assert share_read_event is not None
     assert share_read_event.metadata_summary["access_reason_code"] == ALLOWED_REASON
     _assert_no_forbidden_audit(share_read_event.metadata_summary)
@@ -326,12 +369,16 @@ def test_invalid_reason_is_denied_and_does_not_return_sensitive_content(
     student, teacher, _ = _seed_summary_data(db)
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=curiosity")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=curiosity"
+    )
 
     assert response.status_code == 422
     assert PRIVATE_MARKER not in response.text
     assert SUPPORT_PLAN_MARKER not in response.text
-    events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked")))
+    events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked"))
+    )
     assert {event.status for event in events} == {"denied"}
     for event in events:
         assert event.reason is None
@@ -347,7 +394,9 @@ def test_reason_submission_does_not_bypass_active_relationship(
     student, _, outsider = _seed_summary_data(db)
 
     _login(client, outsider.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code={ALLOWED_REASON}")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code={ALLOWED_REASON}"
+    )
 
     assert response.status_code == 403
     assert PRIVATE_MARKER not in response.text
@@ -376,4 +425,7 @@ def test_policy_can_disable_reason_prompt_for_existing_support_summary_flow(
     assert payload["access_reason"]["reason_code"] is None
     assert payload["support_plan"]["what_helps"] == SUPPORT_PLAN_MARKER
     assert payload["shared_mood_notes"][0]["content"] == PRIVATE_MARKER
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked")) is None
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "adult_access_reason_checked"))
+        is None
+    )

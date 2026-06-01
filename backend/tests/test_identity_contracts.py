@@ -6,7 +6,14 @@ from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session as OrmSession
 
 from app.core.security import hash_password
-from app.db.models import AccountStatus, ExternalIdentity, ExternalIdentityStatus, Session as UserSession, User, UserRole
+from app.db.models import (
+    AccountStatus,
+    ExternalIdentity,
+    ExternalIdentityStatus,
+    Session as UserSession,
+    User,
+    UserRole,
+)
 from app.db.session import SessionLocal
 from app.services.external_identity import hash_external_subject, resolve_external_identity
 
@@ -101,7 +108,9 @@ def test_unknown_identity_returns_unknown_identity_without_creating_user(db: Orm
     assert _user_count(db) == before_count
 
 
-def test_pending_review_identity_returns_pending_review_without_creating_user(db: OrmSession) -> None:
+def test_pending_review_identity_returns_pending_review_without_creating_user(
+    db: OrmSession,
+) -> None:
     before_count = _user_count(db)
     identity = _identity(
         db,
@@ -130,7 +139,9 @@ def test_disabled_and_deprovisioned_identities_return_safe_status(
     expected_status: str,
 ) -> None:
     user = _user(db, email=f"{uuid.uuid4()}@example.test")
-    identity = _identity(db, subject=f"{identity_status}-subject", status=identity_status, linked_user=user)
+    identity = _identity(
+        db, subject=f"{identity_status}-subject", status=identity_status, linked_user=user
+    )
 
     resolution = resolve_external_identity(db, "pilot_sso", f"{identity_status}-subject")
 

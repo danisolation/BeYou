@@ -37,7 +37,9 @@ MOOD_NOTE_SHARE_PRIVACY_NOTES = [
 ]
 
 
-def _active_linked_adult_rows(db: OrmSession, student_id: uuid.UUID) -> list[tuple[StudentAdultLink, User]]:
+def _active_linked_adult_rows(
+    db: OrmSession, student_id: uuid.UUID
+) -> list[tuple[StudentAdultLink, User]]:
     return list(
         db.execute(
             select(StudentAdultLink, User)
@@ -129,7 +131,9 @@ def _load_owned_checkin(db: OrmSession, student: User, checkin_id: uuid.UUID) ->
         )
     )
     if checkin is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy check-in.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy check-in."
+        )
     return checkin
 
 
@@ -154,7 +158,9 @@ def _validate_selected_adults(
     student: User,
     adult_ids: list[uuid.UUID],
 ) -> list[tuple[StudentAdultLink, User]]:
-    linked_by_adult_id = {adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)}
+    linked_by_adult_id = {
+        adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)
+    }
     missing = [adult_id for adult_id in adult_ids if adult_id not in linked_by_adult_id]
     if missing:
         raise HTTPException(
@@ -202,7 +208,9 @@ def list_active_shares_for_student_checkins(
     checkin_ids: list[uuid.UUID],
 ) -> dict[uuid.UUID, list[MoodNoteActiveShare]]:
     shares_by_checkin: dict[uuid.UUID, list[MoodNoteActiveShare]] = defaultdict(list)
-    for share, checkin, adult in _active_share_items(db, student_id=student_id, checkin_ids=checkin_ids):
+    for share, checkin, adult in _active_share_items(
+        db, student_id=student_id, checkin_ids=checkin_ids
+    ):
         shares_by_checkin[share.mood_checkin_id].append(_active_share_schema(share, checkin, adult))
     return shares_by_checkin
 
@@ -213,7 +221,9 @@ def _response_for_checkin(
     *,
     message: str,
 ) -> MoodNoteShareResponse:
-    active_shares = list_active_shares_for_student_checkins(db, checkin.student_id, [checkin.id]).get(checkin.id, [])
+    active_shares = list_active_shares_for_student_checkins(
+        db, checkin.student_id, [checkin.id]
+    ).get(checkin.id, [])
     return MoodNoteShareResponse(
         mood_checkin_id=checkin.id,
         active_shares=active_shares,
@@ -331,7 +341,10 @@ def revoke_mood_note_share(
         )
     )
     if share is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy quyền chia sẻ đang hoạt động.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Không tìm thấy quyền chia sẻ đang hoạt động.",
+        )
     now = utc_now()
     share.revoked_at = now
     share.revoked_by_id = student.id
@@ -364,7 +377,9 @@ def revoke_mood_note_share(
     return MoodNoteRevokeResponse(
         mood_checkin_id=checkin.id,
         revoked_count=1,
-        active_shares=list_active_shares_for_student_checkins(db, student.id, [checkin.id]).get(checkin.id, []),
+        active_shares=list_active_shares_for_student_checkins(db, student.id, [checkin.id]).get(
+            checkin.id, []
+        ),
         message="Đã thu hồi quyền xem.",
     )
 
@@ -425,7 +440,9 @@ def revoke_all_mood_note_shares(
     return MoodNoteRevokeResponse(
         mood_checkin_id=checkin.id,
         revoked_count=len(shares),
-        active_shares=list_active_shares_for_student_checkins(db, student.id, [checkin.id]).get(checkin.id, []),
+        active_shares=list_active_shares_for_student_checkins(db, student.id, [checkin.id]).get(
+            checkin.id, []
+        ),
         message="Đã thu hồi quyền xem.",
     )
 
@@ -454,7 +471,9 @@ def list_active_shared_notes_for_adult(
         )
     )
     if link is None:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập."
+        )
 
     rows = list(
         db.execute(

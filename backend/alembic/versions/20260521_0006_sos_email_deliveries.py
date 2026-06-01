@@ -27,7 +27,9 @@ def upgrade() -> None:
             sa.ForeignKey("sos_alerts.id", ondelete="CASCADE"),
             nullable=False,
         ),
-        sa.Column("recipient_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "recipient_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("channel", sa.String(length=32), nullable=False),
         sa.Column("provider", sa.String(length=32), nullable=False),
         sa.Column("recipient_role_snapshot", sa.String(length=32), nullable=False),
@@ -68,10 +70,17 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index("ix_sos_notification_deliveries_is_demo", table_name="sos_notification_deliveries")
+    op.drop_index(
+        "ix_sos_notification_deliveries_is_demo", table_name="sos_notification_deliveries"
+    )
     op.drop_index("ix_sos_notification_deliveries_status", table_name="sos_notification_deliveries")
-    op.drop_index("ix_sos_notification_deliveries_alert_created", table_name="sos_notification_deliveries")
-    op.drop_index("ix_sos_notification_deliveries_recipient_id", table_name="sos_notification_deliveries")
-    op.drop_index("ix_sos_notification_deliveries_alert_id", table_name="sos_notification_deliveries")
+    op.drop_index(
+        "ix_sos_notification_deliveries_alert_created", table_name="sos_notification_deliveries"
+    )
+    op.drop_index(
+        "ix_sos_notification_deliveries_recipient_id", table_name="sos_notification_deliveries"
+    )
+    op.drop_index(
+        "ix_sos_notification_deliveries_alert_id", table_name="sos_notification_deliveries"
+    )
     op.drop_table("sos_notification_deliveries")
-

@@ -71,7 +71,9 @@ def _test_detail(test: SelfCheckTest) -> SelfCheckTestDetailResponse:
                         sort_order=choice.sort_order,
                         is_demo=choice.is_demo,
                     )
-                    for choice in sorted(question.choices, key=lambda item: (item.sort_order, str(item.id)))
+                    for choice in sorted(
+                        question.choices, key=lambda item: (item.sort_order, str(item.id))
+                    )
                 ],
             )
             for question in sorted(test.questions, key=lambda item: (item.sort_order, str(item.id)))
@@ -199,7 +201,11 @@ def get_self_check_detail(
     return _test_detail(get_published_test_detail(db, test_id))
 
 
-@router.post("/{test_id}/attempts", response_model=SelfCheckResultResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/{test_id}/attempts",
+    response_model=SelfCheckResultResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_self_check_attempt(
     test_id: uuid.UUID,
     payload: SelfCheckAttemptSubmitRequest,

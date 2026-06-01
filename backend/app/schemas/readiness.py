@@ -26,4 +26,3 @@ class ReadinessReport(BaseModel):
 class PublicReadinessResponse(BaseModel):
     status: ReadinessOverallStatus
     generated_at: datetime
-

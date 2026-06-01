@@ -44,7 +44,9 @@ def list_configs(
     return list_mood_checkin_configs(db)
 
 
-@router.post("/configs", response_model=AdminMoodCheckInConfigResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/configs", response_model=AdminMoodCheckInConfigResponse, status_code=status.HTTP_201_CREATED
+)
 def create_config(
     payload: AdminMoodCheckInConfigUpsert,
     request: Request,

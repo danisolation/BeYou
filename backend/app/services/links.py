@@ -13,7 +13,9 @@ from app.services.audit import record_audit_event
 def get_link_or_404(db: OrmSession, link_id: uuid.UUID) -> StudentAdultLink:
     link = db.get(StudentAdultLink, link_id)
     if link is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy liên kết.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy liên kết."
+        )
     return link
 
 
@@ -31,16 +33,23 @@ def list_links_with_users(
         .join(student_user, student_user.id == StudentAdultLink.student_id)
         .join(adult_user, adult_user.id == StudentAdultLink.adult_id)
         .order_by(StudentAdultLink.created_at, StudentAdultLink.id)
-        .limit(limit).offset(offset)
+        .limit(limit)
+        .offset(offset)
     ).all()
     return [(link, student, adult) for link, student, adult in rows]
 
 
-def validate_relationship_pair(student: User | None, adult: User | None, relationship_type: str) -> None:
+def validate_relationship_pair(
+    student: User | None, adult: User | None, relationship_type: str
+) -> None:
     if relationship_type not in {relationship.value for relationship in RelationshipType}:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="relationship_type không hợp lệ.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="relationship_type không hợp lệ."
+        )
     if student is None or student.role != UserRole.STUDENT.value:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="student_id phải là tài khoản student.")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="student_id phải là tài khoản student."
+        )
     if adult is None or adult.role != relationship_type:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -68,7 +77,9 @@ def create_link(
         )
     )
     if existing is not None:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Liên kết đang hoạt động đã tồn tại.")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Liên kết đang hoạt động đã tồn tại."
+        )
 
     link = StudentAdultLink(
         student_id=student_id,

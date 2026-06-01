@@ -60,7 +60,9 @@ def _upsert_demo_user(
 ) -> User:
     user = db.scalar(select(User).where(User.email == email))
     if user is None:
-        user = User(email=email, password_hash=hash_password(DEMO_PASSWORD), role=role, full_name=full_name)
+        user = User(
+            email=email, password_hash=hash_password(DEMO_PASSWORD), role=role, full_name=full_name
+        )
         db.add(user)
     user.password_hash = hash_password(DEMO_PASSWORD)
     user.role = role
@@ -74,7 +76,9 @@ def _upsert_demo_user(
     return user
 
 
-def _ensure_active_demo_link(db: OrmSession, *, admin: User, student: User, adult: User, relationship_type: str) -> None:
+def _ensure_active_demo_link(
+    db: OrmSession, *, admin: User, student: User, adult: User, relationship_type: str
+) -> None:
     existing = db.scalar(
         select(StudentAdultLink).where(
             StudentAdultLink.student_id == student.id,
@@ -84,7 +88,13 @@ def _ensure_active_demo_link(db: OrmSession, *, admin: User, student: User, adul
         )
     )
     if existing is None:
-        create_link(db, actor=admin, student_id=student.id, adult_id=adult.id, relationship_type=relationship_type)
+        create_link(
+            db,
+            actor=admin,
+            student_id=student.id,
+            adult_id=adult.id,
+            relationship_type=relationship_type,
+        )
 
 
 SELF_CHECK_SEEDS = [
@@ -98,7 +108,11 @@ SELF_CHECK_SEEDS = [
             ),
             (
                 "Khi gặp chuyện khó, em có thấy mình có người để chia sẻ không?",
-                [("Có, em biết mình có thể nói với ai", 0), ("Chưa chắc lắm", 1), ("Em thấy khá một mình", 2)],
+                [
+                    ("Có, em biết mình có thể nói với ai", 0),
+                    ("Chưa chắc lắm", 1),
+                    ("Em thấy khá một mình", 2),
+                ],
             ),
         ],
     },
@@ -108,11 +122,19 @@ SELF_CHECK_SEEDS = [
         "questions": [
             (
                 "Khi bạn rủ làm điều em không thoải mái, em thường cảm thấy thế nào?",
-                [("Em có thể từ chối bình tĩnh", 0), ("Em hơi ngại nói không", 1), ("Em thường làm theo dù không muốn", 2)],
+                [
+                    ("Em có thể từ chối bình tĩnh", 0),
+                    ("Em hơi ngại nói không", 1),
+                    ("Em thường làm theo dù không muốn", 2),
+                ],
             ),
             (
                 "Sau các tình huống với nhóm bạn, em có còn thấy an toàn với lựa chọn của mình không?",
-                [("Có, em thấy ổn", 0), ("Có lúc em phân vân", 1), ("Em thường lo lắng hoặc hối tiếc", 2)],
+                [
+                    ("Có, em thấy ổn", 0),
+                    ("Có lúc em phân vân", 1),
+                    ("Em thường lo lắng hoặc hối tiếc", 2),
+                ],
             ),
         ],
     },
@@ -122,11 +144,19 @@ SELF_CHECK_SEEDS = [
         "questions": [
             (
                 "Gần đây em có thấy lo lắng hoặc căng thẳng khó dừng lại không?",
-                [("Hiếm khi hoặc em vẫn kiểm soát được", 0), ("Có vài lúc làm em mệt", 1), ("Thường xuyên và khó tự dịu lại", 2)],
+                [
+                    ("Hiếm khi hoặc em vẫn kiểm soát được", 0),
+                    ("Có vài lúc làm em mệt", 1),
+                    ("Thường xuyên và khó tự dịu lại", 2),
+                ],
             ),
             (
                 "Sự lo lắng có làm em né tránh lớp học, bạn bè hoặc hoạt động thường ngày không?",
-                [("Không đáng kể", 0), ("Có lúc em muốn né tránh", 1), ("Có, ảnh hưởng rõ đến sinh hoạt của em", 2)],
+                [
+                    ("Không đáng kể", 0),
+                    ("Có lúc em muốn né tránh", 1),
+                    ("Có, ảnh hưởng rõ đến sinh hoạt của em", 2),
+                ],
             ),
         ],
     },
@@ -136,11 +166,19 @@ SELF_CHECK_SEEDS = [
         "questions": [
             (
                 "Trong hai tuần gần đây, em có mất hứng thú với những việc thường làm em thấy vui không?",
-                [("Không hoặc chỉ thoáng qua", 0), ("Có vài ngày", 1), ("Nhiều ngày và em thấy khó bắt đầu lại", 2)],
+                [
+                    ("Không hoặc chỉ thoáng qua", 0),
+                    ("Có vài ngày", 1),
+                    ("Nhiều ngày và em thấy khó bắt đầu lại", 2),
+                ],
             ),
             (
                 "Em có thấy buồn, trống rỗng hoặc tự trách mình kéo dài không?",
-                [("Hiếm khi", 0), ("Có lúc khiến em nặng lòng", 1), ("Thường xuyên và em khó chia sẻ", 2)],
+                [
+                    ("Hiếm khi", 0),
+                    ("Có lúc khiến em nặng lòng", 1),
+                    ("Thường xuyên và em khó chia sẻ", 2),
+                ],
             ),
         ],
     },
@@ -150,7 +188,11 @@ SELF_CHECK_SEEDS = [
         "questions": [
             (
                 "Em có thường khó duy trì tập trung dù đã cố gắng bắt đầu việc học không?",
-                [("Hiếm khi", 0), ("Có lúc, nhất là khi mệt", 1), ("Thường xuyên và ảnh hưởng kết quả học", 2)],
+                [
+                    ("Hiếm khi", 0),
+                    ("Có lúc, nhất là khi mệt", 1),
+                    ("Thường xuyên và ảnh hưởng kết quả học", 2),
+                ],
             ),
             (
                 "Em có hay bồn chồn, hấp tấp hoặc khó chờ đến lượt đến mức bị nhắc nhở không?",
@@ -164,7 +206,11 @@ SELF_CHECK_SEEDS = [
         "questions": [
             (
                 "Em có thấy khó hiểu tín hiệu xã hội như nét mặt, ẩn ý hoặc khi nào nên tham gia câu chuyện không?",
-                [("Hiếm khi", 0), ("Có lúc làm em bối rối", 1), ("Thường xuyên khiến em mệt hoặc né tránh", 2)],
+                [
+                    ("Hiếm khi", 0),
+                    ("Có lúc làm em bối rối", 1),
+                    ("Thường xuyên khiến em mệt hoặc né tránh", 2),
+                ],
             ),
             (
                 "Sự thay đổi lịch trình, âm thanh, ánh sáng hoặc môi trường đông người có làm em quá tải không?",
@@ -296,7 +342,11 @@ SCENARIO_SEEDS = [
 
 
 def _upsert_self_check_content(db: OrmSession, seed: dict) -> SelfCheckTest:
-    test = db.scalar(select(SelfCheckTest).where(SelfCheckTest.title == seed["title"], SelfCheckTest.is_demo.is_(True)))
+    test = db.scalar(
+        select(SelfCheckTest).where(
+            SelfCheckTest.title == seed["title"], SelfCheckTest.is_demo.is_(True)
+        )
+    )
     if test is None:
         test = SelfCheckTest(title=seed["title"], is_demo=True)
         db.add(test)
@@ -325,7 +375,9 @@ def _upsert_self_check_content(db: OrmSession, seed: dict) -> SelfCheckTest:
     db.execute(delete(SelfCheckQuestion).where(SelfCheckQuestion.test_id == test.id))
     db.flush()
     for question_order, (question_text, choices) in enumerate(seed["questions"], start=1):
-        question = SelfCheckQuestion(test_id=test.id, text=question_text, sort_order=question_order, is_demo=True)
+        question = SelfCheckQuestion(
+            test_id=test.id, text=question_text, sort_order=question_order, is_demo=True
+        )
         db.add(question)
         db.flush()
         for choice_order, (choice_text, score_value) in enumerate(choices, start=1):
@@ -338,7 +390,15 @@ def _upsert_self_check_content(db: OrmSession, seed: dict) -> SelfCheckTest:
                     is_demo=True,
                 )
             )
-    for label, min_score, max_score, comment, advice, positive_content, next_action in THRESHOLD_COPY:
+    for (
+        label,
+        min_score,
+        max_score,
+        comment,
+        advice,
+        positive_content,
+        next_action,
+    ) in THRESHOLD_COPY:
         db.add(
             SelfCheckThreshold(
                 test_id=test.id,
@@ -358,7 +418,9 @@ def _upsert_self_check_content(db: OrmSession, seed: dict) -> SelfCheckTest:
 
 
 def _upsert_scenario_content(db: OrmSession, seed: dict) -> Scenario:
-    scenario = db.scalar(select(Scenario).where(Scenario.title == seed["title"], Scenario.is_demo.is_(True)))
+    scenario = db.scalar(
+        select(Scenario).where(Scenario.title == seed["title"], Scenario.is_demo.is_(True))
+    )
     if scenario is None:
         scenario = Scenario(
             title=seed["title"],
@@ -376,7 +438,11 @@ def _upsert_scenario_content(db: OrmSession, seed: dict) -> Scenario:
     scenario.lesson = seed["lesson"]
     scenario.status = ContentStatus.PUBLISHED.value
     scenario.is_demo = True
-    db.execute(update(ScenarioAttempt).where(ScenarioAttempt.scenario_id == scenario.id).values(selected_choice_id=None))
+    db.execute(
+        update(ScenarioAttempt)
+        .where(ScenarioAttempt.scenario_id == scenario.id)
+        .values(selected_choice_id=None)
+    )
     db.execute(delete(ScenarioChoice).where(ScenarioChoice.scenario_id == scenario.id))
     db.flush()
     for choice_order, (text, signal, feedback) in enumerate(seed["choices"], start=1):
@@ -396,13 +462,17 @@ def _upsert_scenario_content(db: OrmSession, seed: dict) -> Scenario:
 
 
 def _upsert_mood_checkin_config(db: OrmSession) -> MoodCheckInConfig:
-    config = db.scalar(select(MoodCheckInConfig).where(MoodCheckInConfig.name == "Demo supportive check-in"))
+    config = db.scalar(
+        select(MoodCheckInConfig).where(MoodCheckInConfig.name == "Demo supportive check-in")
+    )
     if config is None:
         config = MoodCheckInConfig(name="Demo supportive check-in")
         db.add(config)
     config.status = ContentStatus.PUBLISHED.value
     config.student_prompt = "Dành một phút gọi tên cảm xúc hiện tại để chọn một bước chăm sóc nhỏ."
-    config.adult_guidance = "Nếu học sinh chọn chia sẻ, bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào."
+    config.adult_guidance = (
+        "Nếu học sinh chọn chia sẻ, bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào."
+    )
     config.mood_options = [option.model_dump() for option in MOOD_OPTIONS]
     config.context_tags = [tag.model_dump() for tag in CONTEXT_TAG_OPTIONS]
     config.sort_order = 0
@@ -453,7 +523,9 @@ def _seed_self_check_attempts(db: OrmSession, *, student: User, tests: list[Self
         db.refresh(test, attribute_names=["questions", "thresholds"])
         for question in test.questions:
             db.refresh(question, attribute_names=["choices"])
-        attempt = submit_self_check_attempt(db, student, test.id, _choice_answers_for_score(test, target_score))
+        attempt = submit_self_check_attempt(
+            db, student, test.id, _choice_answers_for_score(test, target_score)
+        )
         attempt.completed_at = now - timedelta(days=index * 4)
         attempt.is_demo = True
         db.commit()
@@ -482,7 +554,11 @@ def _seed_sos_workflow(db: OrmSession, *, student: User, settings: Settings) -> 
 
 
 def _seed_v1_4_demo_state(db: OrmSession, *, admin: User, student: User, teacher: User) -> None:
-    policy = db.scalar(select(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+    policy = db.scalar(
+        select(SchoolPrivacyPolicyDefault).where(
+            SchoolPrivacyPolicyDefault.school_scope == "default"
+        )
+    )
     if policy is None:
         policy = SchoolPrivacyPolicyDefault(school_scope="default")
         db.add(policy)
@@ -495,12 +571,18 @@ def _seed_v1_4_demo_state(db: OrmSession, *, admin: User, student: User, teacher
     policy.note_sharing_enabled = True
     policy.reason_required_for_adult_summaries = True
     policy.reason_required_for_shared_mood_notes = True
-    policy.allowed_reason_codes = ["follow_up_after_checkin", "routine_care_conversation", "support_plan_context"]
+    policy.allowed_reason_codes = [
+        "follow_up_after_checkin",
+        "routine_care_conversation",
+        "support_plan_context",
+    ]
     policy.updated_by_id = admin.id
     policy.is_demo = True
 
     preference = db.scalar(
-        select(StudentNotificationPreference).where(StudentNotificationPreference.student_id == student.id)
+        select(StudentNotificationPreference).where(
+            StudentNotificationPreference.student_id == student.id
+        )
     )
     if preference is None:
         preference = StudentNotificationPreference(student_id=student.id)
@@ -521,7 +603,9 @@ def _seed_v1_4_demo_state(db: OrmSession, *, admin: User, student: User, teacher
         )
     )
     if reminder_state is None:
-        reminder_state = MoodCheckinReminderState(student_id=student.id, reminder_type="mood_check_in")
+        reminder_state = MoodCheckinReminderState(
+            student_id=student.id, reminder_type="mood_check_in"
+        )
         db.add(reminder_state)
     reminder_state.is_demo = True
 
@@ -603,8 +687,12 @@ def seed_demo_data(db: OrmSession, settings: Settings) -> bool:
         role=UserRole.ADMIN.value,
         full_name="Quản trị viên Demo",
     )
-    _ensure_active_demo_link(db, admin=admin, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
-    _ensure_active_demo_link(db, admin=admin, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
+    _ensure_active_demo_link(
+        db, admin=admin, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value
+    )
+    _ensure_active_demo_link(
+        db, admin=admin, student=student, adult=parent, relationship_type=UserRole.PARENT.value
+    )
     tests = [_upsert_self_check_content(db, seed) for seed in SELF_CHECK_SEEDS]
     for seed in SCENARIO_SEEDS:
         _upsert_scenario_content(db, seed)

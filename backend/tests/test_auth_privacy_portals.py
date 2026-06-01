@@ -339,7 +339,9 @@ def test_invalid_and_disabled_login_responses_are_generic_or_safe(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    active = _user(db, email="active-login@example.test", role=UserRole.STUDENT.value, full_name="Active")
+    active = _user(
+        db, email="active-login@example.test", role=UserRole.STUDENT.value, full_name="Active"
+    )
     disabled = _user(
         db,
         email="disabled-login@example.test",
@@ -354,7 +356,10 @@ def test_invalid_and_disabled_login_responses_are_generic_or_safe(
     disabled_response = _login(client, disabled.email)
 
     assert invalid_response.status_code == 401
-    assert invalid_response.json()["detail"] == "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra lại thông tin đăng nhập."
+    assert (
+        invalid_response.json()["detail"]
+        == "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra lại thông tin đăng nhập."
+    )
     assert disabled_response.status_code == 403
     assert "tạm khóa" in disabled_response.json()["detail"]
 
@@ -366,7 +371,9 @@ def test_production_pilot_blocks_demo_user_login_without_session(
     monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
     monkeypatch.setenv("ALLOW_DEMO_LOGIN", "false")
     get_settings.cache_clear()
-    demo_user = _user(db, email="pilot-demo-login@example.test", role=UserRole.ADMIN.value, full_name="Pilot Demo")
+    demo_user = _user(
+        db, email="pilot-demo-login@example.test", role=UserRole.ADMIN.value, full_name="Pilot Demo"
+    )
     reset_login_failures(demo_user.email, "testclient")
 
     with TestClient(create_app()) as pilot_client:
@@ -385,7 +392,12 @@ def test_allow_demo_login_false_denies_demo_login_before_session(
 ) -> None:
     monkeypatch.setenv("ALLOW_DEMO_LOGIN", "false")
     get_settings.cache_clear()
-    demo_user = _user(db, email="disabled-demo-login@example.test", role=UserRole.STUDENT.value, full_name="Demo Disabled")
+    demo_user = _user(
+        db,
+        email="disabled-demo-login@example.test",
+        role=UserRole.STUDENT.value,
+        full_name="Demo Disabled",
+    )
     reset_login_failures(demo_user.email, "testclient")
 
     with TestClient(create_app()) as guarded_client:
@@ -417,7 +429,9 @@ def test_production_pilot_allows_non_demo_login_session(
     )
 
     with TestClient(create_app()) as pilot_client:
-        response = _login(pilot_client, pilot_user.email, headers={"Origin": "https://pilot.example"})
+        response = _login(
+            pilot_client, pilot_user.email, headers={"Origin": "https://pilot.example"}
+        )
 
     assert response.status_code == 200
     assert "set-cookie" in response.headers
@@ -524,7 +538,9 @@ def test_revoked_session_is_denied_for_safe_auth_metadata(db: OrmSession) -> Non
     assert response.status_code == 401
 
 
-@pytest.mark.parametrize("status_value", [AccountStatus.DISABLED.value, AccountStatus.DELETED.value])
+@pytest.mark.parametrize(
+    "status_value", [AccountStatus.DISABLED.value, AccountStatus.DELETED.value]
+)
 def test_inactive_or_deleted_users_cannot_keep_password_demo_or_sso_marked_sessions(
     db: OrmSession,
     status_value: str,
@@ -580,7 +596,9 @@ def test_production_pilot_blocks_login_when_cookie_config_is_unsafe(
 
 
 def test_repeated_invalid_login_attempts_return_429(db: OrmSession, client: TestClient) -> None:
-    user = _user(db, email="limited-login@example.test", role=UserRole.STUDENT.value, full_name="Limited")
+    user = _user(
+        db, email="limited-login@example.test", role=UserRole.STUDENT.value, full_name="Limited"
+    )
     reset_login_failures(user.email, "testclient")
 
     for _ in range(LOGIN_RATE_LIMIT_MAX_ATTEMPTS):
@@ -590,7 +608,10 @@ def test_repeated_invalid_login_attempts_return_429(db: OrmSession, client: Test
     limited_response = _login(client, user.email, password="wrong")
 
     assert limited_response.status_code == 429
-    assert limited_response.json()["detail"] == "Quá nhiều lần đăng nhập chưa thành công. Hãy thử lại sau ít phút."
+    assert (
+        limited_response.json()["detail"]
+        == "Quá nhiều lần đăng nhập chưa thành công. Hãy thử lại sau ít phút."
+    )
 
 
 def test_me_privacy_acknowledgement_and_student_profile_flow(
@@ -640,7 +661,9 @@ def test_me_privacy_acknowledgement_and_student_profile_flow(
     assert profile_response.status_code == 200
     linked_adults = profile_response.json()["linked_adults"]
     assert {adult["relationship_type"] for adult in linked_adults} == {"teacher", "parent"}
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "privacy_acknowledged")) is not None
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "privacy_acknowledged")) is not None
+    )
 
 
 def test_teacher_and_parent_portals_return_only_active_linked_students(
@@ -659,8 +682,12 @@ def test_teacher_and_parent_portals_return_only_active_linked_students(
         role=UserRole.STUDENT.value,
         full_name="Unlinked Student",
     )
-    teacher = _user(db, email="teacher-portal@example.test", role=UserRole.TEACHER.value, full_name="Teacher")
-    parent = _user(db, email="parent-portal@example.test", role=UserRole.PARENT.value, full_name="Parent")
+    teacher = _user(
+        db, email="teacher-portal@example.test", role=UserRole.TEACHER.value, full_name="Teacher"
+    )
+    parent = _user(
+        db, email="parent-portal@example.test", role=UserRole.PARENT.value, full_name="Parent"
+    )
     _link(db, linked_student, teacher, UserRole.TEACHER.value)
     _link(db, linked_student, parent, UserRole.PARENT.value)
     db.add(

@@ -44,31 +44,59 @@ ALLOWED_REASON = "support_plan_context"
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%phase36-adult-summary%@example.test"))))
-        if user_ids:
-            checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids))))
-            plan_ids = list(
-                db.scalars(select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids)))
+        user_ids = list(
+            db.scalars(
+                select(User.id).where(User.email.like("%phase36-adult-summary%@example.test"))
             )
-            test_ids = list(db.scalars(select(SelfCheckTest.id).where(SelfCheckTest.title.like("Phase 36 Adult%"))))
+        )
+        if user_ids:
+            checkin_ids = list(
+                db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids)))
+            )
+            plan_ids = list(
+                db.scalars(
+                    select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids))
+                )
+            )
+            test_ids = list(
+                db.scalars(
+                    select(SelfCheckTest.id).where(SelfCheckTest.title.like("Phase 36 Adult%"))
+                )
+            )
             attempt_ids = list(
-                db.scalars(select(SelfCheckAttempt.id).where(SelfCheckAttempt.student_id.in_(user_ids)))
+                db.scalars(
+                    select(SelfCheckAttempt.id).where(SelfCheckAttempt.student_id.in_(user_ids))
+                )
             )
             if checkin_ids:
-                db.execute(delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(checkin_ids)))
+                db.execute(
+                    delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(checkin_ids))
+                )
                 db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
             if plan_ids:
-                db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids)))
+                db.execute(
+                    delete(StudentSupportPlanAdult).where(
+                        StudentSupportPlanAdult.support_plan_id.in_(plan_ids)
+                    )
+                )
                 db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
             if attempt_ids:
-                db.execute(delete(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id.in_(attempt_ids)))
+                db.execute(
+                    delete(SelfCheckAttemptAnswer).where(
+                        SelfCheckAttemptAnswer.attempt_id.in_(attempt_ids)
+                    )
+                )
                 db.execute(delete(SelfCheckAttempt).where(SelfCheckAttempt.id.in_(attempt_ids)))
             if test_ids:
                 question_ids = list(
-                    db.scalars(select(SelfCheckQuestion.id).where(SelfCheckQuestion.test_id.in_(test_ids)))
+                    db.scalars(
+                        select(SelfCheckQuestion.id).where(SelfCheckQuestion.test_id.in_(test_ids))
+                    )
                 )
                 if question_ids:
-                    db.execute(delete(SelfCheckChoice).where(SelfCheckChoice.question_id.in_(question_ids)))
+                    db.execute(
+                        delete(SelfCheckChoice).where(SelfCheckChoice.question_id.in_(question_ids))
+                    )
                 db.execute(delete(SelfCheckQuestion).where(SelfCheckQuestion.test_id.in_(test_ids)))
                 db.execute(delete(SelfCheckTest).where(SelfCheckTest.id.in_(test_ids)))
             db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
@@ -91,7 +119,11 @@ def _clean_database() -> None:
             )
             db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
             db.execute(delete(User).where(User.id.in_(user_ids)))
-        db.execute(delete(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+        db.execute(
+            delete(SchoolPrivacyPolicyDefault).where(
+                SchoolPrivacyPolicyDefault.school_scope == "default"
+            )
+        )
         db.commit()
 
 
@@ -154,7 +186,9 @@ def _seed_self_check_attempts(db: OrmSession, student: User) -> None:
     )
     db.add(test)
     db.flush()
-    question = SelfCheckQuestion(test_id=test.id, text="Phase 36 private question", sort_order=1, is_demo=True)
+    question = SelfCheckQuestion(
+        test_id=test.id, text="Phase 36 private question", sort_order=1, is_demo=True
+    )
     db.add(question)
     db.flush()
     choice = SelfCheckChoice(

@@ -239,4 +239,3 @@ class AdminOperationsDashboardResponse(BaseModel):
     v1_2_audit: list[OperationCountBucket] = Field(default_factory=list)
     v1_4_audit: list[OperationCountBucket] = Field(default_factory=list)
     audit: AuditEventSummary
-

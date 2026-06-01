@@ -68,7 +68,10 @@ SOS_SOURCE_LABELS = {
     "chatbot": "Từ chatbot hỗ trợ",
     "demo_seed": "Dữ liệu demo",
 }
-CHAT_STAGE_LABELS = {"input": "Tín hiệu từ chia sẻ của học sinh", "output": "Tín hiệu từ phản hồi chatbot"}
+CHAT_STAGE_LABELS = {
+    "input": "Tín hiệu từ chia sẻ của học sinh",
+    "output": "Tín hiệu từ phản hồi chatbot",
+}
 
 
 def _demo_condition(model: Any, demo_scope: DemoScope):
@@ -100,7 +103,9 @@ def _is_suppressed(count: int) -> bool:
     return 0 < count < SUPPRESSION_THRESHOLD
 
 
-def _privacy_bucket(key: str, count: int, labels: dict[str, str] | None = None) -> PrivacyCountBucket:
+def _privacy_bucket(
+    key: str, count: int, labels: dict[str, str] | None = None
+) -> PrivacyCountBucket:
     suppressed = _is_suppressed(count)
     return PrivacyCountBucket(
         key=key,
@@ -141,7 +146,14 @@ def _user_counts(db: OrmSession, demo_scope: DemoScope) -> UserAggregateReport:
     total = _scalar_count(db, User, demo_scope)
     role_buckets = cast(
         list[ExactCountBucket],
-        _group_counts(db, model=User, column=User.role, demo_scope=demo_scope, labels=ROLE_LABELS, sensitive=False),
+        _group_counts(
+            db,
+            model=User,
+            column=User.role,
+            demo_scope=demo_scope,
+            labels=ROLE_LABELS,
+            sensitive=False,
+        ),
     )
     status_buckets = cast(
         list[ExactCountBucket],
@@ -210,7 +222,9 @@ def _linked_students(db: OrmSession, demo_scope: DemoScope) -> LinkedStudentsAgg
 def _self_check_usage(db: OrmSession, demo_scope: DemoScope) -> SelfCheckAggregateReport:
     total = _scalar_count(db, SelfCheckAttempt, demo_scope)
     return SelfCheckAggregateReport(
-        total_completed=_privacy_bucket("self_check_completed", total, {"self_check_completed": "Lượt test tâm lý"}),
+        total_completed=_privacy_bucket(
+            "self_check_completed", total, {"self_check_completed": "Lượt test tâm lý"}
+        ),
         by_test=cast(
             list[PrivacyCountBucket],
             _group_counts(
@@ -278,7 +292,9 @@ def _sos_counts(db: OrmSession, demo_scope: DemoScope) -> SosAggregateReport:
 def _scenario_usage(db: OrmSession, demo_scope: DemoScope) -> ScenarioAggregateReport:
     total = _scalar_count(db, ScenarioAttempt, demo_scope)
     return ScenarioAggregateReport(
-        total_completed=_privacy_bucket("scenario_attempts", total, {"scenario_attempts": "Lượt luyện tình huống"}),
+        total_completed=_privacy_bucket(
+            "scenario_attempts", total, {"scenario_attempts": "Lượt luyện tình huống"}
+        ),
         popular_scenarios=cast(
             list[PrivacyCountBucket],
             _group_counts(

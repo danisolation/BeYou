@@ -7,7 +7,7 @@ can still authenticate while maintaining CSRF protection.
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi import HTTPException
@@ -81,21 +81,17 @@ class TestRefererFallback:
     """Safari fallback: no Origin, no Sec-Fetch-Site, use Referer."""
 
     def test_valid_referer_passes(self):
-        request = _mock_request(headers={
-            "referer": "https://beyou-frontend.vercel.app/student/dashboard"
-        })
+        request = _mock_request(
+            headers={"referer": "https://beyou-frontend.vercel.app/student/dashboard"}
+        )
         require_same_site_mutation(request, _mock_settings())
 
     def test_valid_referer_localhost_passes(self):
-        request = _mock_request(headers={
-            "referer": "http://localhost:3000/login"
-        })
+        request = _mock_request(headers={"referer": "http://localhost:3000/login"})
         require_same_site_mutation(request, _mock_settings())
 
     def test_evil_referer_blocked(self):
-        request = _mock_request(headers={
-            "referer": "https://evil.com/phishing"
-        })
+        request = _mock_request(headers={"referer": "https://evil.com/phishing"})
         with pytest.raises(HTTPException) as exc_info:
             require_same_site_mutation(request, _mock_settings())
         assert exc_info.value.status_code == 403
@@ -108,9 +104,7 @@ class TestRefererFallback:
         assert exc_info.value.status_code == 403
 
     def test_referer_with_port_mismatch_blocked(self):
-        request = _mock_request(headers={
-            "referer": "http://localhost:9999/page"
-        })
+        request = _mock_request(headers={"referer": "http://localhost:9999/page"})
         with pytest.raises(HTTPException) as exc_info:
             require_same_site_mutation(request, _mock_settings())
         assert exc_info.value.status_code == 403

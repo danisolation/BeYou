@@ -309,7 +309,9 @@ def _assert_aggregate_only_evidence(evidence_rows: list[dict[str, object]]) -> N
         assert "phase33_private_note" not in str(row)
 
 
-def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_evidence(db: OrmSession) -> None:
+def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_evidence(
+    db: OrmSession,
+) -> None:
     users = _seed_baseline_users(db)
     student_client = _login(users["student"].email)
     teacher_client = _login(users["teacher"].email)
@@ -329,7 +331,12 @@ def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_eviden
         ),
         (teacher_client, "teacher", "/api/teacher/students", "/api/teacher/students"),
         (parent_client, "parent", "/api/parent/students", "/api/parent/students"),
-        (teacher_client, "teacher", "/api/teacher/support-overview", "/api/teacher/support-overview"),
+        (
+            teacher_client,
+            "teacher",
+            "/api/teacher/support-overview",
+            "/api/teacher/support-overview",
+        ),
         (parent_client, "parent", "/api/parent/support-overview", "/api/parent/support-overview"),
         (
             teacher_client,
@@ -345,7 +352,12 @@ def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_eviden
         ),
         (admin_client, "admin", "/api/admin/users", "/api/admin/users"),
         (admin_client, "admin", "/api/admin/links", "/api/admin/links"),
-        (admin_client, "admin", "/api/admin/operations/dashboard", "/api/admin/operations/dashboard"),
+        (
+            admin_client,
+            "admin",
+            "/api/admin/operations/dashboard",
+            "/api/admin/operations/dashboard",
+        ),
         (admin_client, "admin", "/api/admin/reports/aggregate", "/api/admin/reports/aggregate"),
     ]
 
@@ -362,7 +374,10 @@ def test_phase33_backend_performance_baseline_collects_aggregate_endpoint_eviden
     _assert_aggregate_only_evidence(evidence_rows)
     for row in evidence_rows:
         assert row["statusCategory"] == "2xx", row
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read")) is not None
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read"))
+        is not None
+    )
 
 
 def test_phase33_backend_evidence_shape_rejects_forbidden_keys() -> None:

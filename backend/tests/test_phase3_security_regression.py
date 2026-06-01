@@ -37,7 +37,13 @@ from app.db.models import (
 )
 from app.db.session import SessionLocal
 from app.main import app
-from app.seeds.demo_seed import DEMO_ADMIN_EMAIL, DEMO_PARENT_EMAIL, DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL, seed_demo_data
+from app.seeds.demo_seed import (
+    DEMO_ADMIN_EMAIL,
+    DEMO_PARENT_EMAIL,
+    DEMO_STUDENT_EMAIL,
+    DEMO_TEACHER_EMAIL,
+    seed_demo_data,
+)
 from app.services.audit import record_audit_event
 
 ORIGIN_HEADERS = {"Origin": "http://localhost:3000"}
@@ -118,7 +124,9 @@ def test_adults_and_admins_never_receive_raw_answers_and_summary_reads_are_audit
     _seed_phase3_demo(db, monkeypatch)
     student = db.scalar(select(User).where(User.email == DEMO_STUDENT_EMAIL))
     attempt = db.scalar(select(SelfCheckAttempt).where(SelfCheckAttempt.student_id == student.id))
-    raw_answer = db.scalar(select(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id == attempt.id))
+    raw_answer = db.scalar(
+        select(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id == attempt.id)
+    )
     raw_answer.choice_text_snapshot = "RAW ANSWER SHOULD STAY PRIVATE"
     db.commit()
 
@@ -131,8 +139,12 @@ def test_adults_and_admins_never_receive_raw_answers_and_summary_reads_are_audit
 
     teacher_raw_response = teacher_client.get(f"/api/student/self-checks/history/{attempt.id}")
     admin_raw_response = admin_client.get(f"/api/student/self-checks/history/{attempt.id}")
-    teacher_summary_response = teacher_client.get(f"/api/teacher/students/{student.id}/self-check-summaries")
-    parent_summary_response = parent_client.get(f"/api/parent/students/{student.id}/self-check-summaries")
+    teacher_summary_response = teacher_client.get(
+        f"/api/teacher/students/{student.id}/self-check-summaries"
+    )
+    parent_summary_response = parent_client.get(
+        f"/api/parent/students/{student.id}/self-check-summaries"
+    )
 
     assert teacher_raw_response.status_code == 403
     assert admin_raw_response.status_code == 403
@@ -143,10 +155,14 @@ def test_adults_and_admins_never_receive_raw_answers_and_summary_reads_are_audit
     assert "raw answer" not in teacher_summary_response.text.lower()
     assert "raw_answers" not in teacher_summary_response.text
 
-    audit_events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read")))
+    audit_events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "sensitive_resource_read"))
+    )
     assert audit_events
     assert any(event.metadata_summary.get("decision") == "summary_only" for event in audit_events)
-    assert "RAW ANSWER SHOULD STAY PRIVATE" not in str([event.metadata_summary for event in audit_events])
+    assert "RAW ANSWER SHOULD STAY PRIVATE" not in str(
+        [event.metadata_summary for event in audit_events]
+    )
 
 
 def test_admin_content_mutations_require_csrf_and_write_sanitized_audit(
@@ -188,7 +204,9 @@ def test_admin_content_mutations_require_csrf_and_write_sanitized_audit(
         json=payload,
         headers={"Origin": "http://evil.example", "Sec-Fetch-Site": "cross-site"},
     )
-    create_response = admin_client.post("/api/admin/content/scenarios", json=payload, headers=ORIGIN_HEADERS)
+    create_response = admin_client.post(
+        "/api/admin/content/scenarios", json=payload, headers=ORIGIN_HEADERS
+    )
 
     assert csrf_response.status_code == 403
     assert create_response.status_code == 201
@@ -224,7 +242,9 @@ def test_demo_flags_and_self_check_snapshot_immutability(
     assert attempt.test_title_snapshot != test.title
 
 
-def test_audit_rejects_forbidden_nested_raw_answers_metadata(db: OrmSession, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_audit_rejects_forbidden_nested_raw_answers_metadata(
+    db: OrmSession, monkeypatch: pytest.MonkeyPatch
+) -> None:
     _seed_phase3_demo(db, monkeypatch)
     admin = db.scalar(select(User).where(User.email == DEMO_ADMIN_EMAIL))
 

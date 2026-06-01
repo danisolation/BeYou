@@ -75,7 +75,9 @@ def channel_boundaries(allowed_channels: list[str]) -> list[ChannelBoundary]:
     return boundaries
 
 
-def validate_v14_channels(allowed_channels: list[str], *, external_channels_enabled: bool = False) -> list[str]:
+def validate_v14_channels(
+    allowed_channels: list[str], *, external_channels_enabled: bool = False
+) -> list[str]:
     if external_channels_enabled:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
@@ -84,13 +86,17 @@ def validate_v14_channels(allowed_channels: list[str], *, external_channels_enab
     try:
         return normalize_channels(allowed_channels)
     except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)) from exc
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail=str(exc)
+        ) from exc
 
 
 def validate_access_reason_code(reason_code: str) -> str:
     normalized = reason_code.strip().lower()
     if normalized not in ALLOWED_REASON_CODES:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Lý do truy cập không hợp lệ.")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Lý do truy cập không hợp lệ."
+        )
     return normalized
 
 
@@ -102,7 +108,9 @@ def get_or_create_school_privacy_policy(
     is_demo: bool = False,
 ) -> SchoolPrivacyPolicyDefault:
     policy = db.scalar(
-        select(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == school_scope)
+        select(SchoolPrivacyPolicyDefault).where(
+            SchoolPrivacyPolicyDefault.school_scope == school_scope
+        )
     )
     if policy is not None:
         return policy
@@ -141,7 +149,9 @@ def get_or_create_student_notification_preference(
         student_id=student.id,
     )
     preference = db.scalar(
-        select(StudentNotificationPreference).where(StudentNotificationPreference.student_id == student.id)
+        select(StudentNotificationPreference).where(
+            StudentNotificationPreference.student_id == student.id
+        )
     )
     if preference is not None:
         return preference
@@ -179,7 +189,9 @@ def get_or_create_student_notification_preference(
         metadata_summary={
             "enabled": enabled_by_policy,
             "policy_default_enabled": policy.default_in_app_reminders_enabled,
-            "has_policy_quiet_hours": bool(policy.default_quiet_hours_start and policy.default_quiet_hours_end),
+            "has_policy_quiet_hours": bool(
+                policy.default_quiet_hours_start and policy.default_quiet_hours_end
+            ),
             "allowed_channel_count": len(allowed_channels),
             "external_channels_enabled": False,
             "decision": "school_policy_defaults_applied",
@@ -189,7 +201,9 @@ def get_or_create_student_notification_preference(
     return preference
 
 
-def school_policy_response(policy: SchoolPrivacyPolicyDefault) -> SchoolPrivacyPolicyDefaultsResponse:
+def school_policy_response(
+    policy: SchoolPrivacyPolicyDefault,
+) -> SchoolPrivacyPolicyDefaultsResponse:
     return SchoolPrivacyPolicyDefaultsResponse(
         id=str(policy.id),
         school_scope=policy.school_scope,
@@ -265,7 +279,9 @@ def update_admin_school_privacy_policy(
         metadata_summary={
             "school_scope": policy.school_scope,
             "default_in_app_reminders_enabled": policy.default_in_app_reminders_enabled,
-            "has_default_quiet_hours": bool(policy.default_quiet_hours_start and policy.default_quiet_hours_end),
+            "has_default_quiet_hours": bool(
+                policy.default_quiet_hours_start and policy.default_quiet_hours_end
+            ),
             "allowed_channel_count": len(allowed_channels),
             "external_channels_enabled": False,
             "note_sharing_enabled": policy.note_sharing_enabled,
@@ -281,7 +297,9 @@ def update_admin_school_privacy_policy(
     return school_policy_response(policy)
 
 
-def preference_response(preference: StudentNotificationPreference) -> StudentNotificationPreferenceResponse:
+def preference_response(
+    preference: StudentNotificationPreference,
+) -> StudentNotificationPreferenceResponse:
     return StudentNotificationPreferenceResponse(
         id=str(preference.id),
         student_id=str(preference.student_id),
@@ -681,4 +699,6 @@ def assert_admin_can_manage_privacy_policy(db: OrmSession, actor: User) -> None:
         purpose="admin_operations",
     )
     if actor.role != UserRole.ADMIN.value:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập."
+        )

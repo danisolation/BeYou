@@ -25,7 +25,9 @@ ACCESS_REASON_LABELS = {
 
 
 def normalize_channels(value: list[str]) -> list[str]:
-    normalized = list(dict.fromkeys(channel.strip().lower() for channel in value if channel.strip()))
+    normalized = list(
+        dict.fromkeys(channel.strip().lower() for channel in value if channel.strip())
+    )
     invalid = [channel for channel in normalized if channel not in ALLOWED_CHANNELS]
     if invalid:
         raise ValueError("v1.4 chỉ hỗ trợ nhắc nhở trong ứng dụng; kênh ngoài đang được hoãn.")

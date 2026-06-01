@@ -93,7 +93,9 @@ def client() -> TestClient:
         yield test_client
 
 
-def _user(db: OrmSession, *, email: str, role: str, is_demo: bool = False, full_name: str | None = None) -> User:
+def _user(
+    db: OrmSession, *, email: str, role: str, is_demo: bool = False, full_name: str | None = None
+) -> User:
     user = User(
         email=email,
         password_hash=hash_password(PASSWORD),
@@ -119,7 +121,9 @@ def _login(client: TestClient, email: str) -> None:
     assert response.status_code == 200
 
 
-def _link(db: OrmSession, *, student: User, adult: User, relationship_type: str, is_demo: bool = False) -> None:
+def _link(
+    db: OrmSession, *, student: User, adult: User, relationship_type: str, is_demo: bool = False
+) -> None:
     db.add(
         StudentAdultLink(
             student_id=student.id,
@@ -137,7 +141,9 @@ def _self_check_test(db: OrmSession, title: str, *, is_demo: bool = False) -> Se
     test = SelfCheckTest(title=title, status="published", is_active=True, is_demo=is_demo)
     db.add(test)
     db.flush()
-    question = SelfCheckQuestion(test_id=test.id, text=f"Câu hỏi riêng {title}", sort_order=1, is_demo=is_demo)
+    question = SelfCheckQuestion(
+        test_id=test.id, text=f"Câu hỏi riêng {title}", sort_order=1, is_demo=is_demo
+    )
     db.add(question)
     db.flush()
     choice = SelfCheckChoice(
@@ -298,11 +304,28 @@ def _chat_safety_signal(db: OrmSession, *, student: User, is_demo: bool = False)
 
 
 def _seed_report_data(db: OrmSession) -> dict[str, User]:
-    admin = _user(db, email="admin-report@example.test", role=UserRole.ADMIN.value, full_name="Admin Raw Name")
-    teacher = _user(db, email="teacher-report@example.test", role=UserRole.TEACHER.value, full_name="Teacher Raw Name")
-    parent = _user(db, email="parent-report@example.test", role=UserRole.PARENT.value, full_name="Parent Raw Name")
+    admin = _user(
+        db, email="admin-report@example.test", role=UserRole.ADMIN.value, full_name="Admin Raw Name"
+    )
+    teacher = _user(
+        db,
+        email="teacher-report@example.test",
+        role=UserRole.TEACHER.value,
+        full_name="Teacher Raw Name",
+    )
+    parent = _user(
+        db,
+        email="parent-report@example.test",
+        role=UserRole.PARENT.value,
+        full_name="Parent Raw Name",
+    )
     students = [
-        _user(db, email=f"student-report-{index}@example.test", role=UserRole.STUDENT.value, full_name=f"Student Raw Name {index}")
+        _user(
+            db,
+            email=f"student-report-{index}@example.test",
+            role=UserRole.STUDENT.value,
+            full_name=f"Student Raw Name {index}",
+        )
         for index in range(1, 5)
     ]
     demo_student = _user(
@@ -313,7 +336,13 @@ def _seed_report_data(db: OrmSession) -> dict[str, User]:
         full_name="Demo Student Raw Name",
     )
     _link(db, student=students[0], adult=teacher, relationship_type=UserRole.TEACHER.value)
-    _link(db, student=demo_student, adult=parent, relationship_type=UserRole.PARENT.value, is_demo=True)
+    _link(
+        db,
+        student=demo_student,
+        adult=parent,
+        relationship_type=UserRole.PARENT.value,
+        is_demo=True,
+    )
 
     main_test = _self_check_test(db, "Sức khỏe cảm xúc")
     small_test = _self_check_test(db, "Áp lực bạn bè")
@@ -351,11 +380,15 @@ def test_admin_aggregate_report_is_privacy_limited_suppressed_and_audited(
     assert payload["demo_scope"] == "all"
     assert payload["suppression_threshold"] == 3
     assert payload["user_counts"]["total"] == 8
-    assert {bucket["key"]: bucket["count"] for bucket in payload["user_counts"]["by_role"]}["student"] == 5
+    assert {bucket["key"]: bucket["count"] for bucket in payload["user_counts"]["by_role"]}[
+        "student"
+    ] == 5
     assert payload["linked_students"]["linked_students"] == 2
     assert payload["self_check_usage"]["total_completed"]["count"] == 5
 
-    risk_buckets = {bucket["key"]: bucket for bucket in payload["self_check_usage"]["risk_distribution"]}
+    risk_buckets = {
+        bucket["key"]: bucket for bucket in payload["self_check_usage"]["risk_distribution"]
+    }
     assert risk_buckets["Can chu y"]["count"] == 4
     assert risk_buckets["Can ho tro som"]["count"] is None
     assert risk_buckets["Can ho tro som"]["suppressed"] is True

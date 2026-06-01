@@ -146,7 +146,9 @@ def _published_test(
 
     questions: list[SelfCheckQuestion] = []
     choices_by_question: list[list[SelfCheckChoice]] = []
-    for index, text in enumerate(("Tuần này em ngủ có ổn không?", "Em có thấy được lắng nghe không?"), start=1):
+    for index, text in enumerate(
+        ("Tuần này em ngủ có ổn không?", "Em có thấy được lắng nghe không?"), start=1
+    ):
         question = SelfCheckQuestion(
             test_id=test.id,
             text=text,
@@ -213,13 +215,19 @@ def _published_test(
             )
         )
     db.commit()
-    for obj in [test, *questions, *[choice for choices in choices_by_question for choice in choices]]:
+    for obj in [
+        test,
+        *questions,
+        *[choice for choices in choices_by_question for choice in choices],
+    ]:
         db.refresh(obj)
     return test, questions, choices_by_question
 
 
 def _answers(
-    questions: list[SelfCheckQuestion], choices_by_question: list[list[SelfCheckChoice]], choice_index: int
+    questions: list[SelfCheckQuestion],
+    choices_by_question: list[list[SelfCheckChoice]],
+    choice_index: int,
 ) -> list[dict[str, uuid.UUID]]:
     return [
         {"question_id": question.id, "choice_id": choices_by_question[index][choice_index].id}
@@ -254,7 +262,10 @@ def test_submit_self_check_scores_thresholds_and_preserves_snapshots(db: OrmSess
     assert saved.answers[0].choice_text_snapshot == "Cần để ý thêm"
 
 
-@pytest.mark.parametrize("status_value,is_active", [(ContentStatus.DRAFT.value, True), (ContentStatus.PUBLISHED.value, False)])
+@pytest.mark.parametrize(
+    "status_value,is_active",
+    [(ContentStatus.DRAFT.value, True), (ContentStatus.PUBLISHED.value, False)],
+)
 def test_submit_rejects_unpublished_or_inactive_tests(
     db: OrmSession,
     status_value: str,
@@ -288,7 +299,10 @@ def test_submit_rejects_missing_answer_choice_from_another_test_and_missing_thre
 
     invalid_cases = [
         _answers(questions[:1], choices[:1], 0),
-        [{"question_id": questions[0].id, "choice_id": other_choices[0][0].id}, _answers(questions, choices, 0)[1]],
+        [
+            {"question_id": questions[0].id, "choice_id": other_choices[0][0].id},
+            _answers(questions, choices, 0)[1],
+        ],
         _answers(no_threshold_questions, no_threshold_choices, 0),
     ]
 
@@ -324,7 +338,12 @@ def test_student_self_check_routes_list_submit_history_detail_and_protect_raw_an
     detail_response = client.get(f"/api/student/self-checks/{test.id}")
     submit_response = client.post(
         f"/api/student/self-checks/{test.id}/attempts",
-        json={"answers": [{"question_id": str(answer["question_id"]), "choice_id": str(answer["choice_id"])} for answer in _answers(questions, choices, 1)]},
+        json={
+            "answers": [
+                {"question_id": str(answer["question_id"]), "choice_id": str(answer["choice_id"])}
+                for answer in _answers(questions, choices, 1)
+            ]
+        },
         headers=ORIGIN_HEADERS,
     )
     history_response = client.get("/api/student/self-checks/history")
@@ -351,11 +370,15 @@ def test_student_self_check_routes_list_submit_history_detail_and_protect_raw_an
 
     other_client = TestClient(app)
     _login(other_client, other_student.email)
-    cross_student_response = other_client.get(f"/api/student/self-checks/history/{result['attempt_id']}")
+    cross_student_response = other_client.get(
+        f"/api/student/self-checks/history/{result['attempt_id']}"
+    )
     assert cross_student_response.status_code in {403, 404}
 
 
-def test_self_check_routes_require_privacy_acknowledgement(db: OrmSession, client: TestClient) -> None:
+def test_self_check_routes_require_privacy_acknowledgement(
+    db: OrmSession, client: TestClient
+) -> None:
     student = _student(db, "privacy-gated-self-check@example.test")
     _published_test(db)
 

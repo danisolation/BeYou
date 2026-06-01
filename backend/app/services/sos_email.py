@@ -21,7 +21,9 @@ PROVIDER_LOCAL_OUTBOX = "local_outbox"
 PROVIDER_SMTP = "smtp"
 
 
-def _delivery_audit_metadata(delivery: SosNotificationDelivery) -> dict[str, str | bool | int | None]:
+def _delivery_audit_metadata(
+    delivery: SosNotificationDelivery,
+) -> dict[str, str | bool | int | None]:
     return {
         "alert_id": str(delivery.alert_id),
         "recipient_id": str(delivery.recipient_id),
@@ -163,7 +165,9 @@ def create_sos_email_deliveries(
             attempt_count=1,
         )
         try:
-            _send_smtp_message(settings, _minimal_email_message(settings=settings, recipient=recipient))
+            _send_smtp_message(
+                settings, _minimal_email_message(settings=settings, recipient=recipient)
+            )
         except Exception as exc:
             delivery.status = SosNotificationDeliveryStatus.FAILED.value
             delivery.error_code = _error_code(exc)
@@ -175,4 +179,3 @@ def create_sos_email_deliveries(
         deliveries.append(delivery)
 
     return deliveries
-

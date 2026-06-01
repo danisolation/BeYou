@@ -44,10 +44,14 @@ FORBIDDEN_AUDIT_KEYS = {
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%phase23-share%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%phase23-share%@example.test")))
+        )
         if not user_ids:
             return
-        checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids))))
+        checkin_ids = list(
+            db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids)))
+        )
         db.execute(
             delete(MoodNoteShare).where(
                 or_(
@@ -70,7 +74,9 @@ def _clean_database() -> None:
                 )
             )
         )
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids)))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids))
+        )
         db.execute(
             delete(StudentAdultLink).where(
                 or_(
@@ -166,8 +172,13 @@ def _link(
         is_demo=student.is_demo and adult.is_demo,
     )
     db.add(link)
-    if status_value == LinkStatus.ACTIVE.value and relationship_type in {UserRole.TEACHER.value, UserRole.PARENT.value}:
-        existing_sos = db.scalar(select(SosAlert.id).where(SosAlert.student_id == student.id).limit(1))
+    if status_value == LinkStatus.ACTIVE.value and relationship_type in {
+        UserRole.TEACHER.value,
+        UserRole.PARENT.value,
+    }:
+        existing_sos = db.scalar(
+            select(SosAlert.id).where(SosAlert.student_id == student.id).limit(1)
+        )
         if existing_sos is None:
             db.add(
                 SosAlert(
@@ -243,9 +254,15 @@ def test_student_shares_private_note_with_active_linked_adults(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-private-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-private-phase23-share@example.test", role=UserRole.TEACHER.value)
-    parent = _user(db, email="parent-private-phase23-share@example.test", role=UserRole.PARENT.value)
+    student = _user(
+        db, email="student-private-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-private-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
+    parent = _user(
+        db, email="parent-private-phase23-share@example.test", role=UserRole.PARENT.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
@@ -298,8 +315,12 @@ def test_student_summary_scope_requires_student_written_summary_without_private_
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-summary-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-summary-phase23-share@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-summary-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-summary-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     checkin = _checkin(db, student=student, private_note=None)
@@ -330,7 +351,9 @@ def test_student_summary_scope_requires_student_written_summary_without_private_
     assert payload["active_shares"][0]["has_student_summary"] is True
 
     _login(client, teacher.email)
-    adult_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    adult_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert adult_response.status_code == 200
     adult_payload = adult_response.json()
     assert adult_payload["shared_mood_notes"][0]["content"] == (
@@ -344,11 +367,21 @@ def test_rejects_unowned_empty_or_stale_adult_shares(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-reject-phase23-share@example.test", role=UserRole.STUDENT.value)
-    other_student = _user(db, email="other-student-reject-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-reject-phase23-share@example.test", role=UserRole.TEACHER.value)
-    unlinked_parent = _user(db, email="unlinked-parent-reject-phase23-share@example.test", role=UserRole.PARENT.value)
-    revoked_parent = _user(db, email="revoked-parent-reject-phase23-share@example.test", role=UserRole.PARENT.value)
+    student = _user(
+        db, email="student-reject-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    other_student = _user(
+        db, email="other-student-reject-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-reject-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
+    unlinked_parent = _user(
+        db, email="unlinked-parent-reject-phase23-share@example.test", role=UserRole.PARENT.value
+    )
+    revoked_parent = _user(
+        db, email="revoked-parent-reject-phase23-share@example.test", role=UserRole.PARENT.value
+    )
     disabled_teacher = _user(
         db,
         email="disabled-teacher-reject-phase23-share@example.test",
@@ -367,12 +400,17 @@ def test_rejects_unowned_empty_or_stale_adult_shares(
     _link(db, student=student, adult=disabled_teacher, relationship_type=UserRole.TEACHER.value)
     private_checkin = _checkin(db, student=student, private_note=f"Riêng tư. {PRIVATE_MARKER}")
     no_note_checkin = _checkin(db, student=student, private_note=None)
-    other_checkin = _checkin(db, student=other_student, private_note=f"Của bạn khác. {PRIVATE_MARKER}")
+    other_checkin = _checkin(
+        db, student=other_student, private_note=f"Của bạn khác. {PRIVATE_MARKER}"
+    )
 
     _login(client, student.email)
 
     assert _share(client, other_checkin.id, [teacher.id]).status_code == 404
-    assert _share(client, no_note_checkin.id, [teacher.id], share_scope="private_note").status_code == 422
+    assert (
+        _share(client, no_note_checkin.id, [teacher.id], share_scope="private_note").status_code
+        == 422
+    )
     assert _share(client, private_checkin.id, []).status_code == 422
     assert _share(client, private_checkin.id, [unlinked_parent.id]).status_code == 422
     assert _share(client, private_checkin.id, [revoked_parent.id]).status_code == 422
@@ -381,8 +419,12 @@ def test_rejects_unowned_empty_or_stale_adult_shares(
 
 
 def test_reshare_updates_active_grant_idempotently(db: OrmSession, client: TestClient) -> None:
-    student = _user(db, email="student-idempotent-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-idempotent-phase23-share@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-idempotent-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-idempotent-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     checkin = _checkin(db, student=student, private_note=f"Ghi chú riêng. {PRIVATE_MARKER}")
@@ -406,7 +448,9 @@ def test_reshare_updates_active_grant_idempotently(db: OrmSession, client: TestC
     assert active_shares[0]["share_scope"] == "student_summary"
     assert (
         db.scalar(
-            select(func.count()).select_from(MoodNoteShare).where(
+            select(func.count())
+            .select_from(MoodNoteShare)
+            .where(
                 MoodNoteShare.mood_checkin_id == checkin.id,
                 MoodNoteShare.adult_id == teacher.id,
                 MoodNoteShare.revoked_at.is_(None),
@@ -414,7 +458,9 @@ def test_reshare_updates_active_grant_idempotently(db: OrmSession, client: TestC
         )
         == 1
     )
-    updated_events = list(db.scalars(select(AuditEvent).where(AuditEvent.action == "mood_note_share_updated")))
+    updated_events = list(
+        db.scalars(select(AuditEvent).where(AuditEvent.action == "mood_note_share_updated"))
+    )
     assert len(updated_events) == 1
     _assert_no_forbidden_audit(updated_events[0].metadata_summary)
 
@@ -423,27 +469,44 @@ def test_adult_support_summary_requires_relationship_and_active_grant(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-adult-read-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-adult-read-phase23-share@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-adult-read-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-adult-read-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     relationship_only_teacher = _user(
         db,
         email="relationship-only-teacher-adult-read-phase23-share@example.test",
         role=UserRole.TEACHER.value,
     )
-    parent = _user(db, email="parent-adult-read-phase23-share@example.test", role=UserRole.PARENT.value)
-    outsider = _user(db, email="outsider-adult-read-phase23-share@example.test", role=UserRole.TEACHER.value)
+    parent = _user(
+        db, email="parent-adult-read-phase23-share@example.test", role=UserRole.PARENT.value
+    )
+    outsider = _user(
+        db, email="outsider-adult-read-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
-    _link(db, student=student, adult=relationship_only_teacher, relationship_type=UserRole.TEACHER.value)
+    _link(
+        db,
+        student=student,
+        adult=relationship_only_teacher,
+        relationship_type=UserRole.TEACHER.value,
+    )
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
-    checkin = _checkin(db, student=student, private_note=f"Chỉ giáo viên được chọn thấy. {PRIVATE_MARKER}")
+    checkin = _checkin(
+        db, student=student, private_note=f"Chỉ giáo viên được chọn thấy. {PRIVATE_MARKER}"
+    )
 
     _login(client, student.email)
     share_response = _share(client, checkin.id, [teacher.id])
     assert share_response.status_code == 200
 
     _login(client, teacher.email)
-    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    teacher_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert teacher_response.status_code == 200
     assert teacher_response.json()["shared_mood_notes"][0]["content"].endswith(PRIVATE_MARKER)
 
@@ -456,7 +519,9 @@ def test_adult_support_summary_requires_relationship_and_active_grant(
     assert PRIVATE_MARKER not in relationship_only_response.text
 
     _login(client, parent.email)
-    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
+    parent_response = client.get(
+        f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert parent_response.status_code == 200
     assert parent_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in parent_response.text
@@ -473,13 +538,17 @@ def test_adult_shared_note_read_rejects_inconsistent_cross_student_share(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-consistency-phase23-share@example.test", role=UserRole.STUDENT.value)
+    student = _user(
+        db, email="student-consistency-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
     other_student = _user(
         db,
         email="other-student-consistency-phase23-share@example.test",
         role=UserRole.STUDENT.value,
     )
-    teacher = _user(db, email="teacher-consistency-phase23-share@example.test", role=UserRole.TEACHER.value)
+    teacher = _user(
+        db, email="teacher-consistency-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     other_checkin = _checkin(
@@ -500,7 +569,9 @@ def test_adult_shared_note_read_rejects_inconsistent_cross_student_share(
     db.commit()
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
 
     assert response.status_code == 200
     assert response.json()["shared_mood_notes"] == []
@@ -508,13 +579,19 @@ def test_adult_shared_note_read_rejects_inconsistent_cross_student_share(
 
 
 def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient) -> None:
-    student = _user(db, email="student-revoke-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-revoke-phase23-share@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-revoke-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-revoke-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     parent = _user(db, email="parent-revoke-phase23-share@example.test", role=UserRole.PARENT.value)
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
     _link(db, student=student, adult=parent, relationship_type=UserRole.PARENT.value)
-    checkin = _checkin(db, student=student, private_note=f"Nội dung có thể thu hồi. {PRIVATE_MARKER}")
+    checkin = _checkin(
+        db, student=student, private_note=f"Nội dung có thể thu hồi. {PRIVATE_MARKER}"
+    )
 
     _login(client, student.email)
     share_response = _share(client, checkin.id, [teacher.id, parent.id])
@@ -526,10 +603,14 @@ def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient
     )
     assert revoke_one_response.status_code == 200
     assert revoke_one_response.json()["revoked_count"] == 1
-    assert {share["adult_id"] for share in revoke_one_response.json()["active_shares"]} == {str(parent.id)}
+    assert {share["adult_id"] for share in revoke_one_response.json()["active_shares"]} == {
+        str(parent.id)
+    }
 
     _login(client, teacher.email)
-    teacher_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    teacher_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert teacher_response.status_code == 200
     assert teacher_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in teacher_response.text
@@ -543,24 +624,34 @@ def test_revoked_share_disappears_immediately(db: OrmSession, client: TestClient
     assert revoke_all_response.json()["revoked_count"] == 1
     assert revoke_all_response.json()["active_shares"] == []
 
-    revoked_shares = list(db.scalars(select(MoodNoteShare).where(MoodNoteShare.mood_checkin_id == checkin.id)))
+    revoked_shares = list(
+        db.scalars(select(MoodNoteShare).where(MoodNoteShare.mood_checkin_id == checkin.id))
+    )
     assert len(revoked_shares) == 2
     assert all(share.revoked_at is not None for share in revoked_shares)
     assert all(share.revoked_by_id == student.id for share in revoked_shares)
 
     _login(client, parent.email)
-    parent_response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
+    parent_response = client.get(
+        f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert parent_response.status_code == 200
     assert parent_response.json()["shared_mood_notes"] == []
     assert PRIVATE_MARKER not in parent_response.text
 
 
 def test_phase23_audit_and_side_effect_invariants(db: OrmSession, client: TestClient) -> None:
-    student = _user(db, email="student-invariants-phase23-share@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-invariants-phase23-share@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-invariants-phase23-share@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-invariants-phase23-share@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
     _link(db, student=student, adult=teacher, relationship_type=UserRole.TEACHER.value)
-    checkin = _checkin(db, student=student, private_note=f"Nội dung không vào audit. {PRIVATE_MARKER}")
+    checkin = _checkin(
+        db, student=student, private_note=f"Nội dung không vào audit. {PRIVATE_MARKER}"
+    )
     before_sos_count = db.scalar(select(func.count()).select_from(SosAlert)) or 0
     before_notification_count = db.scalar(select(func.count()).select_from(InAppNotification)) or 0
 
@@ -569,7 +660,9 @@ def test_phase23_audit_and_side_effect_invariants(db: OrmSession, client: TestCl
     assert share_response.status_code == 200
 
     _login(client, teacher.email)
-    read_response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    read_response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
     assert read_response.status_code == 200
     assert PRIVATE_MARKER in read_response.text
 

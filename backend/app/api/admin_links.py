@@ -41,7 +41,9 @@ def _link_response(db: OrmSession, link: StudentAdultLink) -> AdminLinkResponse:
     )
 
 
-def _link_response_from_users(link: StudentAdultLink, student: User, adult: User) -> AdminLinkResponse:
+def _link_response_from_users(
+    link: StudentAdultLink, student: User, adult: User
+) -> AdminLinkResponse:
     return AdminLinkResponse(
         id=link.id,
         student_id=student.id,

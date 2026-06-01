@@ -83,6 +83,12 @@ def db() -> OrmSession:
         get_settings.cache_clear()
 
 
+@pytest.fixture(autouse=True)
+def set_local_demo_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("RUNTIME_MODE", "local_demo")
+    get_settings.cache_clear()
+
+
 @pytest.fixture()
 def client() -> TestClient:
     with TestClient(app) as test_client:
@@ -181,7 +187,10 @@ def test_high_risk_input_bypasses_provider_and_records_metadata_only_safety_even
     assert payload["safety"]["input_flagged"] is True
     assert "self_harm" in payload["safety"]["categories"]
     assert "không thay thế chuyên gia tư vấn hay bác sĩ" in payload["assistant_message"]["content"]
-    assert "Mình muốn ưu tiên sự an toàn của em ngay lúc này" in payload["assistant_message"]["content"]
+    assert (
+        "Mình muốn ưu tiên sự an toàn của em ngay lúc này"
+        in payload["assistant_message"]["content"]
+    )
     assert "SOS" in payload["assistant_message"]["content"]
     assert "người lớn tin tưởng" in payload["assistant_message"]["content"]
 
@@ -209,7 +218,13 @@ def test_high_risk_provider_output_is_replaced_by_safe_escalation(
         name = "unsafe-test-provider"
         used_fallback = False
 
-        def generate(self, *, messages: list[dict[str, str]], first_response: bool) -> str:
+        def generate(
+            self,
+            *,
+            messages: list[dict[str, str]],
+            first_response: bool,
+            extra_context: str | None = None,
+        ) -> str:
             return "Bạn nên tự tử nếu thấy quá mệt."
 
     monkeypatch.setattr(chat_service, "get_chat_provider", lambda settings: UnsafeProvider())
@@ -227,7 +242,10 @@ def test_high_risk_provider_output_is_replaced_by_safe_escalation(
     assert payload["safety"]["high_risk"] is True
     assert payload["safety"]["output_flagged"] is True
     assert "Bạn nên tự tử" not in payload["assistant_message"]["content"]
-    assert "Mình muốn ưu tiên sự an toàn của em ngay lúc này" in payload["assistant_message"]["content"]
+    assert (
+        "Mình muốn ưu tiên sự an toàn của em ngay lúc này"
+        in payload["assistant_message"]["content"]
+    )
 
     signal = db.scalar(select(ChatSafetySignal).where(ChatSafetySignal.stage == "output"))
     assert signal is not None
@@ -273,7 +291,7 @@ def test_student_can_delete_own_chat_thread_and_cascades_delete_messages(
 ) -> None:
     owner = _user(db, email="student-chat-delete-owner@example.test", role=UserRole.STUDENT.value)
     other = _user(db, email="student-chat-delete-other@example.test", role=UserRole.STUDENT.value)
-    
+
     _login(client, owner.email)
     created = client.post(
         "/api/student/chat/messages",
@@ -302,8 +320,93 @@ def test_student_can_delete_own_chat_thread_and_cascades_delete_messages(
     # Verify CASCADE: thread and messages are gone
     thread_in_db = db.scalar(select(ChatThread).where(ChatThread.id == uuid.UUID(thread_id)))
     assert thread_in_db is None
-    msgs_in_db = db.scalars(select(ChatMessage).where(ChatMessage.thread_id == uuid.UUID(thread_id))).all()
+    msgs_in_db = db.scalars(
+        select(ChatMessage).where(ChatMessage.thread_id == uuid.UUID(thread_id))
+    ).all()
     assert len(msgs_in_db) == 0
+
+
+def test_adult_can_delete_own_chat_thread_and_cascades_delete_messages(
+    db: OrmSession,
+    client: TestClient,
+) -> None:
+    # 1. Teacher tests
+    teacher_owner = _user(
+        db, email="teacher-chat-delete-owner@example.test", role=UserRole.TEACHER.value
+    )
+    teacher_other = _user(
+        db, email="teacher-chat-delete-other@example.test", role=UserRole.TEACHER.value
+    )
+
+    _login(client, teacher_owner.email)
+    created_teacher = client.post(
+        "/api/teacher/chat/messages",
+        json={"message": "Tôi muốn xóa cuộc trò chuyện này sau."},
+        headers=ORIGIN_HEADERS,
+    )
+    assert created_teacher.status_code == 201
+    teacher_thread_id = created_teacher.json()["thread_id"]
+
+    # Other teacher cannot delete it
+    _login(client, teacher_other.email)
+    response_denied_teacher = client.delete(
+        f"/api/teacher/chat/threads/{teacher_thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_denied_teacher.status_code == 404
+
+    # Owner teacher can delete it
+    _login(client, teacher_owner.email)
+    response_ok_teacher = client.delete(
+        f"/api/teacher/chat/threads/{teacher_thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_ok_teacher.status_code == 204
+
+    # Verify CASCADE
+    thread_in_db_teacher = db.scalar(
+        select(ChatThread).where(ChatThread.id == uuid.UUID(teacher_thread_id))
+    )
+    assert thread_in_db_teacher is None
+
+    # 2. Parent tests
+    parent_owner = _user(
+        db, email="parent-chat-delete-owner@example.test", role=UserRole.PARENT.value
+    )
+    parent_other = _user(
+        db, email="parent-chat-delete-other@example.test", role=UserRole.PARENT.value
+    )
+
+    _login(client, parent_owner.email)
+    created_parent = client.post(
+        "/api/parent/chat/messages",
+        json={"message": "Tôi muốn xóa cuộc trò chuyện phụ huynh sau."},
+        headers=ORIGIN_HEADERS,
+    )
+    assert created_parent.status_code == 201
+    parent_thread_id = created_parent.json()["thread_id"]
+
+    # Other parent cannot delete it
+    _login(client, parent_other.email)
+    response_denied_parent = client.delete(
+        f"/api/parent/chat/threads/{parent_thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_denied_parent.status_code == 404
+
+    # Owner parent can delete it
+    _login(client, parent_owner.email)
+    response_ok_parent = client.delete(
+        f"/api/parent/chat/threads/{parent_thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_ok_parent.status_code == 204
+
+    # Verify CASCADE
+    thread_in_db_parent = db.scalar(
+        select(ChatThread).where(ChatThread.id == uuid.UUID(parent_thread_id))
+    )
+    assert thread_in_db_parent is None
 
 
 def test_admin_manages_chatbot_safety_config_without_secret_or_guardrail_bypass(

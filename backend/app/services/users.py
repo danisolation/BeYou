@@ -19,7 +19,9 @@ from app.schemas.admin import AdminUserCreateRequest, AdminUserUpdateRequest
 from app.services.audit import record_audit_event
 
 
-def _ensure_student_profile_fields(role: str, full_name: str, school: str | None, class_name: str | None) -> None:
+def _ensure_student_profile_fields(
+    role: str, full_name: str, school: str | None, class_name: str | None
+) -> None:
     if role == UserRole.STUDENT.value and (not full_name or not school or not class_name):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -27,7 +29,9 @@ def _ensure_student_profile_fields(role: str, full_name: str, school: str | None
         )
 
 
-def _ensure_email_available(db: OrmSession, email: str, existing_user_id: uuid.UUID | None = None) -> None:
+def _ensure_email_available(
+    db: OrmSession, email: str, existing_user_id: uuid.UUID | None = None
+) -> None:
     existing = db.scalar(select(User).where(User.email == email))
     if existing is not None and existing.id != existing_user_id:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email đã được sử dụng.")
@@ -36,19 +40,25 @@ def _ensure_email_available(db: OrmSession, email: str, existing_user_id: uuid.U
 def get_user_or_404(db: OrmSession, user_id: uuid.UUID) -> User:
     user = db.get(User, user_id)
     if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy người dùng.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy người dùng."
+        )
     return user
 
 
 def list_users(db: OrmSession, *, limit: int = 100, offset: int = 0) -> list[User]:
     return list(
-        db.scalars(select(User).order_by(User.created_at, User.email).limit(limit).offset(offset)).all()
+        db.scalars(
+            select(User).order_by(User.created_at, User.email).limit(limit).offset(offset)
+        ).all()
     )
 
 
 def create_user(db: OrmSession, payload: AdminUserCreateRequest) -> User:
     _ensure_email_available(db, payload.email)
-    _ensure_student_profile_fields(payload.role, payload.full_name, payload.school, payload.class_name)
+    _ensure_student_profile_fields(
+        payload.role, payload.full_name, payload.school, payload.class_name
+    )
     user = User(
         email=payload.email,
         password_hash=hash_password(payload.password),
@@ -166,7 +176,9 @@ def delete_user(db: OrmSession, *, actor: User, target: User) -> User | None:
             )
         )
         db.execute(delete(UserSession).where(UserSession.user_id == target.id))
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id == target.id))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id == target.id)
+        )
         db.delete(target)
         db.commit()
         return None

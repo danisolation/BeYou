@@ -198,3 +198,15 @@ export function listParentChatThreads() {
 export function getParentChatTranscript(threadId: string) {
   return apiFetch<ChatTranscript>(`/api/parent/chat/threads/${threadId}/messages`);
 }
+
+export function deleteTeacherChatThread(threadId: string) {
+  return apiFetch<void>(`/api/teacher/chat/threads/${threadId}`, {
+    method: "DELETE",
+  });
+}
+
+export function deleteParentChatThread(threadId: string) {
+  return apiFetch<void>(`/api/parent/chat/threads/${threadId}`, {
+    method: "DELETE",
+  });
+}

@@ -21,7 +21,9 @@ def upgrade() -> None:
     op.create_table(
         "student_support_plans",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("status", sa.String(length=32), nullable=False, server_default="active"),
         sa.Column("what_helps", sa.Text(), nullable=True),
         sa.Column("what_does_not_help", sa.Text(), nullable=True),
@@ -48,7 +50,9 @@ def upgrade() -> None:
             sa.ForeignKey("student_support_plans.id", ondelete="CASCADE"),
             nullable=False,
         ),
-        sa.Column("adult_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "adult_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("relationship_type_snapshot", sa.String(length=32), nullable=False),
         sa.Column("adult_full_name_snapshot", sa.String(length=255), nullable=False),
         sa.Column("is_demo", sa.Boolean(), nullable=False, server_default=sa.false()),
@@ -60,13 +64,21 @@ def upgrade() -> None:
         "student_support_plan_adults",
         ["support_plan_id"],
     )
-    op.create_index("ix_student_support_plan_adults_adult_id", "student_support_plan_adults", ["adult_id"])
-    op.create_index("ix_student_support_plan_adults_is_demo", "student_support_plan_adults", ["is_demo"])
+    op.create_index(
+        "ix_student_support_plan_adults_adult_id", "student_support_plan_adults", ["adult_id"]
+    )
+    op.create_index(
+        "ix_student_support_plan_adults_is_demo", "student_support_plan_adults", ["is_demo"]
+    )
 
 
 def downgrade() -> None:
-    op.drop_index("ix_student_support_plan_adults_is_demo", table_name="student_support_plan_adults")
-    op.drop_index("ix_student_support_plan_adults_adult_id", table_name="student_support_plan_adults")
+    op.drop_index(
+        "ix_student_support_plan_adults_is_demo", table_name="student_support_plan_adults"
+    )
+    op.drop_index(
+        "ix_student_support_plan_adults_adult_id", table_name="student_support_plan_adults"
+    )
     op.drop_index(
         "ix_student_support_plan_adults_support_plan_id", table_name="student_support_plan_adults"
     )

@@ -146,7 +146,9 @@ def test_host_prefix_cookie_requires_secure_configuration(monkeypatch: pytest.Mo
     get_settings.cache_clear()
 
 
-def test_host_prefix_cookie_response_has_required_attributes(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_host_prefix_cookie_response_has_required_attributes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     get_settings.cache_clear()
     monkeypatch.setenv("SESSION_COOKIE_NAME", "__Host-beyou_session")
     monkeypatch.setenv("SESSION_COOKIE_SECURE", "true")
@@ -216,7 +218,9 @@ def test_csrf_helper_rejects_invalid_origin() -> None:
     assert exc_info.value.status_code == 403
 
 
-def test_csrf_helper_accepts_configured_extra_frontend_origin(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_csrf_helper_accepts_configured_extra_frontend_origin(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     get_settings.cache_clear()
     monkeypatch.setenv("FRONTEND_ORIGIN", "http://localhost:3003")
     monkeypatch.setenv("FRONTEND_ORIGINS", "http://127.0.0.1:3003")

@@ -114,7 +114,9 @@ def get_current_user(
     if user is None or user.status != AccountStatus.ACTIVE.value:
         session.revoked_at = now
         db.commit()
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Phiên đăng nhập không hợp lệ.")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Phiên đăng nhập không hợp lệ."
+        )
 
     if (
         session.last_seen_at is None
@@ -135,7 +137,9 @@ def require_same_site_mutation(request: Request, settings: Settings) -> None:
     # Check 1: Origin header present → validate against allowlist
     if origin is not None:
         if origin not in settings.allowed_frontend_origins:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ."
+            )
         return
 
     # Check 2: Sec-Fetch-Site header present → validate same-origin/same-site

@@ -76,11 +76,16 @@ def get_mood_checkin_options(db: OrmSession | None = None) -> MoodCheckInOptions
 
 def _derive_guidance(payload: MoodCheckInCreate) -> tuple[str, str, str, bool, bool]:
     high_concern = payload.stress_level == 5 or payload.mood_label == "overwhelmed"
-    needs_attention = payload.stress_level >= 4 or payload.energy_level <= 2 or payload.mood_label in {
-        "sad",
-        "anxious",
-        "tired",
-    }
+    needs_attention = (
+        payload.stress_level >= 4
+        or payload.energy_level <= 2
+        or payload.mood_label
+        in {
+            "sad",
+            "anxious",
+            "tired",
+        }
+    )
     if high_concern:
         return (
             "Cần hỗ trợ sớm",
@@ -132,7 +137,9 @@ def create_mood_checkin(
         purpose="student_private_support",
         student_id=student.id,
     )
-    trend_label, supportive_message, next_action, suggest_support_plan, suggest_sos = _derive_guidance(payload)
+    trend_label, supportive_message, next_action, suggest_support_plan, suggest_sos = (
+        _derive_guidance(payload)
+    )
     checkin = MoodCheckIn(
         student_id=student.id,
         mood_label=payload.mood_label,
@@ -199,7 +206,9 @@ def list_student_mood_checkins(
             .limit(limit)
         )
     )
-    shares_by_checkin = list_active_shares_for_student_checkins(db, student.id, [item.id for item in items])
+    shares_by_checkin = list_active_shares_for_student_checkins(
+        db, student.id, [item.id for item in items]
+    )
     return MoodCheckInHistoryResponse(
         items=[_response(item, shares_by_checkin.get(item.id, [])) for item in items]
     )

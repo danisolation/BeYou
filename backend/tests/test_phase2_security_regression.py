@@ -228,8 +228,12 @@ def test_cross_site_mutation_rejected(db: OrmSession, client: TestClient) -> Non
 
 
 def test_unlinked_adult_student_access_denied(db: OrmSession) -> None:
-    linked_student = _user(db, email=f"linked-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value)
-    unlinked_student = _user(db, email=f"unlinked-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value)
+    linked_student = _user(
+        db, email=f"linked-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value
+    )
+    unlinked_student = _user(
+        db, email=f"unlinked-{uuid.uuid4()}@example.test", role=UserRole.STUDENT.value
+    )
     teacher = _user(db, email=f"teacher-{uuid.uuid4()}@example.test", role=UserRole.TEACHER.value)
     parent = _user(db, email=f"parent-{uuid.uuid4()}@example.test", role=UserRole.PARENT.value)
     db.add_all(

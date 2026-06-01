@@ -30,7 +30,12 @@ from app.db.models import (
 from app.db.session import SessionLocal
 from app.main import app
 from app.schemas.readiness import ReadinessReport
-from app.seeds.demo_seed import DEMO_ADMIN_EMAIL, DEMO_PARENT_EMAIL, DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL
+from app.seeds.demo_seed import (
+    DEMO_ADMIN_EMAIL,
+    DEMO_PARENT_EMAIL,
+    DEMO_STUDENT_EMAIL,
+    DEMO_TEACHER_EMAIL,
+)
 from app.services.admin_operations import build_operations_dashboard
 from app.services.readiness import evaluate_static_readiness_checks
 
@@ -48,18 +53,35 @@ def _clean_database() -> None:
                 select(User.id).where(
                     or_(
                         User.email.like("%phase25%@example.test"),
-                        User.email.in_([DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL, DEMO_PARENT_EMAIL, DEMO_ADMIN_EMAIL]),
+                        User.email.in_(
+                            [
+                                DEMO_STUDENT_EMAIL,
+                                DEMO_TEACHER_EMAIL,
+                                DEMO_PARENT_EMAIL,
+                                DEMO_ADMIN_EMAIL,
+                            ]
+                        ),
                     )
                 )
             )
         )
-        checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(phase_user_ids))))
+        checkin_ids = list(
+            db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(phase_user_ids)))
+        )
         if checkin_ids:
             db.execute(delete(MoodNoteShare).where(MoodNoteShare.mood_checkin_id.in_(checkin_ids)))
             db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
         if phase_user_ids:
-            db.execute(delete(MoodCheckinReminderState).where(MoodCheckinReminderState.student_id.in_(phase_user_ids)))
-            db.execute(delete(StudentNotificationPreference).where(StudentNotificationPreference.student_id.in_(phase_user_ids)))
+            db.execute(
+                delete(MoodCheckinReminderState).where(
+                    MoodCheckinReminderState.student_id.in_(phase_user_ids)
+                )
+            )
+            db.execute(
+                delete(StudentNotificationPreference).where(
+                    StudentNotificationPreference.student_id.in_(phase_user_ids)
+                )
+            )
             db.execute(
                 delete(StudentAdultLink).where(
                     or_(
@@ -71,10 +93,16 @@ def _clean_database() -> None:
             )
             db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(phase_user_ids)))
             db.execute(delete(UserSession).where(UserSession.user_id.in_(phase_user_ids)))
-            db.execute(delete(ExternalIdentity).where(ExternalIdentity.linked_user_id.in_(phase_user_ids)))
+            db.execute(
+                delete(ExternalIdentity).where(ExternalIdentity.linked_user_id.in_(phase_user_ids))
+            )
         db.execute(delete(AuditEvent).where(AuditEvent.resource_id.like("phase25%")))
         db.execute(delete(ExternalIdentity).where(ExternalIdentity.provider_key.like("phase30_%")))
-        db.execute(delete(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.school_scope == "default"))
+        db.execute(
+            delete(SchoolPrivacyPolicyDefault).where(
+                SchoolPrivacyPolicyDefault.school_scope == "default"
+            )
+        )
         if phase_user_ids:
             db.execute(delete(User).where(User.id.in_(phase_user_ids)))
         db.commit()
@@ -116,7 +144,9 @@ def _user(db: OrmSession, *, email: str, role: str, is_demo: bool = True) -> Use
 
 def _login(client: TestClient, email: str) -> None:
     client.cookies.clear()
-    response = client.post("/api/auth/login", json={"email": email, "password": PASSWORD}, headers=ORIGIN_HEADERS)
+    response = client.post(
+        "/api/auth/login", json={"email": email, "password": PASSWORD}, headers=ORIGIN_HEADERS
+    )
     assert response.status_code == 200
 
 
@@ -175,7 +205,9 @@ def _seed_demo_v1_4_state(db: OrmSession) -> User:
             is_demo=True,
         )
     )
-    db.add(MoodCheckinReminderState(student_id=student.id, reminder_type="mood_check_in", is_demo=True))
+    db.add(
+        MoodCheckinReminderState(student_id=student.id, reminder_type="mood_check_in", is_demo=True)
+    )
     db.flush()
     checkin = MoodCheckIn(
         student_id=student.id,
@@ -288,14 +320,18 @@ def test_admin_policy_rejects_external_channels_and_raw_note_defaults(
     client: TestClient,
     bad_payload: dict,
 ) -> None:
-    admin = _user(db, email=f"admin-{uuid.uuid4()}-phase25-invalid@example.test", role=UserRole.ADMIN.value)
+    admin = _user(
+        db, email=f"admin-{uuid.uuid4()}-phase25-invalid@example.test", role=UserRole.ADMIN.value
+    )
     _login(client, admin.email)
 
     response = client.put("/api/admin/privacy-policy", json=bad_payload, headers=ORIGIN_HEADERS)
 
     assert response.status_code == 422
     assert "privacy_policy_updated" not in response.text
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "privacy_policy_updated")) is None
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "privacy_policy_updated")) is None
+    )
 
 
 def test_operations_dashboard_exposes_v1_4_counts_and_sanitizes_reason_content(
@@ -412,13 +448,18 @@ def test_operations_dashboard_exposes_identity_auth_metadata_only(db: OrmSession
         "pending_review": 1,
     }
     assert dashboard.session_auth is not None
-    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}["password"] >= 1
-    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}["sso"] == 1
-    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_provider}["phase30_provider"] == 1
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}[
+        "password"
+    ] >= 1
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_auth_method}[
+        "sso"
+    ] == 1
+    assert {bucket.key: bucket.count for bucket in dashboard.session_auth.by_provider}[
+        "phase30_provider"
+    ] == 1
     assert (
         "Danh tính ngoài chỉ được hiển thị bằng metadata tổng hợp. Quyền xem học sinh vẫn do vai trò trong ứng dụng, "
-        "liên kết đang hoạt động và SOS của học sinh quyết định."
-        in dashboard.privacy_notes
+        "liên kết đang hoạt động và SOS của học sinh quyết định." in dashboard.privacy_notes
     )
 
     rendered = dashboard.model_dump_json()
@@ -443,4 +484,3 @@ def test_operations_dashboard_exposes_identity_auth_metadata_only(db: OrmSession
         "eyJhbGciOi",
     ):
         assert forbidden not in rendered
-

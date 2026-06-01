@@ -29,10 +29,14 @@ PRIVATE_MARKER = "RAW_PRIVATE_MOOD_NOTE"
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%mood-checkin%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%mood-checkin%@example.test")))
+        )
         if not user_ids:
             return
-        checkin_ids = list(db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids))))
+        checkin_ids = list(
+            db.scalars(select(MoodCheckIn.id).where(MoodCheckIn.student_id.in_(user_ids)))
+        )
         if checkin_ids:
             db.execute(
                 delete(AuditEvent).where(
@@ -42,7 +46,9 @@ def _clean_database() -> None:
             )
             db.execute(delete(MoodCheckIn).where(MoodCheckIn.id.in_(checkin_ids)))
         db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(user_ids)))
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids)))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids))
+        )
         db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
         db.execute(
             delete(User).where(
@@ -184,7 +190,9 @@ def test_student_submits_repeat_mood_checkins_with_private_note_and_no_auto_sos(
 
 
 def test_mood_checkin_rejects_invalid_options(db: OrmSession, client: TestClient) -> None:
-    student = _user(db, email="student-mood-checkin-invalid@example.test", role=UserRole.STUDENT.value)
+    student = _user(
+        db, email="student-mood-checkin-invalid@example.test", role=UserRole.STUDENT.value
+    )
     _ack(db, student)
     _login(client, student.email)
 
@@ -202,7 +210,9 @@ def test_mood_checkin_rejects_invalid_options(db: OrmSession, client: TestClient
     assert response.status_code == 422
     assert (
         db.scalar(
-            select(func.count()).select_from(MoodCheckIn).where(MoodCheckIn.student_id == student.id)
+            select(func.count())
+            .select_from(MoodCheckIn)
+            .where(MoodCheckIn.student_id == student.id)
         )
         == 0
     )
@@ -212,8 +222,12 @@ def test_mood_checkins_are_student_only_and_privacy_ack_gated(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-mood-checkin-privacy@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-mood-checkin-denied@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-mood-checkin-privacy@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-mood-checkin-denied@example.test", role=UserRole.TEACHER.value
+    )
 
     anonymous_response = client.get("/api/student/mood-check-ins/history")
     assert anonymous_response.status_code == 401

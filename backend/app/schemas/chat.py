@@ -91,4 +91,3 @@ class ChatbotSafetyConfigResponse(BaseModel):
     provider: ChatbotProviderStatus
     updated_at: datetime
     is_demo: bool
-

@@ -209,24 +209,36 @@ def test_operations_dashboard_requires_admin_filters_audit_and_excludes_sensitiv
     assert "chatbot transcript" not in rendered.lower()
 
 
-def test_readiness_endpoint_records_minimal_operations_audit(db: OrmSession, client: TestClient) -> None:
+def test_readiness_endpoint_records_minimal_operations_audit(
+    db: OrmSession, client: TestClient
+) -> None:
     admin = _user(db, email="admin-readiness-ops@example.test", role=UserRole.ADMIN.value)
     _login(client, admin.email)
 
     before = db.scalar(
-        select(func.count()).select_from(AuditEvent).where(AuditEvent.action == "admin_readiness_checked")
+        select(func.count())
+        .select_from(AuditEvent)
+        .where(AuditEvent.action == "admin_readiness_checked")
     )
     response = client.get("/api/admin/operations/readiness")
 
     assert response.status_code == 200
     after = db.scalar(
-        select(func.count()).select_from(AuditEvent).where(AuditEvent.action == "admin_readiness_checked")
+        select(func.count())
+        .select_from(AuditEvent)
+        .where(AuditEvent.action == "admin_readiness_checked")
     )
     assert after == (before or 0) + 1
     event = db.scalar(select(AuditEvent).where(AuditEvent.action == "admin_readiness_checked"))
     assert event is not None
     assert event.resource_type == "operations_readiness"
-    assert set(event.metadata_summary) == {"overall_status", "check_count", "fail_count", "warn_count", "is_demo"}
+    assert set(event.metadata_summary) == {
+        "overall_status",
+        "check_count",
+        "fail_count",
+        "warn_count",
+        "is_demo",
+    }
     assert "DATABASE_URL" not in str(event.metadata_summary)
     assert "secret" not in str(event.metadata_summary).lower()
 
@@ -308,4 +320,3 @@ def test_operations_dashboard_json_excludes_forbidden_deployment_metadata(db: Or
         PRIVATE_NOTE,
     ):
         assert forbidden not in rendered
-

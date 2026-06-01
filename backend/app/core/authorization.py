@@ -25,7 +25,9 @@ def require_role(user: User, allowed_roles: UserRole | str | Iterable[UserRole |
         roles = {role.value if isinstance(role, UserRole) else role for role in allowed_roles}
 
     if user.role not in roles:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập."
+        )
     return user
 
 
@@ -60,7 +62,9 @@ def has_active_student_link(
 
 
 def has_student_sos_signal(db: OrmSession, student_id: uuid.UUID) -> bool:
-    return db.scalar(select(SosAlert.id).where(SosAlert.student_id == student_id).limit(1)) is not None
+    return (
+        db.scalar(select(SosAlert.id).where(SosAlert.student_id == student_id).limit(1)) is not None
+    )
 
 
 def require_permission(
@@ -106,11 +110,7 @@ def require_permission(
             and student_id == actor.id
         ):
             return
-        if (
-            resource_type == "self_check_summary"
-            and action == "read"
-            and student_id == actor.id
-        ):
+        if resource_type == "self_check_summary" and action == "read" and student_id == actor.id:
             return
         if (
             resource_type == "scenario_attempt_private"
@@ -171,7 +171,11 @@ def require_permission(
         return
 
     if actor.role == UserRole.STUDENT.value and resource_type == "sos_alert":
-        if action in {"read", "write"} and purpose == "safety_escalation" and student_id == actor.id:
+        if (
+            action in {"read", "write"}
+            and purpose == "safety_escalation"
+            and student_id == actor.id
+        ):
             return
 
     if (

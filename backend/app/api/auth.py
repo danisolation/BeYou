@@ -12,7 +12,12 @@ from app.core.security import (
     reset_login_failures,
     verify_password,
 )
-from app.core.sessions import clear_session_cookie, create_session, require_same_site_mutation, revoke_session
+from app.core.sessions import (
+    clear_session_cookie,
+    create_session,
+    require_same_site_mutation,
+    revoke_session,
+)
 from app.db.models import AccountStatus, AuthSessionMethod, User
 from app.db.session import get_db
 from app.schemas.auth import AuthCapabilitiesResponse, LoginRequest, LoginResponse
@@ -48,7 +53,12 @@ def _login_response(db: OrmSession, user: User) -> LoginResponse:
 
 def _origin_unsafe_for_production_pilot(origin: str) -> bool:
     normalized = origin.strip().lower()
-    return "*" in normalized or "localhost" in normalized or "127.0.0.1" in normalized or not normalized.startswith("https://")
+    return (
+        "*" in normalized
+        or "localhost" in normalized
+        or "127.0.0.1" in normalized
+        or not normalized.startswith("https://")
+    )
 
 
 @router.get("/capabilities", response_model=AuthCapabilitiesResponse)
@@ -87,17 +97,27 @@ def login(
 
     if user.is_demo and (settings.is_production_pilot or not settings.allow_demo_login):
         record_login_failure(payload.email, client_ip)
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=DEMO_LOGIN_DISABLED_DETAIL)
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail=DEMO_LOGIN_DISABLED_DETAIL
+        )
 
     if settings.is_production_pilot and (
         not settings.session_cookie_secure
-        or any(_origin_unsafe_for_production_pilot(origin) for origin in settings.allowed_frontend_origins)
+        or any(
+            _origin_unsafe_for_production_pilot(origin)
+            for origin in settings.allowed_frontend_origins
+        )
     ):
         record_login_failure(payload.email, client_ip)
-        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=PRODUCTION_PILOT_AUTH_UNSAFE_DETAIL)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=PRODUCTION_PILOT_AUTH_UNSAFE_DETAIL,
+        )
 
     reset_login_failures(payload.email, client_ip)
-    auth_method = AuthSessionMethod.DEMO_PASSWORD.value if user.is_demo else AuthSessionMethod.PASSWORD.value
+    auth_method = (
+        AuthSessionMethod.DEMO_PASSWORD.value if user.is_demo else AuthSessionMethod.PASSWORD.value
+    )
     create_session(db, user, response, settings, auth_method=auth_method, auth_provider_key="local")
     return _login_response(db, user)
 

@@ -37,7 +37,9 @@ def get_admin_readiness(
 ) -> ReadinessReport:
     _require_admin_operations(db, current_user)
     report = build_readiness_report(db, settings)
-    record_readiness_audit(db, actor=current_user, report=report, resource_type="operations_readiness")
+    record_readiness_audit(
+        db, actor=current_user, report=report, resource_type="operations_readiness"
+    )
     return report
 
 
@@ -68,6 +70,7 @@ def get_admin_operations_dashboard(
         status=status,
         limit=limit,
     )
-    record_readiness_audit(db, actor=current_user, report=report, resource_type="operations_dashboard")
+    record_readiness_audit(
+        db, actor=current_user, report=report, resource_type="operations_dashboard"
+    )
     return dashboard
-

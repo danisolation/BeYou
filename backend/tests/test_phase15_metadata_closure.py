@@ -25,7 +25,9 @@ PASSWORD = "secret123"
 PRIVATE_MARKER = "RAW_PRIVATE_PHASE15"
 
 
-def _config_payload(*, status_value: str = "published", unsafe: bool = False, missing: bool = False) -> dict:
+def _config_payload(
+    *, status_value: str = "published", unsafe: bool = False, missing: bool = False
+) -> dict:
     mood_options = [
         {"key": "steady", "label": "Khá ổn", "helper": "Em thấy tương đối cân bằng."},
         {"key": "okay", "label": "Bình thường", "helper": "Không quá tốt, không quá tệ."},
@@ -50,7 +52,9 @@ def _config_payload(*, status_value: str = "published", unsafe: bool = False, mi
         "status": status_value,
         "student_prompt": "Dành một phút gọi tên cảm xúc hiện tại của em.",
         "adult_guidance": "Bắt đầu bằng lắng nghe và hỏi em muốn được hỗ trợ thế nào.",
-        "mood_options": mood_options if not unsafe else [{**mood_options[0], "label": "Chẩn đoán nguy cơ"}] + mood_options[1:],
+        "mood_options": mood_options
+        if not unsafe
+        else [{**mood_options[0], "label": "Chẩn đoán nguy cơ"}] + mood_options[1:],
         "context_tags": context_tags,
         "sort_order": -100,
     }
@@ -58,13 +62,23 @@ def _config_payload(*, status_value: str = "published", unsafe: bool = False, mi
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%phase15%@example.test"))))
-        config_ids = list(db.scalars(select(MoodCheckInConfig.id).where(MoodCheckInConfig.name.like("phase15%"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%phase15%@example.test")))
+        )
+        config_ids = list(
+            db.scalars(select(MoodCheckInConfig.id).where(MoodCheckInConfig.name.like("phase15%")))
+        )
         if config_ids:
-            db.execute(delete(AuditEvent).where(AuditEvent.resource_id.in_([str(config_id) for config_id in config_ids])))
+            db.execute(
+                delete(AuditEvent).where(
+                    AuditEvent.resource_id.in_([str(config_id) for config_id in config_ids])
+                )
+            )
             db.execute(delete(MoodCheckInConfig).where(MoodCheckInConfig.id.in_(config_ids)))
         db.execute(delete(AuditEvent).where(AuditEvent.actor_id.in_(user_ids)))
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids)))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids))
+        )
         db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
         db.execute(delete(User).where(User.id.in_(user_ids)))
         db.commit()
@@ -153,15 +167,23 @@ def test_admin_publishes_previews_and_student_options_use_mood_config(
 
     preview_response = client.get(f"/api/admin/mood-checkins/configs/{config['id']}/preview")
     assert preview_response.status_code == 200
-    assert preview_response.json()["student_prompt"] == "Dành một phút gọi tên cảm xúc hiện tại của em."
+    assert (
+        preview_response.json()["student_prompt"]
+        == "Dành một phút gọi tên cảm xúc hiện tại của em."
+    )
 
     client.cookies.clear()
     _login(client, student.email)
     options_response = client.get("/api/student/mood-check-ins/options")
     assert options_response.status_code == 200
-    assert options_response.json()["student_prompt"] == "Dành một phút gọi tên cảm xúc hiện tại của em."
+    assert (
+        options_response.json()["student_prompt"]
+        == "Dành một phút gọi tên cảm xúc hiện tại của em."
+    )
 
-    audit_event = db.scalar(select(AuditEvent).where(AuditEvent.resource_type == "mood_checkin_config"))
+    audit_event = db.scalar(
+        select(AuditEvent).where(AuditEvent.resource_type == "mood_checkin_config")
+    )
     assert audit_event is not None
     assert audit_event.metadata_summary["mood_option_count"] == 6
     assert "student_prompt" not in audit_event.metadata_summary

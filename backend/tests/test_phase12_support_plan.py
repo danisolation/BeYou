@@ -31,15 +31,21 @@ PRIVATE_MARKER = "RAW_PRIVATE_SUPPORT_PLAN_TEXT"
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%support-plan%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%support-plan%@example.test")))
+        )
         if not user_ids:
             return
         plan_ids = list(
-            db.scalars(select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids)))
+            db.scalars(
+                select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids))
+            )
         )
         if plan_ids:
             db.execute(
-                delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids))
+                delete(StudentSupportPlanAdult).where(
+                    StudentSupportPlanAdult.support_plan_id.in_(plan_ids)
+                )
             )
             db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
             db.execute(
@@ -59,7 +65,9 @@ def _clean_database() -> None:
                 )
             )
         )
-        db.execute(delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids)))
+        db.execute(
+            delete(PrivacyAcknowledgement).where(PrivacyAcknowledgement.user_id.in_(user_ids))
+        )
         db.execute(delete(UserSession).where(UserSession.user_id.in_(user_ids)))
         db.execute(delete(User).where(User.id.in_(user_ids)))
         db.commit()
@@ -149,7 +157,10 @@ def test_student_creates_updates_and_deactivates_support_plan_with_metadata_only
     assert initial_response.status_code == 200
     initial_payload = initial_response.json()
     assert initial_payload["plan"] is None
-    assert {adult["id"] for adult in initial_payload["available_adults"]} == {str(teacher.id), str(parent.id)}
+    assert {adult["id"] for adult in initial_payload["available_adults"]} == {
+        str(teacher.id),
+        str(parent.id),
+    }
     assert "không tự động được chia sẻ" in " ".join(initial_payload["privacy_notes"])
 
     create_response = client.put(
@@ -178,7 +189,9 @@ def test_student_creates_updates_and_deactivates_support_plan_with_metadata_only
         }
     ]
 
-    stored_plan = db.scalar(select(StudentSupportPlan).where(StudentSupportPlan.student_id == student.id))
+    stored_plan = db.scalar(
+        select(StudentSupportPlan).where(StudentSupportPlan.student_id == student.id)
+    )
     assert stored_plan is not None
     assert len(stored_plan.selected_adults) == 1
 
@@ -217,8 +230,12 @@ def test_student_creates_updates_and_deactivates_support_plan_with_metadata_only
 
 
 def test_support_plan_rejects_unlinked_adults(db: OrmSession, client: TestClient) -> None:
-    student = _user(db, email="student-support-plan-invalid@example.test", role=UserRole.STUDENT.value)
-    unrelated_adult = _user(db, email="teacher-unlinked-support-plan@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-support-plan-invalid@example.test", role=UserRole.STUDENT.value
+    )
+    unrelated_adult = _user(
+        db, email="teacher-unlinked-support-plan@example.test", role=UserRole.TEACHER.value
+    )
     _ack(db, student)
 
     _login(client, student.email)
@@ -233,15 +250,22 @@ def test_support_plan_rejects_unlinked_adults(db: OrmSession, client: TestClient
 
     assert response.status_code == 422
     assert "đang được liên kết" in response.text
-    assert db.scalar(select(StudentSupportPlan).where(StudentSupportPlan.student_id == student.id)) is None
+    assert (
+        db.scalar(select(StudentSupportPlan).where(StudentSupportPlan.student_id == student.id))
+        is None
+    )
 
 
 def test_support_plan_is_student_only_and_privacy_ack_gated(
     db: OrmSession,
     client: TestClient,
 ) -> None:
-    student = _user(db, email="student-support-plan-privacy@example.test", role=UserRole.STUDENT.value)
-    teacher = _user(db, email="teacher-support-plan-denied@example.test", role=UserRole.TEACHER.value)
+    student = _user(
+        db, email="student-support-plan-privacy@example.test", role=UserRole.STUDENT.value
+    )
+    teacher = _user(
+        db, email="teacher-support-plan-denied@example.test", role=UserRole.TEACHER.value
+    )
 
     anonymous_response = client.get("/api/student/support-plan")
     assert anonymous_response.status_code == 401

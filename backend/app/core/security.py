@@ -49,7 +49,9 @@ def check_login_rate_limit(email: str, client_ip: str | None) -> None:
     now = time.time()
     for key in _rate_limit_keys(email, client_ip):
         if len(_prune_failures(key, now)) >= LOGIN_RATE_LIMIT_MAX_ATTEMPTS:
-            raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=RATE_LIMIT_DETAIL)
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=RATE_LIMIT_DETAIL
+            )
 
 
 def record_login_failure(email: str, client_ip: str | None) -> None:

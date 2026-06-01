@@ -34,7 +34,11 @@ from app.schemas.adult_summaries import (
     AdultSupportSummaryResponse,
 )
 from app.schemas.mood_note_shares import AdultSharedMoodNote
-from app.schemas.privacy_controls import ACCESS_REASON_LABELS, access_reason_options, normalize_reason_codes
+from app.schemas.privacy_controls import (
+    ACCESS_REASON_LABELS,
+    access_reason_options,
+    normalize_reason_codes,
+)
 from app.services.audit import record_audit_event
 from app.services.privacy_controls import get_or_create_school_privacy_policy
 
@@ -70,7 +74,9 @@ def _reason_required_detail(policy: SchoolPrivacyPolicyDefault) -> dict:
     return {
         "code": REASON_REQUIRED_DETAIL_CODE,
         "message": "Vui lòng chọn lý do hỗ trợ trước khi xem tóm tắt này.",
-        "allowed_reasons": [option.model_dump() for option in access_reason_options(policy.allowed_reason_codes)],
+        "allowed_reasons": [
+            option.model_dump() for option in access_reason_options(policy.allowed_reason_codes)
+        ],
         "copy": [
             "Lý do này giúp minh bạch việc truy cập và chỉ được lưu trong audit metadata.",
             "Lý do không cấp thêm quyền; Peerlight AI vẫn kiểm tra vai trò và liên kết đang hoạt động.",
@@ -128,7 +134,9 @@ def _record_access_reason_event(
     )
 
 
-def _safe_allowed_reason_or_none(policy: SchoolPrivacyPolicyDefault, reason_code: str | None) -> str | None:
+def _safe_allowed_reason_or_none(
+    policy: SchoolPrivacyPolicyDefault, reason_code: str | None
+) -> str | None:
     if reason_code is None:
         return None
     normalized = reason_code.strip().lower()
@@ -166,7 +174,10 @@ def _enforce_access_reason(
                 decision="reason_required_missing",
             )
         db.commit()
-        raise HTTPException(status_code=status.HTTP_428_PRECONDITION_REQUIRED, detail=_reason_required_detail(policy))
+        raise HTTPException(
+            status_code=status.HTTP_428_PRECONDITION_REQUIRED,
+            detail=_reason_required_detail(policy),
+        )
 
     normalized = reason_code.strip().lower()
     if normalized not in allowed_reasons:
@@ -184,7 +195,9 @@ def _enforce_access_reason(
                 decision="invalid_reason_code",
             )
         db.commit()
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Lý do truy cập không hợp lệ.")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT, detail="Lý do truy cập không hợp lệ."
+        )
 
     for resource_type in required_resources:
         _record_access_reason_event(
@@ -232,7 +245,9 @@ def get_adult_self_check_summaries(
 
     student = db.get(User, student_id)
     if student is None or student.role != UserRole.STUDENT.value:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh."
+        )
 
     latest_attempt = db.scalar(
         select(SelfCheckAttempt)
@@ -330,7 +345,10 @@ def _support_plan_summary(
     rows = list(
         db.execute(
             select(StudentSupportPlan, StudentSupportPlanAdult.adult_id)
-            .outerjoin(StudentSupportPlanAdult, StudentSupportPlanAdult.support_plan_id == StudentSupportPlan.id)
+            .outerjoin(
+                StudentSupportPlanAdult,
+                StudentSupportPlanAdult.support_plan_id == StudentSupportPlan.id,
+            )
             .where(StudentSupportPlan.student_id == student_id)
         ).all()
     )
@@ -342,9 +360,13 @@ def _support_plan_summary(
         )
 
     plan = rows[0][0]
-    selected_adult_ids = {selected_adult_id for _, selected_adult_id in rows if selected_adult_id is not None}
+    selected_adult_ids = {
+        selected_adult_id for _, selected_adult_id in rows if selected_adult_id is not None
+    }
     selected_count = len(selected_adult_ids)
-    shared_with_viewer = plan.status == SupportPlanStatus.ACTIVE.value and adult_id in selected_adult_ids
+    shared_with_viewer = (
+        plan.status == SupportPlanStatus.ACTIVE.value and adult_id in selected_adult_ids
+    )
     if not shared_with_viewer:
         return AdultSupportPlanSummary(
             status=plan.status,
@@ -497,7 +519,9 @@ def get_adult_support_summary(
     relationship_check = _relationship_check(relationship_type)
     student = db.get(User, student_id)
     if student is None or student.role != UserRole.STUDENT.value:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy học sinh."
+        )
     policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
     student_context = _adult_student_context(student)
     student_is_demo = student.is_demo
@@ -520,7 +544,9 @@ def get_adult_support_summary(
             decision="authorization_denied",
         )
         db.commit()
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập.")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Không có quyền truy cập."
+        )
     access_reason, accepted_reason_code = _enforce_access_reason(
         db,
         adult=adult,

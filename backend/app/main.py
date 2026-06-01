@@ -78,8 +78,12 @@ def create_app() -> FastAPI:
         student_self_checks.router, prefix="/api/student/self-checks", tags=["student"]
     )
     app.include_router(student_scenarios.router, prefix="/api/student/scenarios", tags=["student"])
-    app.include_router(student_support_plan.router, prefix="/api/student/support-plan", tags=["student"])
-    app.include_router(student_mood_checkins.router, prefix="/api/student/mood-check-ins", tags=["student"])
+    app.include_router(
+        student_support_plan.router, prefix="/api/student/support-plan", tags=["student"]
+    )
+    app.include_router(
+        student_mood_checkins.router, prefix="/api/student/mood-check-ins", tags=["student"]
+    )
     app.include_router(
         student_notification_preferences.router,
         prefix="/api/student/notification-preferences",
@@ -94,15 +98,20 @@ def create_app() -> FastAPI:
     app.include_router(admin_users.router, prefix="/api/admin/users", tags=["admin"])
     app.include_router(admin_links.router, prefix="/api/admin/links", tags=["admin"])
     app.include_router(admin_content.router, prefix="/api/admin/content", tags=["admin"])
-    app.include_router(admin_mood_checkins.router, prefix="/api/admin/mood-checkins", tags=["admin"])
+    app.include_router(
+        admin_mood_checkins.router, prefix="/api/admin/mood-checkins", tags=["admin"]
+    )
     app.include_router(admin_reports.router, prefix="/api/admin/reports", tags=["admin"])
     app.include_router(admin_operations.router, prefix="/api/admin/operations", tags=["admin"])
-    app.include_router(admin_privacy_policy.router, prefix="/api/admin/privacy-policy", tags=["admin"])
+    app.include_router(
+        admin_privacy_policy.router, prefix="/api/admin/privacy-policy", tags=["admin"]
+    )
 
     @app.on_event("startup")
     def warm_db_pool() -> None:
         """Pre-warm a DB connection so first request isn't slow after cold start."""
         from app.db.session import engine
+
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
 

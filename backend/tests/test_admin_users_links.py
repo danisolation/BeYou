@@ -301,8 +301,14 @@ def test_admin_link_management(db: OrmSession) -> None:
     assert revoked_link is not None
     assert revoked_link.status == LinkStatus.REVOKED.value
     assert revoked_link.revoked_by == admin.id
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "student_adult_link_created")) is not None
-    assert db.scalar(select(AuditEvent).where(AuditEvent.action == "student_adult_link_revoked")) is not None
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "student_adult_link_created"))
+        is not None
+    )
+    assert (
+        db.scalar(select(AuditEvent).where(AuditEvent.action == "student_adult_link_revoked"))
+        is not None
+    )
 
     before_count = db.scalar(select(func.count()).select_from(StudentAdultLink))
     cross_site_response = admin_client.post(

@@ -91,7 +91,9 @@ def list_published_tests(db: OrmSession) -> list[SelfCheckTest]:
 def get_published_test_detail(db: OrmSession, test_id: uuid.UUID) -> SelfCheckTest:
     test = db.scalar(_published_test_query(test_id))
     if test is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý."
+        )
     return test
 
 
@@ -100,7 +102,9 @@ def _normalise_answers(
 ) -> dict[uuid.UUID, uuid.UUID]:
     answer_map: dict[uuid.UUID, uuid.UUID] = {}
     for answer in answers:
-        question_id = answer.question_id if hasattr(answer, "question_id") else answer["question_id"]
+        question_id = (
+            answer.question_id if hasattr(answer, "question_id") else answer["question_id"]
+        )
         choice_id = answer.choice_id if hasattr(answer, "choice_id") else answer["choice_id"]
         if question_id in answer_map:
             raise HTTPException(
@@ -150,7 +154,8 @@ def _matching_threshold(test: SelfCheckTest, score: int) -> SelfCheckThreshold:
     matches = [
         threshold
         for threshold in test.thresholds
-        if threshold.min_score <= score <= threshold.max_score and threshold.state_label in VALID_STATE_LABELS
+        if threshold.min_score <= score <= threshold.max_score
+        and threshold.state_label in VALID_STATE_LABELS
     ]
     if len(matches) != 1:
         raise HTTPException(
@@ -188,7 +193,9 @@ def _snapshot_for_test(test: SelfCheckTest) -> dict:
             "positive_content": threshold.positive_content,
             "suggested_next_action": threshold.suggested_next_action,
         }
-        for threshold in sorted(test.thresholds, key=lambda item: (item.min_score, item.max_score, item.state_label))
+        for threshold in sorted(
+            test.thresholds, key=lambda item: (item.min_score, item.max_score, item.state_label)
+        )
     ]
     return {
         "id": str(test.id),
@@ -215,7 +222,8 @@ def _copy_for_threshold(threshold: SelfCheckThreshold) -> dict[str, str | None]:
         "advice_summary": threshold.advice or defaults["advice_summary"],
         "support_suggestion": threshold.suggested_next_action or defaults["support_suggestion"],
         "positive_content": threshold.positive_content or defaults["positive_content"],
-        "suggested_next_action": threshold.suggested_next_action or defaults["suggested_next_action"],
+        "suggested_next_action": threshold.suggested_next_action
+        or defaults["suggested_next_action"],
     }
 
 
@@ -288,8 +296,12 @@ def get_student_attempt_detail(
         .where(SelfCheckAttempt.id == attempt_id)
     )
     if attempt is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý."
+        )
     if attempt.student_id != student.id:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy kết quả test tâm lý."
+        )
     attempt.answers.sort(key=lambda answer: (answer.sort_order, str(answer.id)))
     return attempt

@@ -75,7 +75,9 @@ def _visible_students(db: OrmSession, *, admin: User, teacher: User, parent: Use
             school="THPT Phase 36",
             class_name="10A1",
         )
-        seed_student_link(db, student, teacher, relationship_type=UserRole.TEACHER, created_by=admin)
+        seed_student_link(
+            db, student, teacher, relationship_type=UserRole.TEACHER, created_by=admin
+        )
         seed_student_link(db, student, parent, relationship_type=UserRole.PARENT, created_by=admin)
         seed_sos_alert(db, student)
         students.append(student)
@@ -128,7 +130,9 @@ def _hidden_students(db: OrmSession, *, admin: User, teacher: User, parent: User
         school="THPT Phase 36",
         class_name="10A1",
     )
-    seed_student_link(db, wrong_teacher, teacher, relationship_type=UserRole.PARENT, created_by=admin)
+    seed_student_link(
+        db, wrong_teacher, teacher, relationship_type=UserRole.PARENT, created_by=admin
+    )
     seed_sos_alert(db, wrong_teacher)
 
     wrong_parent = make_user(
@@ -139,7 +143,9 @@ def _hidden_students(db: OrmSession, *, admin: User, teacher: User, parent: User
         school="THPT Phase 36",
         class_name="10A1",
     )
-    seed_student_link(db, wrong_parent, parent, relationship_type=UserRole.TEACHER, created_by=admin)
+    seed_student_link(
+        db, wrong_parent, parent, relationship_type=UserRole.TEACHER, created_by=admin
+    )
     seed_sos_alert(db, wrong_parent)
     return [no_sos, revoked, wrong_teacher, wrong_parent]
 
@@ -187,11 +193,19 @@ def _seed_status_event(db: OrmSession, alert: SosAlert, student: User) -> None:
     )
 
 
-def _seed_adult_visibility_graph(db: OrmSession) -> tuple[User, User, User, User, list[User], list[User]]:
+def _seed_adult_visibility_graph(
+    db: OrmSession,
+) -> tuple[User, User, User, User, list[User], list[User]]:
     admin = make_user(db, "phase36-visibility-admin@example.test", UserRole.ADMIN, "Phase 36 Admin")
-    teacher = make_user(db, "phase36-visibility-teacher@example.test", UserRole.TEACHER, "Phase 36 Teacher")
-    parent = make_user(db, "phase36-visibility-parent@example.test", UserRole.PARENT, "Phase 36 Parent")
-    outsider = make_user(db, "phase36-visibility-outsider@example.test", UserRole.TEACHER, "Phase 36 Outsider")
+    teacher = make_user(
+        db, "phase36-visibility-teacher@example.test", UserRole.TEACHER, "Phase 36 Teacher"
+    )
+    parent = make_user(
+        db, "phase36-visibility-parent@example.test", UserRole.PARENT, "Phase 36 Parent"
+    )
+    outsider = make_user(
+        db, "phase36-visibility-outsider@example.test", UserRole.TEACHER, "Phase 36 Outsider"
+    )
     visible = _visible_students(db, admin=admin, teacher=teacher, parent=parent)
     hidden = _hidden_students(db, admin=admin, teacher=teacher, parent=parent)
     db.commit()
@@ -204,8 +218,12 @@ def test_teacher_parent_students_batch_sos_visibility_without_leaks(db: OrmSessi
     parent_client = login_client(parent.email)
     outsider_client = login_client(outsider.email)
 
-    teacher_response, teacher_queries = measure_queries(lambda: teacher_client.get("/api/teacher/students"))
-    parent_response, parent_queries = measure_queries(lambda: parent_client.get("/api/parent/students"))
+    teacher_response, teacher_queries = measure_queries(
+        lambda: teacher_client.get("/api/teacher/students")
+    )
+    parent_response, parent_queries = measure_queries(
+        lambda: parent_client.get("/api/parent/students")
+    )
 
     assert teacher_response.status_code == 200
     assert parent_response.status_code == 200
@@ -223,7 +241,9 @@ def test_teacher_parent_students_batch_sos_visibility_without_leaks(db: OrmSessi
     assert outsider_response.json() == []
 
 
-def test_support_overview_batches_latest_signals_and_keeps_audit_metadata_only(db: OrmSession) -> None:
+def test_support_overview_batches_latest_signals_and_keeps_audit_metadata_only(
+    db: OrmSession,
+) -> None:
     _, teacher, _, _, visible, hidden = _seed_adult_visibility_graph(db)
     for index, student in enumerate(visible):
         _seed_self_check(db, student, index)
@@ -232,13 +252,17 @@ def test_support_overview_batches_latest_signals_and_keeps_audit_metadata_only(d
     db.commit()
 
     teacher_client = login_client(teacher.email)
-    response, query_count = measure_queries(lambda: teacher_client.get("/api/teacher/support-overview"))
+    response, query_count = measure_queries(
+        lambda: teacher_client.get("/api/teacher/support-overview")
+    )
 
     assert response.status_code == 200
     payload = response.json()
     assert len(payload) == 12
     assert {row["student"]["id"] for row in payload} == {str(student.id) for student in visible}
-    assert {str(student.id) for student in hidden}.isdisjoint({row["student"]["id"] for row in payload})
+    assert {str(student.id) for student in hidden}.isdisjoint(
+        {row["student"]["id"] for row in payload}
+    )
     response_text = response.text
     assert "raw_answers" not in response_text
     assert "private_note" not in response_text

@@ -32,14 +32,22 @@ SHARED_PLAN_TEXT = "Em dễ bình tĩnh hơn khi người lớn nói chậm."
 
 def _clean_database() -> None:
     with SessionLocal() as db:
-        user_ids = list(db.scalars(select(User.id).where(User.email.like("%adult-summary%@example.test"))))
+        user_ids = list(
+            db.scalars(select(User.id).where(User.email.like("%adult-summary%@example.test")))
+        )
         if not user_ids:
             return
         plan_ids = list(
-            db.scalars(select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids)))
+            db.scalars(
+                select(StudentSupportPlan.id).where(StudentSupportPlan.student_id.in_(user_ids))
+            )
         )
         if plan_ids:
-            db.execute(delete(StudentSupportPlanAdult).where(StudentSupportPlanAdult.support_plan_id.in_(plan_ids)))
+            db.execute(
+                delete(StudentSupportPlanAdult).where(
+                    StudentSupportPlanAdult.support_plan_id.in_(plan_ids)
+                )
+            )
             db.execute(delete(StudentSupportPlan).where(StudentSupportPlan.id.in_(plan_ids)))
         db.execute(delete(MoodCheckIn).where(MoodCheckIn.student_id.in_(user_ids)))
         db.execute(delete(SosAlert).where(SosAlert.student_id.in_(user_ids)))
@@ -184,7 +192,9 @@ def test_selected_teacher_gets_support_plan_and_mood_summary_without_private_not
     student, teacher, _, _ = _seed_summary_data(db)
 
     _login(client, teacher.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -217,7 +227,9 @@ def test_linked_parent_gets_mood_summary_but_not_unselected_support_plan(
     student, _, parent, _ = _seed_summary_data(db)
 
     _login(client, parent.email)
-    response = client.get(f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context")
+    response = client.get(
+        f"/api/parent/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
 
     assert response.status_code == 200
     payload = response.json()
@@ -234,7 +246,9 @@ def test_unlinked_adult_is_denied_without_sensitive_content(
     student, _, _, outsider = _seed_summary_data(db)
 
     _login(client, outsider.email)
-    response = client.get(f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context")
+    response = client.get(
+        f"/api/teacher/students/{student.id}/support-summary?reason_code=support_plan_context"
+    )
 
     assert response.status_code == 403
     assert PRIVATE_MOOD_NOTE not in response.text

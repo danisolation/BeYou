@@ -271,7 +271,9 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
-    if (is_production_pilot or (is_production and not settings.is_public_demo)) and not settings.session_cookie_secure:
+    if (
+        is_production_pilot or (is_production and not settings.is_public_demo)
+    ) and not settings.session_cookie_secure:
         checks.append(
             _safe_check(
                 key="cookie_security",
@@ -301,7 +303,9 @@ def evaluate_static_readiness_checks(settings: Settings) -> list[ReadinessCheck]
             )
         )
 
-    if settings.chat_provider == "gemini" and _has_placeholder_value(settings.effective_llm_api_key):
+    if settings.chat_provider == "gemini" and _has_placeholder_value(
+        settings.effective_llm_api_key
+    ):
         checks.append(
             _safe_check(
                 key="provider_secrets",
@@ -550,4 +554,3 @@ def public_readiness_from_report(report: ReadinessReport) -> PublicReadinessResp
 
 def readiness_http_status(report: ReadinessReport) -> int:
     return 503 if report.status == "not_ready" else 200
-

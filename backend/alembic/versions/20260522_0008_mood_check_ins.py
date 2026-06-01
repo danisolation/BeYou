@@ -21,7 +21,9 @@ def upgrade() -> None:
     op.create_table(
         "mood_check_ins",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "student_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("mood_label", sa.String(length=64), nullable=False),
         sa.Column("energy_level", sa.Integer(), nullable=False),
         sa.Column("stress_level", sa.Integer(), nullable=False),
@@ -36,7 +38,9 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(timezone=True), nullable=False),
     )
     op.create_index("ix_mood_check_ins_student_id", "mood_check_ins", ["student_id"])
-    op.create_index("ix_mood_check_ins_student_created", "mood_check_ins", ["student_id", "created_at"])
+    op.create_index(
+        "ix_mood_check_ins_student_created", "mood_check_ins", ["student_id", "created_at"]
+    )
     op.create_index("ix_mood_check_ins_trend_label", "mood_check_ins", ["trend_label"])
     op.create_index("ix_mood_check_ins_is_demo", "mood_check_ins", ["is_demo"])
 

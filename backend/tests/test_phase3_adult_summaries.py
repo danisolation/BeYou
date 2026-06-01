@@ -147,7 +147,9 @@ def _attempt(
     test = SelfCheckTest(title=f"Bài {label}", status="published", is_active=True, is_demo=True)
     db.add(test)
     db.flush()
-    question = SelfCheckQuestion(test_id=test.id, text=f"Câu hỏi riêng {label}", sort_order=1, is_demo=True)
+    question = SelfCheckQuestion(
+        test_id=test.id, text=f"Câu hỏi riêng {label}", sort_order=1, is_demo=True
+    )
     db.add(question)
     db.flush()
     choice = SelfCheckChoice(
@@ -219,7 +221,9 @@ def test_adult_summary_service_minimizes_recent_attempts_and_audits(db: OrmSessi
             label=f"recent-{index}",
             raw_answer_text=f"RAW_PRIVATE_ANSWER_{index}",
         )
-    _attempt(db, student=student, days_ago=31, label="old", raw_answer_text="RAW_PRIVATE_ANSWER_OLD")
+    _attempt(
+        db, student=student, days_ago=31, label="old", raw_answer_text="RAW_PRIVATE_ANSWER_OLD"
+    )
 
     response = get_adult_self_check_summaries(
         db, teacher, student.id, relationship_type=UserRole.TEACHER.value
@@ -265,7 +269,9 @@ def test_adult_summary_service_denies_unlinked_adult(db: OrmSession) -> None:
     _attempt(db, student=student, days_ago=0, label="latest", raw_answer_text="RAW_PRIVATE_DENIED")
 
     try:
-        get_adult_self_check_summaries(db, parent, student.id, relationship_type=UserRole.PARENT.value)
+        get_adult_self_check_summaries(
+            db, parent, student.id, relationship_type=UserRole.PARENT.value
+        )
     except HTTPException as exc:
         assert exc.status_code == 403
     else:  # pragma: no cover - explicit failure path for readability
@@ -279,9 +285,15 @@ def test_teacher_and_parent_summary_routes_enforce_link_and_omit_raw_answers(
     _clean_database()
     try:
         with SessionLocal() as db:
-            student = _user(db, email="student-route-summary@example.test", role=UserRole.STUDENT.value)
-            teacher = _user(db, email="teacher-route-summary@example.test", role=UserRole.TEACHER.value)
-            parent = _user(db, email="parent-route-summary@example.test", role=UserRole.PARENT.value)
+            student = _user(
+                db, email="student-route-summary@example.test", role=UserRole.STUDENT.value
+            )
+            teacher = _user(
+                db, email="teacher-route-summary@example.test", role=UserRole.TEACHER.value
+            )
+            parent = _user(
+                db, email="parent-route-summary@example.test", role=UserRole.PARENT.value
+            )
             unlinked_teacher = _user(
                 db,
                 email="teacher-unlinked-route-summary@example.test",

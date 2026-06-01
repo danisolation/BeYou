@@ -170,7 +170,9 @@ SAFE_TEXT_FALLBACK = "metadata_an_toan"
 SAFE_REMEDIATION_FALLBACK = "Kiểm tra cấu hình provider bằng metadata an toàn."
 
 
-def _bucket(key: str, count: int, label_map: Mapping[str, str] | None = None) -> OperationCountBucket:
+def _bucket(
+    key: str, count: int, label_map: Mapping[str, str] | None = None
+) -> OperationCountBucket:
     return OperationCountBucket(key=key, label=(label_map or {}).get(key, key), count=count)
 
 
@@ -202,7 +204,9 @@ def _safe_operation_key(value: str | None, *, fallback: str = "disabled") -> str
     return normalized
 
 
-def _safe_operation_text(value: str | None, *, fallback: str | None = SAFE_TEXT_FALLBACK) -> str | None:
+def _safe_operation_text(
+    value: str | None, *, fallback: str | None = SAFE_TEXT_FALLBACK
+) -> str | None:
     if value is None:
         return None
     normalized = " ".join(value.strip().split())
@@ -225,12 +229,18 @@ def _count_buckets(
         query = query.where(column.is_not(None))
     query = query.group_by(column).order_by(column)
     rows = db.execute(query).all()
-    return [_bucket(str(key) if key is not None else "none", count, label_map) for key, count in rows]
+    return [
+        _bucket(str(key) if key is not None else "none", count, label_map) for key, count in rows
+    ]
 
 
 def _readiness_summary(report: ReadinessReport) -> OperationReadinessSummary:
     checks_by_status = [
-        _bucket(status, sum(1 for check in report.checks if check.status == status), READINESS_STATUS_LABELS)
+        _bucket(
+            status,
+            sum(1 for check in report.checks if check.status == status),
+            READINESS_STATUS_LABELS,
+        )
         for status in ("pass", "warn", "fail")
     ]
     attention_checks = [
@@ -289,10 +299,14 @@ def _delivery_summary(db: OrmSession, *, limit: int) -> SosEmailDeliverySummary:
     )
     return SosEmailDeliverySummary(
         total=total,
-        by_status=_count_buckets(db, SosNotificationDelivery.status, label_map=DELIVERY_STATUS_LABELS),
+        by_status=_count_buckets(
+            db, SosNotificationDelivery.status, label_map=DELIVERY_STATUS_LABELS
+        ),
         by_provider=_count_buckets(db, SosNotificationDelivery.provider),
         by_error_code=_count_buckets(db, SosNotificationDelivery.error_code, include_null=False),
-        recent=[_delivery_item(delivery, position) for position, delivery in enumerate(recent, start=1)],
+        recent=[
+            _delivery_item(delivery, position) for position, delivery in enumerate(recent, start=1)
+        ],
     )
 
 
@@ -301,7 +315,9 @@ def _safe_metadata(value: object) -> Any:
         safe: dict[str, Any] = {}
         for key, nested_value in value.items():
             normalized_key = str(key).lower()
-            if normalized_key in OPERATIONS_FORBIDDEN_METADATA_KEYS or _unsafe_operation_text(str(key)):
+            if normalized_key in OPERATIONS_FORBIDDEN_METADATA_KEYS or _unsafe_operation_text(
+                str(key)
+            ):
                 continue
             safe[str(key)] = _safe_metadata(nested_value)
         return safe
@@ -357,7 +373,9 @@ def _audit_summary(
         query = query.where(AuditEvent.status == status)
 
     total = db.scalar(select(func.count()).select_from(query.subquery())) or 0
-    recent = list(db.scalars(query.order_by(AuditEvent.timestamp.desc(), AuditEvent.id.desc()).limit(limit)))
+    recent = list(
+        db.scalars(query.order_by(AuditEvent.timestamp.desc(), AuditEvent.id.desc()).limit(limit))
+    )
     return AuditEventSummary(
         total_matching=total,
         filters=AuditFilterSummary(
@@ -417,50 +435,82 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
             )
         )
 
-    active_link_count = db.scalar(
-        select(func.count())
-        .select_from(StudentAdultLink)
-        .where(
-            StudentAdultLink.is_demo.is_(True),
-            StudentAdultLink.status == LinkStatus.ACTIVE.value,
+    active_link_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(StudentAdultLink)
+            .where(
+                StudentAdultLink.is_demo.is_(True),
+                StudentAdultLink.status == LinkStatus.ACTIVE.value,
+            )
         )
-    ) or 0
-    published_self_check_count = db.scalar(
-        select(func.count())
-        .select_from(SelfCheckTest)
-        .where(
-            SelfCheckTest.is_demo.is_(True),
-            SelfCheckTest.status == ContentStatus.PUBLISHED.value,
-            SelfCheckTest.is_active.is_(True),
+        or 0
+    )
+    published_self_check_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(SelfCheckTest)
+            .where(
+                SelfCheckTest.is_demo.is_(True),
+                SelfCheckTest.status == ContentStatus.PUBLISHED.value,
+                SelfCheckTest.is_active.is_(True),
+            )
         )
-    ) or 0
-    published_scenario_count = db.scalar(
-        select(func.count())
-        .select_from(Scenario)
-        .where(Scenario.is_demo.is_(True), Scenario.status == ContentStatus.PUBLISHED.value)
-    ) or 0
-    published_mood_config_count = db.scalar(
-        select(func.count())
-        .select_from(MoodCheckInConfig)
-        .where(
-            MoodCheckInConfig.is_demo.is_(True),
-            MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
+        or 0
+    )
+    published_scenario_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(Scenario)
+            .where(Scenario.is_demo.is_(True), Scenario.status == ContentStatus.PUBLISHED.value)
         )
-    ) or 0
-    v1_4_policy_count = db.scalar(
-        select(func.count()).select_from(SchoolPrivacyPolicyDefault).where(SchoolPrivacyPolicyDefault.is_demo.is_(True))
-    ) or 0
-    v1_4_preference_count = db.scalar(
-        select(func.count()).select_from(StudentNotificationPreference).where(StudentNotificationPreference.is_demo.is_(True))
-    ) or 0
-    v1_4_reminder_state_count = db.scalar(
-        select(func.count()).select_from(MoodCheckinReminderState).where(MoodCheckinReminderState.is_demo.is_(True))
-    ) or 0
-    v1_4_share_count = db.scalar(
-        select(func.count()).select_from(MoodNoteShare).where(MoodNoteShare.is_demo.is_(True))
-    ) or 0
+        or 0
+    )
+    published_mood_config_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(MoodCheckInConfig)
+            .where(
+                MoodCheckInConfig.is_demo.is_(True),
+                MoodCheckInConfig.status == ContentStatus.PUBLISHED.value,
+            )
+        )
+        or 0
+    )
+    v1_4_policy_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(SchoolPrivacyPolicyDefault)
+            .where(SchoolPrivacyPolicyDefault.is_demo.is_(True))
+        )
+        or 0
+    )
+    v1_4_preference_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(StudentNotificationPreference)
+            .where(StudentNotificationPreference.is_demo.is_(True))
+        )
+        or 0
+    )
+    v1_4_reminder_state_count = (
+        db.scalar(
+            select(func.count())
+            .select_from(MoodCheckinReminderState)
+            .where(MoodCheckinReminderState.is_demo.is_(True))
+        )
+        or 0
+    )
+    v1_4_share_count = (
+        db.scalar(
+            select(func.count()).select_from(MoodNoteShare).where(MoodNoteShare.is_demo.is_(True))
+        )
+        or 0
+    )
 
-    missing_roles = [role.role for role in roles if not role.present or not role.active or not role.is_demo]
+    missing_roles = [
+        role.role for role in roles if not role.present or not role.active or not role.is_demo
+    ]
     content_ready = (
         active_link_count >= 2
         and published_self_check_count > 0
@@ -518,7 +568,9 @@ def _demo_seed_summary(db: OrmSession, settings: Settings) -> DemoSeedSummary:
 
 def _origin_kind(origin: str) -> str:
     normalized = origin.strip().lower()
-    if normalized.startswith(("http://localhost", "https://localhost", "http://127.0.0.1", "https://127.0.0.1")):
+    if normalized.startswith(
+        ("http://localhost", "https://localhost", "http://127.0.0.1", "https://127.0.0.1")
+    ):
         return "local"
     if normalized.startswith("https://"):
         return "https"
@@ -540,26 +592,37 @@ def _normalize_origin_for_match(value: str) -> str:
 
 
 def _configured_allowed_origins(settings: Settings) -> list[str]:
-    configured = [origin.strip() for origin in str(settings.frontend_origins).split(",") if origin.strip()]
+    configured = [
+        origin.strip() for origin in str(settings.frontend_origins).split(",") if origin.strip()
+    ]
     return configured or [settings.frontend_origin]
 
 
 def _exact_credentialed_origin_match(settings: Settings) -> dict[str, bool | int]:
     expected_origin = _normalize_origin_for_match(settings.frontend_origin)
     allowed_origins = _configured_allowed_origins(settings)
-    normalized_allowed = list(dict.fromkeys(_normalize_origin_for_match(origin) for origin in allowed_origins if origin.strip()))
+    normalized_allowed = list(
+        dict.fromkeys(
+            _normalize_origin_for_match(origin) for origin in allowed_origins if origin.strip()
+        )
+    )
     has_wildcard_origin = any("*" in origin for origin in allowed_origins)
     has_local_origin = any(_origin_kind(origin) == "local" for origin in allowed_origins)
-    all_origins_https = bool(normalized_allowed) and all(origin.startswith("https://") for origin in normalized_allowed)
+    all_origins_https = bool(normalized_allowed) and all(
+        origin.startswith("https://") for origin in normalized_allowed
+    )
 
     return {
         "expected_frontend_origin_configured": bool(expected_origin),
-        "exact_allowed_origin_match": bool(expected_origin and expected_origin in normalized_allowed),
+        "exact_allowed_origin_match": bool(
+            expected_origin and expected_origin in normalized_allowed
+        ),
         "allowed_origin_count": len(normalized_allowed),
         "has_wildcard_origin": has_wildcard_origin,
         "has_local_origin": has_local_origin,
         "all_origins_https": all_origins_https,
-        "credentialed_cors": settings.session_cookie_secure and settings.session_cookie_samesite.lower() == "none",
+        "credentialed_cors": settings.session_cookie_secure
+        and settings.session_cookie_samesite.lower() == "none",
     }
 
 
@@ -593,7 +656,9 @@ def _connectivity_summary(settings: Settings) -> ConnectivitySummary:
         frontend_origin_kind=_origin_kind(settings.frontend_origin),
         allowed_origin_count=len(allowed_origins),
         has_local_origin=any(_origin_kind(origin) == "local" for origin in allowed_origins),
-        all_origins_https=all(origin.strip().lower().startswith("https://") for origin in allowed_origins),
+        all_origins_https=all(
+            origin.strip().lower().startswith("https://") for origin in allowed_origins
+        ),
         health_live_path="/health/live",
         health_ready_path="/health/ready",
         session_cookie_secure=settings.session_cookie_secure,
@@ -605,9 +670,14 @@ def _connectivity_summary(settings: Settings) -> ConnectivitySummary:
 def _auth_provider_summary(settings: Settings) -> AuthProviderReadinessSummary:
     enabled = settings.auth_provider_enabled
     provider_key = _safe_operation_key(settings.auth_provider_key)
-    provider_label = _safe_operation_text(settings.auth_provider_label, fallback="Chưa cấu hình") or "Chưa cấu hình"
+    provider_label = (
+        _safe_operation_text(settings.auth_provider_label, fallback="Chưa cấu hình")
+        or "Chưa cấu hình"
+    )
     mode = _safe_operation_key(settings.auth_provider_mode)
-    last_check_status = _safe_operation_text(settings.auth_provider_last_check_status, fallback=None)
+    last_check_status = _safe_operation_text(
+        settings.auth_provider_last_check_status, fallback=None
+    )
     ready = enabled and provider_key != "disabled" and mode != "disabled"
     if ready:
         return AuthProviderReadinessSummary(
@@ -632,7 +702,10 @@ def _auth_provider_summary(settings: Settings) -> AuthProviderReadinessSummary:
 
 def _identity_mapping_summary(db: OrmSession) -> IdentityMappingOperationsSummary:
     rows = db.execute(
-        select(ExternalIdentity.status, func.count()).select_from(ExternalIdentity).group_by(ExternalIdentity.status).order_by(ExternalIdentity.status)
+        select(ExternalIdentity.status, func.count())
+        .select_from(ExternalIdentity)
+        .group_by(ExternalIdentity.status)
+        .order_by(ExternalIdentity.status)
     ).all()
     counts = {_safe_operation_key(status, fallback="unknown"): count for status, count in rows}
     by_status = [_bucket(status, counts.get(status, 0)) for status in sorted(counts)]
@@ -661,10 +734,12 @@ def _session_auth_summary(db: OrmSession) -> SessionAuthOperationsSummary:
     ).all()
     return SessionAuthOperationsSummary(
         by_auth_method=[
-            _bucket(_safe_operation_key(method, fallback="unknown"), count) for method, count in method_rows
+            _bucket(_safe_operation_key(method, fallback="unknown"), count)
+            for method, count in method_rows
         ],
         by_provider=[
-            _bucket(_safe_operation_key(provider, fallback="unknown"), count) for provider, count in provider_rows
+            _bucket(_safe_operation_key(provider, fallback="unknown"), count)
+            for provider, count in provider_rows
         ],
     )
 
@@ -705,7 +780,9 @@ def _production_smoke_checklist() -> list[ProductionSmokeChecklistItem]:
 
 
 def _deployment_guardrails(settings: Settings) -> list[DeploymentGuardrailItem]:
-    demo_flags_safe = not settings.is_production_pilot or (not settings.allow_demo_seed and not settings.allow_demo_login)
+    demo_flags_safe = not settings.is_production_pilot or (
+        not settings.allow_demo_seed and not settings.allow_demo_login
+    )
     render_status = "pass" if demo_flags_safe else "fail"
 
     contract = _exact_credentialed_origin_match(settings)
@@ -768,7 +845,9 @@ def _deployment_guardrails(settings: Settings) -> list[DeploymentGuardrailItem]:
     ]
 
 
-def _smoke_profiles(settings: Settings, readiness_report: ReadinessReport) -> list[SmokeProfileItem]:
+def _smoke_profiles(
+    settings: Settings, readiness_report: ReadinessReport
+) -> list[SmokeProfileItem]:
     demo_status = "pass" if settings.is_demo_runtime else "warn"
 
     pilot_blocked = readiness_report.status != "ready" or (
@@ -789,7 +868,9 @@ def _smoke_profiles(settings: Settings, readiness_report: ReadinessReport) -> li
     else:
         pilot_status = "warn"
         pilot_evidence = f"readiness_status={readiness_report.status}; production_pilot_runtime=no"
-        pilot_remediation = "Switch to production_pilot runtime and require readiness ready before pilot smoke."
+        pilot_remediation = (
+            "Switch to production_pilot runtime and require readiness ready before pilot smoke."
+        )
 
     return [
         SmokeProfileItem(
@@ -800,7 +881,9 @@ def _smoke_profiles(settings: Settings, readiness_report: ReadinessReport) -> li
             uses_demo_accounts=True,
             requires_readiness_ready=False,
             evidence="uses_demo_accounts=yes; requires_readiness_ready=no; public_demo_seeded_flow=yes",
-            remediation=None if demo_status == "pass" else "Demo smoke is intended for local_demo or public_demo runtime.",
+            remediation=None
+            if demo_status == "pass"
+            else "Demo smoke is intended for local_demo or public_demo runtime.",
         ),
         SmokeProfileItem(
             key="pilot_smoke",
@@ -869,7 +952,9 @@ def _safe_static_guidance(value: str) -> str:
         return SAFE_TEXT_FALLBACK
     if re.search(r"\b[a-z0-9-]+(?:\.[a-z0-9-]+)+\b", normalized.lower()):
         return SAFE_TEXT_FALLBACK
-    if re.search(r"\$argon2(?:id|i|d)\$", normalized) or re.search(r"\beyJ[A-Za-z0-9_-]{10,}\b", normalized):
+    if re.search(r"\$argon2(?:id|i|d)\$", normalized) or re.search(
+        r"\beyJ[A-Za-z0-9_-]{10,}\b", normalized
+    ):
         return SAFE_TEXT_FALLBACK
     return normalized
 
@@ -947,7 +1032,9 @@ def _derive_pilot_launch_status(items: list[PilotLaunchChecklistItem]) -> str:
     return "ready"
 
 
-def _baseline_content_status(content_counts: dict[str, int], settings: Settings) -> PilotLaunchChecklistItem:
+def _baseline_content_status(
+    content_counts: dict[str, int], settings: Settings
+) -> PilotLaunchChecklistItem:
     counts = content_counts
     ready = all(count > 0 for count in counts.values())
     status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
@@ -961,11 +1048,15 @@ def _baseline_content_status(content_counts: dict[str, int], settings: Settings)
             f"scenarios={counts['scenarios']}; "
             f"mood_configs={counts['mood_configs']}"
         ),
-        None if ready else "Prepare non-demo baseline self-checks, scenarios, and mood config before school pilot launch.",
+        None
+        if ready
+        else "Prepare non-demo baseline self-checks, scenarios, and mood config before school pilot launch.",
     )
 
 
-def _school_policy_setup_status(safe_policy_count: int, settings: Settings) -> PilotLaunchChecklistItem:
+def _school_policy_setup_status(
+    safe_policy_count: int, settings: Settings
+) -> PilotLaunchChecklistItem:
     ready = safe_policy_count > 0
     status = "pass" if ready else "fail" if settings.is_production_pilot else "warn"
     return _pilot_launch_item(
@@ -1023,7 +1114,9 @@ def _pilot_launch_summary(
                 f"runtime_mode={settings.runtime_mode}; "
                 f"production_pilot={_yes_no(settings.is_production_pilot)}"
             ),
-            None if runtime_status == "pass" else "Set RUNTIME_MODE=production_pilot for school pilot launch.",
+            None
+            if runtime_status == "pass"
+            else "Set RUNTIME_MODE=production_pilot for school pilot launch.",
         ),
         _pilot_launch_item(
             "readiness_status",
@@ -1031,7 +1124,9 @@ def _pilot_launch_summary(
             readiness_status,
             True,
             f"readiness_status={readiness_report.status}",
-            None if readiness_status == "pass" else "Resolve readiness warnings and failures before launch.",
+            None
+            if readiness_status == "pass"
+            else "Resolve readiness warnings and failures before launch.",
         ),
         _pilot_launch_item(
             "migration_status",
@@ -1039,15 +1134,21 @@ def _pilot_launch_summary(
             migration_status,
             True,
             f"alembic_migration_status={migration_status}",
-            None if migration_status == "pass" else "Apply pending backend migrations before launch.",
+            None
+            if migration_status == "pass"
+            else "Apply pending backend migrations before launch.",
         ),
         _pilot_launch_item(
             "origin_cookie_contract",
             "Origins and cookies",
             origin_status,
             True,
-            origin_guardrail.evidence if origin_guardrail is not None else "cors_cookie_contract=missing",
-            None if origin_status == "pass" else "Fix HTTPS origin and Secure SameSite=None cookie configuration.",
+            origin_guardrail.evidence
+            if origin_guardrail is not None
+            else "cors_cookie_contract=missing",
+            None
+            if origin_status == "pass"
+            else "Fix HTTPS origin and Secure SameSite=None cookie configuration.",
             DEPLOY_GUARD_COMMAND,
         ),
         _pilot_launch_item(
@@ -1059,7 +1160,9 @@ def _pilot_launch_summary(
                 f"demo_seed_allowed={_yes_no(settings.allow_demo_seed)}; "
                 f"demo_login_allowed={_yes_no(settings.allow_demo_login)}"
             ),
-            None if demo_policy_status == "pass" else "Disable demo seed and demo login for production pilot.",
+            None
+            if demo_policy_status == "pass"
+            else "Disable demo seed and demo login for production pilot.",
         ),
         _pilot_launch_item(
             "identity_readiness",
@@ -1070,7 +1173,9 @@ def _pilot_launch_summary(
                 f"auth_provider_enabled={_yes_no(auth_provider.enabled)}; "
                 f"auth_provider_status={auth_provider.status}"
             ),
-            None if identity_status == "pass" else "Configure the pilot identity provider before school launch.",
+            None
+            if identity_status == "pass"
+            else "Configure the pilot identity provider before school launch.",
         ),
         _pilot_launch_item(
             "pilot_smoke_profile",
@@ -1078,7 +1183,9 @@ def _pilot_launch_summary(
             pilot_smoke_status,
             True,
             pilot_smoke.evidence if pilot_smoke is not None else "pilot_smoke=missing",
-            None if pilot_smoke_status == "pass" else "Run pilot smoke only after readiness and demo flags are safe.",
+            None
+            if pilot_smoke_status == "pass"
+            else "Run pilot smoke only after readiness and demo flags are safe.",
             PILOT_SMOKE_COMMAND,
         ),
         _pilot_launch_item(
@@ -1127,7 +1234,9 @@ def _derive_data_safety_status(buckets: list[PilotDataSafetyBucket]) -> str:
     return "safe"
 
 
-def _pilot_demo_bucket_status(count: int, settings: Settings, *, blocking_in_pilot: bool) -> tuple[str, bool]:
+def _pilot_demo_bucket_status(
+    count: int, settings: Settings, *, blocking_in_pilot: bool
+) -> tuple[str, bool]:
     if settings.is_production_pilot and count > 0:
         return ("fail", True) if blocking_in_pilot else ("warn", False)
     if count > 0:
@@ -1242,7 +1351,9 @@ def _pilot_data_safety_summary(db: OrmSession, settings: Settings) -> PilotDataS
                 status,
                 blocking,
                 f"count={count}; production_pilot={production_pilot}",
-                None if status == "pass" else "Use non-demo pilot data and keep operations metadata aggregate-only.",
+                None
+                if status == "pass"
+                else "Use non-demo pilot data and keep operations metadata aggregate-only.",
             )
         )
     return PilotDataSafetySummary(status=_derive_data_safety_status(buckets), buckets=buckets)
@@ -1396,7 +1507,9 @@ def _pilot_handoff_summary(
     )
 
 
-def record_readiness_audit(db: OrmSession, *, actor: User, report: ReadinessReport, resource_type: str) -> None:
+def record_readiness_audit(
+    db: OrmSession, *, actor: User, report: ReadinessReport, resource_type: str
+) -> None:
     fail_count = sum(1 for check in report.checks if check.status == "fail")
     warn_count = sum(1 for check in report.checks if check.status == "warn")
     record_audit_event(
@@ -1481,4 +1594,3 @@ def build_operations_dashboard(
             limit=limit,
         ),
     )
-

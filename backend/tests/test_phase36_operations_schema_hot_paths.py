@@ -12,9 +12,19 @@ from app.core.config import Settings
 from app.db.models import AuditEvent, Session as UserSession, User, UserRole
 from app.db.session import SessionLocal, engine
 from app.schemas.readiness import ReadinessCheck, ReadinessReport
-from app.seeds.demo_seed import DEMO_ADMIN_EMAIL, DEMO_PARENT_EMAIL, DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL
+from app.seeds.demo_seed import (
+    DEMO_ADMIN_EMAIL,
+    DEMO_PARENT_EMAIL,
+    DEMO_STUDENT_EMAIL,
+    DEMO_TEACHER_EMAIL,
+)
 from app.services.admin_operations import build_operations_dashboard
-from phase36_hot_path_utils import assert_aggregate_only_text, login_client, make_user, measure_queries
+from phase36_hot_path_utils import (
+    assert_aggregate_only_text,
+    login_client,
+    make_user,
+    measure_queries,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 PHASE36_EMAIL_PATTERN = "%phase36-ops%@example.test"
@@ -69,7 +79,12 @@ def _clean_database() -> None:
                     or_(
                         User.email.like(PHASE36_EMAIL_PATTERN),
                         User.email.in_(
-                            [DEMO_STUDENT_EMAIL, DEMO_TEACHER_EMAIL, DEMO_PARENT_EMAIL, DEMO_ADMIN_EMAIL]
+                            [
+                                DEMO_STUDENT_EMAIL,
+                                DEMO_TEACHER_EMAIL,
+                                DEMO_PARENT_EMAIL,
+                                DEMO_ADMIN_EMAIL,
+                            ]
                         ),
                     )
                 )
@@ -180,7 +195,9 @@ def test_operations_dashboard_limit_remains_clamped_and_metadata_only(db: OrmSes
     rejected = admin_client.get("/api/admin/operations/dashboard?limit=150")
     assert rejected.status_code == 422
 
-    response, query_count = measure_queries(lambda: admin_client.get("/api/admin/operations/dashboard?limit=20"))
+    response, query_count = measure_queries(
+        lambda: admin_client.get("/api/admin/operations/dashboard?limit=20")
+    )
     assert response.status_code == 200
     assert query_count <= 40
     rendered = response.text
@@ -217,7 +234,13 @@ def test_operations_demo_seed_summary_uses_batched_role_lookup(db: OrmSession) -
 
 
 def test_phase36_schema_index_decision_is_evidence_tied() -> None:
-    decision_path = ROOT / ".planning" / "phases" / "36-backend-db-hot-path-optimization" / "36-SCHEMA-INDEX-DECISION.md"
+    decision_path = (
+        ROOT
+        / ".planning"
+        / "phases"
+        / "36-backend-db-hot-path-optimization"
+        / "36-SCHEMA-INDEX-DECISION.md"
+    )
 
     assert decision_path.exists()
     text = decision_path.read_text(encoding="utf-8")
@@ -226,7 +249,4 @@ def test_phase36_schema_index_decision_is_evidence_tied() -> None:
     assert "sos_alerts" in text
     assert "self_check_attempts" in text
     assert "mood_check_ins" in text
-    assert (
-        "No new indexes added" in text
-        or "20260527_0012_phase36_hot_path_indexes.py" in text
-    )
+    assert "No new indexes added" in text or "20260527_0012_phase36_hot_path_indexes.py" in text

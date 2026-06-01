@@ -171,7 +171,9 @@ def _assert_forbidden_markers_absent(rendered: str) -> None:
         assert marker not in rendered
 
 
-def _user(db: OrmSession, *, email: str, role: str, status: str = AccountStatus.ACTIVE.value) -> User:
+def _user(
+    db: OrmSession, *, email: str, role: str, status: str = AccountStatus.ACTIVE.value
+) -> User:
     user = User(
         email=email,
         password_hash=hash_password(PASSWORD),
@@ -194,7 +196,9 @@ def test_phase32_backend_requirement_ids_are_documented() -> None:
 
 def test_qa01_runtime_readiness_and_secret_masking_gate() -> None:
     unsafe_settings = _pilot_settings(ALLOW_DEMO_SEED=True, ALLOW_DEMO_LOGIN=True)
-    unsafe_checks = {check.key: check for check in evaluate_static_readiness_checks(unsafe_settings)}
+    unsafe_checks = {
+        check.key: check for check in evaluate_static_readiness_checks(unsafe_settings)
+    }
 
     assert unsafe_checks["demo_seed_policy"].status == "fail"
     assert unsafe_checks["demo_login_policy"].status == "fail"
@@ -312,7 +316,9 @@ def test_qa04_identity_claims_do_not_bypass_adult_visibility(db: OrmSession) -> 
     )
 
 
-def test_qa05_operations_dashboard_serialization_rejects_raw_sensitive_markers(db: OrmSession) -> None:
+def test_qa05_operations_dashboard_serialization_rejects_raw_sensitive_markers(
+    db: OrmSession,
+) -> None:
     admin = _user(db, email="admin-phase32-operations@example.test", role=UserRole.ADMIN.value)
     db.add(
         AuditEvent(
@@ -343,7 +349,9 @@ def test_qa05_operations_dashboard_serialization_rejects_raw_sensitive_markers(d
     )
     db.commit()
 
-    dashboard = build_operations_dashboard(db, readiness_report=_readiness(), settings=_pilot_settings())
+    dashboard = build_operations_dashboard(
+        db, readiness_report=_readiness(), settings=_pilot_settings()
+    )
     rendered = dashboard.model_dump_json()
 
     assert "phase32_release_gate_checked" in rendered

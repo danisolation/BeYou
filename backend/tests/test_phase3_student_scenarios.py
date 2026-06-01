@@ -168,7 +168,9 @@ def _scenario(
     return scenario, choices
 
 
-def test_scenario_service_lists_published_detail_and_preserves_attempt_snapshots(db: OrmSession) -> None:
+def test_scenario_service_lists_published_detail_and_preserves_attempt_snapshots(
+    db: OrmSession,
+) -> None:
     from app.services.scenarios import (
         get_published_scenario_detail,
         list_published_scenarios,
@@ -257,7 +259,9 @@ def test_student_scenario_routes_list_submit_history_and_keep_history_private(
 
     from app.services.scenarios import submit_scenario_attempt
 
-    other_attempt = submit_scenario_attempt(db, other_student, other_scenario.id, other_choices[0].id)
+    other_attempt = submit_scenario_attempt(
+        db, other_student, other_scenario.id, other_choices[0].id
+    )
 
     _login(client, student.email)
     list_response = client.get("/api/student/scenarios")
@@ -271,7 +275,10 @@ def test_student_scenario_routes_list_submit_history_and_keep_history_private(
     history_response = client.get("/api/student/scenarios/history")
 
     assert list_response.status_code == 200
-    assert [item["title"] for item in list_response.json()] == ["Rủ rê sau giờ học", "Mâu thuẫn với bạn thân"]
+    assert [item["title"] for item in list_response.json()] == [
+        "Rủ rê sau giờ học",
+        "Mâu thuẫn với bạn thân",
+    ]
     assert history_before_response.status_code == 200
     assert history_before_response.json()["items"] == []
     assert detail_response.status_code == 200
@@ -299,7 +306,9 @@ def test_student_scenario_routes_list_submit_history_and_keep_history_private(
     assert str(other_attempt.id) not in history_response.text
 
 
-def test_student_scenario_routes_require_privacy_acknowledgement(db: OrmSession, client: TestClient) -> None:
+def test_student_scenario_routes_require_privacy_acknowledgement(
+    db: OrmSession, client: TestClient
+) -> None:
     student = _student(db, "privacy-gated-scenario@example.test")
     _scenario(db)
 

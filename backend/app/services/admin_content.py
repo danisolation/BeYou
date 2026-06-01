@@ -30,8 +30,12 @@ from app.schemas.admin_content import (
 )
 from app.services.audit import record_audit_event
 
-SELF_CHECK_PUBLISH_ERROR = "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
-SCENARIO_PUBLISH_ERROR = "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+SELF_CHECK_PUBLISH_ERROR = (
+    "Chưa thể xuất bản vì nội dung còn thiếu câu hỏi, lựa chọn hoặc ngưỡng điểm."
+)
+SCENARIO_PUBLISH_ERROR = (
+    "Chưa thể xuất bản vì nội dung tình huống còn thiếu lựa chọn, phản hồi hoặc bài học."
+)
 
 
 def _ordered_questions(test: SelfCheckTest) -> list[SelfCheckQuestion]:
@@ -62,14 +66,18 @@ def _scenario_query(scenario_id: uuid.UUID | None = None):
 def get_self_check_test_or_404(db: OrmSession, test_id: uuid.UUID) -> SelfCheckTest:
     test = db.scalar(_self_check_query(test_id))
     if test is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy test tâm lý."
+        )
     return test
 
 
 def get_scenario_or_404(db: OrmSession, scenario_id: uuid.UUID) -> Scenario:
     scenario = db.scalar(_scenario_query(scenario_id))
     if scenario is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy tình huống.")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy tình huống."
+        )
     return scenario
 
 
@@ -150,7 +158,9 @@ def _replace_self_check_children(
                     text=choice_payload.text,
                     score_value=choice_payload.score_value,
                     sort_order=choice_payload.sort_order or choice_index,
-                    is_demo=test.is_demo if choice_payload.is_demo is None else choice_payload.is_demo,
+                    is_demo=test.is_demo
+                    if choice_payload.is_demo is None
+                    else choice_payload.is_demo,
                 )
             )
 
@@ -165,7 +175,9 @@ def _replace_self_check_children(
                 advice=threshold_payload.advice,
                 positive_content=threshold_payload.positive_content,
                 suggested_next_action=threshold_payload.suggested_next_action,
-                is_demo=test.is_demo if threshold_payload.is_demo is None else threshold_payload.is_demo,
+                is_demo=test.is_demo
+                if threshold_payload.is_demo is None
+                else threshold_payload.is_demo,
             )
         )
 
@@ -173,24 +185,34 @@ def _replace_self_check_children(
 def validate_self_check_publishable(test: SelfCheckTest) -> None:
     questions = _ordered_questions(test)
     if not questions:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+        )
 
     possible_min = 0
     possible_max = 0
     for question in questions:
         if not question.text.strip() or len(question.choices) < 2:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+            )
         scores = []
         for choice in question.choices:
             if not choice.text.strip() or not isinstance(choice.score_value, int):
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+                )
             scores.append(choice.score_value)
         possible_min += min(scores)
         possible_max += max(scores)
 
-    thresholds = sorted(test.thresholds, key=lambda item: (item.min_score, item.max_score, item.state_label))
+    thresholds = sorted(
+        test.thresholds, key=lambda item: (item.min_score, item.max_score, item.state_label)
+    )
     if not thresholds:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+        )
     covered: set[int] = set()
     for threshold in thresholds:
         if (
@@ -200,21 +222,33 @@ def validate_self_check_publishable(test: SelfCheckTest) -> None:
             or not (threshold.advice or "").strip()
             or not (threshold.suggested_next_action or "").strip()
         ):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+            )
         for score_value in range(threshold.min_score, threshold.max_score + 1):
             if score_value in covered:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+                )
             covered.add(score_value)
 
     if covered != set(range(possible_min, possible_max + 1)):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=SELF_CHECK_PUBLISH_ERROR
+        )
 
 
 def list_self_check_tests(db: OrmSession) -> list[SelfCheckTest]:
-    return list(db.scalars(_self_check_query().order_by(SelfCheckTest.created_at.asc(), SelfCheckTest.title.asc())))
+    return list(
+        db.scalars(
+            _self_check_query().order_by(SelfCheckTest.created_at.asc(), SelfCheckTest.title.asc())
+        )
+    )
 
 
-def create_self_check_test(db: OrmSession, *, actor: User, payload: AdminSelfCheckTestUpsert) -> SelfCheckTest:
+def create_self_check_test(
+    db: OrmSession, *, actor: User, payload: AdminSelfCheckTestUpsert
+) -> SelfCheckTest:
     test = SelfCheckTest(
         title=payload.title,
         description=payload.description,
@@ -225,11 +259,18 @@ def create_self_check_test(db: OrmSession, *, actor: User, payload: AdminSelfChe
     )
     db.add(test)
     db.flush()
-    _replace_self_check_children(db, test, questions=payload.questions or [], thresholds=payload.thresholds or [])
+    _replace_self_check_children(
+        db, test, questions=payload.questions or [], thresholds=payload.thresholds or []
+    )
     if test.status == ContentStatus.PUBLISHED.value:
         validate_self_check_publishable(test)
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=test.id, change_type="create", is_demo=test.is_demo
+        db,
+        actor=actor,
+        resource_type="self_check_content",
+        content_id=test.id,
+        change_type="create",
+        is_demo=test.is_demo,
     )
     db.commit()
     return get_self_check_test_or_404(db, test.id)
@@ -246,11 +287,18 @@ def update_self_check_test(
     test.is_demo = bool(payload.is_demo)
     if payload.status is not None:
         test.status = payload.status
-    _replace_self_check_children(db, test, questions=payload.questions or [], thresholds=payload.thresholds or [])
+    _replace_self_check_children(
+        db, test, questions=payload.questions or [], thresholds=payload.thresholds or []
+    )
     if test.status == ContentStatus.PUBLISHED.value:
         validate_self_check_publishable(test)
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=test.id, change_type="edit", is_demo=test.is_demo
+        db,
+        actor=actor,
+        resource_type="self_check_content",
+        content_id=test.id,
+        change_type="edit",
+        is_demo=test.is_demo,
     )
     db.commit()
     return get_self_check_test_or_404(db, test.id)
@@ -261,7 +309,12 @@ def publish_self_check_test(db: OrmSession, *, actor: User, test_id: uuid.UUID) 
     validate_self_check_publishable(test)
     test.status = ContentStatus.PUBLISHED.value
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=test.id, change_type="publish", is_demo=test.is_demo
+        db,
+        actor=actor,
+        resource_type="self_check_content",
+        content_id=test.id,
+        change_type="publish",
+        is_demo=test.is_demo,
     )
     db.commit()
     return get_self_check_test_or_404(db, test.id)
@@ -271,19 +324,30 @@ def archive_self_check_test(db: OrmSession, *, actor: User, test_id: uuid.UUID) 
     test = get_self_check_test_or_404(db, test_id)
     test.status = ContentStatus.ARCHIVED.value
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=test.id, change_type="archive", is_demo=test.is_demo
+        db,
+        actor=actor,
+        resource_type="self_check_content",
+        content_id=test.id,
+        change_type="archive",
+        is_demo=test.is_demo,
     )
     db.commit()
     return get_self_check_test_or_404(db, test.id)
 
 
-def delete_unused_draft_self_check_test(db: OrmSession, *, actor: User, test_id: uuid.UUID) -> SelfCheckTest:
+def delete_unused_draft_self_check_test(
+    db: OrmSession, *, actor: User, test_id: uuid.UUID
+) -> SelfCheckTest:
     test = get_self_check_test_or_404(db, test_id)
     _assert_deletable(test.status)
     # Cascade-delete attempts and their answers
-    attempt_ids = db.scalars(select(SelfCheckAttempt.id).where(SelfCheckAttempt.test_id == test.id)).all()
+    attempt_ids = db.scalars(
+        select(SelfCheckAttempt.id).where(SelfCheckAttempt.test_id == test.id)
+    ).all()
     if attempt_ids:
-        db.execute(delete(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id.in_(attempt_ids)))
+        db.execute(
+            delete(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id.in_(attempt_ids))
+        )
         db.execute(delete(SelfCheckAttempt).where(SelfCheckAttempt.test_id == test.id))
     # Delete child content (thresholds, choices, questions)
     db.execute(delete(SelfCheckThreshold).where(SelfCheckThreshold.test_id == test.id))
@@ -298,7 +362,12 @@ def delete_unused_draft_self_check_test(db: OrmSession, *, actor: User, test_id:
     deleted_id = test.id
     deleted = test
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=deleted_id, change_type="delete", is_demo=test.is_demo
+        db,
+        actor=actor,
+        resource_type="self_check_content",
+        content_id=deleted_id,
+        change_type="delete",
+        is_demo=test.is_demo,
     )
     db.delete(test)
     db.commit()
@@ -325,7 +394,9 @@ def _replace_scenario_choices(
                 signal=choice_payload.signal,
                 feedback=choice_payload.feedback,
                 sort_order=choice_payload.sort_order or choice_index,
-                is_demo=scenario.is_demo if choice_payload.is_demo is None else choice_payload.is_demo,
+                is_demo=scenario.is_demo
+                if choice_payload.is_demo is None
+                else choice_payload.is_demo,
             )
         )
 
@@ -341,12 +412,20 @@ def validate_scenario_publishable(scenario: Scenario) -> None:
     ):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SCENARIO_PUBLISH_ERROR)
     for choice in scenario.choices:
-        if not choice.text.strip() or choice.signal not in VALID_SIGNALS or not choice.feedback.strip():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=SCENARIO_PUBLISH_ERROR)
+        if (
+            not choice.text.strip()
+            or choice.signal not in VALID_SIGNALS
+            or not choice.feedback.strip()
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=SCENARIO_PUBLISH_ERROR
+            )
 
 
 def list_scenarios(db: OrmSession) -> list[Scenario]:
-    return list(db.scalars(_scenario_query().order_by(Scenario.created_at.asc(), Scenario.title.asc())))
+    return list(
+        db.scalars(_scenario_query().order_by(Scenario.created_at.asc(), Scenario.title.asc()))
+    )
 
 
 def create_scenario(db: OrmSession, *, actor: User, payload: AdminScenarioUpsert) -> Scenario:
@@ -366,13 +445,20 @@ def create_scenario(db: OrmSession, *, actor: User, payload: AdminScenarioUpsert
     if scenario.status == ContentStatus.PUBLISHED.value:
         validate_scenario_publishable(scenario)
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="create", is_demo=scenario.is_demo
+        db,
+        actor=actor,
+        resource_type="scenario_content",
+        content_id=scenario.id,
+        change_type="create",
+        is_demo=scenario.is_demo,
     )
     db.commit()
     return get_scenario_or_404(db, scenario.id)
 
 
-def update_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID, payload: AdminScenarioUpsert) -> Scenario:
+def update_scenario(
+    db: OrmSession, *, actor: User, scenario_id: uuid.UUID, payload: AdminScenarioUpsert
+) -> Scenario:
     scenario = get_scenario_or_404(db, scenario_id)
     scenario.title = payload.title
     scenario.situation = payload.situation
@@ -387,7 +473,12 @@ def update_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID, payl
     if scenario.status == ContentStatus.PUBLISHED.value:
         validate_scenario_publishable(scenario)
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="edit", is_demo=scenario.is_demo
+        db,
+        actor=actor,
+        resource_type="scenario_content",
+        content_id=scenario.id,
+        change_type="edit",
+        is_demo=scenario.is_demo,
     )
     db.commit()
     return get_scenario_or_404(db, scenario.id)
@@ -398,7 +489,12 @@ def publish_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID) -> 
     validate_scenario_publishable(scenario)
     scenario.status = ContentStatus.PUBLISHED.value
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="publish", is_demo=scenario.is_demo
+        db,
+        actor=actor,
+        resource_type="scenario_content",
+        content_id=scenario.id,
+        change_type="publish",
+        is_demo=scenario.is_demo,
     )
     db.commit()
     return get_scenario_or_404(db, scenario.id)
@@ -408,13 +504,20 @@ def archive_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID) -> 
     scenario = get_scenario_or_404(db, scenario_id)
     scenario.status = ContentStatus.ARCHIVED.value
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="archive", is_demo=scenario.is_demo
+        db,
+        actor=actor,
+        resource_type="scenario_content",
+        content_id=scenario.id,
+        change_type="archive",
+        is_demo=scenario.is_demo,
     )
     db.commit()
     return get_scenario_or_404(db, scenario.id)
 
 
-def delete_unused_draft_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID) -> Scenario:
+def delete_unused_draft_scenario(
+    db: OrmSession, *, actor: User, scenario_id: uuid.UUID
+) -> Scenario:
     scenario = get_scenario_or_404(db, scenario_id)
     _assert_deletable(scenario.status)
     # Cascade-delete attempts and child choices
@@ -422,7 +525,12 @@ def delete_unused_draft_scenario(db: OrmSession, *, actor: User, scenario_id: uu
     db.execute(delete(ScenarioChoice).where(ScenarioChoice.scenario_id == scenario.id))
     deleted = scenario
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="delete", is_demo=scenario.is_demo
+        db,
+        actor=actor,
+        resource_type="scenario_content",
+        content_id=scenario.id,
+        change_type="delete",
+        is_demo=scenario.is_demo,
     )
     db.delete(scenario)
     db.commit()
