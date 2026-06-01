@@ -41,3 +41,16 @@ tokens, a token-level rebrand cascaded the new look across **every** role
 ## Notes
 - Approach was token-first to keep risk low and coverage broad; no per-page rewrites.
 - Live Vercel/Render deploy will pick up the new theme on next push.
+
+## Follow-up: student dashboard rebuilt to mockup (commit a0848d5)
+Fleshed out `student/page.tsx` to mirror the mockup layout: gradient hero + 3-stat
+social-proof bar, 4 emoji quick-action cards with gradient pills, interactive mood
+selector, illustrative weekly pressure chart, 7-day challenge card, AI chat
+suggestions panel, and encouragement banner. CTAs link to existing routes only.
+- `npm run build` green; `phase37-student-dashboard-loading.test.tsx` updated + passing (5/5).
+- `phase35-role-dashboard-consistency.test.tsx` and `role-dashboards.test.tsx` are
+  pre-existing stale failures (reference long-gone multi-role labels like "Test tâm lý",
+  admin "Bảng vận hành"); verified identical `7 failed | 14 passed` on clean HEAD, so
+  NOT a regression from this redesign. Left out of scope.
+- Local note: frontend vitest needed `@rolldown/binding-win32-x64-msvc@1.0.2` installed
+  (--no-save) because node_modules was provisioned for Linux; no tracked files affected.
