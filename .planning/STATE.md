@@ -15,7 +15,7 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-05-28 — v2.3 milestone complete (all 3 phases done)
+**Last updated:** 2026-06-01 — Completed quick task 260601-brk: Fix iOS/macOS Safari login
 **Status:** Milestone v2.3 complete — ready for audit & tag
 
 ## Project Reference
@@ -52,3 +52,9 @@ See: `.planning/PROJECT.md` (updated 2026-05-28)
 - StitchCard component now supports optional `image` prop
 - Student list pages pass cover_image_url to StitchCard
 - Teacher/parent views don't yet show content images
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260601-brk | Fix iOS/macOS Safari login (Referer CSRF fallback) | 2026-06-01 | a39c28b | [260601-brk-sua-loi-khong-dang-nhap-duoc-bang-ios-ho](./quick/260601-brk-sua-loi-khong-dang-nhap-duoc-bang-ios-ho/) |
