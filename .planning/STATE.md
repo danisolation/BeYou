@@ -1,29 +1,28 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.3
-milestone_name: Content Management Polish
-status: complete
-last_updated: "2026-05-28T12:30:00Z"
+milestone_name: milestone
+status: completed
+last_updated: "2026-06-01T01:50:05.432Z"
 progress:
   total_phases: 3
-  completed_phases: 3
+  completed_phases: 0
   total_plans: 0
   completed_plans: 0
-  percent: 100
 ---
 
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-06-01 — Completed quick task 260601-brk: Fix iOS/macOS Safari login
-**Status:** Milestone v2.3 complete — ready for audit & tag
+**Last updated:** 2026-06-01 — Milestone v2.3 completed, archived, and tagged
+**Status:** v2.3 shipped — ready for next milestone
 
 ## Project Reference
 
-See: `.planning/PROJECT.md` (updated 2026-05-28)
+See: `.planning/PROJECT.md` (updated 2026-06-01)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** Milestone complete — awaiting audit
+**Current focus:** v2.3 shipped — run `/gsd-new-milestone` for next version
 
 ## Planning Artifacts
 
@@ -31,9 +30,10 @@ See: `.planning/PROJECT.md` (updated 2026-05-28)
 |---|---|---|
 | Project context | `.planning/PROJECT.md` | Updated for v2.3 |
 | Workflow config | `.planning/config.json` | Current |
-| Milestone summary | `.planning/MILESTONES.md` | Current through v2.2 |
-| Active roadmap | `.planning/ROADMAP.md` | v2.3 roadmap (3 phases, all complete) |
-| Active requirements | `.planning/REQUIREMENTS.md` | v2.3 requirements (9 reqs) |
+| Milestone summary | `.planning/MILESTONES.md` | Current through v2.3 |
+| v2.3 roadmap archive | `.planning/milestones/v2.3-ROADMAP.md` | Archived |
+| v2.3 requirements archive | `.planning/milestones/v2.3-REQUIREMENTS.md` | Archived |
+| v2.3 audit | `.planning/milestones/v2.3-MILESTONE-AUDIT.md` | Passed |
 
 ## Roadmap Summary
 

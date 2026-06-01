@@ -1,5 +1,15 @@
 # Project Milestones: Peerlight AI
 
+## v2.3 Content Management Polish (Shipped: 2026-06-01)
+
+**Phases completed:** 0 phases, 0 plans, 0 tasks
+
+**Key accomplishments:**
+
+- (none recorded)
+
+---
+
 ## v2.3 Content Management Polish (Shipped: 2026-05-28)
 
 **Delivered:** Content editor threshold scoring reliability, cover image support across all roles (admin, student, teacher, parent), FE-BE publish validation alignment, and content editor UX improvements.
