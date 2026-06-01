@@ -12,6 +12,16 @@ export class ApiError extends Error {
 }
 
 function apiUrl(path: string): string {
+  // Use relative routing in browser to route API requests via NextJS/Vercel same-origin rewrites.
+  // This resolves cross-site/third-party cookie blocking in Safari/iOS/macOS.
+  // We exclude localhost/127.0.0.1 to avoid breaking local development environments and JSDOM-based unit tests.
+  if (
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+  ) {
+    return path.startsWith("/") ? path : `/${path}`;
+  }
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL;
   return `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
 }

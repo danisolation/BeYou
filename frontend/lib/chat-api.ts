@@ -94,8 +94,13 @@ export async function sendChatMessageStream(
   onEvent: (event: StreamEvent) => void,
   options?: { signal?: AbortSignal },
 ): Promise<void> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
-  const url = `${baseUrl}/api/student/chat/messages/stream`;
+  const isBrowserNonLocal = typeof window !== "undefined" &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1");
+
+  const url = isBrowserNonLocal
+    ? "/api/student/chat/messages/stream"
+    : `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000"}/api/student/chat/messages/stream`;
 
   const response = await fetch(url, {
     method: "POST",
