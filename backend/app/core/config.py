@@ -201,12 +201,16 @@ class Settings(BaseSettings):
 
     @property
     def effective_llm_base_url(self) -> str:
-        """Resolve base URL: GEMINI_BASE_URL > FREEMODEL_BASE_URL > default."""
-        return self.gemini_base_url if self.gemini_base_url else (self.freemodel_base_url or "https://generativelanguage.googleapis.com/v1beta/openai")
+        """Resolve base URL with fallback logic."""
+        if not self.gemini_api_key and self.freemodel_api_key:
+            return self.freemodel_base_url or "https://generativelanguage.googleapis.com/v1beta/openai"
+        return self.gemini_base_url or "https://generativelanguage.googleapis.com/v1beta/openai"
 
     @property
     def effective_llm_models(self) -> list[str]:
-        """Resolve model list: GEMINI_MODELS > FREEMODEL_MODEL > defaults."""
+        """Resolve model list with fallback logic."""
+        if not self.gemini_api_key and self.freemodel_api_key and self.freemodel_model:
+            return [self.freemodel_model]
         if self.gemini_models:
             return [m.strip() for m in self.gemini_models.split(",") if m.strip()]
         if self.freemodel_model:
