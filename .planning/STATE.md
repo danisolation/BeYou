@@ -58,3 +58,4 @@ See: `.planning/PROJECT.md` (updated 2026-06-01)
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260601-brk | Fix iOS/macOS Safari login (Referer CSRF fallback) | 2026-06-01 | a39c28b | [260601-brk-sua-loi-khong-dang-nhap-duoc-bang-ios-ho](./quick/260601-brk-sua-loi-khong-dang-nhap-duoc-bang-ios-ho/) |
+| 260601-cu9 | Admin content deletion + fix student cover image | 2026-06-01 | 1d731f7 | [260601-cu9-admin-content-deletion-fix-student-cover](./quick/260601-cu9-admin-content-deletion-fix-student-cover/) |
