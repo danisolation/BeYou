@@ -1141,18 +1141,17 @@ export default function AdminContentPage() {
                         >
                           <Archive size={15} className="text-amber-600" />
                         </span>
-                      ) : item.status === "draft" ? (
-                        <span
-                          role="button"
-                          tabIndex={0}
-                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); }}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); } }}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
-                          title="Xóa"
-                        >
-                          <Trash2 size={15} className="text-destructive" />
-                        </span>
                       ) : null}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); } }}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                        title="Xóa"
+                      >
+                        <Trash2 size={15} className="text-destructive" />
+                      </span>
                       <ChevronRight size={16} className="text-on-background/30" />
                     </div>
                   </button>
@@ -1203,18 +1202,17 @@ export default function AdminContentPage() {
                         >
                           <Archive size={15} className="text-amber-600" />
                         </span>
-                      ) : item.status === "draft" ? (
-                        <span
-                          role="button"
-                          tabIndex={0}
-                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); }}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); } }}
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
-                          title="Xóa"
-                        >
-                          <Trash2 size={15} className="text-destructive" />
-                        </span>
                       ) : null}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); } }}
+                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
+                        title="Xóa"
+                      >
+                        <Trash2 size={15} className="text-destructive" />
+                      </span>
                       <ChevronRight size={16} className="text-on-background/30" />
                     </div>
                   </button>
