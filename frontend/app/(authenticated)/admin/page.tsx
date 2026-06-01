@@ -12,6 +12,7 @@ import {
   Activity,
   BarChart3,
   AlertTriangle,
+  ArrowRight,
 } from "lucide-react";
 
 import { DashboardSkeleton } from "@/components/skeletons";
@@ -44,55 +45,51 @@ export default function AdminDashboardPage() {
   if (isLoading) return <DashboardSkeleton cards={6} />;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-lg font-semibold text-on-background">Quản trị hệ thống</h1>
-        <p className="mt-1 text-sm text-on-background/60">Tổng quan và truy cập nhanh các chức năng quản trị.</p>
-      </div>
-
-      {loadError && (
-        <p role="alert" className="rounded-2xl border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-xs text-on-background">
-          Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
-        </p>
-      )}
-
-      {/* Quick stats */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Users size={18} />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-on-background">{previews.users}</p>
-              <p className="text-xs text-on-background/50">Tài khoản</p>
-            </div>
-          </div>
+    <div className="space-y-6">
+      {/* Hero */}
+      <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Quản trị hệ thống</h1>
+          <p className="mt-2 text-sm text-[#33416b] sm:text-base">
+            Tổng quan và truy cập nhanh các chức năng quản trị — chỉ hiển thị dữ liệu tổng hợp, không có thông tin riêng của từng học sinh.
+          </p>
+          {loadError && (
+            <p className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white/70 px-3 py-2 text-xs text-[#33416b] backdrop-blur">
+              <AlertTriangle size={14} aria-hidden="true" /> Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
+            </p>
+          )}
         </div>
-        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Link2 size={18} />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-on-background">{previews.links}</p>
-              <p className="text-xs text-on-background/50">Liên kết</p>
+        <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
+
+        {/* Stats bar */}
+        <div className="relative z-10 mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 backdrop-blur">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary" aria-hidden="true"><Users size={18} /></span>
+            <div className="min-w-0">
+              <strong className="block text-xl text-[#5b88dc]">{previews.users}</strong>
+              <small className="text-xs text-[#6d7394]">Tài khoản</small>
             </div>
           </div>
+          <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 backdrop-blur">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-violet/15 text-accent-violet" aria-hidden="true"><Link2 size={18} /></span>
+            <div className="min-w-0">
+              <strong className="block text-xl text-[#7457e8]">{previews.links}</strong>
+              <small className="text-xs text-[#6d7394]">Liên kết</small>
+            </div>
+          </div>
+          <Link
+            href="/admin/operations"
+            className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 no-underline backdrop-blur transition-shadow hover:shadow-md"
+          >
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-cyan/20 text-[#3aa6c2]" aria-hidden="true"><Activity size={18} /></span>
+            <div className="min-w-0">
+              <strong className="block text-sm text-[#17204c]">Pilot</strong>
+              <small className="inline-flex items-center gap-1 text-xs text-[#6d7394]">Xem trạng thái <ArrowRight size={12} aria-hidden="true" /></small>
+            </div>
+          </Link>
         </div>
-        <Link href="/admin/operations" className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4 no-underline transition-shadow hover:shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400">
-              <Activity size={18} />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-on-background">Thử nghiệm</p>
-              <p className="text-xs text-on-background/50">Xem trạng thái →</p>
-            </div>
-          </div>
-        </Link>
-      </div>
+      </section>
 
       {/* Monitoring & Operations */}
       <section>
@@ -176,7 +173,7 @@ function AdminCard({ href, icon, title, description }: { href: string; icon: Rea
   return (
     <Link
       href={href}
-      className="group flex items-start gap-3 rounded-2xl border border-outline-variant/30 bg-white p-4 no-underline transition-all hover:border-primary/30 hover:shadow-md dark:bg-[#1a2244]"
+      className="group soft-card card-lift flex items-start gap-3 rounded-[20px] border border-outline-variant/30 bg-white p-4 no-underline transition-all hover:border-primary/30 dark:bg-[#1a2244]"
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
         {icon}

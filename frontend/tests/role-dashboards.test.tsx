@@ -154,12 +154,11 @@ describe("role dashboards", () => {
     render(<StudentDashboardPage />);
 
     expect(await screen.findByRole("heading", { name: /Nguyễn An Demo/ })).toBeInTheDocument();
-    expect(screen.getByText("Hôm nay em muốn làm gì?")).toBeInTheDocument();
-    expect(screen.getByText("Test tâm lý")).toBeInTheDocument();
-    expect(screen.getByText("Check-in cảm xúc")).toBeInTheDocument();
-    expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
-    expect(screen.getByText("Cài đặt")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Chat" })).toHaveAttribute("href", "/student/chat");
+    expect(screen.getByText("Khám phá cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Nhật ký cảm xúc")).toBeInTheDocument();
+    expect(screen.getByText("Tập xử lý tình huống")).toBeInTheDocument();
+    expect(screen.getByText("Người em tin")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Trò chuyện cùng AI" })).toHaveAttribute("href", "/student/chat");
   });
 
   it("renders teacher and parent dashboard quick actions", async () => {
@@ -211,11 +210,11 @@ describe("role dashboards", () => {
 
     expect(await screen.findByRole("heading", { name: /Xin chào, thầy\/cô!/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Xin chào, phụ huynh!/ })).toBeInTheDocument();
-    expect(screen.getByText("Học sinh liên kết")).toBeInTheDocument();
-    expect(screen.getByText("Con của bạn")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Học sinh đang đồng hành" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Con của bạn" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Xem danh sách" })).toHaveAttribute("href", "/teacher/students");
     expect(screen.getByRole("link", { name: "Xem thông tin" })).toHaveAttribute("href", "/parent/students");
-    expect(screen.getAllByText("Cảnh báo SOS")).toHaveLength(2);
+    expect(screen.getAllByRole("heading", { name: "Cảnh báo SOS" })).toHaveLength(2);
   });
 
   it("renders admin quick access cards and counts", async () => {

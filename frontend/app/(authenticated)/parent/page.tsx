@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bot, ShieldAlert, Users } from "lucide-react";
+import { Bot, ShieldAlert, Users, ArrowRight } from "lucide-react";
 
-import { StitchCard } from "@/components/stitch-card";
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
 import { loadParentDashboard, type AdultDashboardData } from "@/lib/adult-dashboard-loader";
@@ -40,55 +39,86 @@ export default function ParentDashboardPage() {
   const sosCount = dashboardData.notifications.status === "ready" ? dashboardData.notifications.data.length : 0;
 
   return (
-    <div className="space-y-6">
-      <div className="animate-fade-in">
-        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
-          Xin chào, phụ huynh! 👋
-        </h1>
-        <p className="mt-1 text-sm text-on-background/60">
-          Cùng đồng hành với con hôm nay nhé
-        </p>
-      </div>
-
-      <div className="animate-fade-in card-lift rounded-2xl border border-primary/10 bg-primary/5 p-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-            <Bot className="text-primary" size={20} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-on-background">Peerlight AI</h3>
-            <p className="text-xs text-on-background/60">Hỏi AI cách đồng hành cùng con hiệu quả hơn</p>
-          </div>
+    <div className="space-y-5">
+      {/* Hero */}
+      <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
+        <div className="relative z-10 max-w-xl">
+          <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Xin chào, phụ huynh! 👋</h1>
+          <p className="mt-2 text-sm text-[#33416b] sm:text-base">
+            Cùng đồng hành với con trong phạm vi quyền riêng tư — chỉ khi con đã gửi tín hiệu SOS bạn mới thấy tóm tắt hỗ trợ.
+          </p>
           <Link
             href="/parent/chat"
-            className="btn-press inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-medium text-on-primary no-underline hover:opacity-90 sm:w-auto"
+            className="btn-press cta-gradient mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold no-underline"
           >
-            Trò chuyện
+            Trò chuyện cùng AI <Bot size={18} aria-hidden="true" />
           </Link>
         </div>
-      </div>
+        <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
+        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <StitchCard
-          variant="circular"
-          icon={<Users size={22} />}
-          title="Con của bạn"
-          description={`${childCount} con đang được đồng hành`}
-          ctaLabel="Xem thông tin"
-          ctaHref="/parent/students"
-          className="animate-fade-in-up delay-100"
-        />
+        {/* Stats bar */}
+        <div className="relative z-10 mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/80 px-4 py-3 backdrop-blur">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary" aria-hidden="true"><Users size={20} /></span>
+            <div className="min-w-0">
+              <strong className="block text-base text-[#5b88dc]">{childCount}</strong>
+              <small className="text-xs text-[#6d7394]">Con đang được đồng hành</small>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/80 px-4 py-3 backdrop-blur">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-pink/15 text-accent-pink" aria-hidden="true"><ShieldAlert size={20} /></span>
+            <div className="min-w-0">
+              <strong className="block text-base text-[#e8669c]">{sosCount}</strong>
+              <small className="text-xs text-[#6d7394]">Cảnh báo SOS gần đây</small>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <StitchCard
-          variant="circular"
-          icon={<ShieldAlert size={22} />}
-          title="Cảnh báo SOS"
-          description={sosCount > 0 ? `${sosCount} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
-          ctaLabel="Xem cảnh báo"
-          ctaHref="/parent/sos-alerts"
-          className="animate-fade-in-up delay-200"
-        />
-      </div>
+      {/* Quick actions */}
+      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <article className="soft-card card-lift rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <h3 className="flex items-center gap-2 text-base font-semibold text-on-background">
+            <Users size={18} className="text-primary" aria-hidden="true" /> Con của bạn
+          </h3>
+          <p className="mt-1 min-h-[40px] text-sm text-on-background/60">{childCount} con đang được đồng hành</p>
+          <Link
+            href="/parent/students"
+            className="btn-press cta-gradient mt-3 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold no-underline"
+          >
+            Xem thông tin <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </article>
+
+        <article className="soft-card card-lift rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <h3 className="flex items-center gap-2 text-base font-semibold text-on-background">
+            <ShieldAlert size={18} className="text-accent-pink" aria-hidden="true" /> Cảnh báo SOS
+          </h3>
+          <p className="mt-1 min-h-[40px] text-sm text-on-background/60">
+            {sosCount > 0 ? `${sosCount} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
+          </p>
+          <Link
+            href="/parent/sos-alerts"
+            className="btn-press cta-gradient mt-3 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold no-underline"
+          >
+            Xem cảnh báo <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </article>
+
+        <article className="soft-card card-lift rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <h3 className="flex items-center gap-2 text-base font-semibold text-on-background">
+            <Bot size={18} className="text-primary" aria-hidden="true" /> Peerlight AI
+          </h3>
+          <p className="mt-1 min-h-[40px] text-sm text-on-background/60">Hỏi AI cách đồng hành cùng con hiệu quả hơn</p>
+          <Link
+            href="/parent/chat"
+            className="btn-press cta-gradient mt-3 inline-flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold no-underline"
+          >
+            Trò chuyện <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+        </article>
+      </section>
     </div>
   );
 }
