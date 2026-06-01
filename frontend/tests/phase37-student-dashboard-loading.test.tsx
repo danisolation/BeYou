@@ -72,7 +72,7 @@ describe("Phase 37 Student dashboard loading", () => {
     render(<StudentDashboardPage />);
 
     expect(await screen.findByText(/Nguyễn An Demo/)).toBeInTheDocument();
-    expect(screen.getByText("Tình huống xử lý")).toBeInTheDocument();
+    expect(screen.getByText("Tập xử lý tình huống")).toBeInTheDocument();
     expect(screen.queryByText(/Tiến trình SOS tạm thời chưa tải được/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Nhắc nhở check-in tạm thời chưa tải được/)).not.toBeInTheDocument();
   });
