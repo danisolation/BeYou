@@ -1231,6 +1231,27 @@ def get_student_chat_transcript(
     )
 
 
+def delete_student_chat_thread(
+    db: OrmSession,
+    *,
+    student: User,
+    thread_id: uuid.UUID,
+) -> None:
+    thread = db.get(ChatThread, thread_id)
+    if thread is None or thread.student_id != student.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Không tìm thấy cuộc trò chuyện.")
+    require_permission(
+        db,
+        student,
+        resource_type="chat_thread",
+        action="write",
+        purpose="student_private_support",
+        student_id=student.id,
+    )
+    db.delete(thread)
+    db.commit()
+
+
 # ---------------------------------------------------------------------------
 # Adult (teacher/parent) chat — simplified version without safety escalation
 # ---------------------------------------------------------------------------

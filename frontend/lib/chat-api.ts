@@ -148,6 +148,12 @@ export function getChatTranscript(threadId: string) {
   return apiFetch<ChatTranscript>(`/api/student/chat/threads/${threadId}/messages`);
 }
 
+export function deleteChatThread(threadId: string) {
+  return apiFetch<void>(`/api/student/chat/threads/${threadId}`, {
+    method: "DELETE",
+  });
+}
+
 export function getAdminChatbotConfig() {
   return apiFetch<ChatbotSafetyConfig>("/api/admin/chatbot/config");
 }

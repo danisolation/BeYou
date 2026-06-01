@@ -267,6 +267,45 @@ def test_student_only_transcript_reads_are_authorized_and_metadata_audited(
     assert "Em muốn kể" not in str(read_audit.metadata_summary)
 
 
+def test_student_can_delete_own_chat_thread_and_cascades_delete_messages(
+    db: OrmSession,
+    client: TestClient,
+) -> None:
+    owner = _user(db, email="student-chat-delete-owner@example.test", role=UserRole.STUDENT.value)
+    other = _user(db, email="student-chat-delete-other@example.test", role=UserRole.STUDENT.value)
+    
+    _login(client, owner.email)
+    created = client.post(
+        "/api/student/chat/messages",
+        json={"message": "Em muốn xóa cuộc trò chuyện này sau."},
+        headers=ORIGIN_HEADERS,
+    )
+    assert created.status_code == 201
+    thread_id = created.json()["thread_id"]
+
+    # Other student cannot delete it
+    _login(client, other.email)
+    response_denied = client.delete(
+        f"/api/student/chat/threads/{thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_denied.status_code == 404
+
+    # Owner can delete it
+    _login(client, owner.email)
+    response_ok = client.delete(
+        f"/api/student/chat/threads/{thread_id}",
+        headers=ORIGIN_HEADERS,
+    )
+    assert response_ok.status_code == 204
+
+    # Verify CASCADE: thread and messages are gone
+    thread_in_db = db.scalar(select(ChatThread).where(ChatThread.id == uuid.UUID(thread_id)))
+    assert thread_in_db is None
+    msgs_in_db = db.scalars(select(ChatMessage).where(ChatMessage.thread_id == uuid.UUID(thread_id))).all()
+    assert len(msgs_in_db) == 0
+
+
 def test_admin_manages_chatbot_safety_config_without_secret_or_guardrail_bypass(
     db: OrmSession,
     client: TestClient,

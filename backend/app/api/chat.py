@@ -20,6 +20,7 @@ from app.schemas.chat import (
     ChatbotSafetyConfigUpdate,
 )
 from app.services.chat import (
+    delete_student_chat_thread,
     get_admin_safety_config,
     get_adult_chat_transcript,
     get_student_chat_transcript,
@@ -64,7 +65,9 @@ def post_student_chat_message_stream(
     require_role(current_user, UserRole.STUDENT)
 
     def event_generator():
-        import json as _json, logging as _log, traceback as _tb
+        import json as _json
+        import logging as _log
+        import traceback as _tb
         try:
             for event in send_chat_message_stream(db, student=current_user, payload=payload, settings=settings):
                 yield f"data: {event}\n\n"
@@ -97,6 +100,19 @@ def get_student_chat_messages(
 ) -> ChatTranscriptResponse:
     require_role(current_user, UserRole.STUDENT)
     return get_student_chat_transcript(db, student=current_user, thread_id=thread_id)
+
+
+@router.delete("/student/chat/threads/{thread_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_student_chat(
+    thread_id: uuid.UUID,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    require_same_site_mutation(request, settings)
+    require_role(current_user, UserRole.STUDENT)
+    delete_student_chat_thread(db, student=current_user, thread_id=thread_id)
 
 
 @router.get("/admin/chatbot/config", response_model=ChatbotSafetyConfigResponse)
