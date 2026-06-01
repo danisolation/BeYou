@@ -4,6 +4,7 @@ import hashlib
 import secrets
 import uuid
 from datetime import datetime, timedelta, timezone
+from urllib.parse import urlparse
 
 from fastapi import Depends, HTTPException, Request, Response, status
 from sqlalchemy import select
@@ -130,12 +131,27 @@ def require_same_site_mutation(request: Request, settings: Settings) -> None:
 
     origin = request.headers.get("origin")
     fetch_site = request.headers.get("sec-fetch-site")
-    origin_allowed = origin in settings.allowed_frontend_origins
+
+    # Check 1: Origin header present → validate against allowlist
     if origin is not None:
-        if not origin_allowed:
+        if origin not in settings.allowed_frontend_origins:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
         return
 
-    fetch_site_allowed = fetch_site in {"same-origin", "same-site"}
-    if not fetch_site_allowed:
+    # Check 2: Sec-Fetch-Site header present → validate same-origin/same-site
+    if fetch_site is not None:
+        if fetch_site in {"same-origin", "same-site"}:
+            return
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
+
+    # Check 3: Referer fallback (Safari/iOS compatibility — may omit Origin and Sec-Fetch-Site)
+    referer = request.headers.get("referer")
+    if referer is not None:
+        parsed = urlparse(referer)
+        referer_origin = f"{parsed.scheme}://{parsed.netloc}"
+        if referer_origin in settings.allowed_frontend_origins:
+            return
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
+
+    # No Origin, no Sec-Fetch-Site, no Referer → block
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Yêu cầu không hợp lệ.")
