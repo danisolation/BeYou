@@ -103,7 +103,7 @@ export default function SelfCheckTakePage({ params }: PageProps) {
         Quay lại danh sách
       </Link>
 
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2244] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold text-on-background">{test.title}</h1>
         </div>

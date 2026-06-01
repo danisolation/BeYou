@@ -1027,7 +1027,7 @@ export default function AdminContentPage() {
   return (
     <main className="mx-auto max-w-[1200px] space-y-5 pb-20 md:pb-0">
       {/* Header */}
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <FileText size={18} />
@@ -1044,7 +1044,7 @@ export default function AdminContentPage() {
       {isLoading ? (
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4">
+            <div key={i} className="animate-pulse rounded-xl border border-outline-variant/20 bg-white dark:bg-[#1a2244] p-4">
               <div className="flex items-center gap-3">
                 <div className="flex-1 space-y-2">
                   <div className="h-4 w-40 rounded bg-on-background/10" />
@@ -1060,7 +1060,7 @@ export default function AdminContentPage() {
       {!isEditing ? (
         <>
           {/* Tab navigation */}
-          <nav className="flex flex-col gap-1 rounded-2xl border border-outline-variant/30 bg-white p-1.5 dark:bg-[#1a2940] sm:flex-row">
+          <nav className="flex flex-col gap-1 rounded-2xl border border-outline-variant/30 bg-white p-1.5 dark:bg-[#1a2244] sm:flex-row">
             <button
               type="button"
               onClick={() => setActiveTab("self-check")}
@@ -1110,7 +1110,7 @@ export default function AdminContentPage() {
                     key={item.id ?? item.title}
                     type="button"
                     onClick={() => openSelfCheckEditor(item)}
-                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2940]"
+                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2244]"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
@@ -1171,7 +1171,7 @@ export default function AdminContentPage() {
                     key={item.id ?? item.title}
                     type="button"
                     onClick={() => openScenarioEditor(item)}
-                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2940]"
+                    className="card-lift flex w-full items-start gap-3 rounded-xl border border-outline-variant/20 bg-white p-4 text-left transition-all hover:border-primary/30 dark:bg-[#1a2244]"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-on-background">{item.title || "Chưa đặt tên"}</p>
@@ -1231,7 +1231,7 @@ export default function AdminContentPage() {
             Quay lại danh sách
           </button>
 
-          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-5">
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-5">
             <div className="space-y-4 border-b border-outline-variant/20 pb-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-1">
@@ -1272,7 +1272,7 @@ export default function AdminContentPage() {
                   <div className="rounded-xl bg-primary/5 px-3 py-2 text-xs text-on-background/70">{filledSelfCheckQuestions}/{selfCheckDraft.questions.length} câu hỏi đã nhập</div>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4">
                   <div>
                     <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tiến độ câu hỏi</p>
                     <p className="mt-1 text-sm text-on-background/70">{selfCheckQuestionsReady}/{selfCheckDraft.questions.length} câu hỏi đã đủ 2 lựa chọn</p>
@@ -1284,7 +1284,7 @@ export default function AdminContentPage() {
 
                 {selfCheckDraft.questions.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 1 câu hỏi.</p> : null}
                 {selfCheckDraft.questions.map((question, qi) => (
-                  <div key={question.id ?? `q-${qi}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                  <div key={question.id ?? `q-${qi}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div>
                         <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Câu hỏi {qi + 1}</p>
@@ -1372,7 +1372,7 @@ export default function AdminContentPage() {
                 ) : null}
 
                 {selfCheckDraft.thresholds.map((threshold, ti) => (
-                  <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                  <div key={threshold.id ?? `th-${ti}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex flex-wrap items-center gap-3">
                         <select aria-label="Mức" value={threshold.state_label} onChange={(event) => updateThreshold(ti, "state_label", event.target.value)} className="min-h-9 rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1e2d40] px-3 text-sm text-on-background">
@@ -1399,7 +1399,7 @@ export default function AdminContentPage() {
                   </div>
                 ))}
                 {/* Publish checklist inline in step 3 */}
-                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-3">
+                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-3">
                   <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
                   <ul className="space-y-2">
                     {selfCheckReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setSelfCheckStep(item.step)} />)}
@@ -1451,7 +1451,7 @@ export default function AdminContentPage() {
             Quay lại danh sách
           </button>
 
-          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-5">
+          <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-5">
             <div className="space-y-4 border-b border-outline-variant/20 pb-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-1">
@@ -1501,7 +1501,7 @@ export default function AdminContentPage() {
 
                 {scenarioDraft.choices.length === 0 ? <p className="rounded-xl bg-primary/5 p-3 text-xs text-on-background/60">Thêm ít nhất 2 lựa chọn.</p> : null}
                 {scenarioDraft.choices.map((choice, ci) => (
-                  <div key={choice.id ?? `sc-${ci}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-4">
+                  <div key={choice.id ?? `sc-${ci}`} className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-4">
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-semibold text-on-background">Lựa chọn {ci + 1}</p>
@@ -1546,7 +1546,7 @@ export default function AdminContentPage() {
                 <TextAreaField label="Điều em có thể rút ra" required value={scenarioDraft.lesson} onChange={(value) => setScenarioDraft((current) => ({ ...current, lesson: value }))} placeholder="VD: Từ chối không có nghĩa là mất bạn. Em có quyền nói không khi cảm thấy không an toàn." hint="Bài học ngắn gọn — giúp học sinh ghi nhớ kỹ năng sau khi hoàn thành" />
 
                 {/* Publish checklist inline in step 3 */}
-                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 space-y-3">
+                <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 space-y-3">
                   <p className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Checklist xuất bản</p>
                   <ul className="space-y-2">
                     {scenarioReviewItems.map((item) => <ChecklistItem key={item.label} passed={item.passed} label={item.label} fixHint={item.fixHint} onFix={() => setScenarioStep(item.step)} />)}

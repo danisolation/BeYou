@@ -71,7 +71,7 @@ export default function AdminChatbotPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Bot size={18} />
@@ -85,7 +85,7 @@ export default function AdminChatbotPage() {
 
       {isLoading ? <PageSkeleton /> : null}
       {config ? (
-        <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6" onSubmit={handleSave}>
+        <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6" onSubmit={handleSave}>
           <section className="rounded-2xl bg-primary/5 p-4">
             <h2 className="text-sm font-semibold">Nguồn xử lý AI</h2>
             <p className="mt-2 text-sm">

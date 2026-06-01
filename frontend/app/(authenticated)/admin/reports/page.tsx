@@ -83,7 +83,7 @@ export default function AdminReportsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Shield size={18} />
@@ -118,12 +118,12 @@ export default function AdminReportsPage() {
       </div>
 
       {isLoading ? <PageSkeleton /> : null}
-      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm text-red-700">{error}</p> : null}
+      {error ? <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6 text-sm text-red-700">{error}</p> : null}
 
       {report ? (
         <>
           {!hasAnySensitiveData(report) ? (
-            <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-sm text-on-background/70">
+            <p className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6 text-sm text-on-background/70">
               Chưa có đủ dữ liệu. Xu hướng sẽ hiển thị khi nhóm đủ lớn.
             </p>
           ) : null}
@@ -178,7 +178,7 @@ export default function AdminReportsPage() {
 
 function ExactMetricCard({ title, value }: { title: string; value: number }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4 text-center">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4 text-center">
       <p className="text-2xl font-bold text-on-background">{formatCount(value)}</p>
       <p className="mt-1 text-xs text-on-background/60">{title}</p>
     </article>
@@ -187,7 +187,7 @@ function ExactMetricCard({ title, value }: { title: string; value: number }) {
 
 function PrivacyMetricCard({ bucket }: { bucket: PrivacyCountBucket }) {
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4 text-center">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4 text-center">
       <p className="text-2xl font-bold text-on-background">{privacyCountLabel(bucket)}</p>
       <p className="mt-1 text-xs text-on-background/60">{bucket.label}</p>
       {bucket.suppressed ? <p className="mt-1 text-xs text-primary">Ẩn nhóm nhỏ</p> : null}
@@ -197,7 +197,7 @@ function PrivacyMetricCard({ bucket }: { bucket: PrivacyCountBucket }) {
 
 function ReportSection({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+    <section className="space-y-4 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
       <div>
         <h2 className="text-sm font-semibold">{title}</h2>
         <p className="mt-2 text-sm">{description}</p>

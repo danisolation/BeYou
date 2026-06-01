@@ -18,7 +18,7 @@ export function EmptyState({
   return (
     <section
       className={[
-        "rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-center",
+        "rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6 text-center",
         className,
       ]
         .filter(Boolean)

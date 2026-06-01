@@ -131,7 +131,7 @@ export default function AdminLinksPage() {
   return (
     <section className="space-y-5 pb-20 md:pb-0">
       {/* Header */}
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -157,7 +157,7 @@ export default function AdminLinksPage() {
 
       {/* Create form — collapsible */}
       {showForm ? (
-        <div className="rounded-2xl border border-primary/20 bg-white dark:bg-[#1a2940] p-5">
+        <div className="rounded-2xl border border-primary/20 bg-white dark:bg-[#1a2244] p-5">
           <LinkForm users={users} onSubmit={handleCreate} />
         </div>
       ) : null}
@@ -202,7 +202,7 @@ export default function AdminLinksPage() {
         {isLoading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-5">
+              <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2244] p-5">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-on-background/10" />
                   <div className="flex-1 space-y-2">
@@ -222,7 +222,7 @@ export default function AdminLinksPage() {
           filteredLinks.map((link) => (
             <article
               key={link.id}
-              className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-shadow hover:shadow-sm dark:bg-[#1a2940] sm:p-5"
+              className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-shadow hover:shadow-sm dark:bg-[#1a2244] sm:p-5"
             >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3 min-w-0">

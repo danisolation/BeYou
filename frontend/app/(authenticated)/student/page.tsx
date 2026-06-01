@@ -41,14 +41,30 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="space-y-5">
-      {/* Welcome header */}
-      <div className="animate-fade-in">
-        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
-          {greeting}, {name}! 👋
-        </h1>
-        <p className="mt-1 text-sm text-on-background/60">
-          Hôm nay em muốn làm gì?
-        </p>
+      {/* Welcome hero */}
+      <div className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
+        <div className="relative z-10 max-w-2xl">
+          <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">
+            {greeting}, {name}! 👋
+          </h1>
+          <p className="mt-2 text-sm text-[#33416b] sm:text-base">
+            Bạn không đơn độc đâu! Peerlight AI luôn ở đây để lắng nghe, đồng hành và giúp bạn tỏa sáng.
+          </p>
+          <Link
+            href="/student/chat"
+            className="btn-press cta-gradient mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold no-underline"
+          >
+            Trò chuyện cùng AI 💬
+          </Link>
+        </div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl"
+        />
       </div>
 
       {/* Peerlight AI Quick Access */}

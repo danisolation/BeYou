@@ -88,7 +88,7 @@ export default function StudentMoodCheckInHistoryPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <div className="rounded-2xl bg-white dark:bg-[#1a2244] border border-outline-variant/30 p-5">
         <h1 className="text-lg font-semibold text-on-background">Lịch sử check-in cảm xúc</h1>
         <p className="mt-4 text-sm">
           Đây là lịch sử riêng của em. Nếu muốn, em có thể chọn đúng check-in, đúng người lớn tin tưởng
@@ -130,7 +130,7 @@ function MoodHistoryItem({
     (tag) => contextOptions.find((option) => option.key === tag)?.label ?? tag,
   );
   return (
-    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+    <article className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-sm font-semibold">{item.trend_label}</h2>
       </div>
@@ -262,7 +262,7 @@ function MoodShareControls({
   }
 
   return (
-    <div className="mt-4 rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2940] p-4">
+    <div className="mt-4 rounded-2xl border border-outline-variant/20 bg-white dark:bg-[#1a2244] p-4">
       <ActiveShareList
         item={item}
         onSharesChanged={onSharesChanged}
@@ -555,7 +555,7 @@ function RevokeShareConfirmation({
   }, []);
 
   return (
-    <div className="mt-4 rounded-2xl border border-red-200 bg-white dark:bg-[#1a2940] p-4">
+    <div className="mt-4 rounded-2xl border border-red-200 bg-white dark:bg-[#1a2244] p-4">
       <h3 ref={headingRef} tabIndex={-1} className="text-sm font-semibold">
         Thu hồi quyền xem
       </h3>

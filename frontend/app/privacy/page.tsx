@@ -47,7 +47,7 @@ function PrivacyContent() {
           những phần thật sự cần để hỗ trợ em, không xem mọi câu trả lời riêng tư.
         </p>
 
-        <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 dark:bg-[#1a2940] sm:p-5">
+        <div className="mt-6 space-y-5 rounded-2xl bg-white p-4 dark:bg-[#1a2244] sm:p-5">
           <section>
             <h2 className="text-sm font-semibold">Ai thấy gì?</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm">
@@ -73,7 +73,7 @@ function PrivacyContent() {
           </section>
         </div>
 
-        <label className="mt-6 flex items-start gap-3 rounded-2xl bg-white p-4 text-sm dark:bg-[#1a2940]">
+        <label className="mt-6 flex items-start gap-3 rounded-2xl bg-white p-4 text-sm dark:bg-[#1a2244]">
           <input
             type="checkbox"
             checked={checked}

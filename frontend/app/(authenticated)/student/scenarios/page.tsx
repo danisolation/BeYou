@@ -51,7 +51,7 @@ export default function ScenarioListPage() {
   return (
     <main className="mx-auto w-full max-w-[960px] space-y-6">
       {/* Header */}
-      <header className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
+      <header className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
             <MessageCircle className="h-6 w-6" />

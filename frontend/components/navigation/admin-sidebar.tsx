@@ -37,7 +37,7 @@ interface AdminSidebarProps {
 export function AdminSidebar({ pathname, collapsed, onToggleCollapse, onLogout }: AdminSidebarProps) {
   return (
     <aside
-      className={`fixed left-3 top-[4.25rem] z-30 hidden h-[calc(100dvh-5rem)] overflow-y-auto transition-all duration-200 rounded-2xl border border-outline-variant/50 bg-white p-3 shadow-sm dark:bg-[#1a2940] md:flex md:flex-col ${
+      className={`fixed left-3 top-[4.25rem] z-30 hidden h-[calc(100dvh-5rem)] overflow-y-auto transition-all duration-200 rounded-2xl border border-outline-variant/50 bg-white p-3 shadow-sm dark:bg-[#1a2244] md:flex md:flex-col ${
         collapsed ? "w-20" : "w-56"
       }`}
     >
@@ -58,7 +58,7 @@ export function AdminSidebar({ pathname, collapsed, onToggleCollapse, onLogout }
               key={item.href}
               href={item.href}
               className={`flex h-10 items-center gap-3 rounded-xl px-3 text-sm font-medium no-underline transition-colors ${
-                active ? "bg-primary/10 text-primary font-semibold" : "text-on-background/70 hover:bg-outline-variant/15 hover:text-on-background"
+                active ? "nav-active font-semibold" : "text-on-background/70 hover:bg-outline-variant/15 hover:text-on-background"
               }`}
               aria-current={active ? "page" : undefined}
             >

@@ -59,7 +59,7 @@ export default function AdminDashboardPage() {
 
       {/* Quick stats */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4">
+        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Users size={18} />
@@ -70,7 +70,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
-        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4">
+        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
               <Link2 size={18} />
@@ -81,7 +81,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </div>
-        <Link href="/admin/operations" className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-4 no-underline transition-shadow hover:shadow-md">
+        <Link href="/admin/operations" className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4 no-underline transition-shadow hover:shadow-md">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400">
               <Activity size={18} />
@@ -176,7 +176,7 @@ function AdminCard({ href, icon, title, description }: { href: string; icon: Rea
   return (
     <Link
       href={href}
-      className="group flex items-start gap-3 rounded-2xl border border-outline-variant/30 bg-white p-4 no-underline transition-all hover:border-primary/30 hover:shadow-md dark:bg-[#1a2940]"
+      className="group flex items-start gap-3 rounded-2xl border border-outline-variant/30 bg-white p-4 no-underline transition-all hover:border-primary/30 hover:shadow-md dark:bg-[#1a2244]"
     >
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
         {icon}

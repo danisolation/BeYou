@@ -47,7 +47,7 @@ export default function SelfCheckHistoryPage() {
 
   return (
     <main className="mx-auto max-w-[960px] space-y-6">
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2244] border border-outline-variant/30 p-5">
         <h1 className="text-lg font-semibold text-on-background">Lịch sử test tâm lý</h1>
         <p className="mt-3 text-sm text-on-background/70">
           Câu trả lời chi tiết là riêng tư với em. Người lớn được liên kết chỉ xem phần tóm tắt cần thiết để hỗ trợ em.
@@ -67,7 +67,7 @@ export default function SelfCheckHistoryPage() {
                 value={filterTest}
                 onChange={(e) => setFilterTest(e.target.value)}
                 aria-label="Lọc theo bài test"
-                className="rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-3 py-2 text-xs outline-none focus:border-primary"
+                className="rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] px-3 py-2 text-xs outline-none focus:border-primary"
               >
                 <option value="">Tất cả bài test</option>
                 {testNames.map((name) => (
@@ -84,7 +84,7 @@ export default function SelfCheckHistoryPage() {
           {filtered.map((item) => (
             <Link
               key={item.attempt_id}
-              className="block rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 transition-shadow hover:shadow-md"
+              className="block rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 transition-shadow hover:shadow-md"
               href={`/student/self-checks/history/${item.attempt_id}`}
             >
               <div className="flex flex-wrap items-center gap-2">

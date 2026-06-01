@@ -145,7 +145,7 @@ export function LayoutSkeleton() {
   return (
     <div className="min-h-dvh bg-background">
       {/* Header skeleton matching new h-14 header */}
-      <div className="border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80">
+      <div className="border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0f1530]/80">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="h-5 w-28 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
           <div className="flex items-center gap-3">

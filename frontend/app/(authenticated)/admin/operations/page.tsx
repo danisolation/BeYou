@@ -130,7 +130,7 @@ export default function AdminOperationsPage() {
 
   return (
     <section className="space-y-6 pb-20 md:pb-0">
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Activity size={18} />
@@ -152,7 +152,7 @@ export default function AdminOperationsPage() {
       </div>
 
       {/* Filter - collapsible */}
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244]">
         <button
           type="button"
           onClick={() => setShowFilters(!showFilters)}
@@ -242,7 +242,7 @@ export default function AdminOperationsPage() {
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+              <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
                 <div className="h-3 w-16 rounded bg-on-background/10" />
                 <div className="mt-3 h-7 w-12 rounded bg-on-background/10" />
                 <div className="mt-3 h-3 w-24 rounded bg-on-background/10" />
@@ -250,7 +250,7 @@ export default function AdminOperationsPage() {
             ))}
           </div>
           {[1, 2].map((i) => (
-            <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+            <div key={i} className="animate-pulse rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
               <div className="h-4 w-40 rounded bg-on-background/10" />
               <div className="mt-3 h-3 w-64 rounded bg-on-background/10" />
               <div className="mt-4 h-20 w-full rounded-xl bg-on-background/5" />
@@ -895,7 +895,7 @@ function SmokeProfilesPanel({ profiles }: { profiles: SmokeProfileItem[] }) {
 
 function MetricCard({ title, value, description }: { title: string; value: string | number; description: string }) {
   return (
-    <article className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 transition-colors hover:border-primary/30 dark:bg-[#1a2940]">
+    <article className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 transition-colors hover:border-primary/30 dark:bg-[#1a2244]">
       <p className="text-xs font-semibold text-primary">{title}</p>
       <p className="mt-2 text-2xl font-bold text-on-background">{value}</p>
       <p className="mt-2 text-xs text-on-background/60">{description}</p>
@@ -915,7 +915,7 @@ function Panel({
   testId?: string;
 }) {
   return (
-    <section className="card-lift space-y-4 rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940] sm:p-6" data-testid={testId}>
+    <section className="card-lift space-y-4 rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244] sm:p-6" data-testid={testId}>
       <div>
         <h2 className="text-sm font-semibold text-on-background">{title}</h2>
         <p className="mt-1 text-xs text-on-background/60">{description}</p>

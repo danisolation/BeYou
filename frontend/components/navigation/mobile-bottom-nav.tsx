@@ -30,7 +30,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
         <div className="fixed inset-0 z-50 md:hidden" onClick={() => setShowMore(false)} role="dialog" aria-modal="true" aria-label="Menu mở rộng">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
           <div
-            className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-4 shadow-2xl dark:bg-[#1a2940]"
+            className="absolute bottom-0 left-0 right-0 rounded-t-3xl bg-white pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-4 shadow-2xl dark:bg-[#1a2244]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-3 flex items-center justify-between px-5">
@@ -85,7 +85,7 @@ export function MobileBottomNav({ pathname, onLogout }: MobileBottomNavProps) {
 
       {/* Bottom navigation bar */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgb(0,0,0,0.06)] dark:bg-[#0d1c2e] dark:shadow-[0_-2px_12px_rgb(0,0,0,0.3)] md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant/20 bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-2px_12px_rgb(0,0,0,0.06)] dark:bg-[#0f1530] dark:shadow-[0_-2px_12px_rgb(0,0,0,0.3)] md:hidden"
         aria-label="Điều hướng học sinh"
       >
         <div className="flex items-end justify-around px-2 pt-2 pb-1">

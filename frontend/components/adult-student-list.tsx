@@ -113,7 +113,7 @@ export function AdultStudentList({
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Tìm theo tên hoặc email..."
                 aria-label="Tìm học sinh"
-                className="w-full max-w-xs rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] px-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary"
+                className="w-full max-w-xs rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] px-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary"
               />
               {search && (
                 <button type="button" onClick={() => setSearch("")} className="text-xs text-primary hover:underline">Xóa</button>

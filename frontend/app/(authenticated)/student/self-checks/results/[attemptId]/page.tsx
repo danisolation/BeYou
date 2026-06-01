@@ -71,7 +71,7 @@ export default function SelfCheckResultPage({ params }: PageProps) {
           {attempt.support_suggestion ? <p>{attempt.support_suggestion}</p> : null}
           {attempt.positive_content ? <p>{attempt.positive_content}</p> : null}
         </div>
-        <div className="mt-6 rounded-xl bg-white dark:bg-[#1a2940] p-4">
+        <div className="mt-6 rounded-xl bg-white dark:bg-[#1a2244] p-4">
           <p className="text-sm text-on-background/70">Điểm tham khảo: {attempt.score}</p>
           <p className="mt-2 text-sm text-on-background/60">Điểm này chỉ giúp Peerlight AI chọn gợi ý phù hợp, không phải chẩn đoán.</p>
         </div>

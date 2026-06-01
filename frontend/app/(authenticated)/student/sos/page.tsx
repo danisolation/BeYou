@@ -33,7 +33,7 @@ export default function StudentSosPage() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-error-container/95 p-6" role="alert" aria-live="assertive">
         <div className="max-w-md space-y-6 text-center">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white dark:bg-[#1a2940]">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white dark:bg-[#1a2244]">
             <CheckCircle size={48} className="text-primary" aria-hidden="true" />
           </div>
           <h1 className="text-lg font-semibold text-on-error-container">SOS đã được gửi</h1>
@@ -57,7 +57,7 @@ export default function StudentSosPage() {
   // State 1: Initial confirmation
   return (
     <section className="mx-auto max-w-lg space-y-6 py-8">
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6 text-center">
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6 text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error-container">
           <ShieldAlert size={32} className="text-error" aria-hidden="true" />
         </div>
@@ -67,7 +67,7 @@ export default function StudentSosPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <h2 className="text-sm font-semibold">Khi em nhấn SOS:</h2>
         <ul className="mt-3 space-y-2 text-sm">
           <li>• Người em tin sẽ được thông báo ngay lập tức</li>

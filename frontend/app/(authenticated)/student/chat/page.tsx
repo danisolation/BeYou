@@ -223,7 +223,7 @@ export default function StudentChatPage() {
     <section className="space-y-4 overflow-hidden">
       <div className="grid gap-4 md:grid-cols-[16rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 md:block">
+        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-3 md:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -240,7 +240,7 @@ export default function StudentChatPage() {
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-            <aside className="absolute inset-y-0 left-0 w-[min(18rem,calc(100vw-1rem))] bg-white p-4 shadow-xl dark:bg-[#1a2940]">
+            <aside className="absolute inset-y-0 left-0 w-[min(18rem,calc(100vw-1rem))] bg-white p-4 shadow-xl dark:bg-[#1a2244]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">Lịch sử</h2>
                 <button
@@ -262,7 +262,7 @@ export default function StudentChatPage() {
           </div>
         )}
 
-        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244]">
           {/* Chat header */}
           <div className="flex items-center gap-3 border-b border-outline-variant/20 px-4 py-3">
             <button

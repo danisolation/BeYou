@@ -125,7 +125,7 @@ export default function AdminMoodCheckInsPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Heart size={18} />
@@ -139,7 +139,7 @@ export default function AdminMoodCheckInsPage() {
 
       {isLoading ? <PageSkeleton /> : null}
       {configs.length > 0 ? (
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-sm font-semibold text-on-background dark:text-white">Cấu hình hiện có</h2>
@@ -160,7 +160,7 @@ export default function AdminMoodCheckInsPage() {
                   key={config.id}
                   type="button"
                   onClick={() => selectConfig(config)}
-                  className={`rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 text-left transition-all ${isSelected ? "border-primary/30 bg-primary/5 shadow-sm dark:bg-primary/10" : "hover:border-primary/25 hover:bg-primary/5/40"}`}
+                  className={`rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 text-left transition-all ${isSelected ? "border-primary/30 bg-primary/5 shadow-sm dark:bg-primary/10" : "hover:border-primary/25 hover:bg-primary/5/40"}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -176,7 +176,7 @@ export default function AdminMoodCheckInsPage() {
         </section>
       ) : null}
 
-      <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5" onSubmit={handleSave}>
+      <form className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5" onSubmit={handleSave}>
         <div className="flex flex-col gap-3 border-b border-outline-variant/20 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Thông tin cấu hình</p>
@@ -237,7 +237,7 @@ export default function AdminMoodCheckInsPage() {
                     <p className="text-sm font-semibold text-on-background dark:text-white">{option.key}</p>
                     <p className="mt-1 text-xs text-on-background/50 dark:text-white/50">Thiết lập nhãn hiển thị và helper text cho cảm xúc này.</p>
                   </div>
-                  <span className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-on-background/60 dark:bg-[#1a2940] dark:text-white/70">
+                  <span className="inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-on-background/60 dark:bg-[#1a2244] dark:text-white/70">
                     #{index + 1}
                   </span>
                 </div>
@@ -276,7 +276,7 @@ export default function AdminMoodCheckInsPage() {
       </form>
 
       {preview ? (
-        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+        <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Preview</p>
@@ -312,7 +312,7 @@ export default function AdminMoodCheckInsPage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-on-background/50">Context tags</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {preview.context_tags.map((tag) => (
-                    <span key={tag.key} className="inline-flex items-center rounded-full border border-outline-variant/30 bg-white px-3 py-1 text-xs font-medium text-on-background dark:bg-[#1a2940] dark:text-white">
+                    <span key={tag.key} className="inline-flex items-center rounded-full border border-outline-variant/30 bg-white px-3 py-1 text-xs font-medium text-on-background dark:bg-[#1a2244] dark:text-white">
                       {tag.label}
                     </span>
                   ))}

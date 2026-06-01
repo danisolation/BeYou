@@ -59,7 +59,7 @@ export function UserForm({ onSubmit }: UserFormProps) {
   }
 
   return (
-    <form className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6" onSubmit={handleSubmit}>
+    <form className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 sm:p-6" onSubmit={handleSubmit}>
       <h2 className="text-xs font-medium text-on-background/70 uppercase tracking-wide">Tạo tài khoản mới</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <label className="space-y-1.5 text-xs font-medium text-on-background/70">

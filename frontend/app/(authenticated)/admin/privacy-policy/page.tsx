@@ -95,7 +95,7 @@ export default function AdminPrivacyPolicyPage() {
 
   return (
     <section className="space-y-6">
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <Lock size={18} />
@@ -108,7 +108,7 @@ export default function AdminPrivacyPolicyPage() {
       </header>
 
       <form
-        className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6"
+        className="space-y-6 rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6"
         onSubmit={(event) => {
           event.preventDefault();
           void savePolicy();
@@ -175,7 +175,7 @@ export default function AdminPrivacyPolicyPage() {
           <p className="mt-2 text-sm">Chỉ kênh trong ứng dụng được bật trong v1.4; các kênh ngoài vẫn đang hoãn.</p>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {policy.channel_boundaries.map((channel) => (
-              <article key={channel.key} className="rounded-2xl bg-white dark:bg-[#1a2940] p-4">
+              <article key={channel.key} className="rounded-2xl bg-white dark:bg-[#1a2244] p-4">
                 <p className="font-semibold">{channel.label}</p>
                 <p className="mt-1 text-xs">
                   {channel.available ? "Đang hỗ trợ trong v1.4" : "Đang hoãn để cần thêm đồng ý và vận hành an toàn"}

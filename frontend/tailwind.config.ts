@@ -14,25 +14,31 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Stitch design tokens — primary
-        primary: "#00604e",
+        // Peerlight design tokens — primary (violet)
+        primary: "#7457e8",
         "on-primary": "#ffffff",
-        "primary-container": "#1e7a65",
-        "on-primary-container": "#b1ffe6",
-        "primary-fixed": "#9ef3d9",
-        "primary-fixed-dim": "#82d6bd",
+        "primary-container": "#efeaff",
+        "on-primary-container": "#2c1d6b",
+        "primary-fixed": "#e9e4ff",
+        "primary-fixed-dim": "#cfc4ff",
 
         // Secondary
-        secondary: "#EAF7F3", // keep legacy value for backward compat (bg-secondary still works)
-        "secondary-stitch": "#55615f",
-        "secondary-legacy": "#EAF7F3",
-        "on-secondary": "#ffffff",
-        "secondary-container": "#d9e5e2",
+        secondary: "#efeaff", // light violet (bg-secondary still works)
+        "secondary-stitch": "#6d7394",
+        "secondary-legacy": "#efeaff",
+        "on-secondary": "#2c1d6b",
+        "secondary-container": "#e4e8ff",
 
-        // Tertiary
-        tertiary: "#854034",
+        // Tertiary (pink accent)
+        tertiary: "#f36bac",
         "on-tertiary": "#ffffff",
-        "tertiary-container": "#a3574a",
+        "tertiary-container": "#ffd9ec",
+
+        // Accent family (from mockup)
+        "accent-violet": "#9178ff",
+        "accent-blue": "#65aefc",
+        "accent-cyan": "#85e9f1",
+        "accent-pink": "#f36bac",
 
         // Error
         error: "#ba1a1a",
@@ -40,20 +46,20 @@ const config: Config = {
 
         // Surface
         surface: "var(--surface)",
-        "surface-dim": "#ccdbf3",
-        "surface-bright": "#f8f9ff",
-        "surface-container": "#e6eeff",
-        "surface-container-low": "#eff4ff",
-        "surface-container-high": "#dce9ff",
+        "surface-dim": "#dfe3f5",
+        "surface-bright": "#ffffff",
+        "surface-container": "#f1f0ff",
+        "surface-container-low": "#f7f6ff",
+        "surface-container-high": "#e9e8ff",
 
         // Background
         background: "var(--background)",
         "on-background": "var(--foreground)",
 
         // Role colors
-        "student-blue": "#3B82F6",
+        "student-blue": "#65aefc",
         "teacher-amber": "#D97706",
-        "parent-purple": "#8B5CF6",
+        "parent-purple": "#9178ff",
         "admin-slate": "#334155",
 
         // Outline
@@ -61,7 +67,7 @@ const config: Config = {
         "outline-variant": "var(--outline-variant)",
 
         // Backward compat aliases
-        accent: "#00604e",
+        accent: "#7457e8",
         destructive: "#ba1a1a",
         warning: "#F59E0B",
       },

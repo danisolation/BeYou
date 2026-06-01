@@ -104,7 +104,7 @@ export default function TeacherChatPage() {
     <section className="space-y-4">
       <div className="grid gap-4 md:grid-cols-[16rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-3 md:block">
+        <aside className="hidden rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-3 md:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -121,7 +121,7 @@ export default function TeacherChatPage() {
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-            <aside className="absolute inset-y-0 left-0 w-72 bg-white dark:bg-[#1a2940] p-4 shadow-xl">
+            <aside className="absolute inset-y-0 left-0 w-72 bg-white dark:bg-[#1a2244] p-4 shadow-xl">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">Lịch sử</h2>
                 <button
@@ -143,7 +143,7 @@ export default function TeacherChatPage() {
           </div>
         )}
 
-        <section className="flex flex-col rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940]">
+        <section className="flex flex-col rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244]">
           {/* Chat header */}
           <div className="flex items-center gap-3 border-b border-outline-variant/20 px-4 py-3">
             <button

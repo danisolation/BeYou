@@ -89,7 +89,7 @@ export default function StudentSettingsPage() {
 
   return (
     <section className="space-y-6">
-      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <h1 className="text-lg font-semibold text-on-background">Cài đặt</h1>
         <p className="mt-3 text-sm">
           Quản lý nhắc nhở, cài đặt SOS và quyền riêng tư của em tại đây.
@@ -100,7 +100,7 @@ export default function StudentSettingsPage() {
       </div>
 
       {/* Section: Appearance */}
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
             <Sun size={18} className="text-primary" aria-hidden="true" />
@@ -149,7 +149,7 @@ export default function StudentSettingsPage() {
 
       {/* Section 1: Notifications & Reminders */}
       <form
-        className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6"
+        className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6"
         onSubmit={(event) => {
           event.preventDefault();
           void save(preference, "Đã lưu cài đặt nhắc nhở.");
@@ -197,7 +197,7 @@ export default function StudentSettingsPage() {
                   reminder_cadence: event.target.value as StudentNotificationPreference["reminder_cadence"],
                 })
               }
-              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] px-4"
             >
               <option value="weekly">Hàng tuần</option>
               <option value="daily">Hàng ngày</option>
@@ -211,7 +211,7 @@ export default function StudentSettingsPage() {
               type="time"
               value={preference.quiet_hours_start ?? ""}
               onChange={(event) => setPreference({ ...preference, quiet_hours_start: event.target.value || null })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] px-4"
             />
           </label>
           <label className="block text-xs" htmlFor="quiet-end">
@@ -221,12 +221,12 @@ export default function StudentSettingsPage() {
               type="time"
               value={preference.quiet_hours_end ?? ""}
               onChange={(event) => setPreference({ ...preference, quiet_hours_end: event.target.value || null })}
-              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] px-4"
+              className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] px-4"
             />
           </label>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
+        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] p-4">
           <h3 className="text-xs font-semibold">Tạm dừng nhắc nhở</h3>
           <p className="mt-2 text-sm text-on-surface-variant">
             {paused ? `Đang tạm dừng đến ${new Date(preference.paused_until ?? "").toLocaleString("vi-VN")}` : "Không tạm dừng"}
@@ -285,7 +285,7 @@ export default function StudentSettingsPage() {
       </form>
 
       {/* Section 2: SOS Settings */}
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-error-container">
             <ShieldAlert size={18} className="text-error" aria-hidden="true" />
@@ -293,7 +293,7 @@ export default function StudentSettingsPage() {
           <h2 className="text-sm font-semibold">Cài đặt SOS</h2>
         </div>
         <div className="mt-4 space-y-4">
-          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
+          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] p-4">
             <h3 className="text-xs font-semibold">Khi em gửi SOS</h3>
             <ul className="mt-2 space-y-1 text-sm text-on-surface-variant">
               <li>• Tất cả người lớn tin tưởng được liên kết sẽ nhận thông báo</li>
@@ -301,7 +301,7 @@ export default function StudentSettingsPage() {
               <li>• Em không cần giải thích chi tiết nếu chưa sẵn sàng</li>
             </ul>
           </div>
-          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4">
+          <div className="rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] p-4">
             <h3 className="text-xs font-semibold">Quản lý người nhận SOS</h3>
             <p className="mt-2 text-sm text-on-surface-variant">
               Danh sách người nhận SOS dựa trên người lớn tin tưởng em đã chọn trong kế hoạch hỗ trợ.
@@ -317,7 +317,7 @@ export default function StudentSettingsPage() {
       </section>
 
       {/* Section 3: Privacy */}
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
             <Lock size={18} className="text-primary" aria-hidden="true" />

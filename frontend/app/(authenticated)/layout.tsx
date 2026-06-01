@@ -121,14 +121,14 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
     <div className="min-h-dvh bg-background">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-primary focus:shadow-lg dark:focus:bg-[#1a2940]"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-2xl focus:bg-white focus:px-4 focus:py-3 focus:font-semibold focus:text-primary focus:shadow-lg dark:focus:bg-[#1a2244]"
       >
         Bỏ qua điều hướng
       </a>
 
       <header
         role="banner"
-        className="sticky top-0 z-30 border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0d1c2e]/80"
+        className="sticky top-0 z-30 border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0f1530]/80"
       >
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex min-w-0 items-center gap-2">
@@ -143,7 +143,13 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
                 <Menu size={18} aria-hidden="true" />
               </button>
             ) : null}
-            <Link href={user.dashboard_route} className="flex min-w-0 items-center gap-2 no-underline">
+            <Link href={user.dashboard_route} className="flex min-w-0 items-center gap-2.5 no-underline">
+              <span
+                aria-hidden="true"
+                className="brand-gradient flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm"
+              >
+                💡
+              </span>
               <span className="truncate text-lg font-bold tracking-tight text-primary">Peerlight AI</span>
             </Link>
           </div>

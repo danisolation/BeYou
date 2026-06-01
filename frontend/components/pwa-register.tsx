@@ -59,7 +59,7 @@ export function PWARegister() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-2xl border border-outline-variant/30 bg-white p-4 shadow-lg dark:bg-[#1a2940] md:left-auto md:right-4 md:w-80">
+    <div className="fixed bottom-4 left-4 right-4 z-50 flex items-center justify-between rounded-2xl border border-outline-variant/30 bg-white p-4 shadow-lg dark:bg-[#1a2244] md:left-auto md:right-4 md:w-80">
       <div>
         <p className="text-sm font-semibold text-on-background">Cài đặt Peerlight AI</p>
         <p className="text-xs text-on-background/60">Truy cập nhanh từ màn hình chính</p>

@@ -103,7 +103,7 @@ export default function LoginPage() {
     <main className="min-h-dvh bg-background px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
         {/* Header */}
-        <header className="flex flex-col gap-3 rounded-2xl bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur dark:bg-[#0d1c2e]/85 sm:flex-row sm:items-center sm:justify-between">
+        <header className="flex flex-col gap-3 rounded-2xl bg-white/85 px-5 py-4 shadow-sm ring-1 ring-outline-variant/40 backdrop-blur dark:bg-[#0f1530]/85 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
             Peerlight AI
@@ -117,7 +117,7 @@ export default function LoginPage() {
         <div className="flex min-h-[calc(100dvh-8rem)] items-center">
           <section className="grid w-full gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             {/* Left: Login form */}
-            <div className="order-1 rounded-2xl bg-white dark:bg-[#1a2940] p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
+            <div className="order-1 rounded-2xl bg-white dark:bg-[#1a2244] p-5 shadow-xl shadow-primary/5 ring-1 ring-outline-variant/30 sm:p-8">
               <h1 className="text-2xl text-on-background">Đăng nhập</h1>
               <p className="mt-2 text-sm text-on-background/70">
                 Chào mừng em quay lại! Đăng nhập để tiếp tục nhé.

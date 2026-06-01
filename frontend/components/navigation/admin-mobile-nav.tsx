@@ -90,7 +90,7 @@ export function AdminMobileNav({ pathname, onLogout, open, onOpenChange }: Admin
         role="dialog"
         aria-modal="true"
         aria-label="Điều hướng quản trị"
-        className={`absolute inset-y-0 left-0 flex w-[min(20rem,calc(100vw-1rem))] max-w-full flex-col border-r border-outline-variant/30 bg-white shadow-2xl transition-transform dark:bg-[#0d1c2e] ${
+        className={`absolute inset-y-0 left-0 flex w-[min(20rem,calc(100vw-1rem))] max-w-full flex-col border-r border-outline-variant/30 bg-white shadow-2xl transition-transform dark:bg-[#0f1530] ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -112,7 +112,7 @@ export function AdminMobileNav({ pathname, onLogout, open, onOpenChange }: Admin
         <div className="flex-1 overflow-y-auto px-3 py-4">
           <nav className="space-y-3" aria-label="Điều hướng quản trị">
             {navSections.map((section) => (
-              <section key={section.id} className="rounded-2xl border border-outline-variant/20 bg-background/70 p-2 dark:bg-[#1a2940]">
+              <section key={section.id} className="rounded-2xl border border-outline-variant/20 bg-background/70 p-2 dark:bg-[#1a2244]">
                 <button
                   type="button"
                   onClick={() =>

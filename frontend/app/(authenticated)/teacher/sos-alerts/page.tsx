@@ -79,7 +79,7 @@ export default function TeacherSosAlertsPage() {
       )}
 
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-8 text-center">
+        <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-8 text-center">
           <ShieldAlert className="mx-auto mb-4 text-on-background/30" size={48} />
           <p className="text-on-background/70">{statusFilter === "all" ? "Không có cảnh báo SOS nào" : `Không có cảnh báo "${STATUS_LABELS[statusFilter]}"`}</p>
         </div>
@@ -89,7 +89,7 @@ export default function TeacherSosAlertsPage() {
             <Link
               key={alert.id}
               href={`/teacher/sos-alerts/${alert.id}`}
-              className={`flex items-center gap-4 rounded-[24px] border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 no-underline transition-all hover:-translate-y-0.5 hover:shadow-md ${
+              className={`flex items-center gap-4 rounded-[24px] border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 no-underline transition-all hover:-translate-y-0.5 hover:shadow-md ${
                 alert.status === "pending" ? "ring-2 ring-red-200 dark:ring-red-800/40" : ""
               }`}
             >

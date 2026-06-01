@@ -5,34 +5,34 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8f9ff;
-  --surface: #f8f9ff;
-  --foreground: #0d1c2e;
-  --primary: #00604e;
-  --outline: #6e7a75;
-  --outline-variant: #bec9c4;
+  --background: #f7faff;
+  --surface: #ffffff;
+  --foreground: #17204c;
+  --primary: #7457e8;
+  --outline: #6d7394;
+  --outline-variant: #dfe3f7;
   /* Legacy compat */
-  --secondary: #EAF7F3;
-  --accent: #00604e;
-  --accent-dark: #1F7F6F;
+  --secondary: #efeaff;
+  --accent: #7457e8;
+  --accent-dark: #5b43d6;
   --warning: #F59E0B;
   --destructive: #ba1a1a;
-  --line: #bec9c4;
+  --line: #e8ebfb;
 }
 
 .dark {
-  --background: #0d1c2e;
-  --surface: #1a2940;
-  --foreground: #e1e8f0;
-  --primary: #82d6bd;
-  --outline: #8a9590;
-  --outline-variant: #627872;
-  --secondary: #1a2e2a;
-  --accent: #82d6bd;
-  --accent-dark: #9ef3d9;
+  --background: #0f1530;
+  --surface: #1a2244;
+  --foreground: #e6e9f7;
+  --primary: #b3a4ff;
+  --outline: #8a90b5;
+  --outline-variant: #343c66;
+  --secondary: #221c44;
+  --accent: #b3a4ff;
+  --accent-dark: #cfc4ff;
   --warning: #FBBF24;
   --destructive: #ff897a;
-  --line: #3e4945;
+  --line: #2c2f55;
 }
 
 * {
@@ -50,8 +50,9 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(44, 165, 141, 0.13), transparent 32rem),
-    linear-gradient(180deg, #F8FCFF 0%, #F2FAF7 100%);
+    radial-gradient(circle at top left, rgba(116, 87, 232, 0.10), transparent 32rem),
+    radial-gradient(circle at top right, rgba(101, 174, 252, 0.08), transparent 30rem),
+    linear-gradient(135deg, #f7fbff 0%, #fbf8ff 44%, #f5f9ff 100%);
   color: var(--foreground);
   font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
@@ -61,8 +62,8 @@ body {
 
 .dark body {
   background:
-    radial-gradient(circle at top left, rgba(44, 165, 141, 0.08), transparent 32rem),
-    linear-gradient(180deg, #0d1c2e 0%, #0a1520 100%);
+    radial-gradient(circle at top left, rgba(145, 120, 255, 0.12), transparent 32rem),
+    linear-gradient(180deg, #0f1530 0%, #0a0f24 100%);
 }
 
 main,
@@ -168,7 +169,39 @@ svg {
 }
 
 ::selection {
-  background: rgba(44, 165, 141, 0.2);
+  background: rgba(116, 87, 232, 0.2);
+}
+
+/* === Peerlight gradient design language === */
+.brand-gradient {
+  background-image: linear-gradient(160deg, #85e9f1 0%, #9178ff 60%, #7457e8 100%);
+  color: #ffffff;
+}
+
+.nav-active {
+  background-image: linear-gradient(90deg, #7457e8 0%, #9178ff 100%);
+  color: #ffffff !important;
+  box-shadow: 0 8px 16px rgba(116, 87, 232, 0.22);
+}
+.nav-active:hover {
+  color: #ffffff !important;
+}
+
+.cta-gradient {
+  background-image: linear-gradient(90deg, #7457e8 0%, #9a62e8 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 16px rgba(91, 67, 214, 0.25);
+}
+.cta-gradient:hover {
+  filter: brightness(1.05);
+}
+
+.hero-gradient {
+  background-image: linear-gradient(110deg, #ade9fc 0%, #d1d4ff 52%, #b3a4ff 100%);
+}
+
+.soft-card {
+  box-shadow: 0 10px 28px rgba(68, 76, 150, 0.10);
 }
 
 /* Minimum touch target utility (44×44px per WCAG 2.5.5) */

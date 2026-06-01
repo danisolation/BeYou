@@ -34,7 +34,7 @@ export default function HomePage() {
   return (
     <main className="min-h-dvh overflow-x-hidden bg-background">
       {/* Sticky Navbar */}
-      <header className="sticky top-0 z-50 border-b border-outline-variant/20 bg-white/90 backdrop-blur-lg dark:bg-[#0d1c2e]/90">
+      <header className="sticky top-0 z-50 border-b border-outline-variant/20 bg-white/90 backdrop-blur-lg dark:bg-[#0f1530]/90">
         <nav className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">
             <Leaf className="h-5 w-5" aria-hidden="true" />
@@ -81,7 +81,7 @@ export default function HomePage() {
               </Link>
               <a
                 href="#mission"
-                className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
+                className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button border border-outline-variant px-6 font-semibold text-on-background no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2244] sm:w-auto"
               >
                 Tìm hiểu thêm
               </a>
@@ -144,7 +144,7 @@ export default function HomePage() {
 
             {/* Small card: Emotion diary */}
             <ScrollReveal className="sm:col-span-1 md:col-span-4" delay={100}>
-              <div className="card-lift rounded-2xl bg-white dark:bg-[#1a2940] p-6">
+              <div className="card-lift rounded-2xl bg-white dark:bg-[#1a2244] p-6">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                   <BookHeart className="h-6 w-6" aria-hidden="true" />
                 </div>
@@ -170,7 +170,7 @@ export default function HomePage() {
 
             {/* Wide card: Privacy */}
             <ScrollReveal className="sm:col-span-2 md:col-span-8" delay={300}>
-              <div className="card-lift rounded-2xl bg-white p-6 sm:p-8 dark:bg-[#1a2940]">
+              <div className="card-lift rounded-2xl bg-white p-6 sm:p-8 dark:bg-[#1a2244]">
                 <div className="inline-flex items-center justify-center rounded-2xl bg-primary/10 p-3 text-primary">
                   <Shield className="h-7 w-7" aria-hidden="true" />
                 </div>
@@ -215,7 +215,7 @@ export default function HomePage() {
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/login"
-              className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2940] sm:w-auto"
+              className="btn-press inline-flex min-h-[44px] w-full items-center justify-center rounded-button bg-white px-6 font-semibold text-primary no-underline transition-colors hover:bg-outline-variant/10 dark:hover:bg-[#1a2244] sm:w-auto"
             >
               Bắt đầu ngay
             </Link>
@@ -250,7 +250,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-outline-variant/20 bg-white dark:bg-[#0d1c2e] px-5 py-12 lg:px-16">
+      <footer className="border-t border-outline-variant/20 bg-white dark:bg-[#0f1530] px-5 py-12 lg:px-16">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <Link href="/" className="flex items-center gap-2 text-sm font-semibold font-bold text-primary no-underline">

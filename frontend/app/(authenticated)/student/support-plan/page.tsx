@@ -143,7 +143,7 @@ export default function StudentSupportPlanPage() {
 
   return (
     <section className="space-y-6">
-      <div className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2940]">
+      <div className="card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
             <Users size={20} className="text-primary" aria-hidden="true" />
@@ -156,7 +156,7 @@ export default function StudentSupportPlanPage() {
         <p className="mt-3 text-xs">
           Mọi điều ở đây giúp em nói trước điều mình cần; em vẫn là người quyết định ai được xem phần em muốn chia sẻ.
         </p>
-        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-5">
+        <div className="mt-5 rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] p-5">
           <h2 className="text-sm font-semibold">Em muốn chia sẻ gì</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {data.privacy_notes.map((note) => (
@@ -167,7 +167,7 @@ export default function StudentSupportPlanPage() {
       </div>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
           <h2 className="text-sm font-semibold">Chọn người em tin</h2>
           <p className="mt-3 text-sm">
             Em có thể chọn từ những người đang được liên kết với tài khoản của mình.
@@ -175,7 +175,7 @@ export default function StudentSupportPlanPage() {
           {hasLinkedAdults ? (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {data.available_adults.map((adult) => (
-                <label key={adult.id} className="flex items-start gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-primary/5 dark:bg-[#1a2940]">
+                <label key={adult.id} className="flex items-start gap-3 rounded-2xl border border-outline-variant p-4 transition-colors hover:bg-primary/5 dark:bg-[#1a2244]">
                   <input
                     type="checkbox"
                     checked={selectedAdultIds.includes(adult.id)}
@@ -202,7 +202,7 @@ export default function StudentSupportPlanPage() {
           ) : null}
         </section>
 
-        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
           <h2 className="text-sm font-semibold">Điều em muốn chia sẻ</h2>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <TextAreaField
@@ -238,7 +238,7 @@ export default function StudentSupportPlanPage() {
           />
         </section>
 
-        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+        <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
           <label className="text-xs font-semibold" htmlFor="support-plan-status">
             Trạng thái chia sẻ
           </label>
@@ -246,7 +246,7 @@ export default function StudentSupportPlanPage() {
             id="support-plan-status"
             value={form.status}
             onChange={(event) => updateField("status", event.target.value as SupportPlanStatus)}
-            className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] px-4"
+            className="mt-2 min-h-11 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] px-4"
           >
             {(["active", "paused", "deactivated"] as SupportPlanStatus[]).map((status) => (
               <option key={status} value={status}>
@@ -289,7 +289,7 @@ function TextAreaField({
         id={id}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2940] p-4 text-sm"
+        className="mt-2 min-h-28 w-full rounded-2xl border border-outline-variant bg-white dark:bg-[#1a2244] p-4 text-sm"
       />
     </label>
   );

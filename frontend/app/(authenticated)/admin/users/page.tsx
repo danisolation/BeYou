@@ -215,7 +215,7 @@ export default function AdminUsersPage() {
   return (
     <section className="space-y-5 pb-20 md:pb-0">
       {/* Header */}
-      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5">
+      <header className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -297,7 +297,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* User List */}
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-5 sm:p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-5 sm:p-6">
         <h2 className="text-xs font-medium text-on-background/70 uppercase tracking-wide">
           Danh sách tài khoản
           {!isLoading && ` (${filteredUsers.length})`}
@@ -352,7 +352,7 @@ export default function AdminUsersPage() {
                         onChange={(e) =>
                           setSelectedRoles((cur) => ({ ...cur, [user.id]: e.target.value as AdminUser["role"] }))
                         }
-                        className="min-h-11 w-full rounded-lg border border-outline-variant/30 bg-white px-3 text-xs text-on-background dark:bg-[#1a2940] sm:w-auto"
+                        className="min-h-11 w-full rounded-lg border border-outline-variant/30 bg-white px-3 text-xs text-on-background dark:bg-[#1a2244] sm:w-auto"
                       >
                         <option value="student">Học sinh</option>
                         <option value="teacher">Giáo viên</option>

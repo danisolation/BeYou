@@ -12,7 +12,7 @@ interface ParentMobileNavProps {
 export function ParentMobileNav({ pathname, onLogout }: ParentMobileNavProps) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-white dark:bg-[#1a2940] px-5 py-2 pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around border-t border-outline-variant bg-white dark:bg-[#1a2244] px-5 py-2 pb-[env(safe-area-inset-bottom)] md:hidden"
       aria-label="Điều hướng phụ huynh"
     >
       {parentNav.map((item) => {

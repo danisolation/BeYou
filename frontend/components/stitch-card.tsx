@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const cardVariants = cva(
-  "card-lift rounded-2xl border border-outline-variant/30 bg-white p-5 shadow-sm transition-all duration-200 dark:border-outline-variant/20 dark:bg-[#1a2940]",
+  "card-lift soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 transition-all duration-200 dark:border-outline-variant/20 dark:bg-[#1a2244]",
   {
     variants: {
       variant: {
@@ -66,7 +66,7 @@ export function StitchCard({
           {ctaHref ? (
             <Link
               href={ctaHref}
-              className="btn-press inline-flex min-h-11 items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary no-underline transition-all duration-150 hover:opacity-90"
+              className="btn-press cta-gradient inline-flex min-h-11 items-center rounded-xl px-4 py-2.5 text-sm font-semibold no-underline transition-all duration-150"
             >
               {ctaLabel}
             </Link>
@@ -74,7 +74,7 @@ export function StitchCard({
             <button
               type="button"
               onClick={onCtaClick}
-              className="btn-press inline-flex min-h-11 items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-on-primary transition-all duration-150 hover:opacity-90"
+              className="btn-press cta-gradient inline-flex min-h-11 items-center rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150"
             >
               {ctaLabel}
             </button>

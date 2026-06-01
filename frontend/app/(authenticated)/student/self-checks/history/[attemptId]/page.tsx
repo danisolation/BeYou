@@ -53,13 +53,13 @@ export default function SelfCheckHistoryDetailPage({ params }: PageProps) {
         </p>
       </header>
 
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
         <h2 className="text-sm font-semibold">{attempt.supportive_headline}</h2>
         <p className="mt-3 text-sm">{displayRiskLabel(attempt.state_label)}</p>
         <p className="mt-4 text-xs">Điểm tham khảo: {attempt.score}</p>
       </section>
 
-      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2940] p-6">
+      <section className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
         <h2 className="text-sm font-semibold">Câu trả lời của em</h2>
         <div className="mt-4 space-y-4">
           {attempt.answers.map((answer) => (

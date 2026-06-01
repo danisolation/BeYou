@@ -78,7 +78,7 @@ export function PullToRefresh() {
   return (
     <div
       aria-hidden="true"
-      className={`pointer-events-none fixed left-1/2 top-16 z-40 -translate-x-1/2 rounded-full border border-outline-variant/30 bg-white/95 px-3 py-2 text-xs font-medium text-on-background shadow-sm backdrop-blur dark:bg-[#1a2940]/95 ${
+      className={`pointer-events-none fixed left-1/2 top-16 z-40 -translate-x-1/2 rounded-full border border-outline-variant/30 bg-white/95 px-3 py-2 text-xs font-medium text-on-background shadow-sm backdrop-blur dark:bg-[#1a2244]/95 ${
         pullDistance > 0 ? "opacity-100" : "opacity-0"
       }`}
       style={{ transform: `translateX(-50%) translateY(${Math.min(24, pullDistance / 3)}px)` }}

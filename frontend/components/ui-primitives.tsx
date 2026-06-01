@@ -55,7 +55,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 export function PageHeader({ eyebrow, title, description, actions, children, className }: PageHeaderProps) {
   return (
-    <header className={cn("flex flex-col gap-6 rounded-2xl bg-primary/5 p-6 sm:p-8", className)}>
+    <header className={cn("flex flex-col gap-6 rounded-[20px] bg-primary/5 p-6 sm:p-8", className)}>
       <div className="max-w-3xl">
         {eyebrow ? <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{eyebrow}</p> : null}
         <h1 className="mt-2 text-display">{title}</h1>
@@ -68,7 +68,7 @@ export function PageHeader({ eyebrow, title, description, actions, children, cla
 
 export function Section({ title, description, actions, children, className }: SectionProps) {
   return (
-    <section className={cn("rounded-2xl bg-white p-6 shadow-sm ring-1 ring-outline-variant", className)}>
+    <section className={cn("rounded-[20px] bg-white p-6 soft-card ring-1 ring-outline-variant/60 dark:bg-[#1a2244]", className)}>
       {title || description || actions ? (
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -84,12 +84,12 @@ export function Section({ title, description, actions, children, className }: Se
 }
 
 export function SurfaceCard({ children, className }: PrimitiveProps) {
-  return <div className={cn("rounded-2xl bg-white dark:bg-[#1a2940] p-5 border border-outline-variant/30", className)}>{children}</div>;
+  return <div className={cn("rounded-[20px] bg-white dark:bg-[#1a2244] p-5 soft-card border border-outline-variant/30", className)}>{children}</div>;
 }
 
 export function EntryCard({ title, description, meta, badge, children, className }: EntryCardProps) {
   return (
-    <article className={cn("rounded-2xl bg-white dark:bg-[#1a2940] p-5 border border-outline-variant/30", className)}>
+    <article className={cn("rounded-[20px] bg-white dark:bg-[#1a2244] p-5 soft-card border border-outline-variant/30", className)}>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           {meta ? <div className="mb-2 text-xs text-primary">{meta}</div> : null}

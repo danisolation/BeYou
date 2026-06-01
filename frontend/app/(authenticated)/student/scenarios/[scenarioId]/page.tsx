@@ -81,7 +81,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
         Quay lại danh sách
       </Link>
 
-      <header className="rounded-2xl bg-white dark:bg-[#1a2940] border border-outline-variant/30 p-5">
+      <header className="rounded-2xl bg-white dark:bg-[#1a2244] border border-outline-variant/30 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-lg font-semibold text-on-background">{scenario.title}</h1>
         </div>
@@ -121,7 +121,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
                 <span
                   aria-hidden="true"
                   className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-semibold ${
-                    isSelected ? "bg-primary text-on-primary" : "bg-white dark:bg-[#1a2940] text-on-background"
+                    isSelected ? "bg-primary text-on-primary" : "bg-white dark:bg-[#1a2244] text-on-background"
                   }`}
                 >
                   {index + 1}
@@ -132,7 +132,7 @@ export default function ScenarioDetailPage({ params }: PageProps) {
           })}
         </div>
         {message ? (
-          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white dark:bg-[#1a2940] p-4 text-sm text-on-background/80">{message}</p>
+          <p className="mt-6 rounded-xl border border-[#F59E0B] bg-white dark:bg-[#1a2244] p-4 text-sm text-on-background/80">{message}</p>
         ) : null}
         <button
           className="mt-6 min-h-11 rounded-xl bg-primary px-6 py-3 font-semibold text-on-primary disabled:opacity-60"
@@ -164,11 +164,11 @@ export default function ScenarioDetailPage({ params }: PageProps) {
           ) : null}
           {feedback.feedback ? <p className="mt-3 text-sm text-on-background/80">{feedback.feedback}</p> : null}
           <div className="mt-6 space-y-4">
-            <div className="rounded-xl bg-white dark:bg-[#1a2940] p-4">
+            <div className="rounded-xl bg-white dark:bg-[#1a2244] p-4">
               <h3 className="text-sm font-semibold text-on-background">Lời khuyên nên thử</h3>
               <p className="mt-2 text-sm text-on-background/80">{feedback.recommended_response}</p>
             </div>
-            <div className="rounded-xl bg-white dark:bg-[#1a2940] p-4">
+            <div className="rounded-xl bg-white dark:bg-[#1a2244] p-4">
               <h3 className="text-sm font-semibold text-on-background">Lời khuyên để nhớ</h3>
               <p className="mt-2 text-sm text-on-background/80">{feedback.lesson}</p>
             </div>
