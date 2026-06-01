@@ -46,6 +46,7 @@ def _scenario_list_item(scenario: Scenario) -> ScenarioListItem:
         title=scenario.title,
         situation=scenario.situation,
         skill_tag=scenario.skill_tag,
+        cover_image_url=scenario.cover_image_url,
         status=scenario.status,
         is_demo=scenario.is_demo,
     )

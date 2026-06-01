@@ -1014,7 +1014,7 @@ export default function AdminContentPage() {
   const dialogProps =
     confirmation?.type === "delete-self-check" || confirmation?.type === "delete-scenario"
       ? {
-          message: "Xóa bản nháp chưa dùng này? Chỉ dùng thao tác này khi nội dung chưa từng được học sinh hoàn thành.",
+          message: "Xóa nội dung này? Nếu đã có học sinh hoàn thành, lịch sử của các em sẽ bị xóa theo.",
           cancelLabel: KEEP_CONTENT_COPY,
           confirmLabel: CONFIRM_DELETE_DRAFT_CONTENT_COPY,
         }

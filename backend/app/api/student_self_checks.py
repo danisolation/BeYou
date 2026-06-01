@@ -48,6 +48,7 @@ def _test_list_item(test: SelfCheckTest) -> SelfCheckTestListItem:
         id=test.id,
         title=test.title,
         description=test.description,
+        cover_image_url=test.cover_image_url,
         status=test.status,
         is_active=test.is_active,
         is_demo=test.is_demo,

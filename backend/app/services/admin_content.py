@@ -4,7 +4,7 @@ import uuid
 from collections.abc import Iterable
 
 from fastapi import HTTPException, status
-from sqlalchemy import delete, func, select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session as OrmSession, selectinload
 
 from app.db.models import (
@@ -102,9 +102,9 @@ def _record_content_audit(
     )
 
 
-def _assert_draft_for_delete(status_value: str) -> None:
-    if status_value != ContentStatus.DRAFT.value:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Chỉ có thể xoá bản nháp chưa dùng.")
+def _assert_deletable(status_value: str) -> None:
+    """Allow deletion of content in any status (draft, published, archived)."""
+    pass
 
 
 def _replace_self_check_children(
@@ -279,14 +279,26 @@ def archive_self_check_test(db: OrmSession, *, actor: User, test_id: uuid.UUID) 
 
 def delete_unused_draft_self_check_test(db: OrmSession, *, actor: User, test_id: uuid.UUID) -> SelfCheckTest:
     test = get_self_check_test_or_404(db, test_id)
-    _assert_draft_for_delete(test.status)
-    used_count = db.scalar(select(func.count()).select_from(SelfCheckAttempt).where(SelfCheckAttempt.test_id == test.id))
-    if used_count:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Chỉ có thể xoá bản nháp chưa dùng.")
+    _assert_deletable(test.status)
+    # Cascade-delete attempts and their answers
+    attempt_ids = db.scalars(select(SelfCheckAttempt.id).where(SelfCheckAttempt.test_id == test.id)).all()
+    if attempt_ids:
+        db.execute(delete(SelfCheckAttemptAnswer).where(SelfCheckAttemptAnswer.attempt_id.in_(attempt_ids)))
+        db.execute(delete(SelfCheckAttempt).where(SelfCheckAttempt.test_id == test.id))
+    # Delete child content (thresholds, choices, questions)
+    db.execute(delete(SelfCheckThreshold).where(SelfCheckThreshold.test_id == test.id))
+    db.execute(
+        delete(SelfCheckChoice).where(
+            SelfCheckChoice.question_id.in_(
+                select(SelfCheckQuestion.id).where(SelfCheckQuestion.test_id == test.id)
+            )
+        )
+    )
+    db.execute(delete(SelfCheckQuestion).where(SelfCheckQuestion.test_id == test.id))
     deleted_id = test.id
     deleted = test
     _record_content_audit(
-        db, actor=actor, resource_type="self_check_content", content_id=deleted_id, change_type="delete_draft", is_demo=test.is_demo
+        db, actor=actor, resource_type="self_check_content", content_id=deleted_id, change_type="delete", is_demo=test.is_demo
     )
     db.delete(test)
     db.commit()
@@ -404,15 +416,13 @@ def archive_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID) -> 
 
 def delete_unused_draft_scenario(db: OrmSession, *, actor: User, scenario_id: uuid.UUID) -> Scenario:
     scenario = get_scenario_or_404(db, scenario_id)
-    _assert_draft_for_delete(scenario.status)
-    used_count = db.scalar(
-        select(func.count()).select_from(ScenarioAttempt).where(ScenarioAttempt.scenario_id == scenario.id)
-    )
-    if used_count:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Chỉ có thể xoá bản nháp chưa dùng.")
+    _assert_deletable(scenario.status)
+    # Cascade-delete attempts and child choices
+    db.execute(delete(ScenarioAttempt).where(ScenarioAttempt.scenario_id == scenario.id))
+    db.execute(delete(ScenarioChoice).where(ScenarioChoice.scenario_id == scenario.id))
     deleted = scenario
     _record_content_audit(
-        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="delete_draft", is_demo=scenario.is_demo
+        db, actor=actor, resource_type="scenario_content", content_id=scenario.id, change_type="delete", is_demo=scenario.is_demo
     )
     db.delete(scenario)
     db.commit()
