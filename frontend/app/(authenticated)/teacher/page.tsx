@@ -77,7 +77,7 @@ export default function TeacherDashboardPage() {
 
           <div className="hidden md:block w-full md:w-[240px] shrink-0">
             <img
-              src="/images/d5f5f5e62de74b619442cfe57aba1bd0.png"
+              src="/images/Phương tiện truyền thông (11).jpg"
               alt="Hỗ trợ học sinh"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />

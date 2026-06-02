@@ -1,4 +1,4 @@
-const CACHE_NAME = 'peerlight-shell-v1780373223000';
+const CACHE_NAME = 'peerlight-shell-v1780376953534';
 const FONTS_CACHE = 'peerlight-fonts-v1';
 const SHELL_ASSETS = [
   '/',

@@ -47,7 +47,7 @@ const quickActions = [
   {
     title: "Khám phá cảm xúc",
     description: "Nhận diện và hiểu rõ cảm xúc của bạn",
-    image: "/images/35dffbbcaed147ed913d49909eef5f55.png",
+    image: "/images/Phương tiện truyền thông (8).jpg",
     cta: "Khám phá ngay",
     href: "/student/self-checks",
     icon: Brain,
@@ -55,7 +55,7 @@ const quickActions = [
   {
     title: "Nhật ký cảm xúc",
     description: "Ghi lại cảm xúc mỗi ngày và nhìn lại bản thân",
-    image: "/images/7ee90f6dd91445678b73c54a27b9ba08.png",
+    image: "/images/Phương tiện truyền thông (5).jpg",
     cta: "Viết nhật ký",
     href: "/student/mood-check-ins",
     icon: NotebookPen,
@@ -63,7 +63,7 @@ const quickActions = [
   {
     title: "Tập xử lý tình huống",
     description: "Rèn luyện kỹ năng ứng phó với áp lực",
-    image: "/images/13f0c24c121c4a5b90e0a7e80b55af2b.png",
+    image: "/images/Phương tiện truyền thông (7).jpg",
     cta: "Luyện tập ngay",
     href: "/student/scenarios",
     icon: MessagesSquare,
@@ -71,7 +71,7 @@ const quickActions = [
   {
     title: "Người em tin",
     description: "Kết nối với người bạn tin tưởng để được hỗ trợ",
-    image: "/images/c2df6300c6f64153b647f28f52b2e130.png",
+    image: "/images/Phương tiện truyền thông (12).jpg",
     cta: "Kết nối ngay",
     href: "/student/support-plan",
     icon: HeartHandshake,
@@ -144,7 +144,7 @@ export default function StudentDashboardPage() {
           </div>
           <div className="hidden md:block w-full md:w-[260px] shrink-0">
             <img
-              src="/images/224983ccbdcb4331812dbb85750de8d2.png"
+              src="/images/Phương tiện truyền thông (13).jpg"
               alt="Peerlight AI Robot đồng hành"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />
@@ -378,7 +378,7 @@ export default function StudentDashboardPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/19c2a5f1ede448d592df87982da2b624.png"
+            src="/images/Phương tiện truyền thông (9).jpg"
             alt="Mỗi bước nhỏ"
             className="w-full h-full object-cover opacity-80 brightness-50 dark:opacity-60 dark:brightness-[0.4]"
           />

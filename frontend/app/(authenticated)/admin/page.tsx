@@ -71,7 +71,7 @@ export default function AdminDashboardPage() {
 
           <div className="hidden md:block w-full md:w-[240px] shrink-0">
             <img
-              src="/images/87d8fc63c77349738c275c6f0835b6e9.png"
+              src="/images/Phương tiện truyền thông.jpg"
               alt="Hỗ trợ quản trị"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />

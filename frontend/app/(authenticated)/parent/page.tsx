@@ -74,7 +74,7 @@ export default function ParentDashboardPage() {
 
           <div className="hidden md:block w-full md:w-[240px] shrink-0">
             <img
-              src="/images/d576ea7099444821be6bb70965e3299b.png"
+              src="/images/Phương tiện truyền thông (12).jpg"
               alt="Hỗ trợ con"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />

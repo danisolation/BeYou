@@ -22,6 +22,7 @@ export default function StudentSosPage() {
   const [note, setNote] = useState("");
   
   // Loaded states
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [activeAlert, setActiveAlert] = useState<SosAlert | null>(null);
   const [selectedAdults, setSelectedAdults] = useState<SupportPlanSelectedAdult[]>([]);
