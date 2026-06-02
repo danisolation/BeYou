@@ -63,3 +63,4 @@ See: `.planning/PROJECT.md` (updated 2026-06-01)
 | 260601-ek4 | Rebrand entire app UI to Peerlight AI violet/cyan design | 2026-06-01 | 9085832 | [260601-ek4-redesign-entire-app-ui-to-match-new-peer](./quick/260601-ek4-redesign-entire-app-ui-to-match-new-peer/) |
 | 260601-mac | Fix iOS/macOS Safari login third-party cookie blocking | 2026-06-01 | a52f1d3 | [260601-mac-ios-login](./quick/260601-mac-ios-login/) |
 | 260602-sos-feature-overhaul | Đồng bộ và hoàn thiện tính năng cứu trợ SOS (live tracking, notes, severity) | 2026-06-02 | b179b26 | [260602-sos-feature-overhaul](./quick/260602-sos-feature-overhaul/) |
+| 260602-revert-to-0dbb5a8 | Khôi phục toàn bộ mã nguồn về commit 0dbb5a8 | 2026-06-02 | b25d4f4 | [260602-revert-to-0dbb5a8](./quick/260602-revert-to-0dbb5a8/) |
