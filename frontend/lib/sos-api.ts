@@ -102,6 +102,14 @@ export function listStudentSosAlerts() {
   return dashboardRead<SosAlert[]>("/api/student/sos-alerts");
 }
 
+export function listTeacherSosAlerts() {
+  return dashboardRead<SosAlert[]>("/api/teacher/sos-alerts");
+}
+
+export function listParentSosAlerts() {
+  return dashboardRead<SosAlert[]>("/api/parent/sos-alerts");
+}
+
 export function getTeacherSosAlert(alertId: string) {
   return dashboardRead<SosAlert>(`/api/teacher/sos-alerts/${alertId}`);
 }
