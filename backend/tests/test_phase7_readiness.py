@@ -160,7 +160,8 @@ def test_static_readiness_flags_https_localhost_in_production() -> None:
     assert by_key["origin_security"].status == "fail"
 
 
-def test_settings_runtime_mode_defaults_to_production_pilot() -> None:
+def test_settings_runtime_mode_defaults_to_production_pilot(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("RUNTIME_MODE", raising=False)
     settings = Settings()
 
     assert settings.runtime_mode == "production_pilot"

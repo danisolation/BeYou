@@ -149,6 +149,9 @@ def test_student_submits_repeat_mood_checkins_with_private_note_and_no_auto_sos(
     assert first_payload["context_tags"] == ["school", "sleep"]
     assert first_payload["private_note"].endswith(PRIVATE_MARKER)
 
+    import time
+    time.sleep(0.01)
+
     second_response = client.post(
         "/api/student/mood-check-ins",
         json={

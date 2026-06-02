@@ -18,7 +18,7 @@
 ## Phases
 
 - [x] **Phase 71: External Notification Helpers & Config Readiness** - Setup secure SMTP system validation and verify metadata sanitization for E-mail SOS dispatches. (completed 2026-06-02)
-- [ ] **Phase 72: Multi-School Tenant Schema Scaffolding** - Implement tenant-scoped columns and SQLAlchemy scaffolding to prepare for future school segmentation.
+- [x] **Phase 72: Multi-School Tenant Schema Scaffolding** - Implement tenant-scoped columns and SQLAlchemy scaffolding to prepare for future school segmentation. (completed 2026-06-02)
 - [ ] **Phase 73: Security Polish & Release Gates** - Audit E2E metadata-only security invariants and lock release gates.
 
 ## Phase Details

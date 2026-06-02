@@ -241,6 +241,15 @@ def test_phase36_schema_index_decision_is_evidence_tied() -> None:
         / "36-backend-db-hot-path-optimization"
         / "36-SCHEMA-INDEX-DECISION.md"
     )
+    if not decision_path.exists():
+        decision_path = (
+            ROOT
+            / ".planning"
+            / "milestones"
+            / "v1.6-phases"
+            / "36-backend-db-hot-path-optimization"
+            / "36-SCHEMA-INDEX-DECISION.md"
+        )
 
     assert decision_path.exists()
     text = decision_path.read_text(encoding="utf-8")

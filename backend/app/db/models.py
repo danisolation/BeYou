@@ -140,6 +140,7 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     school: Mapped[str | None] = mapped_column(String(255), nullable=True)
     class_name: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True, index=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, nullable=False
@@ -165,6 +166,7 @@ class Session(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     user_agent_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
     ip_prefix_hash: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True, index=True)
     is_demo: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     auth_method: Mapped[str | None] = mapped_column(String(32), nullable=True)
     auth_provider_key: Mapped[str | None] = mapped_column(String(96), nullable=True)
