@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.3
-milestone_name: milestone
-status: completed
-last_updated: "2026-06-01T01:50:05.432Z"
+milestone: v2.4
+milestone_name: External Notifications & Security Hardening Prep
+status: in_progress
+last_updated: "2026-06-02T12:30:00.123Z"
 progress:
   total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # State: Peerlight AI

@@ -269,9 +269,32 @@ class Settings(BaseSettings):
         if self.session_cookie_samesite == "none" and not self.session_cookie_secure:
             raise ValueError("SESSION_COOKIE_SAMESITE=none requires SESSION_COOKIE_SECURE=true")
 
+    def validate_smtp_configuration_rules(self) -> None:
+        if self.sos_email_provider != "smtp":
+            return
+        p_val = self.smtp_username.strip().lower()
+        p_pw = self.smtp_password.strip().lower()
+        placeholders = {"", "changeme", "change-me", "replace-me", "placeholder", "secret", "test"}
+        is_p_user = p_val in placeholders or p_val.startswith("changeme")
+        is_p_pass = p_pw in placeholders or p_pw.startswith("changeme")
+        missing_smtp_config = (
+            not self.smtp_host.strip()
+            or not self.smtp_from.strip()
+            or is_p_user
+            or is_p_pass
+        )
+        if missing_smtp_config:
+            import logging
+            logger = logging.getLogger("beyou.config")
+            logger.warning(
+                "SMTP configuration is incomplete or contains placeholders. Falling back to 'local_outbox' for safety."
+            )
+            self.sos_email_provider = "local_outbox"
+
 
 @lru_cache
 def get_settings() -> Settings:
     settings = Settings()
     settings.validate_cookie_prefix_rules()
+    settings.validate_smtp_configuration_rules()
     return settings
