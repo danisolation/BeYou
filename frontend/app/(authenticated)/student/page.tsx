@@ -4,7 +4,16 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Brain, NotebookPen, MessagesSquare, HeartHandshake, Bot, Trophy, ArrowRight, Sparkles } from "lucide-react";
+import {
+  Brain,
+  NotebookPen,
+  MessagesSquare,
+  HeartHandshake,
+  Bot,
+  Trophy,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
 import { apiFetch } from "@/lib/api";
@@ -14,9 +23,24 @@ interface ProfileData {
 }
 
 const heroStats = [
-  { icon: "😊", value: "22.450+", label: "Học sinh tin tưởng", tone: "text-[#46ad9a]" },
-  { icon: "💬", value: "1.250+", label: "Câu chuyện được chia sẻ", tone: "text-[#5b88dc]" },
-  { icon: "👍", value: "85%", label: "Cảm thấy tốt hơn mỗi ngày", tone: "text-[#e8669c]" },
+  {
+    icon: "😊",
+    value: "22.450+",
+    label: "Học sinh tin tưởng",
+    tone: "text-[#46ad9a]",
+  },
+  {
+    icon: "💬",
+    value: "1.250+",
+    label: "Câu chuyện được chia sẻ",
+    tone: "text-[#5b88dc]",
+  },
+  {
+    icon: "👍",
+    value: "85%",
+    label: "Cảm thấy tốt hơn mỗi ngày",
+    tone: "text-[#e8669c]",
+  },
 ];
 
 const quickActions = [
@@ -95,7 +119,8 @@ export default function StudentDashboardPage() {
   })();
 
   if (loading) return <DashboardSkeleton cards={4} />;
-  if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
+  if (error)
+    return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
 
   return (
     <div className="space-y-5">
@@ -107,7 +132,8 @@ export default function StudentDashboardPage() {
               {greeting}, {name}! 👋
             </h1>
             <p className="mt-2 text-sm text-[#33416b] sm:text-base">
-              Bạn không đơn độc đâu! Peerlight AI luôn ở đây để lắng nghe, đồng hành và giúp bạn tỏa sáng.
+              Bạn không đơn độc đâu! Peerlight AI luôn ở đây để lắng nghe, đồng
+              hành và giúp bạn tỏa sáng.
             </p>
             <Link
               href="/student/chat"
@@ -124,8 +150,14 @@ export default function StudentDashboardPage() {
             />
           </div>
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl"
+        />
 
         {/* Stats bar */}
         <div className="relative z-10 mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -134,9 +166,13 @@ export default function StudentDashboardPage() {
               key={stat.label}
               className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/80 px-4 py-3 backdrop-blur"
             >
-              <span className="text-2xl" aria-hidden="true">{stat.icon}</span>
+              <span className="text-2xl" aria-hidden="true">
+                {stat.icon}
+              </span>
               <div className="min-w-0">
-                <strong className={`block text-base ${stat.tone}`}>{stat.value}</strong>
+                <strong className={`block text-base ${stat.tone}`}>
+                  {stat.value}
+                </strong>
                 <small className="text-xs text-[#6d7394]">{stat.label}</small>
               </div>
             </div>
@@ -157,7 +193,9 @@ export default function StudentDashboardPage() {
                 <Icon size={18} className="text-primary" aria-hidden="true" />
                 {action.title}
               </h3>
-              <p className="mt-1 min-h-[36px] text-sm text-on-background/60">{action.description}</p>
+              <p className="mt-1 min-h-[36px] text-sm text-on-background/60">
+                {action.description}
+              </p>
               <div className="my-3 overflow-hidden rounded-2xl bg-gradient-to-br from-[#f7fbff] to-[#f9f0ff] dark:from-[#1f2a4d] dark:to-[#241f44] aspect-video relative flex items-center justify-center">
                 <img
                   src={action.image}
@@ -180,7 +218,9 @@ export default function StudentDashboardPage() {
       <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {/* Mood */}
         <article className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
-          <h3 className="text-base font-semibold text-on-background">Hôm nay bạn cảm thấy thế nào?</h3>
+          <h3 className="text-base font-semibold text-on-background">
+            Hôm nay bạn cảm thấy thế nào?
+          </h3>
           <div className="mt-4 flex items-end justify-between gap-2">
             {moods.map((mood, index) => {
               const selected = selectedMood === index;
@@ -191,10 +231,14 @@ export default function StudentDashboardPage() {
                   onClick={() => setSelectedMood(index)}
                   aria-pressed={selected}
                   className={`flex flex-col items-center gap-1 rounded-xl px-1.5 py-1 text-xs transition-all ${
-                    selected ? "-translate-y-1 font-semibold text-primary" : "text-on-background/60 hover:-translate-y-0.5"
+                    selected
+                      ? "-translate-y-1 font-semibold text-primary"
+                      : "text-on-background/60 hover:-translate-y-0.5"
                   }`}
                 >
-                  <span className="text-3xl" aria-hidden="true">{mood.emoji}</span>
+                  <span className="text-3xl" aria-hidden="true">
+                    {mood.emoji}
+                  </span>
                   {mood.label}
                 </button>
               );
@@ -216,11 +260,21 @@ export default function StudentDashboardPage() {
         {/* Pressure chart */}
         <article className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-semibold text-on-background">Mức độ áp lực (tuần này)</h3>
-            <span className="rounded-lg bg-primary px-2 py-1 text-[10px] font-semibold text-on-primary">Trung bình</span>
+            <h3 className="text-base font-semibold text-on-background">
+              Mức độ áp lực (tuần này)
+            </h3>
+            <span className="rounded-lg bg-primary px-2 py-1 text-[10px] font-semibold text-on-primary">
+              Trung bình
+            </span>
           </div>
           <div className="mt-4 h-28">
-            <svg viewBox="0 0 360 130" preserveAspectRatio="none" className="h-full w-full" role="img" aria-label="Biểu đồ minh hoạ mức độ áp lực trong tuần">
+            <svg
+              viewBox="0 0 360 130"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+              role="img"
+              aria-label="Biểu đồ minh hoạ mức độ áp lực trong tuần"
+            >
               <path d="M0 100H360" stroke="#dde3f5" strokeWidth="1" />
               <path
                 d="M0,100 C35,105 46,92 72,88 S118,96 142,78 S169,26 194,60 S235,86 258,63 S302,42 360,75"
@@ -237,19 +291,28 @@ export default function StudentDashboardPage() {
               </g>
             </svg>
           </div>
-          <p className="mt-2 text-xs text-on-background/50">Biểu đồ minh hoạ — ghi nhật ký mỗi ngày để theo dõi xu hướng thật của bạn.</p>
+          <p className="mt-2 text-xs text-on-background/50">
+            Biểu đồ minh hoạ — ghi nhật ký mỗi ngày để theo dõi xu hướng thật
+            của bạn.
+          </p>
         </article>
 
         {/* Challenge */}
         <article className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
-          <h3 className="text-base font-semibold text-on-background">Thử thách hôm nay</h3>
+          <h3 className="text-base font-semibold text-on-background">
+            Thử thách hôm nay
+          </h3>
           <div className="mt-4 flex items-center gap-4">
             <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[#fff3d9] to-[#ffe0ef]">
               <Trophy className="text-[#e8a13a]" size={32} aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <strong className="text-sm text-on-background">Thử thách 7 ngày</strong>
-              <p className="text-xs text-on-background/55">Yêu thương bản thân · Ngày 2/7</p>
+              <strong className="text-sm text-on-background">
+                Thử thách 7 ngày
+              </strong>
+              <p className="text-xs text-on-background/55">
+                Yêu thương bản thân · Ngày 2/7
+              </p>
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-outline-variant/30">
                 <span className="block h-full w-[28%] rounded-full bg-gradient-to-r from-primary to-accent-blue" />
               </div>
@@ -267,16 +330,28 @@ export default function StudentDashboardPage() {
       {/* AI chat panel */}
       <section className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
         <div className="flex items-center gap-3 border-b border-outline-variant/40 pb-4">
-          <span className="brand-gradient grid h-11 w-11 place-items-center rounded-xl text-xl" aria-hidden="true">🤖</span>
+          <span
+            className="brand-gradient grid h-11 w-11 place-items-center rounded-xl text-xl"
+            aria-hidden="true"
+          >
+            🤖
+          </span>
           <div>
-            <h3 className="text-base font-semibold text-on-background">Trò chuyện cùng Peerlight AI</h3>
-            <p className="text-xs text-on-background/55">AI luôn sẵn sàng lắng nghe bạn 24/7</p>
+            <h3 className="text-base font-semibold text-on-background">
+              Trò chuyện cùng Peerlight AI
+            </h3>
+            <p className="text-xs text-on-background/55">
+              AI luôn sẵn sàng lắng nghe bạn 24/7
+            </p>
           </div>
         </div>
         <div className="mt-4 flex gap-3">
-          <span className="text-2xl" aria-hidden="true">🤖</span>
+          <span className="text-2xl" aria-hidden="true">
+            🤖
+          </span>
           <p className="rounded-2xl bg-surface-container-low px-4 py-3 text-sm text-on-background/80 dark:bg-[#222a4d]">
-            Xin chào! 👋 Mình là Peerlight AI. Bạn đang cảm thấy thế nào hôm nay?
+            Xin chào! 👋 Mình là Peerlight AI. Bạn đang cảm thấy thế nào hôm
+            nay?
           </p>
         </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -309,14 +384,21 @@ export default function StudentDashboardPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#7457e8]/30 via-[#1a2244]/55 to-[#0f1530]/40" />
         </div>
-        
+
         {/* Content */}
         <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Sparkles size={24} className="text-[#85e9f1] animate-pulse" aria-hidden="true" />
+          <Sparkles
+            size={24}
+            className="text-[#85e9f1] animate-pulse"
+            aria-hidden="true"
+          />
           <strong className="text-sm sm:text-base font-bold drop-shadow-md tracking-wide text-white">
-            Mỗi bước nhỏ hôm nay là một phiên bản tốt hơn của chính bạn ngày mai.
+            Mỗi bước nhỏ hôm nay là một phiên bản tốt hơn của chính bạn ngày
+            mai.
           </strong>
-          <span className="text-xl drop-shadow-md" aria-hidden="true">🙌</span>
+          <span className="text-xl drop-shadow-md" aria-hidden="true">
+            🙌
+          </span>
         </div>
       </section>
     </div>

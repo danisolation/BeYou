@@ -41,7 +41,9 @@ export default function AdminDashboardPage() {
         if (isActive) setIsLoading(false);
       });
 
-    return () => { isActive = false; };
+    return () => {
+      isActive = false;
+    };
   }, []);
 
   if (isLoading) return <DashboardSkeleton cards={6} />;
@@ -52,13 +54,17 @@ export default function AdminDashboardPage() {
       <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-xl flex-1">
-            <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Quản trị hệ thống</h1>
+            <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">
+              Quản trị hệ thống
+            </h1>
             <p className="mt-2 text-sm text-[#33416b] sm:text-base">
-              Tổng quan và truy cập nhanh các chức năng quản trị — chỉ hiển thị dữ liệu tổng hợp, không có thông tin riêng của từng học sinh.
+              Tổng quan và truy cập nhanh các chức năng quản trị — chỉ hiển thị
+              dữ liệu tổng hợp, không có thông tin riêng của từng học sinh.
             </p>
             {loadError && (
               <p className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white/70 px-3 py-2 text-xs text-[#33416b] backdrop-blur">
-                <AlertTriangle size={14} aria-hidden="true" /> Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
+                <AlertTriangle size={14} aria-hidden="true" /> Không tải được
+                thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
               </p>
             )}
           </div>
@@ -71,22 +77,42 @@ export default function AdminDashboardPage() {
             />
           </div>
         </div>
-        <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
-        <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl"
+        />
 
         {/* Stats bar */}
         <div className="relative z-10 mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 backdrop-blur">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary" aria-hidden="true"><Users size={18} /></span>
+            <span
+              className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary"
+              aria-hidden="true"
+            >
+              <Users size={18} />
+            </span>
             <div className="min-w-0">
-              <strong className="block text-xl text-[#5b88dc]">{previews.users}</strong>
+              <strong className="block text-xl text-[#5b88dc]">
+                {previews.users}
+              </strong>
               <small className="text-xs text-[#6d7394]">Tài khoản</small>
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 backdrop-blur">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-violet/15 text-accent-violet" aria-hidden="true"><Link2 size={18} /></span>
+            <span
+              className="grid h-10 w-10 place-items-center rounded-xl bg-accent-violet/15 text-accent-violet"
+              aria-hidden="true"
+            >
+              <Link2 size={18} />
+            </span>
             <div className="min-w-0">
-              <strong className="block text-xl text-[#7457e8]">{previews.links}</strong>
+              <strong className="block text-xl text-[#7457e8]">
+                {previews.links}
+              </strong>
               <small className="text-xs text-[#6d7394]">Liên kết</small>
             </div>
           </div>
@@ -94,10 +120,17 @@ export default function AdminDashboardPage() {
             href="/admin/operations"
             className="flex items-center gap-3 rounded-2xl border border-white/70 bg-white/85 px-4 py-3 no-underline backdrop-blur transition-shadow hover:shadow-md"
           >
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-accent-cyan/20 text-[#3aa6c2]" aria-hidden="true"><Activity size={18} /></span>
+            <span
+              className="grid h-10 w-10 place-items-center rounded-xl bg-accent-cyan/20 text-[#3aa6c2]"
+              aria-hidden="true"
+            >
+              <Activity size={18} />
+            </span>
             <div className="min-w-0">
               <strong className="block text-sm text-[#17204c]">Pilot</strong>
-              <small className="inline-flex items-center gap-1 text-xs text-[#6d7394]">Xem trạng thái <ArrowRight size={12} aria-hidden="true" /></small>
+              <small className="inline-flex items-center gap-1 text-xs text-[#6d7394]">
+                Xem trạng thái <ArrowRight size={12} aria-hidden="true" />
+              </small>
             </div>
           </Link>
         </div>
@@ -181,7 +214,17 @@ export default function AdminDashboardPage() {
   );
 }
 
-function AdminCard({ href, icon, title, description }: { href: string; icon: React.ReactNode; title: string; description: string }) {
+function AdminCard({
+  href,
+  icon,
+  title,
+  description,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
   return (
     <Link
       href={href}
