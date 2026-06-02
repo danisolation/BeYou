@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Bot, ShieldAlert, Users, ArrowRight, RefreshCw } from "lucide-react";
@@ -39,8 +41,8 @@ export default function TeacherDashboardPage() {
     <div className="space-y-5">
       {/* Hero */}
       <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
-        <div className="relative z-10 flex items-start justify-between gap-4">
-          <div className="max-w-xl">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-xl flex-1">
             <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Xin chào, thầy/cô! 👋</h1>
             <p className="mt-2 text-sm text-[#33416b] sm:text-base">
               Đồng hành cùng học sinh trong phạm vi quyền riêng tư — chỉ các em đã gửi tín hiệu SOS mới hiển thị tóm tắt hỗ trợ.
@@ -52,7 +54,16 @@ export default function TeacherDashboardPage() {
               Trò chuyện cùng AI <Bot size={18} aria-hidden="true" />
             </Link>
           </div>
-          <div className="flex flex-col items-end gap-1">
+          
+          <div className="hidden md:block w-full md:w-[240px] shrink-0">
+            <img
+              src="/images/d5f5f5e62de74b619442cfe57aba1bd0.png"
+              alt="Hỗ trợ học sinh"
+              className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
+            />
+          </div>
+
+          <div className="flex flex-col items-end gap-1 absolute top-0 right-0">
             <button
               type="button"
               onClick={load}
@@ -63,7 +74,7 @@ export default function TeacherDashboardPage() {
             </button>
             {lastUpdated && (
               <span className="text-[10px] text-[#33416b]/70">
-                Cập nhật {lastUpdated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+                {lastUpdated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
               </span>
             )}
           </div>

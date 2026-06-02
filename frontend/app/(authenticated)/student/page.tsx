@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Brain, NotebookPen, MessagesSquare, HeartHandshake, Bot, Trophy, ArrowRight, Sparkles } from "lucide-react";
@@ -21,7 +23,7 @@ const quickActions = [
   {
     title: "Khám phá cảm xúc",
     description: "Nhận diện và hiểu rõ cảm xúc của bạn",
-    art: "🎨",
+    image: "/images/35dffbbcaed147ed913d49909eef5f55.png",
     cta: "Khám phá ngay",
     href: "/student/self-checks",
     icon: Brain,
@@ -29,7 +31,7 @@ const quickActions = [
   {
     title: "Nhật ký cảm xúc",
     description: "Ghi lại cảm xúc mỗi ngày và nhìn lại bản thân",
-    art: "📝",
+    image: "/images/7ee90f6dd91445678b73c54a27b9ba08.png",
     cta: "Viết nhật ký",
     href: "/student/mood-check-ins",
     icon: NotebookPen,
@@ -37,7 +39,7 @@ const quickActions = [
   {
     title: "Tập xử lý tình huống",
     description: "Rèn luyện kỹ năng ứng phó với áp lực",
-    art: "🗣️",
+    image: "/images/13f0c24c121c4a5b90e0a7e80b55af2b.png",
     cta: "Luyện tập ngay",
     href: "/student/scenarios",
     icon: MessagesSquare,
@@ -45,7 +47,7 @@ const quickActions = [
   {
     title: "Người em tin",
     description: "Kết nối với người bạn tin tưởng để được hỗ trợ",
-    art: "💖",
+    image: "/images/c2df6300c6f64153b647f28f52b2e130.png",
     cta: "Kết nối ngay",
     href: "/student/support-plan",
     icon: HeartHandshake,
@@ -99,19 +101,28 @@ export default function StudentDashboardPage() {
     <div className="space-y-5">
       {/* Hero */}
       <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
-        <div className="relative z-10 max-w-2xl">
-          <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">
-            {greeting}, {name}! 👋
-          </h1>
-          <p className="mt-2 text-sm text-[#33416b] sm:text-base">
-            Bạn không đơn độc đâu! Peerlight AI luôn ở đây để lắng nghe, đồng hành và giúp bạn tỏa sáng.
-          </p>
-          <Link
-            href="/student/chat"
-            className="btn-press cta-gradient mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold no-underline"
-          >
-            Trò chuyện cùng AI <Bot size={18} aria-hidden="true" />
-          </Link>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div className="max-w-2xl flex-1">
+            <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">
+              {greeting}, {name}! 👋
+            </h1>
+            <p className="mt-2 text-sm text-[#33416b] sm:text-base">
+              Bạn không đơn độc đâu! Peerlight AI luôn ở đây để lắng nghe, đồng hành và giúp bạn tỏa sáng.
+            </p>
+            <Link
+              href="/student/chat"
+              className="btn-press cta-gradient mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold no-underline"
+            >
+              Trò chuyện cùng AI <Bot size={18} aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="hidden md:block w-full md:w-[260px] shrink-0">
+            <img
+              src="/images/224983ccbdcb4331812dbb85750de8d2.png"
+              alt="Peerlight AI Robot đồng hành"
+              className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
+            />
+          </div>
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
@@ -147,8 +158,12 @@ export default function StudentDashboardPage() {
                 {action.title}
               </h3>
               <p className="mt-1 min-h-[36px] text-sm text-on-background/60">{action.description}</p>
-              <div className="my-3 grid h-24 place-items-center rounded-2xl bg-gradient-to-br from-[#f7fbff] to-[#f9f0ff] text-5xl dark:from-[#1f2a4d] dark:to-[#241f44]">
-                <span aria-hidden="true">{action.art}</span>
+              <div className="my-3 overflow-hidden rounded-2xl bg-gradient-to-br from-[#f7fbff] to-[#f9f0ff] dark:from-[#1f2a4d] dark:to-[#241f44] aspect-video relative flex items-center justify-center">
+                <img
+                  src={action.image}
+                  alt={action.title}
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
               </div>
               <Link
                 href={action.href}
@@ -284,12 +299,25 @@ export default function StudentDashboardPage() {
       </section>
 
       {/* Banner */}
-      <section className="soft-card flex items-center justify-center gap-4 overflow-hidden rounded-[20px] bg-gradient-to-r from-[#667eea] via-[#a988ee] to-[#ffcfb4] p-5 text-center text-white">
-        <Sparkles size={28} aria-hidden="true" />
-        <strong className="text-sm sm:text-base">
-          Mỗi bước nhỏ hôm nay là một phiên bản tốt hơn của chính bạn ngày mai.
-        </strong>
-        <span className="text-2xl" aria-hidden="true">🙌</span>
+      <section className="soft-card relative overflow-hidden rounded-[20px] p-6 text-center text-white min-h-[140px] flex flex-col justify-center items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/19c2a5f1ede448d592df87982da2b624.png"
+            alt="Mỗi bước nhỏ"
+            className="w-full h-full object-cover opacity-80 brightness-50 dark:opacity-60 dark:brightness-[0.4]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#7457e8]/30 via-[#1a2244]/55 to-[#0f1530]/40" />
+        </div>
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Sparkles size={24} className="text-[#85e9f1] animate-pulse" aria-hidden="true" />
+          <strong className="text-sm sm:text-base font-bold drop-shadow-md tracking-wide text-white">
+            Mỗi bước nhỏ hôm nay là một phiên bản tốt hơn của chính bạn ngày mai.
+          </strong>
+          <span className="text-xl drop-shadow-md" aria-hidden="true">🙌</span>
+        </div>
       </section>
     </div>
   );

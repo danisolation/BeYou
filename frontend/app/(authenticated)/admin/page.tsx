@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useState } from "react";
 import {
   Bot,
@@ -48,16 +50,26 @@ export default function AdminDashboardPage() {
     <div className="space-y-6">
       {/* Hero */}
       <section className="hero-gradient soft-card animate-fade-in relative overflow-hidden rounded-[20px] p-6 sm:p-8">
-        <div className="relative z-10 max-w-xl">
-          <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Quản trị hệ thống</h1>
-          <p className="mt-2 text-sm text-[#33416b] sm:text-base">
-            Tổng quan và truy cập nhanh các chức năng quản trị — chỉ hiển thị dữ liệu tổng hợp, không có thông tin riêng của từng học sinh.
-          </p>
-          {loadError && (
-            <p className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white/70 px-3 py-2 text-xs text-[#33416b] backdrop-blur">
-              <AlertTriangle size={14} aria-hidden="true" /> Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-xl flex-1">
+            <h1 className="text-2xl font-bold text-[#17204c] sm:text-3xl">Quản trị hệ thống</h1>
+            <p className="mt-2 text-sm text-[#33416b] sm:text-base">
+              Tổng quan và truy cập nhanh các chức năng quản trị — chỉ hiển thị dữ liệu tổng hợp, không có thông tin riêng của từng học sinh.
             </p>
-          )}
+            {loadError && (
+              <p className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white/70 px-3 py-2 text-xs text-[#33416b] backdrop-blur">
+                <AlertTriangle size={14} aria-hidden="true" /> Không tải được thống kê nhanh. Hãy kiểm tra kết nối và tải lại trang.
+              </p>
+            )}
+          </div>
+
+          <div className="hidden md:block w-full md:w-[240px] shrink-0">
+            <img
+              src="/images/87d8fc63c77349738c275c6f0835b6e9.png"
+              alt="Hỗ trợ quản trị"
+              className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
+            />
+          </div>
         </div>
         <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-10 h-48 w-48 rounded-full bg-white/30 blur-2xl" />
         <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 right-10 h-44 w-44 rounded-full bg-accent-violet/30 blur-2xl" />
