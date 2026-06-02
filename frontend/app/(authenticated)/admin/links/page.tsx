@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Link2, Plus, Search, UserCheck, UserX, ChevronDown } from "lucide-react";
+import { Link2, Plus, Search, UserX } from "lucide-react";
 
 import {
   CONFIRM_REVOKE_LINK_COPY,

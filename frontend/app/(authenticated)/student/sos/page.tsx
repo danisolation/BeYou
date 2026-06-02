@@ -8,7 +8,6 @@ import {
   createStudentSosAlert,
   listStudentSosAlerts,
   SosAlert,
-  sosSeverityLabels,
 } from "@/lib/sos-api";
 import { getStudentSupportPlan, SupportPlanSelectedAdult } from "@/lib/support-plan-api";
 
@@ -16,7 +15,6 @@ type SosState = "initial" | "loading" | "activated" | "error";
 
 export default function StudentSosPage() {
   const [state, setState] = useState<SosState>("initial");
-  const [isPageLoading, setIsPageLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Form states
@@ -24,6 +22,7 @@ export default function StudentSosPage() {
   const [note, setNote] = useState("");
   
   // Loaded states
+  const [isPageLoading, setIsPageLoading] = useState(false);
   const [activeAlert, setActiveAlert] = useState<SosAlert | null>(null);
   const [selectedAdults, setSelectedAdults] = useState<SupportPlanSelectedAdult[]>([]);
 

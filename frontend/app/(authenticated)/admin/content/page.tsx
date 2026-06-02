@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FileText, Trash2, Plus, Archive, ArrowLeft, ChevronRight, Search, Check, Copy, ImagePlus } from "lucide-react";
 
@@ -179,14 +181,6 @@ function TextAreaField({
 function toNumber(value: string): number {
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function labelFor(base: string, index: number): string {
-  return index === 0 ? base : `${base} ${index + 1}`;
-}
-
-function choiceLabel(base: string, questionIndex: number, choiceIndex: number): string {
-  return questionIndex === 0 && choiceIndex === 0 ? base : `${base} ${questionIndex + 1}.${choiceIndex + 1}`;
 }
 
 function errorCopy(error: unknown): string {
@@ -1134,8 +1128,8 @@ export default function AdminContentPage() {
                         <span
                           role="button"
                           tabIndex={0}
-                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "archive-self-check", id: item.id }); }}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "archive-self-check", id: item.id }); } }}
+                          onClick={(e) => { e.stopPropagation(); if (item.id) setConfirmation({ type: "archive-self-check", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); if (item.id) setConfirmation({ type: "archive-self-check", id: item.id }); } }}
                           className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
                           title="Lưu trữ"
                         >
@@ -1145,8 +1139,8 @@ export default function AdminContentPage() {
                       <span
                         role="button"
                         tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); }}
-                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-self-check", id: item.id }); } }}
+                        onClick={(e) => { e.stopPropagation(); if (item.id) setConfirmation({ type: "delete-self-check", id: item.id }); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); if (item.id) setConfirmation({ type: "delete-self-check", id: item.id }); } }}
                         className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
                         title="Xóa"
                       >
@@ -1195,8 +1189,8 @@ export default function AdminContentPage() {
                         <span
                           role="button"
                           tabIndex={0}
-                          onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "archive-scenario", id: item.id }); }}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "archive-scenario", id: item.id }); } }}
+                          onClick={(e) => { e.stopPropagation(); if (item.id) setConfirmation({ type: "archive-scenario", id: item.id }); }}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); if (item.id) setConfirmation({ type: "archive-scenario", id: item.id }); } }}
                           className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30"
                           title="Lưu trữ"
                         >
@@ -1206,8 +1200,8 @@ export default function AdminContentPage() {
                       <span
                         role="button"
                         tabIndex={0}
-                        onClick={(e) => { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); }}
-                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); item.id && setConfirmation({ type: "delete-scenario", id: item.id }); } }}
+                        onClick={(e) => { e.stopPropagation(); if (item.id) setConfirmation({ type: "delete-scenario", id: item.id }); }}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); if (item.id) setConfirmation({ type: "delete-scenario", id: item.id }); } }}
                         className="inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30"
                         title="Xóa"
                       >
@@ -1367,7 +1361,7 @@ export default function AdminContentPage() {
                 {selfCheckDraft.thresholds.length === 0 ? (
                   <div className="rounded-2xl border-2 border-dashed border-outline-variant/40 p-6 text-center space-y-2">
                     <p className="text-sm text-on-background/70">Chưa có ngưỡng điểm nào.</p>
-                    <p className="text-xs text-on-background/50">Bấm <strong>"Tự phân dải điểm"</strong> để tự động tạo ngưỡng dựa trên câu hỏi, hoặc <strong>"Thêm ngưỡng"</strong> để tự cấu hình từng mức.</p>
+                    <p className="text-xs text-on-background/50">Bấm <strong>&quot;Tự phân dải điểm&quot;</strong> để tự động tạo ngưỡng dựa trên câu hỏi, hoặc <strong>&quot;Thêm ngưỡng&quot;</strong> để tự cấu hình từng mức.</p>
                   </div>
                 ) : null}
 

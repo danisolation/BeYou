@@ -15,7 +15,7 @@ type MockResponse = {
 };
 
 function mockFetch(responses: Record<string, MockResponse>) {
-  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+  const fetchMock = vi.fn((url: string) => {
     const path = new URL(url).pathname;
     const response = responses[path] ?? { status: 404, body: { detail: "missing" } };
     return Promise.resolve(

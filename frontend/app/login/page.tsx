@@ -11,7 +11,6 @@ import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 const DEMO_DISABLED_COPY =
   "Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp.";
 const PROVIDER_DISABLED_COPY = "Đăng nhập bên ngoài chưa được kích hoạt.";
-const CAPABILITIES_LOADING_COPY = "Đang kiểm tra cấu hình hệ thống...";
 const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp.";
 
 const brandingCards = [
