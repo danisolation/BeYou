@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { HeartHandshake, Menu, X, Trash2, Plus, Search, MessageSquare, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { HeartHandshake, Menu, X, Trash2, Plus, Search, Send, ShieldCheck, Sparkles } from "lucide-react";
 
 import { ChatSkeleton } from "@/components/skeletons";
 import { useToast } from "@/components/toast";
@@ -331,9 +331,10 @@ export default function StudentChatPage() {
           </div>
         )}
 
-        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-[20px] border border-outline-variant/30 bg-white dark:bg-[#1a2244] soft-card shadow-sm">
+        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-[24px] border border-outline-variant/30 bg-white dark:bg-[#1a2244] soft-card shadow-sm">
           {/* Chat header */}
-          <div className="flex items-center justify-between border-b border-outline-variant/20 px-5 py-4 bg-primary/5">
+          <div className="border-b border-outline-variant/20 bg-gradient-to-r from-primary/10 via-white to-accent-violet/10 px-5 py-4 dark:from-primary/15 dark:via-[#1a2244] dark:to-accent-violet/10">
+            <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -343,16 +344,14 @@ export default function StudentChatPage() {
               >
                 <Menu size={18} aria-hidden="true" />
               </button>
-              <div>
-                <h2 className="text-sm font-bold text-on-background flex items-center gap-1.5">
-                  <Sparkles size={16} className="text-primary animate-pulse" />
+              <div className="min-w-0">
+                <h2 className="flex items-center gap-1.5 text-base font-extrabold text-on-background">
+                  <Sparkles size={17} className="text-primary animate-pulse" />
                   Peerlight AI Chat
                 </h2>
-                {activeThread && (
-                  <p className="text-[11px] text-on-background/60 mt-0.5 max-w-[200px] sm:max-w-xs truncate">
-                    Đang hội thoại: {activeThread.title}
-                  </p>
-                )}
+                <p className="mt-0.5 max-w-[220px] truncate text-[11px] font-medium text-on-background/60 sm:max-w-md">
+                  {activeThread ? `Đang hội thoại: ${activeThread.title}` : "Một không gian nhẹ nhàng để em viết ra điều đang giữ trong lòng."}
+                </p>
               </div>
             </div>
             
@@ -368,22 +367,42 @@ export default function StudentChatPage() {
                 <span className="hidden sm:inline">Xóa trò chuyện</span>
               </button>
             )}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {SAFETY_POINTS.map((point) => (
+                <span
+                  key={point}
+                  className="inline-flex items-center gap-1 rounded-full border border-primary/10 bg-white/70 px-2.5 py-1 text-[11px] font-bold text-primary shadow-sm dark:bg-white/5 dark:text-accent-violet"
+                >
+                  <ShieldCheck size={12} aria-hidden="true" />
+                  {point}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Messages area */}
           <div className="flex-1 overflow-x-hidden overflow-y-auto px-5 py-5 space-y-4">
+            {!isLoading && messages.length > 0 ? (
+              <div className="rounded-2xl border border-primary/10 bg-primary/[0.035] p-3 text-xs leading-relaxed text-on-background/65 dark:bg-primary/10">
+                <span className="font-bold text-primary dark:text-accent-violet">Nhắc nhẹ:</span> {INTRO_COPY} Nếu thấy không an toàn ngay lúc này, em có thể dùng SOS ở bất cứ lúc nào.
+              </div>
+            ) : null}
             {isLoading ? <ChatSkeleton /> : null}
             {!isLoading && messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8 text-center max-w-lg mx-auto">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-[#a855f7] text-white shadow-md shadow-primary/10">
-                  <MessageSquare size={24} />
+                <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-gradient-to-tr from-primary to-[#a855f7] text-white shadow-lg shadow-primary/20">
+                  <HeartHandshake size={28} />
                 </div>
-                <h3 className="mt-4 text-base font-bold text-on-background">Chào em!</h3>
+                <h3 className="mt-5 text-xl font-extrabold text-on-background">Chào em, mình đang lắng nghe.</h3>
                 <p className="mt-2 text-sm text-on-background/75 leading-relaxed font-medium">
                   {PRIVATE_CHAT_COPY}
                 </p>
-                <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 rounded-xl p-3 mt-4 text-xs text-primary max-w-md">
-                  💡 {IMMEDIATE_SUPPORT_COPY}
+                <div className="mt-4 grid w-full gap-3 rounded-2xl border border-primary/10 bg-primary/5 p-3 text-left text-xs text-on-background/70 dark:bg-primary/10 sm:grid-cols-[1fr_auto] sm:items-center">
+                  <p><span className="font-bold text-primary dark:text-accent-violet">Khi cần gấp:</span> {IMMEDIATE_SUPPORT_COPY}</p>
+                  <Link href="/student/sos" className="inline-flex min-h-10 items-center justify-center rounded-xl bg-red-600 px-3 text-xs font-bold text-white no-underline shadow-sm shadow-red-600/20 hover:bg-red-700">
+                    Mở SOS
+                  </Link>
                 </div>
 
                 <div className="w-full mt-8">
@@ -444,14 +463,15 @@ export default function StudentChatPage() {
           </div>
 
           {/* Input area */}
-          <form className="border-t border-outline-variant/20 px-5 py-4 bg-primary/[0.02]" onSubmit={handleSend}>
+          <form className="border-t border-outline-variant/20 bg-white/90 px-5 py-4 backdrop-blur dark:bg-[#1a2244]/95" onSubmit={handleSend}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
               <textarea
                 id="chat-message"
                 aria-label="Điều em muốn chia sẻ"
                 aria-required="true"
                 value={draft}
-                onChange={(event) => setDraft(event.target.value)}
+                maxLength={CHAT_CHARACTER_LIMIT}
+                onChange={(event) => setDraft(event.target.value.slice(0, CHAT_CHARACTER_LIMIT))}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" && !event.shiftKey) {
                     event.preventDefault();
@@ -465,15 +485,15 @@ export default function StudentChatPage() {
                 }}
                 placeholder="Viết vài dòng theo cách em thấy thoải mái..."
                 rows={2}
-                className="min-h-[2.75rem] max-h-32 flex-1 resize-none rounded-xl border border-outline-variant/30 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-on-background/40 focus:border-primary dark:border-outline-variant/20 focus:ring-1 focus:ring-primary/25"
+                className="min-h-[3rem] max-h-32 flex-1 resize-none rounded-2xl border border-outline-variant/30 bg-surface px-4 py-3 text-sm outline-none placeholder:text-on-background/40 focus:border-primary dark:border-outline-variant/20 focus:ring-2 focus:ring-primary/20"
               />
               <button
                 type="submit"
                 disabled={isSending || !draft.trim()}
-                className="btn-press flex min-h-11 w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-accent-violet px-5 text-sm font-bold text-on-primary disabled:opacity-40 disabled:from-primary disabled:to-primary sm:w-auto hover:brightness-105 hover:shadow-md transition-all shadow-sm shadow-primary/20"
+                className="btn-press flex min-h-12 w-full shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-gradient-to-r from-primary to-accent-violet px-5 text-sm font-bold text-on-primary disabled:opacity-40 disabled:from-primary disabled:to-primary sm:w-auto hover:brightness-105 hover:shadow-md transition-all shadow-sm shadow-primary/20"
               >
                 {isSending ? (
-                  "..."
+                  "Đang gửi..."
                 ) : (
                   <>
                     <span>Gửi</span>
@@ -482,9 +502,12 @@ export default function StudentChatPage() {
                 )}
               </button>
             </div>
-            <p className="mt-2.5 text-[10px] text-on-background/45 leading-relaxed">
-              {INTRO_COPY}
-            </p>
+            <div className="mt-2.5 flex flex-col gap-1 text-[10px] text-on-background/45 sm:flex-row sm:items-center sm:justify-between">
+              <p className="leading-relaxed">Nhấn Enter để gửi, Shift + Enter để xuống dòng. {INTRO_COPY}</p>
+              <span className={`font-bold ${remainingCharacters < 120 ? "text-red-500" : "text-on-background/45"}`}>
+                {draft.length}/{CHAT_CHARACTER_LIMIT}
+              </span>
+            </div>
           </form>
         </section>
       </div>
@@ -495,6 +518,7 @@ export default function StudentChatPage() {
 function ChatBubble({ message }: { message: ChatMessage }) {
   const isStudent = message.role === "student";
   const paragraphs = message.content.split("\n").filter(Boolean);
+  const sentAt = formatChatTime(message.created_at);
   if (message.safety_flagged && !isStudent) {
     return (
       <article className="rounded-2xl border-2 border-red-200 bg-red-50 dark:bg-red-950/20 dark:border-red-900/30 p-4 shadow-sm">
@@ -503,9 +527,9 @@ function ChatBubble({ message }: { message: ChatMessage }) {
           <h2 className="text-sm font-bold text-red-800 dark:text-red-300">Mình muốn ưu tiên sự an toàn của em</h2>
         </div>
         <div className="mt-2 space-y-2 text-sm text-red-700 dark:text-red-300/80 leading-relaxed font-medium">
-          {paragraphs.map((paragraph) => (
+          {paragraphs.length > 0 ? paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
-          ))}
+          )) : <p>Mình muốn em ưu tiên an toàn ngay lúc này.</p>}
         </div>
         <div className="mt-4">
           <Link className="inline-flex items-center justify-center rounded-xl bg-red-600 hover:bg-red-700 hover:scale-[1.02] font-bold px-4 py-2.5 text-sm text-white max-w-max transition-all shadow-sm shadow-red-600/20" href="/student/sos">
@@ -517,21 +541,22 @@ function ChatBubble({ message }: { message: ChatMessage }) {
   }
   return (
     <article className={`flex ${isStudent ? "justify-end" : "justify-start"}`}>
-      <div className={`max-w-[80%] px-4 py-3 shadow-md shadow-black/[0.01] transition-all duration-200 ${
+      <div className={`max-w-[min(86%,42rem)] px-4 py-3 shadow-md shadow-black/[0.01] transition-all duration-200 ${
         isStudent 
           ? "bg-gradient-to-br from-[#7457e8] to-[#9178ff] text-white rounded-[22px] rounded-tr-sm shadow-primary/10" 
           : "bg-primary/[0.04] dark:bg-primary/[0.08] border border-primary/10 dark:border-primary/20 text-on-background rounded-[22px] rounded-tl-sm"
       }`}>
-        <div className="flex flex-wrap items-center gap-2 mb-1">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
           <p className={`text-xs font-bold flex items-center gap-1 ${isStudent ? "text-white/85" : "text-primary dark:text-accent-violet"}`}>
             {isStudent ? null : <Sparkles size={12} className="animate-pulse" />}
             {isStudent ? "Em" : "Peerlight AI"}
           </p>
+          {sentAt ? <time className={`text-[10px] font-semibold ${isStudent ? "text-white/60" : "text-on-background/40"}`}>{sentAt}</time> : null}
         </div>
         <div className="mt-1 space-y-1.5 text-[13.5px] leading-relaxed whitespace-pre-wrap font-medium">
-          {paragraphs.map((paragraph) => (
+          {paragraphs.length > 0 ? paragraphs.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
-          ))}
+          )) : <p>—</p>}
         </div>
       </div>
     </article>
@@ -558,17 +583,21 @@ function SidebarContent({
 
   return (
     <div className="flex flex-col h-full">
+      <div className="mb-3 rounded-2xl border border-primary/10 bg-primary/[0.04] p-3 text-xs leading-relaxed text-on-background/65 dark:bg-primary/10">
+        <p className="font-bold text-primary dark:text-accent-violet">Không gian trò chuyện</p>
+        <p className="mt-1">Em có thể bắt đầu cuộc trò chuyện mới bất cứ khi nào muốn đổi chủ đề.</p>
+      </div>
       <button
         type="button"
         onClick={onNewThread}
         className="btn-press min-h-11 w-full rounded-xl bg-primary/10 hover:bg-primary/15 px-3 py-2 text-xs font-bold text-primary flex items-center justify-center gap-1 transition-all border border-primary/20"
       >
-        <Plus size={14} />
+        <Plus size={14} aria-hidden="true" />
         Cuộc trò chuyện mới
       </button>
       <div className="relative mt-3">
         <span className="absolute inset-y-0 left-3 flex items-center text-on-background/45">
-          <Search size={12} />
+          <Search size={12} aria-hidden="true" />
         </span>
         <input
           type="search"
@@ -598,6 +627,9 @@ function SidebarContent({
                 className="btn-press flex-1 min-h-8 text-left text-xs font-semibold pl-1.5 py-1 max-w-[calc(100%-2rem)] text-ellipsis truncate block"
               >
                 <span className="block truncate">{thread.title || "Cuộc trò chuyện"}</span>
+                <span className="mt-0.5 block truncate text-[10px] font-medium opacity-60">
+                  {formatChatTime(thread.last_message_at ?? thread.updated_at)}
+                </span>
               </button>
               
               <button
@@ -607,7 +639,7 @@ function SidebarContent({
                 aria-label="Xóa cuộc trò chuyện"
                 className="opacity-0 group-hover:opacity-100 focus:opacity-100 text-red-500 hover:text-red-700 hover:bg-red-500/10 p-1 rounded-lg transition-all ml-1 shrink-0"
               >
-                <Trash2 size={13} />
+                <Trash2 size={13} aria-hidden="true" />
               </button>
             </div>
           ))
