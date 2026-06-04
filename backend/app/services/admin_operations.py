@@ -120,12 +120,16 @@ OPERATIONS_FORBIDDEN_METADATA_KEYS = FORBIDDEN_METADATA_KEYS | {
     "issuer_url",
     "callback_url",
     "tenant_url",
+    "tenant_id",
     "export_url",
     "risk_leaderboard",
     "access_token",
     "refresh_token",
     "id_token",
     "password_hash",
+    "smtp_username",
+    "smtp_password",
+    "changeme",
 }
 
 PRIVACY_NOTES = [
