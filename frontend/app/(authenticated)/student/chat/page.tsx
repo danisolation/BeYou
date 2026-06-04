@@ -327,10 +327,10 @@ export default function StudentChatPage() {
   const remainingCharacters = CHAT_CHARACTER_LIMIT - draft.length;
 
   return (
-    <section className="space-y-4 overflow-hidden">
-      <div className="grid gap-4 md:grid-cols-[18rem_1fr]">
+    <section className="h-[calc(100dvh-7.5rem)] overflow-hidden">
+      <div className="grid h-full min-h-0 gap-4 md:grid-cols-[18rem_1fr]">
         {/* Desktop sidebar */}
-        <aside className="hidden rounded-[20px] border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-4 soft-card md:block">
+        <aside className="hidden h-full min-h-0 overflow-hidden rounded-[20px] border border-outline-variant/30 bg-white p-4 soft-card dark:bg-[#1a2244] md:block">
           <SidebarContent
             threads={threads}
             threadId={threadId}
@@ -355,7 +355,7 @@ export default function StudentChatPage() {
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-            <aside className="absolute inset-y-0 left-0 w-[min(20rem,calc(100vw-1rem))] bg-white p-4 shadow-xl dark:bg-[#1a2244] flex flex-col">
+            <aside className="absolute inset-y-0 left-0 flex w-[min(20rem,calc(100vw-1rem))] flex-col bg-white p-4 shadow-xl dark:bg-[#1a2244]">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-sm font-semibold">Lịch sử trò chuyện</h2>
                 <button
@@ -367,7 +367,7 @@ export default function StudentChatPage() {
                   <X size={18} aria-hidden="true" />
                 </button>
               </div>
-              <div className="flex-1 overflow-y-auto">
+              <div className="min-h-0 flex-1 overflow-hidden">
                 <SidebarContent
                   threads={threads}
                   threadId={threadId}
@@ -388,7 +388,7 @@ export default function StudentChatPage() {
           </div>
         )}
 
-        <section className="flex min-h-[calc(100dvh-12rem)] flex-col overflow-hidden rounded-[24px] border border-outline-variant/30 bg-white dark:bg-[#1a2244] soft-card shadow-sm">
+        <section className="flex h-full min-h-0 flex-col overflow-hidden rounded-[24px] border border-outline-variant/30 bg-white soft-card shadow-sm dark:bg-[#1a2244]">
           {/* Chat header */}
           <div className="border-b border-outline-variant/20 bg-gradient-to-r from-primary/10 via-white to-accent-violet/10 px-5 py-4 dark:from-primary/15 dark:via-[#1a2244] dark:to-accent-violet/10">
             <div className="flex items-center justify-between gap-3">
@@ -439,7 +439,7 @@ export default function StudentChatPage() {
           </div>
 
           {/* Messages area */}
-          <div className="relative flex-1 overflow-hidden">
+          <div className="relative min-h-0 flex-1 overflow-hidden">
             <div
               ref={messagesContainerRef}
               onScroll={handleMessagesScroll}
@@ -657,14 +657,10 @@ function SidebarContent({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="mb-3 rounded-2xl border border-primary/10 bg-primary/[0.04] p-3 text-xs leading-relaxed text-on-background/65 dark:bg-primary/10">
-        <p className="font-bold text-primary dark:text-accent-violet">Không gian trò chuyện</p>
-        <p className="mt-1">Em có thể bắt đầu cuộc trò chuyện mới bất cứ khi nào muốn đổi chủ đề.</p>
-      </div>
       <button
         type="button"
         onClick={onNewThread}
-        className="btn-press min-h-11 w-full rounded-xl bg-primary/10 hover:bg-primary/15 px-3 py-2 text-xs font-bold text-primary flex items-center justify-center gap-1 transition-all border border-primary/20"
+        className="btn-press flex min-h-11 w-full items-center justify-center gap-1 rounded-xl border border-primary/20 bg-primary/10 px-3 py-2 text-xs font-bold text-primary transition-all hover:bg-primary/15"
       >
         <Plus size={14} aria-hidden="true" />
         Cuộc trò chuyện mới
@@ -682,7 +678,7 @@ function SidebarContent({
           className="w-full rounded-xl border border-outline-variant/30 bg-transparent pl-8 pr-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary transition-all focus:ring-1 focus:ring-primary/25"
         />
       </div>
-      <div className="mt-4 space-y-1 overflow-y-auto flex-1 max-h-[400px] md:max-h-full">
+      <div className="mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
         {filtered.length === 0 ? (
           <p className="rounded-xl bg-outline-variant/10 p-3 text-xs text-on-background/50 text-center font-medium">
             {search ? "Không tìm thấy cuộc trò chuyện." : "Chưa có lịch sử."}
