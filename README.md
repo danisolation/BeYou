@@ -170,3 +170,39 @@ Select-String -Path README.md,backend\app\**\*.py,frontend\app\**\*.tsx,frontend
 ```
 
 Release guidance must preserve metadata-only operations, support-not-surveillance framing, no raw exports, no destructive database reset, no risk leaderboards, and no per-student drilldowns.
+
+### v2.4 (SECURE-01)
+
+Phase 73 is the v2.4 final release-gate phase. It adds zero new product surfaces — only verification, sanitizer redlines, doc updates, and release-gate runs that prove zero regression against the v1.5 Phase 32 invariants after Phase 71 (external notification helpers) and Phase 72 (multi-school tenant schema scaffolding).
+
+Run the v2.4 gate command matrix from the repository root:
+
+```powershell
+Set-Location D:\BeYou\backend; python -m pytest
+Set-Location D:\BeYou\backend; python -m ruff check .
+Set-Location D:\BeYou\frontend; npm run lint
+Set-Location D:\BeYou\frontend; npm run build
+Set-Location D:\BeYou\frontend; npm test
+Set-Location D:\BeYou\frontend; npm run test:release-gates
+Set-Location D:\BeYou\frontend; npm run smoke:demo
+Set-Location D:\BeYou\frontend; npm run smoke:pilot
+Set-Location D:\BeYou\frontend; npm run guard:deploy
+```
+
+#### smoke:pilot constraint policy (v2.4)
+
+If `BEYOU_FRONTEND_URL`, `BEYOU_BACKEND_URL`, `NEXT_PUBLIC_API_BASE_URL` are not safe HTTPS pilot URLs OR `/health/ready` does not return `ready`, mark `smoke:pilot` **constrained** with the deterministic substitute `npm --prefix frontend run smoke:demo` and record the disposition in `.planning/phases/73-security-polish-release-gates/73-VERIFICATION.md`. Do NOT mark the gate as failed solely due to live-environment unavailability. This mirrors the Phase 32 live-smoke constraint policy.
+
+#### v2.4 privacy grep gates
+
+Three deterministic grep gates protect the v2.4 surfaces (SMTP helpers and tenant scaffolding). Run from the repo root; all three MUST return zero matches in production code paths (test fixtures excluded):
+
+```powershell
+Set-Location D:\BeYou
+git grep -nE "smtp_password|smtp_username|changeme" -- backend/app frontend/app frontend/components
+git grep -nE "@(gmail|outlook|hotmail)\.com" -- backend/app frontend/app frontend/components
+git grep -nE "tenant_id" -- frontend/app frontend/components
+```
+
+The first two MUST return zero matches **other than** defensive references in `backend/app/core/config.py` (SMTP field declarations), `backend/app/services/readiness.py` and `backend/app/services/sos_email.py` (placeholder detection + login call), `backend/app/services/admin_operations.py` (forbidden-marker sanitizer set), and `frontend/app/(authenticated)/admin/operations/page.tsx` (defense-in-depth sanitizer pattern). No hard-coded credential **values** or real recipient addresses may appear. The third MUST return zero matches in any rendered surface other than the sanitizer pattern itself — raw `tenant_id` UUIDs must not surface in admin operations payloads or DOM until multi-tenant runtime separation ships (v2.6+).
+

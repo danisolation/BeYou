@@ -9,19 +9,15 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, timedelta, timezone
 
 import pytest
 from sqlalchemy.orm import Session as OrmSession
 
-from app.core.config import Settings
 from app.db.models import (
-    AccountStatus,
     AuditEvent,
     SosAlert,
     SosNotificationDelivery,
     SosNotificationDeliveryStatus,
-    User,
     UserRole,
 )
 from app.db.session import SessionLocal
