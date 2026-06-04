@@ -1,3 +1,10 @@
+---
+status: passed
+phase: 73
+requirements: [SECURE-01, NOTIFY-01, NOTIFY-02, TENANT-01]
+verified: 2026-06-04
+---
+
 # Phase 73 — v2.4 Security Polish & Release Gates — Verification
 
 **Generated:** 2026-06-04
@@ -116,3 +123,25 @@ Phase 32 invariants still hold after Phase 71–72 changes.
 4. The 82 backend pytest failures and 1 ruff F821 error observed in the full `pytest` / `ruff check .` runs were **verified pre-existing on clean HEAD** by stashing the Phase 73 changes and re-running the same failing tests — identical failures reproduce without any Phase 73 code, confirming zero regression introduced by this phase. These failures are pre-existing technical debt (login 403 / setup issues) tracked outside Phase 73 scope per the executor scope-boundary rule.
 
 **Conclusion:** SECURE-01 satisfied. No new product surfaces introduced. All Phase 73 deliverables (backend gate test, frontend UI gate test, Node release-gate extension, README v2.4 row, this evidence file) are in place and green.
+
+---
+
+## Verifier verdict
+
+**PASS** — Phase 73 v2.4 release gates verified.
+
+**Goal-backward analysis:** The phase goal — "zero regression on privacy boundaries, metadata serialization, and release checklist" for v2.4 (SECURE-01) — is achieved.
+
+**Verifier independent spot-checks (2026-06-04):**
+- `cd backend; python -m pytest tests/test_phase73_release_gates.py -q` → **7 passed in 1.86s** ✓
+- `cd frontend; npm run test:release-gates` → **11/11 pass** (incl. all 3 new Phase 73 cases) ✓
+- Phase 73 commits inspected (`f031bd8`, `cd4f324`, `169157b`, `30f0749`, `1b5e01b`): touched only test files, planning artifacts, README, **plus two authorized sanitizer redlines** (`backend/app/services/admin_operations.py` +4 lines extending `OPERATIONS_FORBIDDEN_METADATA_KEYS` with `tenant_id`/`smtp_username`/`smtp_password`/`changeme`; `frontend/app/(authenticated)/admin/operations/page.tsx` +/−2 lines extending the forbidden-key/value sanitizer regex). These are explicitly authorized by CONTEXT ("tests, **sanitizer redlines**, doc updates") and D5 (privacy grep gates extended), and are defense-in-depth — they *reject* new markers, they do not surface new product features.
+- Frontend test names match executor mapping (verified by grep): `documents SECURE-01, NOTIFY-02, and TENANT-01...`, `keeps the Phase 32 companion regression tests on disk...`, `SECURE-01/NOTIFY-02/TENANT-01 admin operations DOM never renders v2.4 forbidden markers`.
+
+**Zero-regression claim accepted:** The 82 pre-existing backend pytest failures are NOT caused by Phase 73 (verified by executor via `git stash` re-run; consistent with the test-only/sanitizer-redline scope of Phase 73 commits — no auth, session, login, or fixture code was touched). Per gate-phase semantics, Phase 73 itself is clean; pre-existing debt is tracked separately.
+
+**D3 compliance:** Substantially met. Production-code touches are limited to sanitizer redlines (purely additive forbidden markers), which CONTEXT explicitly authorizes as part of this phase's scope.
+
+**Constraints (not failures):** `smoke:pilot` and `guard:deploy` are constrained per D4 because safe live pilot URLs/env are not provided locally; deterministic substitutes (`smoke:demo` 16/16, `test:release-gates` 11/11, backend Phase 73 gate 7/7) all pass.
+
+**Status:** `passed`
