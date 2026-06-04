@@ -1,5 +1,26 @@
 # Project Milestones: Peerlight AI
 
+## v2.4 External Notifications & Security Hardening Prep (Shipped: 2026-06-04)
+
+**Delivered:** SMTP startup validation with safe fallback, sanitized email dispatch metadata, multi-school tenant_id schema scaffolding (nullable UUID columns, no runtime enforcement), comprehensive v2.4 release-gate matrix mirroring Phase 32 pattern with privacy grep gates extending to SMTP credentials, free-email domains, and raw tenant_id exposure.
+
+**Phases completed:** 71-73 (3 phases)
+
+**Key accomplishments:**
+
+- Phase 71: `validate_smtp_configuration_rules` startup check with explicit fallback reporting and credential-placeholder rejection (`changeme` etc.).
+- Phase 72: SQLAlchemy + alembic scaffolding for tenant_id nullable UUID on User/Session models (forward-compat, no runtime tenancy enforcement).
+- Phase 73: Backend `test_phase73_release_gates.py` (7 tests), frontend `phase73-release-gates-ui.test.tsx` (3 tests), Node `release-gates.test.mjs` extended with 3 v2.4 cases (11/11 total). README v2.4 release-gate matrix + 3 privacy grep gates. `OPERATIONS_FORBIDDEN_METADATA_KEYS` extended with SMTP/tenant markers; admin operations frontend regex defense-in-depth.
+- Zero-regression statement: Phase 32 invariants re-asserted under v2.4 changes; 172/172 frontend; 16/16 demo smoke.
+- D4 live-env constraint policy: smoke:pilot/guard:deploy constrained when live URLs absent (deterministic substitutes pass).
+
+**Requirements:** 4/4 validated (NOTIFY-01, NOTIFY-02, TENANT-01, SECURE-01)
+**Git range:** `f031bd8` → `e02462c`
+**Audit:** `.planning/milestones/v2.4-MILESTONE-AUDIT.md` — PASSED
+**Integration check:** `.planning/milestones/v2.4-INTEGRATION-CHECK.md` — PASS
+
+---
+
 ## v2.3 Content Management Polish (Shipped: 2026-06-01)
 
 **Phases completed:** 0 phases, 0 plans, 0 tasks

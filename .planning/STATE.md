@@ -2,8 +2,8 @@
 gsd_state_version: 1.0
 milestone: v2.4
 milestone_name: External Notifications & Security Hardening Prep
-status: ready_to_complete
-last_updated: "2026-06-04T09:30:00.000Z"
+status: shipped
+last_updated: "2026-06-04T09:45:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 3
@@ -14,15 +14,15 @@ progress:
 # State: Peerlight AI
 
 **Initialized:** 2026-05-20
-**Last updated:** 2026-06-01 — Milestone v2.3 completed, archived, and tagged
-**Status:** v2.3 shipped — ready for next milestone
+**Last updated:** 2026-06-04 — Milestone v2.4 completed, archived, and tagged
+**Status:** v2.4 shipped — ready for next milestone
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-06-01)
 
 **Core value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Current focus:** v2.3 shipped — run `/gsd-new-milestone` for next version
+**Current focus:** v2.4 shipped — run `/gsd-new-milestone` for v2.5 (DRAFT artifacts ready: UI/UX Real-App Overhaul)
 
 ## Planning Artifacts
 

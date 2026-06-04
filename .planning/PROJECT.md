@@ -12,10 +12,10 @@ Students can safely recognize distress and quickly reach trusted adults before a
 
 ## Current State
 
-**Shipped version:** v2.2 UX Refinement & Usability Polish shipped 2026-05-28
-**Milestone status:** v2.3 Content Management Polish — 3 phases (68-70), 2/3 complete
-**Next phase:** Phase 70 — Content Final Polish
-**Latest tag:** v2.2
+**Shipped version:** v2.4 External Notifications & Security Hardening Prep (shipped 2026-06-04)
+**Milestone status:** No active milestone — DRAFT artifacts for v2.5 UI/UX Real-App Overhaul exist at `.planning/milestones/v2.5-DRAFT-*`
+**Next step:** `/gsd-new-milestone v2.5 UI/UX Real-App Overhaul`
+**Latest tag:** v2.4 (pending push)
 
 ## Current Milestone: v2.3 Content Management Polish
 

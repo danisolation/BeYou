@@ -1,14 +1,12 @@
-# Roadmap: Peerlight AI v2.4 External Notifications & Security Hardening Prep
+# Roadmap: Peerlight AI
 
-**Created:** 2026-06-02
-**Milestone:** v2.4 External Notifications & Security Hardening Prep
+**Last shipped milestone:** v2.4 External Notifications & Security Hardening Prep (shipped 2026-06-04)
+**Status:** Awaiting next milestone — run `/gsd-new-milestone` to begin
 **Core Value:** Students can safely recognize distress and quickly reach trusted adults before a school or psychological risk escalates.
-**Granularity:** coarse
-**Phase range:** 71-73
-**Coverage:** 4/4 v2.4 requirements mapped, 0 unmapped
 
 ## Completed Milestones
 
+- [x] **v2.4 External Notifications & Security Hardening Prep** - Phases 71-73 (shipped 2026-06-04) - [roadmap archive](milestones/v2.4-ROADMAP.md)
 - [x] **v2.3 Content Management Polish** - Phases 68-70 (shipped 2026-06-01) - [roadmap archive](milestones/v2.3-ROADMAP.md)
 - [x] **v2.2 UX Refinement & Usability Polish** - Phases 64-67 (shipped 2026-05-28) - [roadmap archive](milestones/v2.2-ROADMAP.md)
 - [x] **v2.1 AI Chat Enhancement** - Phases 60-63 (shipped 2026-05-28) - [roadmap archive](milestones/v2.1-ROADMAP.md)
@@ -17,39 +15,10 @@
 
 ## Phases
 
-- [x] **Phase 71: External Notification Helpers & Config Readiness** - Setup secure SMTP system validation and verify metadata sanitization for E-mail SOS dispatches. (completed 2026-06-02)
-- [x] **Phase 72: Multi-School Tenant Schema Scaffolding** - Implement tenant-scoped columns and SQLAlchemy scaffolding to prepare for future school segmentation. (completed 2026-06-02)
-- [x] **Phase 73: Security Polish & Release Gates** - Audit E2E metadata-only security invariants and lock release gates. (completed 2026-06-04)
+_No active milestone. Drafts available:_
 
-## Phase Details
+- `.planning/milestones/v2.5-DRAFT-ROADMAP.md` — UI/UX Real-App Overhaul (8 phases, 74-81)
+- `.planning/milestones/v2.5-DRAFT-REQUIREMENTS.md` — 30 requirements / 6 categories
+- `.planning/research/v2.5-ui-ux-references.md` — pattern library (20+ reference apps)
 
-### Phase 71: External Notification Helpers & Config Readiness
-
-**Goal:** Provide secure verification of external SMTP configuration and sanitize dispatch outputs to eliminate PII leakage.
-**Depends on:** Phase 70
-**Requirements:** NOTIFY-01, NOTIFY-02
-**Status:** Not Started
-
-**Success criteria:**
-1. Startup verification correctly reports SMTP configuration readiness status.
-2. Email alert log outcomes redact recipient addresses and notes from stdout.
-
-### Phase 72: Multi-School Tenant Schema Scaffolding
-
-**Goal:** Create database migration and schema fields for future tenant isolation.
-**Depends on:** Phase 71
-**Requirements:** TENANT-01
-**Status:** Not Started
-
-**Success criteria:**
-1. Database tables support optional `tenant_id` columns with default segregation safety.
-
-### Phase 73: Security Polish & Release Gates
-
-**Goal:** Ensure zero regression on privacy boundaries, metadata serialization, and release checklist.
-**Depends on:** Phase 72
-**Requirements:** SECURE-01
-**Status:** Complete (2026-06-04)
-
-**Success criteria:**
-1. All backend and frontend test suites pass with zero exceptions.
+Run `/gsd-new-milestone v2.5 UI/UX Real-App Overhaul` to formalize, or `/gsd-new-milestone <other>` to start a different milestone.
