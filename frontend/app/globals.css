@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -54,10 +54,19 @@ body {
     radial-gradient(circle at top right, rgba(101, 174, 252, 0.08), transparent 30rem),
     linear-gradient(135deg, #f7fbff 0%, #fbf8ff 44%, #f5f9ff 100%);
   color: var(--foreground);
-  font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
+  font-family: "Inter", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
   overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.018em;
 }
 
 .dark body {
@@ -124,7 +133,8 @@ textarea {
   transition:
     border-color 160ms ease,
     box-shadow 160ms ease,
-    color 160ms ease,
+    color 160ms e6px;
+  box-shadow: 0 0 0 4px rgba(116, 87, 232, 0.15),
     background-color 160ms ease,
     transform 160ms ease;
 }
@@ -200,10 +210,90 @@ svg {
   background-image: linear-gradient(110deg, #ade9fc 0%, #d1d4ff 52%, #b3a4ff 100%);
 }
 
+/* Soft elevated card */
 .soft-card {
-  box-shadow: 0 10px 28px rgba(68, 76, 150, 0.10);
+  box-shadow:
+    0 1px 2px rgba(20, 26, 64, 0.04),
+    0 4px 14px rgba(68, 76, 150, 0.07);
+}
+.dark .soft-card {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
+/* Subtle elevation on interactive cards */
+.elevated {
+  transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease;
+}
+.elevated:hover {
+  box-shadow:
+    0 2px 4px rgba(20, 26, 64, 0.05),
+    0 12px 28px rgba(68, 76, 150, 0.12);
+}
+
+/* Subtle background tap for list rows / interactive surfaces */
+.interactive {
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.interactive:hover {
+  background-color: rgba(116, 87, 232, 0.06);
+}
+.dark .interactive:hover {
+  background-color: rgba(179, 164, 255, 0.08);
+}
+
+/* Keyboard hint chip (for cmd-K, Esc, Enter) */
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.4rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--outline);
+  background: var(--surface);
+  border: 1px solid var(--outline-variant);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+/* Hairline divider */
+.divider {
+  height: 1px;
+  background: var(--outline-variant);
+  opacity: 0.6;
+}
+
+/* Smooth shimmer skeleton */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(116, 87, 232, 0.06) 0%,
+    rgba(116, 87, 232, 0.14) 50%,
+    rgba(116, 87, 232, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(179, 164, 255, 0.06) 0%,
+    rgba(179, 164, 255, 0.16) 50%,
+    rgba(179, 164, 255, 0.06) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
 /* Minimum touch target utility (44×44px per WCAG 2.5.5) */
 .touch-target {
   min-width: 44px;

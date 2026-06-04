@@ -7,11 +7,11 @@ type SkeletonProps = {
   className?: string;
 };
 
-/** Base skeleton element with shimmer animation */
+/** Base skeleton element with smooth shimmer animation */
 export function Skeleton({ className = "" }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30 ${className}`}
+      className={`shimmer rounded-lg ${className}`}
       aria-hidden="true"
     />
   );
