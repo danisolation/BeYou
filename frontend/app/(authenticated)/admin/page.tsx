@@ -15,6 +15,8 @@ import {
   BarChart3,
   AlertTriangle,
   ArrowRight,
+  CheckCircle2,
+  LockKeyhole,
 } from "lucide-react";
 
 import { DashboardSkeleton } from "@/components/skeletons";
@@ -47,6 +49,27 @@ export default function AdminDashboardPage() {
   }, []);
 
   if (isLoading) return <DashboardSkeleton cards={6} />;
+
+  const priorityOps = [
+    {
+      href: "/admin/operations",
+      icon: <Activity size={18} />,
+      title: "Kiểm tra vận hành",
+      description: "Xem readiness, smoke profile và trạng thái pilot trước khi demo.",
+    },
+    {
+      href: "/admin/privacy-policy",
+      icon: <LockKeyhole size={18} />,
+      title: "Rà quyền riêng tư",
+      description: "Kiểm tra policy hiển thị và mặc định chia sẻ theo vai trò.",
+    },
+    {
+      href: "/admin/users",
+      icon: <Users size={18} />,
+      title: "Quản lý tài khoản",
+      description: "Tạo/sửa vai trò, khóa/mở và rà demo account.",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -136,6 +159,31 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
+      <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
+        <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <p className="text-xs font-bold uppercase tracking-wide text-primary">Ưu tiên quản trị</p>
+          <h2 className="mt-1 text-lg font-bold text-on-background">Bắt đầu từ các kiểm tra an toàn</h2>
+          <p className="mt-1 text-sm text-on-background/60">Các thao tác này giúp demo/pilot ổn định mà không mở rộng quyền xem dữ liệu riêng tư.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {priorityOps.map((item) => (
+              <AdminPriorityCard key={item.href} {...item} />
+            ))}
+          </div>
+        </div>
+
+        <aside className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <div className="flex items-center gap-2 text-sm font-bold text-on-background">
+            <Shield size={17} className="text-primary" aria-hidden="true" />
+            Nguyên tắc dữ liệu
+          </div>
+          <ul className="mt-4 space-y-3 text-sm text-on-background/65">
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Không xuất raw nội dung nhạy cảm.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Báo cáo dùng tổng hợp và suppression nhóm nhỏ.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Mọi truy cập đều theo vai trò và audit metadata.</li>
+          </ul>
+        </aside>
+      </section>
+
       {/* Monitoring & Operations */}
       <section>
         <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-on-background/50">
@@ -211,6 +259,29 @@ export default function AdminDashboardPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function AdminPriorityCard({
+  href,
+  icon,
+  title,
+  description,
+}: {
+  href: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link href={href} className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]">
+      <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
+        {icon}
+      </span>
+      <h3 className="mt-3 text-sm font-bold text-on-background">{title}</h3>
+      <p className="mt-1 text-xs leading-relaxed text-on-background/60">{description}</p>
+      <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">Mở <ArrowRight size={13} aria-hidden="true" /></span>
+    </Link>
   );
 }
 

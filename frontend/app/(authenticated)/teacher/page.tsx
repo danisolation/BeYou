@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bot, ShieldAlert, Users, ArrowRight, RefreshCw } from "lucide-react";
+import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyhole } from "lucide-react";
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
@@ -53,6 +53,29 @@ export default function TeacherDashboardPage() {
     dashboardData.notifications.status === "ready"
       ? dashboardData.notifications.data.length
       : 0;
+  const priorityActions = [
+    {
+      title: sosCount > 0 ? "Ưu tiên xem SOS mới" : "Không có SOS mới",
+      description: sosCount > 0 ? "Bắt đầu từ các tín hiệu cần hỗ trợ gần đây." : "Tiếp tục duy trì quan sát trong phạm vi được phép.",
+      href: "/teacher/sos-alerts",
+      icon: ShieldAlert,
+      tone: sosCount > 0 ? "text-red-600 bg-red-50 border-red-200" : "text-emerald-700 bg-emerald-50 border-emerald-200",
+    },
+    {
+      title: "Xem danh sách học sinh",
+      description: "Chỉ hiện học sinh/liên kết đúng quyền và tóm tắt được phép xem.",
+      href: "/teacher/students",
+      icon: Users,
+      tone: "text-primary bg-primary/10 border-primary/20",
+    },
+    {
+      title: "Hỏi Peerlight AI",
+      description: "Gợi ý cách mở lời hỗ trợ, không thay thế quy trình trường học.",
+      href: "/teacher/chat",
+      icon: Bot,
+      tone: "text-accent-violet bg-accent-violet/10 border-accent-violet/20",
+    },
+  ];
 
   return (
     <div className="space-y-5">
@@ -146,6 +169,45 @@ export default function TeacherDashboardPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
+        <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-primary">Việc nên làm tiếp theo</p>
+              <h2 className="mt-1 text-lg font-bold text-on-background">Ưu tiên hỗ trợ an toàn</h2>
+              <p className="mt-1 text-sm text-on-background/60">Tập trung vào SOS và liên kết đang hoạt động, không xem dữ liệu riêng tư ngoài phạm vi.</p>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {priorityActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <Link key={action.title} href={action.href} className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]">
+                  <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${action.tone}`}>
+                    <Icon size={18} aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-3 text-sm font-bold text-on-background">{action.title}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">{action.description}</p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">Mở <ArrowRight size={13} aria-hidden="true" /></span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <aside className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <div className="flex items-center gap-2 text-sm font-bold text-on-background">
+            <LockKeyhole size={17} className="text-primary" aria-hidden="true" />
+            Ranh giới riêng tư
+          </div>
+          <ul className="mt-4 space-y-3 text-sm text-on-background/65">
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Chỉ xem tóm tắt khi có SOS/liên kết hợp lệ.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Không có câu trả lời riêng tư hoặc nội dung chat học sinh.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Mọi thao tác hỗ trợ nên bắt đầu bằng lắng nghe.</li>
+          </ul>
+        </aside>
       </section>
 
       {/* Quick actions */}

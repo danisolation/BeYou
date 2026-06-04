@@ -4,7 +4,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Bot, ShieldAlert, Users, ArrowRight } from "lucide-react";
+import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyhole, HeartHandshake } from "lucide-react";
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
@@ -19,37 +19,59 @@ export default function ParentDashboardPage() {
   );
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  useEffect(() => {
-    let isActive = true;
-
+  function load() {
+    setIsLoading(true);
+    setLoadFailed(false);
     loadParentDashboard()
       .then((data) => {
-        if (!isActive) return;
         setDashboardData(data);
         setLoadFailed(false);
+        setLastUpdated(new Date());
       })
       .catch(() => {
-        if (isActive) setLoadFailed(true);
+        setLoadFailed(true);
       })
-      .finally(() => {
-        if (isActive) setIsLoading(false);
-      });
+      .finally(() => setIsLoading(false));
+  }
 
-    return () => {
-      isActive = false;
-    };
+  useEffect(() => {
+    load();
   }, []);
 
   if (isLoading) return <DashboardSkeleton cards={2} />;
   if (loadFailed || dashboardData === null)
-    return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
+    return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" onRetry={load} />;
 
   const childCount = dashboardData.students.length;
   const sosCount =
     dashboardData.notifications.status === "ready"
       ? dashboardData.notifications.data.length
       : 0;
+  const priorityActions = [
+    {
+      title: sosCount > 0 ? "Xem SOS của con" : "Không có SOS mới",
+      description: sosCount > 0 ? "Ưu tiên phản hồi theo hướng dẫn trong ứng dụng." : "Tiếp tục tạo không gian an toàn để con chủ động chia sẻ.",
+      href: "/parent/sos-alerts",
+      icon: ShieldAlert,
+      tone: sosCount > 0 ? "text-red-600 bg-red-50 border-red-200" : "text-emerald-700 bg-emerald-50 border-emerald-200",
+    },
+    {
+      title: "Xem thông tin được phép",
+      description: "Chỉ hiển thị tóm tắt cần thiết khi con đã gửi SOS.",
+      href: "/parent/students",
+      icon: HeartHandshake,
+      tone: "text-primary bg-primary/10 border-primary/20",
+    },
+    {
+      title: "Hỏi Peerlight AI",
+      description: "Gợi ý cách mở lời với con nhẹ nhàng hơn.",
+      href: "/parent/chat",
+      icon: Bot,
+      tone: "text-accent-violet bg-accent-violet/10 border-accent-violet/20",
+    },
+  ];
 
   return (
     <div className="space-y-5">
@@ -78,6 +100,22 @@ export default function ParentDashboardPage() {
               alt="Hỗ trợ con"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />
+          </div>
+
+          <div className="absolute right-0 top-0 flex flex-col items-end gap-1">
+            <button
+              type="button"
+              onClick={load}
+              aria-label="Làm mới dữ liệu"
+              className="rounded-xl bg-white/70 p-2 text-[#33416b] backdrop-blur transition-colors hover:bg-white"
+            >
+              <RefreshCw size={16} aria-hidden="true" />
+            </button>
+            {lastUpdated && (
+              <span className="text-[10px] text-[#33416b]/70">
+                {lastUpdated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}
+              </span>
+            )}
           </div>
         </div>
         <div
@@ -124,6 +162,41 @@ export default function ParentDashboardPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
+        <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <p className="text-xs font-bold uppercase tracking-wide text-primary">Việc nên làm tiếp theo</p>
+          <h2 className="mt-1 text-lg font-bold text-on-background">Đồng hành mà vẫn tôn trọng con</h2>
+          <p className="mt-1 text-sm text-on-background/60">Bắt đầu từ tín hiệu SOS nếu có; nếu không, hãy giữ kênh trò chuyện an toàn và không gây áp lực.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+            {priorityActions.map((action) => {
+              const Icon = action.icon;
+              return (
+                <Link key={action.title} href={action.href} className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]">
+                  <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${action.tone}`}>
+                    <Icon size={18} aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-3 text-sm font-bold text-on-background">{action.title}</h3>
+                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">{action.description}</p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">Mở <ArrowRight size={13} aria-hidden="true" /></span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        <aside className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
+          <div className="flex items-center gap-2 text-sm font-bold text-on-background">
+            <LockKeyhole size={17} className="text-primary" aria-hidden="true" />
+            Quyền riêng tư của con
+          </div>
+          <ul className="mt-4 space-y-3 text-sm text-on-background/65">
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Không xem nội dung chat riêng tư của con.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Chỉ thấy phần cần thiết để hỗ trợ khi có SOS.</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Hãy hỏi con muốn được hỗ trợ thế nào trước.</li>
+          </ul>
+        </aside>
       </section>
 
       {/* Quick actions */}
