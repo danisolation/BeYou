@@ -83,6 +83,9 @@ class Settings(BaseSettings):
     smtp_from: str = Field(default="", validation_alias="SMTP_FROM")
     smtp_use_tls: bool = Field(default=True, validation_alias="SMTP_USE_TLS")
     smtp_timeout_seconds: float = Field(default=10.0, validation_alias="SMTP_TIMEOUT_SECONDS")
+    web_push_vapid_public_key: str = Field(default="", validation_alias="WEB_PUSH_VAPID_PUBLIC_KEY")
+    web_push_vapid_private_key: str = Field(default="", validation_alias="WEB_PUSH_VAPID_PRIVATE_KEY")
+    web_push_subject: str = Field(default="mailto:admin@peerlight.local", validation_alias="WEB_PUSH_SUBJECT")
     auth_provider_enabled: bool = Field(default=False, validation_alias="AUTH_PROVIDER_ENABLED")
     auth_provider_key: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_KEY")
     auth_provider_label: str = Field(

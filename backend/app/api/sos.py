@@ -16,6 +16,9 @@ from app.schemas.sos import (
     SosAlertCreate,
     SosAlertResponse,
     SosStatusUpdate,
+    WebPushPublicKeyResponse,
+    WebPushSubscriptionResponse,
+    WebPushSubscriptionUpsert,
 )
 from app.services.sos import (
     create_sos_alert,
@@ -27,6 +30,11 @@ from app.services.sos import (
     list_student_sos_alerts,
     mark_notification_read,
     update_sos_status,
+)
+from app.services.web_push import (
+    delete_web_push_subscription,
+    upsert_web_push_subscription,
+    web_push_enabled,
 )
 
 router = APIRouter()
@@ -186,3 +194,41 @@ def mark_current_user_notification_read(
 ) -> InAppNotificationResponse:
     require_same_site_mutation(request, settings)
     return mark_notification_read(db, current_user, notification_id)
+
+
+@router.get("/push/public-key", response_model=WebPushPublicKeyResponse)
+def get_web_push_public_key(settings: Settings = Depends(get_settings)) -> WebPushPublicKeyResponse:
+    return WebPushPublicKeyResponse(
+        enabled=web_push_enabled(settings),
+        public_key=settings.web_push_vapid_public_key or None,
+    )
+
+
+@router.post("/push/subscriptions", response_model=WebPushSubscriptionResponse)
+def subscribe_web_push(
+    payload: WebPushSubscriptionUpsert,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> WebPushSubscriptionResponse:
+    require_same_site_mutation(request, settings)
+    return upsert_web_push_subscription(
+        db,
+        user=current_user,
+        payload=payload,
+        user_agent=request.headers.get("user-agent"),
+        settings=settings,
+    )
+
+
+@router.delete("/push/subscriptions", status_code=status.HTTP_204_NO_CONTENT)
+def unsubscribe_web_push(
+    payload: WebPushSubscriptionUpsert,
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: OrmSession = Depends(get_db),
+    settings: Settings = Depends(get_settings),
+) -> None:
+    require_same_site_mutation(request, settings)
+    delete_web_push_subscription(db, user=current_user, endpoint=payload.endpoint)

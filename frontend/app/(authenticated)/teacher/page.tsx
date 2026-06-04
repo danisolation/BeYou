@@ -8,6 +8,7 @@ import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyho
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
+import { PushNotificationToggle } from "@/components/push-notification-toggle";
 import { useToast } from "@/components/toast";
 import {
   loadTeacherDashboard,
@@ -149,7 +150,8 @@ export default function TeacherDashboardPage() {
             />
           </div>
 
-          <div className="flex flex-col items-end gap-1 absolute top-0 right-0">
+          <div className="absolute right-0 top-0 flex flex-col items-end gap-2">
+            <PushNotificationToggle />
             <button
               type="button"
               onClick={() => load(false)}

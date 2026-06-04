@@ -8,6 +8,7 @@ import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyho
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
+import { PushNotificationToggle } from "@/components/push-notification-toggle";
 import { useToast } from "@/components/toast";
 import {
   loadParentDashboard,
@@ -143,7 +144,8 @@ export default function ParentDashboardPage() {
             />
           </div>
 
-          <div className="absolute right-0 top-0 flex flex-col items-end gap-1">
+          <div className="absolute right-0 top-0 flex flex-col items-end gap-2">
+            <PushNotificationToggle />
             <button
               type="button"
               onClick={() => load(false)}

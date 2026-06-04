@@ -1,4 +1,4 @@
-const CACHE_NAME = 'peerlight-shell-v1780567523598';
+const CACHE_NAME = 'peerlight-shell-v1780568246398';
 const FONTS_CACHE = 'peerlight-fonts-v1';
 const SHELL_ASSETS = [
   '/',
@@ -9,7 +9,7 @@ const SHELL_ASSETS = [
   '/_next/static/chunks/0c7h~x4_chf35.js',
   '/_next/static/chunks/turbopack-0kemc0e062jzz.js',
   '/_next/static/chunks/03~yq9q893hmn.js',
-  '/_next/static/chunks/0k0y5jn-zioc9.css',
+  '/_next/static/chunks/15uaknfequ0w3.css',
 ];
 
 self.addEventListener('install', (event) => {
@@ -81,6 +81,48 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(request).then((cached) => {
       return cached || fetch(request).catch(() => undefined);
+    })
+  );
+});
+
+self.addEventListener('push', (event) => {
+  let payload = {};
+  if (event.data) {
+    try {
+      payload = event.data.json();
+    } catch {
+      payload = { body: event.data.text() };
+    }
+  }
+
+  const title = payload.title || 'Peerlight AI';
+  const href = payload.href || '/';
+  const options = {
+    body: payload.body || 'Có thông báo mới cần chú ý trong Peerlight AI.',
+    icon: '/icons/icon-192.png',
+    badge: '/icons/icon-192.png',
+    tag: payload.tag || 'peerlight-notification',
+    renotify: true,
+    data: { href },
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const href = event.notification.data?.href || '/';
+  const url = new URL(href, self.location.origin).href;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ('focus' in client && client.url.startsWith(self.location.origin)) {
+          client.navigate(url);
+          return client.focus();
+        }
+      }
+      return self.clients.openWindow(url);
     })
   );
 });

@@ -17,6 +17,7 @@ dependencies = [
   "psycopg[binary]",
   "argon2-cffi",
   "httpx",
+  "pywebpush",
   "python-multipart",
 ]
 

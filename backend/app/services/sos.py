@@ -33,6 +33,7 @@ from app.schemas.sos import (
 from app.services.adult_visibility import list_sos_visible_linked_student_rows
 from app.services.audit import record_audit_event
 from app.services.sos_email import create_sos_email_deliveries
+from app.services.web_push import send_sos_web_push_notifications
 
 STATUS_SEQUENCE = [
     SosAlertStatus.SENT.value,
@@ -278,6 +279,7 @@ def create_sos_alert(
         recipients=recipients,
         settings=settings,
     )
+    send_sos_web_push_notifications(db, alert=alert, recipients=recipients, settings=settings)
     record_audit_event(
         db,
         actor=student,

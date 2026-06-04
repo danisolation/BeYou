@@ -109,6 +109,26 @@ class InAppNotificationResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+class WebPushPublicKeyResponse(BaseModel):
+    enabled: bool
+    public_key: str | None = None
+
+
+class WebPushSubscriptionKeys(BaseModel):
+    p256dh: str = Field(min_length=1, max_length=512)
+    auth: str = Field(min_length=1, max_length=512)
+
+
+class WebPushSubscriptionUpsert(BaseModel):
+    endpoint: str = Field(min_length=1, max_length=2048)
+    keys: WebPushSubscriptionKeys
+
+
+class WebPushSubscriptionResponse(BaseModel):
+    enabled: bool
+    endpoint: str | None = None
+
+
 class AdultLatestSummary(BaseModel):
     completed_at: datetime
     test_type: str
