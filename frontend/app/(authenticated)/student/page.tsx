@@ -55,7 +55,7 @@ const quickActions = [
   {
     title: "Nhật ký cảm xúc",
     description: "Ghi lại cảm xúc mỗi ngày và nhìn lại bản thân",
-    image: "/images/Phương tiện truyền thông (5).jpg",
+    image: "/images/Phương tiện truyền thông (6).jpg",
     cta: "Viết nhật ký",
     href: "/student/mood-check-ins",
     icon: NotebookPen,
