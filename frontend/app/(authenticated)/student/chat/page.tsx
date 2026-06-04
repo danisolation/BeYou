@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { HeartHandshake, Menu, X, Trash2, Plus, Search, Send, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowDown, HeartHandshake, Menu, X, Trash2, Plus, Search, Send, ShieldCheck, Sparkles } from "lucide-react";
 
 import { ChatSkeleton } from "@/components/skeletons";
 import { useToast } from "@/components/toast";
@@ -31,6 +31,7 @@ const IMMEDIATE_SUPPORT_COPY =
 const PRIVATE_CHAT_COPY =
   "Em có thể viết ngắn thôi, chưa cần hoàn hảo. Cuộc trò chuyện của em được giữ riêng tư.";
 const CHAT_CHARACTER_LIMIT = 1200;
+const SCROLL_LOCK_THRESHOLD = 120;
 const SAFETY_POINTS = ["Riêng tư với em", "Không thay thế chuyên gia", "Có SOS khi cần gấp"];
 
 function formatChatTime(value?: string | null) {
@@ -61,20 +62,55 @@ export default function StudentChatPage() {
   const [streamingContent, setStreamingContent] = useState("");
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isNearBottom, setIsNearBottom] = useState(true);
+  const [newMessageCount, setNewMessageCount] = useState(0);
   const abortRef = useRef<AbortController | null>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const shouldStickToBottomRef = useRef(true);
+  const previousMessageCountRef = useRef(0);
 
   const { success: toastSuccess, error: toastError } = useToast();
 
-  const scrollToBottom = () => {
-    if (typeof messagesEndRef.current?.scrollIntoView === "function") {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    window.requestAnimationFrame(() => {
+      if (typeof messagesEndRef.current?.scrollIntoView === "function") {
+        messagesEndRef.current.scrollIntoView({ behavior, block: "end" });
+      }
+      shouldStickToBottomRef.current = true;
+      setIsNearBottom(true);
+      setNewMessageCount(0);
+    });
+  };
+
+  const handleMessagesScroll = () => {
+    const container = messagesContainerRef.current;
+    if (!container) {
+      return;
+    }
+
+    const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+    const nextIsNearBottom = distanceFromBottom < SCROLL_LOCK_THRESHOLD;
+    shouldStickToBottomRef.current = nextIsNearBottom;
+    setIsNearBottom(nextIsNearBottom);
+    if (nextIsNearBottom) {
+      setNewMessageCount(0);
     }
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, streamingContent, isSending]);
+    const previousCount = previousMessageCountRef.current;
+    const hasNewMessage = messages.length > previousCount;
+    const addedCount = Math.max(messages.length - previousCount, 0);
+
+    if (shouldStickToBottomRef.current || isNearBottom || isSending) {
+      scrollToBottom(previousCount === 0 ? "auto" : "smooth");
+    } else if (hasNewMessage) {
+      setNewMessageCount((current) => current + addedCount);
+    }
+
+    previousMessageCountRef.current = messages.length;
+  }, [messages.length, streamingContent, isSending, isNearBottom]);
 
   useEffect(() => {
     let active = true;
@@ -111,6 +147,9 @@ export default function StudentChatPage() {
   async function handleSelectThread(nextThreadId: string) {
     setIsLoading(true);
     setError("");
+    shouldStickToBottomRef.current = true;
+    setIsNearBottom(true);
+    setNewMessageCount(0);
     try {
       const transcript = await getChatTranscript(nextThreadId);
       setThreadId(transcript.thread.id);
@@ -152,6 +191,9 @@ export default function StudentChatPage() {
     setIsSending(true);
     setError("");
     setDraft("");
+    shouldStickToBottomRef.current = true;
+    setIsNearBottom(true);
+    setNewMessageCount(0);
 
     // Optimistically add the student message
     const tempStudentMsg: ChatMessage = {
@@ -293,7 +335,14 @@ export default function StudentChatPage() {
             threads={threads}
             threadId={threadId}
             onSelectThread={handleSelectThread}
-            onNewThread={() => { setThreadId(null); setMessages([]); setError(""); }}
+            onNewThread={() => {
+              shouldStickToBottomRef.current = true;
+              setIsNearBottom(true);
+              setNewMessageCount(0);
+              setThreadId(null);
+              setMessages([]);
+              setError("");
+            }}
             onDeleteThread={handleDeleteThread}
           />
         </aside>
@@ -323,7 +372,15 @@ export default function StudentChatPage() {
                   threads={threads}
                   threadId={threadId}
                   onSelectThread={(id) => { void handleSelectThread(id); setSidebarOpen(false); }}
-                  onNewThread={() => { setThreadId(null); setMessages([]); setError(""); setSidebarOpen(false); }}
+                  onNewThread={() => {
+                    shouldStickToBottomRef.current = true;
+                    setIsNearBottom(true);
+                    setNewMessageCount(0);
+                    setThreadId(null);
+                    setMessages([]);
+                    setError("");
+                    setSidebarOpen(false);
+                  }}
                   onDeleteThread={handleDeleteThread}
                 />
               </div>
@@ -382,7 +439,12 @@ export default function StudentChatPage() {
           </div>
 
           {/* Messages area */}
-          <div className="flex-1 overflow-x-hidden overflow-y-auto px-5 py-5 space-y-4">
+          <div className="relative flex-1 overflow-hidden">
+            <div
+              ref={messagesContainerRef}
+              onScroll={handleMessagesScroll}
+              className="h-full scroll-smooth overflow-x-hidden overflow-y-auto px-5 py-5 space-y-4"
+            >
             {!isLoading && messages.length > 0 ? (
               <div className="rounded-2xl border border-primary/10 bg-primary/[0.035] p-3 text-xs leading-relaxed text-on-background/65 dark:bg-primary/10">
                 <span className="font-bold text-primary dark:text-accent-violet">Nhắc nhẹ:</span> {INTRO_COPY} Nếu thấy không an toàn ngay lúc này, em có thể dùng SOS ở bất cứ lúc nào.
@@ -460,6 +522,18 @@ export default function StudentChatPage() {
               <div ref={messagesEndRef} />
             </div>
             {error ? <p role="alert" className="mt-3 text-xs text-red-600 dark:text-red-400 font-medium">{error}</p> : null}
+            </div>
+            {!isNearBottom && messages.length > 0 ? (
+              <button
+                type="button"
+                onClick={() => scrollToBottom()}
+                className="absolute bottom-3 left-1/2 z-10 flex min-h-10 -translate-x-1/2 items-center justify-center gap-2 rounded-full border border-primary/15 bg-white/95 px-4 text-xs font-extrabold text-primary shadow-lg shadow-primary/10 backdrop-blur hover:bg-primary hover:text-white dark:bg-[#1a2244]/95 dark:text-accent-violet dark:hover:bg-primary dark:hover:text-white"
+                aria-label={newMessageCount > 0 ? `Xuống ${newMessageCount} tin mới` : "Xuống tin mới nhất"}
+              >
+                <ArrowDown size={14} aria-hidden="true" />
+                {newMessageCount > 0 ? `${newMessageCount} tin mới` : "Tin mới nhất"}
+              </button>
+            ) : null}
           </div>
 
           {/* Input area */}
