@@ -107,16 +107,29 @@ export function AdultStudentList({
         <>
           {baseStudents.length > 1 && (
             <div className="flex items-center gap-2">
-              <input
-                type="search"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Tìm theo tên hoặc email..."
-                aria-label="Tìm học sinh"
-                className="w-full max-w-xs rounded-xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] px-3 py-2 text-xs outline-none placeholder:text-on-background/40 focus:border-primary"
-              />
+              <div className="relative w-full max-w-xs">
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-on-background/40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <circle cx="11" cy="11" r="7" />
+                  <path strokeLinecap="round" d="M21 21l-3.5-3.5" />
+                </svg>
+                <input
+                  type="search"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Tìm theo tên hoặc email..."
+                  aria-label="Tìm học sinh"
+                  className="h-10 w-full rounded-xl border border-outline-variant/60 bg-white dark:bg-[#1a2244] pl-9 pr-3 text-sm outline-none placeholder:text-on-background/40 transition focus:border-primary"
+                />
+              </div>
               {search && (
-                <button type="button" onClick={() => setSearch("")} className="text-xs text-primary hover:underline">Xóa</button>
+                <button type="button" onClick={() => setSearch("")} className="text-xs font-medium text-primary hover:underline">Xóa</button>
               )}
             </div>
           )}
@@ -219,9 +232,9 @@ function NotificationList({ notificationsState }: { notificationsState: Optional
           {notifications.slice(0, 5).map((notification) => {
             const href = safeInternalHref(notification.href);
             return (
-              <article key={notification.id} className="rounded-2xl border border-outline-variant/20 p-4">
+              <article key={notification.id} className="elevated rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1a2244] p-4 hover:border-primary/30">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-semibold">{notification.title}</h3>
+                  <h3 className="font-semibold tracking-tight">{notification.title}</h3>
                   {notification.read_at === null ? <StatusBadge tone="safe">Mới</StatusBadge> : null}
                 </div>
                 <p className="mt-2 text-sm">{notification.body}</p>

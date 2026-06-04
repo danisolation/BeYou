@@ -22,16 +22,16 @@ export function CardSkeleton() {
   return (
     <div className="flex flex-col gap-4 rounded-2xl bg-outline-variant/20 p-6 dark:bg-outline-variant/30">
       {/* Circle icon */}
-      <div className="h-12 w-12 animate-pulse rounded-full bg-outline-variant/30 dark:bg-outline-variant/40" />
+      <div className="h-12 w-12 shimmer rounded-full" />
       {/* Title */}
-      <div className="h-5 w-3/5 animate-pulse rounded-lg bg-outline-variant/30 dark:bg-outline-variant/40" />
+      <div className="h-5 w-3/5 shimmer rounded-lg" />
       {/* Description */}
       <div className="space-y-2">
-        <div className="h-4 w-full animate-pulse rounded-lg bg-outline-variant/30 dark:bg-outline-variant/40" />
-        <div className="h-4 w-4/5 animate-pulse rounded-lg bg-outline-variant/30 dark:bg-outline-variant/40" />
+        <div className="h-4 w-full shimmer rounded-lg" />
+        <div className="h-4 w-4/5 shimmer rounded-lg" />
       </div>
       {/* CTA button */}
-      <div className="mt-2 h-10 w-28 animate-pulse rounded-xl bg-outline-variant/30 dark:bg-outline-variant/40" />
+      <div className="mt-2 h-10 w-28 shimmer rounded-xl" />
     </div>
   );
 }
@@ -44,7 +44,7 @@ export function TextSkeleton({ lines = 3 }: { lines?: number }) {
       {Array.from({ length: lines }).map((_, i) => (
         <div
           key={i}
-          className={`h-4 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30 ${widths[i % widths.length]}`}
+          className={`h-4 shimmer rounded-lg ${widths[i % widths.length]}`}
         />
       ))}
     </div>
@@ -57,8 +57,8 @@ export function PageSkeleton() {
     <div className="mx-auto max-w-[960px] space-y-8" aria-hidden="true">
       {/* Header area */}
       <header className="space-y-3 rounded-2xl bg-outline-variant/10 p-6">
-        <div className="h-7 w-2/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-        <div className="h-4 w-3/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-7 w-2/5 shimmer rounded-lg" />
+        <div className="h-4 w-3/5 shimmer rounded-lg" />
       </header>
       {/* Content cards */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -77,8 +77,8 @@ export function DashboardSkeleton({ cards = 4 }: { cards?: number }) {
     <div className="space-y-8" aria-hidden="true">
       {/* Welcome heading */}
       <div className="space-y-3">
-        <div className="h-8 w-48 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-        <div className="h-5 w-64 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-8 w-48 shimmer rounded-lg" />
+        <div className="h-5 w-64 shimmer rounded-lg" />
       </div>
       {/* Cards grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -88,12 +88,12 @@ export function DashboardSkeleton({ cards = 4 }: { cards?: number }) {
       </div>
       {/* Banner skeleton (Peerlight AI) */}
       <div className="flex items-center gap-4 rounded-2xl bg-outline-variant/10 p-6">
-        <div className="h-8 w-8 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-8 w-8 shimmer rounded-full" />
         <div className="flex-1 space-y-2">
-          <div className="h-5 w-32 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-          <div className="h-4 w-48 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="h-5 w-32 shimmer rounded-lg" />
+          <div className="h-4 w-48 shimmer rounded-lg" />
         </div>
-        <div className="h-10 w-24 animate-pulse rounded-xl bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-10 w-24 shimmer rounded-xl" />
       </div>
     </div>
   );
@@ -105,36 +105,36 @@ export function ChatSkeleton() {
     <div className="mx-auto max-w-[960px] space-y-6" aria-hidden="true">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="h-6 w-6 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-        <div className="h-6 w-48 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-6 w-6 shimmer rounded-lg" />
+        <div className="h-6 w-48 shimmer rounded-lg" />
       </div>
       {/* Messages */}
       <div className="space-y-4">
         {/* Bot message */}
         <div className="flex gap-3">
-          <div className="h-8 w-8 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="h-8 w-8 shimmer rounded-full" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-4/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-            <div className="h-4 w-3/5 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+            <div className="h-4 w-4/5 shimmer rounded-lg" />
+            <div className="h-4 w-3/5 shimmer rounded-lg" />
           </div>
         </div>
         {/* User message */}
         <div className="flex justify-end">
-          <div className="h-10 w-2/5 animate-pulse rounded-2xl bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="h-10 w-2/5 shimmer rounded-2xl" />
         </div>
         {/* Bot message */}
         <div className="flex gap-3">
-          <div className="h-8 w-8 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="h-8 w-8 shimmer rounded-full" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-full animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-            <div className="h-4 w-2/3 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+            <div className="h-4 w-full shimmer rounded-lg" />
+            <div className="h-4 w-2/3 shimmer rounded-lg" />
           </div>
         </div>
       </div>
       {/* Input area */}
       <div className="mt-8 flex items-center gap-3">
-        <div className="h-12 flex-1 animate-pulse rounded-2xl bg-outline-variant/20 dark:bg-outline-variant/30" />
-        <div className="h-12 w-12 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
+        <div className="h-12 flex-1 shimmer rounded-2xl" />
+        <div className="h-12 w-12 shimmer rounded-full" />
       </div>
     </div>
   );
@@ -147,10 +147,10 @@ export function LayoutSkeleton() {
       {/* Header skeleton matching new h-14 header */}
       <div className="border-b border-outline-variant/60 bg-white/80 backdrop-blur-lg dark:bg-[#0f1530]/80">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="h-5 w-28 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
+          <div className="h-5 w-28 shimmer rounded-lg" />
           <div className="flex items-center gap-3">
-            <div className="h-4 w-20 animate-pulse rounded-lg bg-outline-variant/20 dark:bg-outline-variant/30" />
-            <div className="h-6 w-16 animate-pulse rounded-full bg-outline-variant/20 dark:bg-outline-variant/30" />
+            <div className="h-4 w-20 shimmer rounded-lg" />
+            <div className="h-6 w-16 shimmer rounded-full" />
           </div>
         </div>
       </div>
