@@ -14,6 +14,21 @@ const PHASE32_NODE_REQUIREMENT_IDS = ["QA-02", "QA-06"];
 const LIVE_PILOT_CONSTRAINT =
   "smoke:pilot constrained without BEYOU_FRONTEND_URL, BEYOU_BACKEND_URL, NEXT_PUBLIC_API_BASE_URL, and readiness ready";
 
+const PHASE73_NODE_REQUIREMENT_IDS = ["SECURE-01"];
+const PHASE73_GATE_COMMANDS = [
+  "cd backend && pytest",
+  "cd backend && ruff check .",
+  "npm --prefix frontend run lint",
+  "npm --prefix frontend run build",
+  "npm --prefix frontend test",
+  "npm --prefix frontend run test:release-gates",
+  "npm --prefix frontend run smoke:demo",
+  "npm --prefix frontend run smoke:pilot",
+  "npm --prefix frontend run guard:deploy",
+];
+const LIVE_PILOT_CONSTRAINT_V24 =
+  "smoke:pilot constrained without safe BEYOU_FRONTEND_URL, BEYOU_BACKEND_URL, NEXT_PUBLIC_API_BASE_URL, and /health/ready=ready";
+
 const safeRenderYaml = `
 services:
   - type: web
@@ -254,5 +269,30 @@ test("QA-06 live pilot smoke is documented as constrained without safe deploymen
   assert.equal(
     LIVE_PILOT_CONSTRAINT,
     "smoke:pilot constrained without BEYOU_FRONTEND_URL, BEYOU_BACKEND_URL, NEXT_PUBLIC_API_BASE_URL, and readiness ready",
+  );
+});
+
+test("Phase 73 v2.4 requirement ids are explicit", () => {
+  assert.deepEqual(PHASE73_NODE_REQUIREMENT_IDS, ["SECURE-01"]);
+});
+
+test("Phase 73 v2.4 release-gate command matrix is documented", () => {
+  assert.deepEqual(PHASE73_GATE_COMMANDS, [
+    "cd backend && pytest",
+    "cd backend && ruff check .",
+    "npm --prefix frontend run lint",
+    "npm --prefix frontend run build",
+    "npm --prefix frontend test",
+    "npm --prefix frontend run test:release-gates",
+    "npm --prefix frontend run smoke:demo",
+    "npm --prefix frontend run smoke:pilot",
+    "npm --prefix frontend run guard:deploy",
+  ]);
+});
+
+test("Phase 73 smoke:pilot constraint policy documented", () => {
+  assert.match(
+    LIVE_PILOT_CONSTRAINT_V24,
+    /smoke:pilot constrained without safe BEYOU_FRONTEND_URL, BEYOU_BACKEND_URL, NEXT_PUBLIC_API_BASE_URL, and \/health\/ready=ready/,
   );
 });

@@ -47,9 +47,9 @@ const roleOptions = [
 ];
 
 const forbiddenMetadataKeyPattern =
-  /email|student_id|recipient_id|private_note|sos_note|transcript|self_check_answer|scenario_answer|reason_text|access_reason_text|provider_subject|raw_claims|export_url|risk_leaderboard/i;
+  /email|student_id|recipient_id|tenant_id|tenant_url|smtp_password|smtp_username|private_note|sos_note|transcript|self_check_answer|scenario_answer|reason_text|access_reason_text|provider_subject|raw_claims|export_url|risk_leaderboard/i;
 const unsafeMetadataValuePattern =
-  /@|https?:\/\/|eyJ[A-Za-z0-9_-]{10,}|private_note|sos_note|transcript|self_check_answer|scenario_answer|provider_subject|raw_claims|risk leaderboard|xếp hạng nguy cơ/i;
+  /@|https?:\/\/|eyJ[A-Za-z0-9_-]{10,}|changeme|smtp\.(gmail|outlook|hotmail|office365)\.com|private_note|sos_note|transcript|self_check_answer|scenario_answer|provider_subject|raw_claims|risk leaderboard|xếp hạng nguy cơ/i;
 const safeMetadataFallback = "dữ liệu tổng hợp an toàn";
 
 function formatDate(value: string | null) {
