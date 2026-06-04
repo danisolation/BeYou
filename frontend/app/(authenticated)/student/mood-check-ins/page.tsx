@@ -42,7 +42,7 @@ function ScaleButtonGroup({
       <p id={`${groupId}-label`} className="text-sm text-on-background/80">
         {label}
       </p>
-      <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-labelledby={`${groupId}-label`}>
+      <div className="mt-3 flex flex-wrap gap-2" role="radiogroup" aria-labelledby={`${groupId}-label`}>
         {scaleValues.map((scaleValue) => {
           const isSelected = value === scaleValue;
 
@@ -54,10 +54,10 @@ function ScaleButtonGroup({
               aria-checked={isSelected}
               aria-label={`${label} ${scaleValue}`}
               onClick={() => onChange(scaleValue)}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium transition-colors ${
+              className={`inline-flex h-11 w-11 items-center justify-center rounded-full text-sm font-semibold transition ${
                 isSelected
-                  ? "bg-primary text-white"
-                  : "border border-outline-variant/30 text-on-background hover:bg-primary/10"
+                  ? "bg-primary text-white shadow-[0_4px_12px_rgba(116,87,232,0.3)] scale-105"
+                  : "border border-outline-variant/50 bg-white text-on-background hover:border-primary/40 hover:bg-primary/5 dark:bg-[#1a2244]"
               }`}
             >
               {scaleValue}

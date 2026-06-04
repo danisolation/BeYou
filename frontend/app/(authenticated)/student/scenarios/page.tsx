@@ -6,6 +6,7 @@ import { MessageCircle, Clock } from "lucide-react";
 
 import { EmptyState } from "@/components/empty-state";
 import { PageSkeleton } from "@/components/skeletons";
+import { StatusBadge } from "@/components/ui-primitives";
 import { StitchCard } from "@/components/stitch-card";
 import { listScenarios, listScenarioHistory, type ScenarioListItem, type ScenarioHistoryItem } from "@/lib/wellbeing-api";
 
@@ -17,10 +18,8 @@ function signalLabel(signal: ScenarioHistoryItem["signal"]) {
   return signal === "risky" ? "Nên xem lại" : "Em đang làm tốt lắm";
 }
 
-function signalBadgeStyle(signal: ScenarioHistoryItem["signal"]) {
-  return signal === "risky"
-    ? "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
-    : "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300";
+function signalTone(signal: ScenarioHistoryItem["signal"]): "safe" | "warning" {
+  return signal === "risky" ? "warning" : "safe";
 }
 
 export default function ScenarioListPage() {
@@ -104,14 +103,12 @@ export default function ScenarioListPage() {
             {history.slice(0, 5).map((item) => (
               <article
                 key={item.attempt_id}
-                className="card-lift rounded-2xl border border-outline-variant/20 bg-white p-4 transition-all hover:border-primary/20 dark:bg-[#1e2d40]"
+                className="elevated rounded-2xl border border-outline-variant/40 bg-white p-4 hover:border-primary/30 dark:bg-[#1e2d40]"
               >
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-sm font-semibold text-on-background">{item.scenario_title}</h3>
+                  <h3 className="text-[15px] font-semibold tracking-tight text-on-background">{item.scenario_title}</h3>
                   {item.signal ? (
-                    <span className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${signalBadgeStyle(item.signal)}`}>
-                      {signalLabel(item.signal)}
-                    </span>
+                    <StatusBadge tone={signalTone(item.signal)}>{signalLabel(item.signal)}</StatusBadge>
                   ) : null}
                 </div>
                 <p className="mt-1 text-xs text-on-background/50">{formatDate(item.completed_at)}</p>
