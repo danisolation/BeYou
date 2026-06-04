@@ -1,27 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ShieldAlert, AlertTriangle, Clock, UserCheck, CheckCircle } from "lucide-react";
+import { ShieldAlert, AlertTriangle, Clock, UserCheck, CheckCircle, RefreshCw, Radio } from "lucide-react";
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
-import { listParentSosAlerts, SosAlert, sosStatusLabels } from "@/lib/sos-api";
+import { useSosAlertPolling } from "@/hooks/use-sos-alert-polling";
+import { listParentSosAlerts, sosStatusLabels } from "@/lib/sos-api";
 
 export default function ParentSosAlertsPage() {
-  const [alerts, setAlerts] = useState<SosAlert[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    listParentSosAlerts()
-      .then(setAlerts)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, []);
+  const { alerts, loading, error, lastUpdated, refresh } = useSosAlertPolling(listParentSosAlerts, "SOS của con");
 
   if (loading) return <DashboardSkeleton cards={3} />;
   if (error) return <ErrorState title="Không tải được" message="Vui lòng thử lại sau" />;
+  const pendingCount = alerts.filter((alert) => alert.current_status === "sent").length;
+  const latestPending = alerts.find((alert) => alert.current_status === "sent");
 
   // Helper to map status to beautiful styles
   const getStatusIcon = (status: string) => {
@@ -56,14 +49,48 @@ export default function ParentSosAlertsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-on-background sm:text-2xl">
-          Cảnh báo SOS
-        </h1>
-        <p className="mt-2 text-base text-on-background/70">
-          {alerts.length > 0 ? `${alerts.length} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
-        </p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="flex items-center gap-2 text-xl font-bold text-on-background sm:text-2xl">
+            Cảnh báo SOS
+            {pendingCount > 0 ? (
+              <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-red-600 px-2 text-xs font-bold text-white shadow-md shadow-red-600/25">
+                {pendingCount}
+              </span>
+            ) : null}
+          </h1>
+          <p className="mt-2 text-base text-on-background/70">
+            {alerts.length > 0 ? `${alerts.length} cảnh báo gần đây` : "Hiện không có cảnh báo mới"}
+          </p>
+          <p className="mt-1 inline-flex items-center gap-1.5 text-xs font-semibold text-on-background/45">
+            <Radio size={13} className="text-emerald-600" aria-hidden="true" />
+            Cập nhật gần realtime mỗi 8 giây{lastUpdated ? ` · ${lastUpdated.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })}` : ""}
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => void refresh(false)}
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-outline-variant/30 bg-white px-3 text-xs font-bold text-on-background/70 hover:border-primary hover:text-primary dark:bg-[#1a2244]"
+        >
+          <RefreshCw size={14} aria-hidden="true" />
+          Làm mới
+        </button>
       </div>
+
+      {latestPending ? (
+        <Link href={`/parent/sos-alerts/${latestPending.id}`} role="alert" className="block rounded-[22px] border-2 border-red-300 bg-red-50 p-5 no-underline shadow-lg shadow-red-500/10 dark:border-red-900/60 dark:bg-red-950/30">
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600 text-white">
+              <ShieldAlert size={24} aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-extrabold uppercase tracking-wide text-red-700 dark:text-red-300">SOS của con chờ chú ý</p>
+              <h2 className="truncate text-lg font-bold text-red-950 dark:text-red-100">{latestPending.student.full_name}</h2>
+              <p className="text-sm text-red-900/70 dark:text-red-100/70">Bấm để xem trạng thái hỗ trợ và bước tiếp theo.</p>
+            </div>
+          </div>
+        </Link>
+      ) : null}
 
       {alerts.length === 0 ? (
         <div className="rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-8 text-center">
@@ -78,7 +105,9 @@ export default function ParentSosAlertsPage() {
               <Link
                 key={alert.id}
                 href={`/parent/sos-alerts/${alert.id}`}
-                className={`flex items-center gap-4 rounded-[24px] border bg-white dark:bg-[#1a2244] p-5 no-underline transition-all hover:-translate-y-0.5 hover:shadow-md ${bgClass}`}
+                className={`flex items-center gap-4 rounded-[24px] border bg-white p-5 no-underline transition-all hover:-translate-y-0.5 hover:shadow-md dark:bg-[#1a2244] ${bgClass} ${
+                  alert.current_status === "sent" ? "ring-2 ring-red-300 shadow-lg shadow-red-500/10 dark:ring-red-800/50" : ""
+                }`}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white dark:bg-[#0f1530] shadow-sm">
                   {getStatusIcon(alert.current_status)}

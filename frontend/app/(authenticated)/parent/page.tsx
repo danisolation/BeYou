@@ -3,11 +3,12 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyhole, HeartHandshake } from "lucide-react";
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
+import { useToast } from "@/components/toast";
 import {
   loadParentDashboard,
   type AdultDashboardData,
@@ -20,25 +21,58 @@ export default function ParentDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const knownNotificationIdsRef = useRef<Set<string>>(new Set());
+  const hasLoadedNotificationsRef = useRef(false);
+  const { error: toastError } = useToast();
 
-  function load() {
-    setIsLoading(true);
-    setLoadFailed(false);
+  const load = useCallback((silent = false) => {
+    if (!silent) {
+      setIsLoading(true);
+      setLoadFailed(false);
+    }
     loadParentDashboard()
       .then((data) => {
         setDashboardData(data);
         setLoadFailed(false);
         setLastUpdated(new Date());
+        if (data.notifications.status === "ready") {
+          const unreadSos = data.notifications.data.filter(
+            (notification) => notification.resource_type === "sos_alert" && notification.read_at === null,
+          );
+          const newUnread = unreadSos.filter((notification) => !knownNotificationIdsRef.current.has(notification.id));
+          if (hasLoadedNotificationsRef.current && newUnread.length > 0) {
+            toastError(`${newUnread.length} SOS mới của con cần chú ý ngay.`);
+          }
+          knownNotificationIdsRef.current = new Set(data.notifications.data.map((notification) => notification.id));
+          hasLoadedNotificationsRef.current = true;
+        }
       })
       .catch(() => {
-        setLoadFailed(true);
+        if (!silent) setLoadFailed(true);
       })
-      .finally(() => setIsLoading(false));
-  }
+      .finally(() => {
+        if (!silent) setIsLoading(false);
+      });
+  }, [toastError]);
 
   useEffect(() => {
     load();
-  }, []);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") {
+        load(true);
+      }
+    };
+    const intervalId = window.setInterval(refreshIfVisible, 12000);
+    window.addEventListener("focus", refreshIfVisible);
+    window.addEventListener("online", refreshIfVisible);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", refreshIfVisible);
+      window.removeEventListener("online", refreshIfVisible);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+    };
+  }, [load]);
 
   if (isLoading) return <DashboardSkeleton cards={2} />;
   if (loadFailed || dashboardData === null)
@@ -49,6 +83,13 @@ export default function ParentDashboardPage() {
     dashboardData.notifications.status === "ready"
       ? dashboardData.notifications.data.length
       : 0;
+  const unreadSosNotifications =
+    dashboardData.notifications.status === "ready"
+      ? dashboardData.notifications.data.filter(
+          (notification) => notification.resource_type === "sos_alert" && notification.read_at === null,
+        )
+      : [];
+  const latestUnreadSos = unreadSosNotifications[0];
   const priorityActions = [
     {
       title: sosCount > 0 ? "Xem SOS của con" : "Không có SOS mới",
@@ -105,7 +146,7 @@ export default function ParentDashboardPage() {
           <div className="absolute right-0 top-0 flex flex-col items-end gap-1">
             <button
               type="button"
-              onClick={load}
+              onClick={() => load(false)}
               aria-label="Làm mới dữ liệu"
               className="rounded-xl bg-white/70 p-2 text-[#33416b] backdrop-blur transition-colors hover:bg-white"
             >
@@ -163,6 +204,28 @@ export default function ParentDashboardPage() {
           </div>
         </div>
       </section>
+
+      {latestUnreadSos ? (
+        <section role="alert" className="rounded-[22px] border-2 border-red-300 bg-red-50 p-5 shadow-lg shadow-red-500/10 dark:border-red-900/60 dark:bg-red-950/30">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex gap-3">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-white shadow-md shadow-red-600/20">
+                <ShieldAlert size={24} aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-sm font-extrabold uppercase tracking-wide text-red-700 dark:text-red-300">
+                  {unreadSosNotifications.length} SOS mới của con
+                </p>
+                <h2 className="mt-1 text-lg font-bold text-red-950 dark:text-red-100">Có tín hiệu cần hỗ trợ vừa được gửi.</h2>
+                <p className="mt-1 text-sm text-red-900/75 dark:text-red-100/75">Cập nhật gần realtime mỗi 12 giây khi trang đang mở. Chỉ hiển thị thông tin cần thiết theo phạm vi hỗ trợ.</p>
+              </div>
+            </div>
+            <Link href={latestUnreadSos.href ?? "/parent/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
+              Mở SOS ngay <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
         <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
