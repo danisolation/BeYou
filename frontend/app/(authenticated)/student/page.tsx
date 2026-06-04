@@ -56,7 +56,7 @@ const quickActions = [
   {
     title: "Nhật ký cảm xúc",
     description: "Ghi lại cảm xúc mỗi ngày và nhìn lại bản thân",
-    image: "/images/Phương tiện truyền thông (6).jpg",
+    image: "/images/Phương tiện truyền thông (10).jpg",
     cta: "Viết nhật ký",
     href: "/student/mood-check-ins",
     icon: NotebookPen,
@@ -109,7 +109,8 @@ const todayPlan = [
   },
   {
     title: "Cần nói với ai đó",
-    description: "Peerlight AI có thể lắng nghe và gợi ý bước an toàn tiếp theo.",
+    description:
+      "Peerlight AI có thể lắng nghe và gợi ý bước an toàn tiếp theo.",
     href: "/student/chat",
     icon: Bot,
   },
@@ -204,20 +205,36 @@ export default function StudentDashboardPage() {
 
       <section className="grid gap-4 lg:grid-cols-[1.35fr_0.65fr]">
         <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
-          <p className="text-xs font-bold uppercase tracking-wide text-primary">Gợi ý hôm nay</p>
-          <h2 className="mt-1 text-lg font-bold text-on-background">Bắt đầu nhẹ nhàng, không cần hoàn hảo</h2>
-          <p className="mt-1 text-sm text-on-background/60">Chọn một bước nhỏ phù hợp với cảm giác hiện tại của bạn.</p>
+          <p className="text-xs font-bold uppercase tracking-wide text-primary">
+            Gợi ý hôm nay
+          </p>
+          <h2 className="mt-1 text-lg font-bold text-on-background">
+            Bắt đầu nhẹ nhàng, không cần hoàn hảo
+          </h2>
+          <p className="mt-1 text-sm text-on-background/60">
+            Chọn một bước nhỏ phù hợp với cảm giác hiện tại của bạn.
+          </p>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {todayPlan.map((item) => {
               const Icon = item.icon;
               return (
-                <Link key={item.title} href={item.href} className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]">
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]"
+                >
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary">
                     <Icon size={18} aria-hidden="true" />
                   </span>
-                  <h3 className="mt-3 text-sm font-bold text-on-background">{item.title}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">{item.description}</p>
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">Bắt đầu <ArrowRight size={13} aria-hidden="true" /></span>
+                  <h3 className="mt-3 text-sm font-bold text-on-background">
+                    {item.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">
+                    {item.description}
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">
+                    Bắt đầu <ArrowRight size={13} aria-hidden="true" />
+                  </span>
                 </Link>
               );
             })}
@@ -225,13 +242,20 @@ export default function StudentDashboardPage() {
         </div>
         <aside className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
           <div className="flex items-center gap-2 text-sm font-bold text-on-background">
-            <ShieldCheck size={17} className="text-primary" aria-hidden="true" />
+            <ShieldCheck
+              size={17}
+              className="text-primary"
+              aria-hidden="true"
+            />
             Điều bạn kiểm soát
           </div>
           <ul className="mt-4 space-y-3 text-sm text-on-background/65">
             <li>• Bạn có thể viết ngắn, bỏ qua hoặc quay lại sau.</li>
             <li>• Check-in không tự động tạo SOS.</li>
-            <li>• Nếu thấy không an toàn, hãy dùng SOS hoặc tìm người lớn tin cậy gần bạn.</li>
+            <li>
+              • Nếu thấy không an toàn, hãy dùng SOS hoặc tìm người lớn tin cậy
+              gần bạn.
+            </li>
           </ul>
         </aside>
       </section>
