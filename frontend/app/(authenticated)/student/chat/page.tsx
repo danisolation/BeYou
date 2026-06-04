@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { Menu, X, Trash2, Plus, Search, MessageSquare, Send, Sparkles } from "lucide-react";
+import { HeartHandshake, Menu, X, Trash2, Plus, Search, MessageSquare, Send, ShieldCheck, Sparkles } from "lucide-react";
 
 import { ChatSkeleton } from "@/components/skeletons";
 import { useToast } from "@/components/toast";
@@ -30,6 +30,25 @@ const IMMEDIATE_SUPPORT_COPY =
   "Nếu lúc này em thấy không an toàn, hãy tìm ngay một người em tin ở gần mình hoặc dùng SOS trong Peerlight AI nhé.";
 const PRIVATE_CHAT_COPY =
   "Em có thể viết ngắn thôi, chưa cần hoàn hảo. Cuộc trò chuyện của em được giữ riêng tư.";
+const CHAT_CHARACTER_LIMIT = 1200;
+const SAFETY_POINTS = ["Riêng tư với em", "Không thay thế chuyên gia", "Có SOS khi cần gấp"];
+
+function formatChatTime(value?: string | null) {
+  if (!value) {
+    return "";
+  }
+
+  try {
+    return new Intl.DateTimeFormat("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+    }).format(new Date(value));
+  } catch {
+    return "";
+  }
+}
 
 export default function StudentChatPage() {
   const [threadId, setThreadId] = useState<string | null>(null);
@@ -126,7 +145,7 @@ export default function StudentChatPage() {
 
   async function handleSend(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const message = draft.trim();
+    const message = draft.trim().slice(0, CHAT_CHARACTER_LIMIT);
     if (!message) {
       return;
     }
@@ -263,6 +282,7 @@ export default function StudentChatPage() {
   }
 
   const activeThread = threads.find((t) => t.id === threadId);
+  const remainingCharacters = CHAT_CHARACTER_LIMIT - draft.length;
 
   return (
     <section className="space-y-4 overflow-hidden">

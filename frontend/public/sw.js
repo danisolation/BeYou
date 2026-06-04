@@ -1,4 +1,4 @@
-const CACHE_NAME = 'peerlight-shell-v1780376953534';
+const CACHE_NAME = 'peerlight-shell-v1780540426810';
 const FONTS_CACHE = 'peerlight-fonts-v1';
 const SHELL_ASSETS = [
   '/',
@@ -9,7 +9,7 @@ const SHELL_ASSETS = [
   '/_next/static/chunks/0c7h~x4_chf35.js',
   '/_next/static/chunks/turbopack-0kemc0e062jzz.js',
   '/_next/static/chunks/03~yq9q893hmn.js',
-  '/_next/static/chunks/0d352~a3j7k5b.css',
+  '/_next/static/chunks/0omvcdx0_7nu9.css',
 ];
 
 self.addEventListener('install', (event) => {
