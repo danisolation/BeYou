@@ -38,6 +38,53 @@ Expected deployment shape:
 | Render start command | Includes `alembic upgrade head` and `uvicorn app.main:app` |
 | Render health path | `/health/live` |
 
+### Production Web Push setup for SOS notifications
+
+SOS web push notifications require HTTPS frontend hosting, a registered service worker, backend VAPID credentials, and a same-origin `/api` proxy from Vercel to Render.
+
+Generate VAPID keys once per production environment:
+
+```powershell
+npx web-push generate-vapid-keys
+```
+
+Set these Render backend environment variables in the Render dashboard for `beyou-backend` (do not commit real values):
+
+| Render env var | Value |
+|---|---|
+| `WEB_PUSH_VAPID_PUBLIC_KEY` | Generated VAPID public key |
+| `WEB_PUSH_VAPID_PRIVATE_KEY` | Generated VAPID private key |
+| `WEB_PUSH_SUBJECT` | A contact URI such as `mailto:admin@your-domain.example` |
+
+Set this Vercel frontend environment variable for every production deployment environment:
+
+| Vercel env var | Value |
+|---|---|
+| `NEXT_PUBLIC_API_BASE_URL` | Deployed Render backend origin, for example `https://beyou-backend.onrender.com` |
+
+The frontend intentionally calls `/api/...` in production browsers. `frontend/next.config.ts` rewrites those same-origin requests to `NEXT_PUBLIC_API_BASE_URL`, which keeps browser credentials and service-worker flows compatible with Safari/iOS third-party cookie restrictions.
+
+After deploying both services, verify Web Push without exposing secrets:
+
+```powershell
+$env:BEYOU_DEPLOY_PROFILE="public_demo" # or production_pilot
+$env:BEYOU_EXPECTED_FRONTEND_URL="https://beyou-frontend.vercel.app"
+$env:BEYOU_EXPECTED_BACKEND_URL="https://beyou-backend.onrender.com"
+$env:BEYOU_VERCEL_ROOT="frontend"
+$env:NEXT_PUBLIC_API_BASE_URL="https://beyou-backend.onrender.com"
+npm --prefix frontend run guard:deploy
+```
+
+Then smoke manually in HTTPS production:
+
+1. Open the deployed frontend as a teacher or parent.
+2. Confirm the browser registers `/sw.js` from the same frontend origin.
+3. Click **Bật thông báo SOS** and allow browser notifications.
+4. Trigger a linked student's SOS alert.
+5. Confirm the teacher/parent device receives a notification and clicking it opens the SOS detail route.
+
+If the toggle says **Máy chủ chưa bật push**, Render is missing `WEB_PUSH_VAPID_PUBLIC_KEY` or `WEB_PUSH_VAPID_PRIVATE_KEY`, or the backend was not redeployed after env changes.
+
 Run the config-only deployment guardrail before or after deploy:
 
 ```powershell

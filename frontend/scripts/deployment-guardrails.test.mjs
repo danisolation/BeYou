@@ -32,6 +32,12 @@ services:
         value: true
       - key: SESSION_COOKIE_SAMESITE
         value: none
+      - key: WEB_PUSH_VAPID_PUBLIC_KEY
+        sync: false
+      - key: WEB_PUSH_VAPID_PRIVATE_KEY
+        sync: false
+      - key: WEB_PUSH_SUBJECT
+        sync: false
 `;
 
 const vercelJson = JSON.stringify({
@@ -97,6 +103,7 @@ test("validateDeploymentConfig passes Render and Vercel deployment shape", () =>
 
   assert.equal(statusFor(results, "render_root"), "pass");
   assert.equal(statusFor(results, "render_health"), "pass");
+  assert.equal(statusFor(results, "render_web_push_env"), "pass");
   assert.equal(statusFor(results, "vercel_framework"), "pass");
   assert.equal(statusFor(results, "vercel_root"), "pass");
 
@@ -114,6 +121,18 @@ test("validateDeploymentConfig passes Render and Vercel deployment shape", () =>
     vercelRoot: "backend",
   });
   assert.equal(statusFor(wrongRootResults, "vercel_root"), "fail");
+});
+
+test("validateDeploymentConfig fails missing Render Web Push env declaration", () => {
+  const unsafeRenderYaml = renderYaml.replace(/\n      - key: WEB_PUSH_VAPID_PUBLIC_KEY[\s\S]*?sync: false\n/, "\n");
+  const results = validateDeploymentConfig({
+    renderYaml: unsafeRenderYaml,
+    vercelJson,
+    vercelRoot: "frontend",
+  });
+
+  assert.equal(statusFor(results, "render_web_push_env"), "fail");
+  assert.match(resultFor(results, "render_web_push_env").remediation, /WEB_PUSH_VAPID_PUBLIC_KEY/);
 });
 
 test("validateRenderEnvExpectations passes public demo env expectations", () => {

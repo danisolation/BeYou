@@ -8,6 +8,7 @@ const SECRET_LABELS = [
   "DATABASE_URL",
   "SESSION_COOKIE_NAME",
   "SMTP_PASSWORD",
+  "WEB_PUSH_VAPID_PRIVATE_KEY",
   "FREEMODEL_API_KEY",
   "client_secret",
   "access_token",
@@ -23,6 +24,11 @@ const OVERRIDE_ENV_KEYS = {
   BEYOU_RENDER_SESSION_COOKIE_SECURE: "SESSION_COOKIE_SECURE",
   BEYOU_RENDER_SESSION_COOKIE_SAMESITE: "SESSION_COOKIE_SAMESITE",
 };
+const WEB_PUSH_RENDER_ENV_KEYS = [
+  "WEB_PUSH_VAPID_PUBLIC_KEY",
+  "WEB_PUSH_VAPID_PRIVATE_KEY",
+  "WEB_PUSH_SUBJECT",
+];
 
 function result({ status, category, key, evidence, remediation = null, command = null, envKeys = [] }) {
   return { status, category, key, evidence, remediation, command, envKeys };
@@ -79,6 +85,11 @@ function backendServiceFrom(renderConfig) {
     services.find((service) => service?.type === "web" && service?.rootDir === "backend") ??
     null
   );
+}
+
+function renderEnvVarFrom(backendService, key) {
+  const envVars = Array.isArray(backendService?.envVars) ? backendService.envVars : [];
+  return envVars.find((item) => item?.key === key) ?? null;
 }
 
 function envMapFromRender(renderYaml, operatorEnv = {}) {
@@ -278,6 +289,29 @@ export function validateDeploymentConfig({ renderYaml, vercelJson, vercelRoot })
       ? pass("render_backend", "render_health", "Render health check uses /health/live.")
       : fail("render_backend", "render_health", "Render health check path is not /health/live.", "Set healthCheckPath to /health/live."),
   );
+
+  const missingWebPushEnv = WEB_PUSH_RENDER_ENV_KEYS.filter((key) => !renderEnvVarFrom(backendService, key));
+  const unsafeWebPushEnv = WEB_PUSH_RENDER_ENV_KEYS.filter((key) => {
+    const item = renderEnvVarFrom(backendService, key);
+    return item && item.sync !== false;
+  });
+  if (missingWebPushEnv.length === 0 && unsafeWebPushEnv.length === 0) {
+    results.push(
+      pass("render_backend", "render_web_push_env", "Render declares Web Push VAPID env vars as manual/secret values.", {
+        envKeys: WEB_PUSH_RENDER_ENV_KEYS,
+      }),
+    );
+  } else {
+    results.push(
+      fail(
+        "render_backend",
+        "render_web_push_env",
+        "Render Web Push VAPID env vars are missing or not marked manual/secret.",
+        "Add WEB_PUSH_VAPID_PUBLIC_KEY, WEB_PUSH_VAPID_PRIVATE_KEY, and WEB_PUSH_SUBJECT to Render with sync: false, then set values in the Render dashboard.",
+        { envKeys: WEB_PUSH_RENDER_ENV_KEYS },
+      ),
+    );
+  }
 
   if (!vercelConfig) {
     results.push(fail("vercel_frontend", "vercel_config_parse", "frontend/vercel.json could not be parsed.", "Fix frontend/vercel.json syntax before deployment."));

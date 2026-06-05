@@ -53,6 +53,12 @@ services:
         value: true
       - key: SESSION_COOKIE_SAMESITE
         value: none
+      - key: WEB_PUSH_VAPID_PUBLIC_KEY
+        sync: false
+      - key: WEB_PUSH_VAPID_PRIVATE_KEY
+        sync: false
+      - key: WEB_PUSH_SUBJECT
+        sync: false
 `;
 
 const unsafeRenderYaml = `
@@ -134,6 +140,7 @@ test("QA-02 production pilot deploy guard passes safe Render and Vercel metadata
   assert.equal(statusFor(renderResults, "render_frontend_origin"), "pass");
   assert.equal(statusFor(renderResults, "render_session_cookie"), "pass");
   assert.equal(statusFor(deploymentResults, "render_root"), "pass");
+  assert.equal(statusFor(deploymentResults, "render_web_push_env"), "pass");
   assert.equal(statusFor(deploymentResults, "vercel_root"), "pass");
 });
 
