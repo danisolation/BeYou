@@ -191,7 +191,7 @@ describe("admin management UI", () => {
     render(<AdminLinksPage />);
 
     expect(await screen.findByText("Liên kết hỗ trợ")).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Thu hồi/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Thu hồi/ }));
 
     expect(screen.getByText(REVOKE_LINK_COPY)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Giữ liên kết" })).toBeInTheDocument();
@@ -205,6 +205,8 @@ describe("admin management UI", () => {
     // Open the create form (first button with that name)
     const createButtons = screen.getAllByRole("button", { name: /Tạo liên kết/ });
     await userEvent.click(createButtons[0]);
+    await screen.findByRole("option", { name: /Nguyễn An Demo/ });
+    await screen.findByRole("option", { name: /Cô Bình Demo/ });
     await userEvent.selectOptions(screen.getByLabelText("Học sinh"), "student-1");
     await userEvent.selectOptions(screen.getByLabelText("Người lớn hỗ trợ"), "teacher-1");
     // Submit form (the second/submit button)
