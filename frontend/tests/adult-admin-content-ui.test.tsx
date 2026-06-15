@@ -339,7 +339,7 @@ describe("admin content management UI", () => {
     expect(screen.getByRole("button", { name: /Tình huống/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Tạo mới/ })).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Sức khỏe cảm xúc/ }));
 
     expect(screen.getByRole("button", { name: /Quay lại danh sách/ })).toBeInTheDocument();
     expect(screen.getByText("Chỉnh sửa bài tự kiểm tra")).toBeInTheDocument();
@@ -358,7 +358,7 @@ describe("admin content management UI", () => {
     expect(screen.getByLabelText("Điểm tối đa")).toBeInTheDocument();
     expect(screen.getByLabelText("Nhận xét *")).toBeInTheDocument();
     expect(screen.getByLabelText("Gợi ý *")).toBeInTheDocument();
-        expect(screen.getByLabelText("Hành động tiếp theo *")).toBeInTheDocument();
+    expect(screen.getByLabelText("Hành động tiếp theo *")).toBeInTheDocument();
 
     expect(screen.getByRole("button", { name: "Lưu thay đổi" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xuất bản" })).toBeInTheDocument();
@@ -367,7 +367,7 @@ describe("admin content management UI", () => {
     await userEvent.click(screen.getByRole("button", { name: /Quay lại danh sách/ }));
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
     expect(screen.getByRole("button", { name: /Tạo mới/ })).toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Rủ rê sau giờ học/ }));
 
     expect(screen.getByText("Chỉnh sửa tình huống")).toBeInTheDocument();
     expect(screen.getByLabelText("Tiêu đề")).toBeInTheDocument();
@@ -398,7 +398,7 @@ describe("admin content management UI", () => {
     renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
-    await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Sức khỏe cảm xúc/ }));
     await userEvent.click(screen.getByRole("button", { name: /Câu hỏi & Lựa chọn/ }));
 
     await userEvent.click(screen.getByRole("button", { name: /Thêm câu hỏi/ }));
@@ -459,7 +459,7 @@ describe("admin content management UI", () => {
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
-    await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Rủ rê sau giờ học/ }));
     await userEvent.click(screen.getByRole("button", { name: /Lựa chọn phản hồi/ }));
     fireEvent.change(screen.getAllByLabelText("Nội dung")[1], {
       target: { value: "Em dừng lại và gọi người lớn." },
@@ -507,7 +507,7 @@ describe("admin content management UI", () => {
     renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
-    await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Sức khỏe cảm xúc/ }));
     await userEvent.click(screen.getByRole("button", { name: /Ngưỡng & Xuất bản/ }));
     await userEvent.click(screen.getByRole("button", { name: "Xuất bản" }));
 
@@ -556,7 +556,7 @@ describe("admin content management UI", () => {
     renderAdminContentPage();
 
     await screen.findByText("Quản lý nội dung");
-    await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Sức khỏe cảm xúc/ }));
     await userEvent.click(screen.getByRole("button", { name: /Câu hỏi & Lựa chọn/ }));
     const questionField = await screen.findByDisplayValue("Hôm nay em thấy thế nào?");
     await userEvent.clear(questionField);
@@ -602,7 +602,7 @@ describe("admin content management UI", () => {
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
-    await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Rủ rê sau giờ học/ }));
     await userEvent.click(screen.getByRole("button", { name: "Lưu trữ" }));
     expect(
       screen.getByText("Lưu trữ nội dung này? Học sinh sẽ không còn thấy nội dung này, nhưng lịch sử đã hoàn thành vẫn được giữ."),
@@ -613,7 +613,7 @@ describe("admin content management UI", () => {
     await userEvent.click(screen.getByRole("button", { name: "Giữ nội dung" }));
     await userEvent.click(screen.getByRole("button", { name: /Quay lại danh sách/ }));
     await userEvent.click(screen.getByRole("button", { name: /Bài tự kiểm tra/ }));
-    await userEvent.click(screen.getByRole("button", { name: /Sức khỏe cảm xúc/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Sức khỏe cảm xúc/ }));
     await userEvent.click(screen.getAllByRole("button", { name: "Xóa" }).at(-1)!);
     expect(
       screen.getByText("Xóa nội dung này? Nếu đã có học sinh hoàn thành, lịch sử của các em sẽ bị xóa theo."),
@@ -633,7 +633,7 @@ describe("admin content management UI", () => {
 
     await screen.findByText("Quản lý nội dung");
     await userEvent.click(screen.getByRole("button", { name: /Tình huống/ }));
-    await userEvent.click(screen.getByRole("button", { name: /Rủ rê sau giờ học/ }));
+    await userEvent.click(await screen.findByRole("button", { name: /Rủ rê sau giờ học/ }));
     await userEvent.click(screen.getAllByRole("button", { name: "Xóa" }).at(-1)!);
     expect(
       screen.getByText("Xóa nội dung này? Nếu đã có học sinh hoàn thành, lịch sử của các em sẽ bị xóa theo."),
