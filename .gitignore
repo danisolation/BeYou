@@ -3,6 +3,8 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 .venv/
+venv/
+venv_*/
 node_modules/
 .next/
 dist/
