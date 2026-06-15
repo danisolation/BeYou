@@ -2,9 +2,16 @@ import "@testing-library/jest-dom/vitest";
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { vi } from "vitest";
 
-const ToastContext = createContext<any>(null);
+interface ToastContextType {
+  toast: (msg: string) => void;
+  success: (msg: string) => void;
+  error: (msg: string) => void;
+  info: (msg: string) => void;
+}
 
-const mockToastProvider = ({ children }: { children: React.ReactNode }) => {
+const ToastContext = createContext<ToastContextType | null>(null);
+
+const MockToastProvider = ({ children }: { children: React.ReactNode }) => {
   const [toasts, setToasts] = useState<string[]>([]);
   const add = useCallback((msg: string) => {
     setToasts((prev) => [...prev, msg]);
@@ -27,7 +34,7 @@ const mockToastProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const mockUseToast = () => {
+const useMockToast = () => {
   const ctx = useContext(ToastContext);
   if (!ctx) {
     return {
@@ -41,6 +48,7 @@ const mockUseToast = () => {
 };
 
 vi.mock("@/components/toast", () => ({
-  ToastProvider: mockToastProvider,
-  useToast: mockUseToast,
+  ToastProvider: MockToastProvider,
+  useToast: useMockToast,
 }));
+
