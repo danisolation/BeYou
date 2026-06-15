@@ -26,14 +26,15 @@ describe("Phase 37 dashboard loading", () => {
   });
 
   it("keeps dashboard reads credentialed and no-store", async () => {
-    const fetchMock = vi.fn(() =>
-      Promise.resolve(
+    const fetchMock = vi.fn((url?: string | Request | URL, init?: RequestInit) => {
+      void url; void init;
+      return Promise.resolve(
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         }),
-      ),
-    );
+      );
+    });
     vi.stubGlobal("fetch", fetchMock);
 
     await dashboardRead<unknown>("/api/teacher/students");
@@ -48,14 +49,15 @@ describe("Phase 37 dashboard loading", () => {
   });
 
   it("enforces no-store even when callers request cached dashboard reads", async () => {
-    const fetchMock = vi.fn(() =>
-      Promise.resolve(
+    const fetchMock = vi.fn((url?: string | Request | URL, init?: RequestInit) => {
+      void url; void init;
+      return Promise.resolve(
         new Response(JSON.stringify({ ok: true }), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         }),
-      ),
-    );
+      );
+    });
     vi.stubGlobal("fetch", fetchMock);
 
     await dashboardRead<unknown>("/api/teacher/students", {

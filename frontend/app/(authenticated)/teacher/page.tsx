@@ -231,7 +231,7 @@ export default function TeacherDashboardPage() {
                 <p className="mt-1 text-sm text-red-900/75 dark:text-red-100/75">Cập nhật gần realtime mỗi 12 giây khi trang đang mở. Nội dung nhạy cảm vẫn chỉ hiển thị theo quyền được phép.</p>
               </div>
             </div>
-            <Link href={latestUnreadSos.href ?? "/teacher/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
+            <Link href={latestUnreadSos.href?.startsWith("/") ? latestUnreadSos.href : "/teacher/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
               Mở SOS ngay <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>

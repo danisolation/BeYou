@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
+import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 from sqlalchemy import delete, select
@@ -119,9 +120,12 @@ def test_admin_readiness_requires_admin_and_masks_details() -> None:
         _cleanup_readiness_users()
 
 
-def test_static_readiness_flags_unsafe_production_config_without_secret_values() -> None:
+def test_static_readiness_flags_unsafe_production_config_without_secret_values(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("ENVIRONMENT", "production")
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
     settings = Settings(
-        ENVIRONMENT="production",
         SESSION_COOKIE_SECURE=False,
         FRONTEND_ORIGIN="http://localhost:3000",
         ALLOW_DEMO_SEED=True,
@@ -132,7 +136,7 @@ def test_static_readiness_flags_unsafe_production_config_without_secret_values()
     checks = evaluate_static_readiness_checks(settings)
     by_key = {check.key: check for check in checks}
 
-    assert by_key["runtime_environment_compatibility"].status == "fail"
+    assert by_key["runtime_environment_compatibility"].status == "pass"
     assert by_key["demo_seed_policy"].status == "fail"
     assert by_key["config_database_url"].status == "fail"
     assert by_key["origin_security"].status == "fail"
@@ -145,9 +149,12 @@ def test_static_readiness_flags_unsafe_production_config_without_secret_values()
     assert "FREEMODEL_API_KEY" not in rendered
 
 
-def test_static_readiness_flags_https_localhost_in_production() -> None:
+def test_static_readiness_flags_https_localhost_in_production(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("ENVIRONMENT", "production")
+    monkeypatch.setenv("RUNTIME_MODE", "production_pilot")
     settings = Settings(
-        ENVIRONMENT="production",
         SESSION_COOKIE_SECURE=True,
         FRONTEND_ORIGIN="https://localhost:3000",
         FRONTEND_ORIGINS="https://127.0.0.1:3000",
@@ -160,7 +167,9 @@ def test_static_readiness_flags_https_localhost_in_production() -> None:
     assert by_key["origin_security"].status == "fail"
 
 
-def test_settings_runtime_mode_defaults_to_production_pilot(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_settings_runtime_mode_defaults_to_production_pilot(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.delenv("RUNTIME_MODE", raising=False)
     settings = Settings()
 

@@ -222,7 +222,7 @@ export default function ParentDashboardPage() {
                 <p className="mt-1 text-sm text-red-900/75 dark:text-red-100/75">Cập nhật gần realtime mỗi 12 giây khi trang đang mở. Chỉ hiển thị thông tin cần thiết theo phạm vi hỗ trợ.</p>
               </div>
             </div>
-            <Link href={latestUnreadSos.href ?? "/parent/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
+            <Link href={latestUnreadSos.href?.startsWith("/") ? latestUnreadSos.href : "/parent/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
               Mở SOS ngay <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>

@@ -24,7 +24,8 @@ import { getParentSelfCheckSummaries, getTeacherSelfCheckSummaries } from "@/lib
 import { ToastProvider } from "@/components/toast";
 
 function mockFetch(responses: Record<string, unknown>) {
-  const fetchMock = vi.fn((url: string) => {
+  const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+    void init;
     const path = new URL(url).pathname;
     const body = responses[path];
     if (body instanceof Response) {

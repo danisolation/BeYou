@@ -142,7 +142,8 @@ describe("Phase 22 notification preferences UI", () => {
   });
 
   it("keeps the redesigned dashboard free of the old inline reminder banner and reminder side effects", async () => {
-    const fetchMock = vi.fn((url: string) => {
+    const fetchMock = vi.fn((url: string, init?: RequestInit) => {
+      void init;
       const path = new URL(url).pathname;
       if (path === "/api/student/profile") {
         return jsonResponse(studentProfile);

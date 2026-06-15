@@ -113,7 +113,9 @@ def send_sos_web_push_notifications(
 
     recipient_ids = [recipient.id for recipient in recipients]
     subscriptions = list(
-        db.scalars(select(WebPushSubscription).where(WebPushSubscription.user_id.in_(recipient_ids)))
+        db.scalars(
+            select(WebPushSubscription).where(WebPushSubscription.user_id.in_(recipient_ids))
+        )
     )
     if not subscriptions:
         return

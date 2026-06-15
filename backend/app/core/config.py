@@ -84,8 +84,12 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = Field(default=True, validation_alias="SMTP_USE_TLS")
     smtp_timeout_seconds: float = Field(default=10.0, validation_alias="SMTP_TIMEOUT_SECONDS")
     web_push_vapid_public_key: str = Field(default="", validation_alias="WEB_PUSH_VAPID_PUBLIC_KEY")
-    web_push_vapid_private_key: str = Field(default="", validation_alias="WEB_PUSH_VAPID_PRIVATE_KEY")
-    web_push_subject: str = Field(default="mailto:admin@peerlight.local", validation_alias="WEB_PUSH_SUBJECT")
+    web_push_vapid_private_key: str = Field(
+        default="", validation_alias="WEB_PUSH_VAPID_PRIVATE_KEY"
+    )
+    web_push_subject: str = Field(
+        default="mailto:admin@peerlight.local", validation_alias="WEB_PUSH_SUBJECT"
+    )
     auth_provider_enabled: bool = Field(default=False, validation_alias="AUTH_PROVIDER_ENABLED")
     auth_provider_key: str = Field(default="disabled", validation_alias="AUTH_PROVIDER_KEY")
     auth_provider_label: str = Field(
@@ -281,13 +285,11 @@ class Settings(BaseSettings):
         is_p_user = p_val in placeholders or p_val.startswith("changeme")
         is_p_pass = p_pw in placeholders or p_pw.startswith("changeme")
         missing_smtp_config = (
-            not self.smtp_host.strip()
-            or not self.smtp_from.strip()
-            or is_p_user
-            or is_p_pass
+            not self.smtp_host.strip() or not self.smtp_from.strip() or is_p_user or is_p_pass
         )
         if missing_smtp_config:
             import logging
+
             logger = logging.getLogger("beyou.config")
             logger.warning(
                 "SMTP configuration is incomplete or contains placeholders. Falling back to 'local_outbox' for safety."

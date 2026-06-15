@@ -181,7 +181,7 @@ describe("Phase 5 student chatbot UI", () => {
 
     rerender(<StudentChatPage />);
     expect(await screen.findByText("Peerlight AI Chat")).toBeInTheDocument();
-    expect(screen.getByText("Chào em!")).toBeInTheDocument();
+    expect(screen.getByText(/Chào em, mình đang lắng nghe/)).toBeInTheDocument();
     expect(screen.getByText(/Cuộc trò chuyện của em được giữ riêng tư/)).toBeInTheDocument();
     await userEvent.type(screen.getByLabelText("Điều em muốn chia sẻ"), "Hôm nay em thấy áp lực.");
     await userEvent.click(screen.getByRole("button", { name: "Gửi" }));

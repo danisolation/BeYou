@@ -250,7 +250,7 @@ def test_smtp_startup_validation_rules_fallback() -> None:
         SMTP_HOST="changeme",  # Invalide placeholder
         SMTP_FROM="noreply@example.test",
         SMTP_USERNAME="changeme",
-        SMTP_PASSWORD="changeme"
+        SMTP_PASSWORD="changeme",
     )
     settings.validate_smtp_configuration_rules()
     assert settings.sos_email_provider == "local_outbox"
@@ -261,7 +261,7 @@ def test_smtp_startup_validation_rules_fallback() -> None:
         SMTP_PORT=587,
         SMTP_FROM="noreply@example.test",
         SMTP_USERNAME="real_username",
-        SMTP_PASSWORD="real_password"
+        SMTP_PASSWORD="real_password",
     )
     settings_valid.validate_smtp_configuration_rules()
     assert settings_valid.sos_email_provider == "smtp"

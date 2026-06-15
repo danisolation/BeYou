@@ -21,7 +21,9 @@ def upgrade() -> None:
     op.create_table(
         "web_push_subscriptions",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
-        sa.Column("user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False),
+        sa.Column(
+            "user_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("users.id"), nullable=False
+        ),
         sa.Column("endpoint", sa.Text(), nullable=False),
         sa.Column("p256dh", sa.Text(), nullable=False),
         sa.Column("auth", sa.Text(), nullable=False),
