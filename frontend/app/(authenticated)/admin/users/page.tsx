@@ -21,6 +21,7 @@ import { AdminUser, createUser, deleteUser, listUsers, updateUser } from "@/lib/
 
 type ConfirmationState =
   | { type: "disable"; user: AdminUser }
+  | { type: "enable"; user: AdminUser }
   | { type: "delete-demo"; user: AdminUser }
   | { type: "role"; user: AdminUser; role: AdminUser["role"] }
   | null;
@@ -153,6 +154,14 @@ export default function AdminUsersPage() {
         supportingText: "Thao tác này chỉ đổi trạng thái đăng nhập; dữ liệu riêng tư của học sinh không được mở thêm.",
       };
     }
+    if (confirmation?.type === "enable") {
+      return {
+        message: "Kích hoạt lại tài khoản này? Người dùng sẽ có thể đăng nhập bình thường.",
+        cancelLabel: "Giữ trạng thái khóa",
+        confirmLabel: "Kích hoạt tài khoản",
+        supportingText: "Hãy chắc chắn rằng bạn muốn cấp quyền truy cập cho tài khoản này.",
+      };
+    }
     if (confirmation?.type === "delete-demo") {
       return {
         message: DELETE_DEMO_ACCOUNT_COPY,
@@ -180,6 +189,10 @@ export default function AdminUsersPage() {
       if (confirmed.type === "disable") {
         await updateUser(confirmed.user.id, { status: "disabled" });
         successMessage = `Đã tạm khóa tài khoản ${confirmed.user.full_name}.`;
+      }
+      if (confirmed.type === "enable") {
+        await updateUser(confirmed.user.id, { status: "active" });
+        successMessage = `Đã kích hoạt tài khoản ${confirmed.user.full_name}.`;
       }
       if (confirmed.type === "delete-demo") {
         await deleteUser(confirmed.user.id);
@@ -367,14 +380,25 @@ export default function AdminUsersPage() {
                         Lưu
                       </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => setConfirmation({ type: "disable", user })}
-                      className="btn-press flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-amber-300 px-3 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/20 sm:w-auto"
-                    >
-                      <ShieldAlert size={13} />
-                      Tạm khóa
-                    </button>
+                    {user.status === "active" ? (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmation({ type: "disable", user })}
+                        className="btn-press flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-amber-300 px-3 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/20 sm:w-auto"
+                      >
+                        <ShieldAlert size={13} />
+                        Tạm khóa
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmation({ type: "enable", user })}
+                        className="btn-press flex min-h-11 w-full items-center justify-center gap-1.5 rounded-lg border border-green-300 px-3 text-xs font-medium text-green-700 transition-colors hover:bg-green-50 dark:border-green-600 dark:text-green-300 dark:hover:bg-green-900/20 sm:w-auto"
+                      >
+                        <ShieldAlert size={13} />
+                        Kích hoạt
+                      </button>
+                    )}
                     {user.is_demo && (
                       <button
                         type="button"

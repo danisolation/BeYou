@@ -25,7 +25,9 @@ from app.core.sessions import (
     revoke_session,
     utc_now,
 )
-from app.db.models import AccountStatus, AuthSessionMethod, ExternalIdentity, ExternalIdentityStatus, User
+import uuid
+from app.core.security import get_password_hash
+from app.db.models import AccountStatus, AuthSessionMethod, ExternalIdentity, ExternalIdentityStatus, User, UserRole
 from app.db.session import get_db
 from app.schemas.auth import AuthCapabilitiesResponse, LoginRequest, LoginResponse
 from app.services.external_identity import (
@@ -219,7 +221,21 @@ def _resolve_google_user(
 
     user = db.scalar(select(User).where(User.email == email))
     display_label = str(claims.get("name") or "").strip()[:160] or None
-    if user is None or user.status != AccountStatus.ACTIVE.value:
+    
+    if user is None:
+        user = User(
+            id=uuid.uuid4(),
+            email=email,
+            password_hash=get_password_hash(secrets.token_urlsafe(32)),
+            role=UserRole.STUDENT.value,
+            status=AccountStatus.DISABLED.value,
+            full_name=display_label or email.split("@")[0],
+            is_demo=False,
+        )
+        db.add(user)
+        db.flush()
+
+    if user.status != AccountStatus.ACTIVE.value:
         identity = ExternalIdentity(
             provider_key=provider_key,
             provider_subject_hash=hash_external_subject(provider_key, subject),
@@ -228,6 +244,7 @@ def _resolve_google_user(
             email_verified=True,
             email_hash=hash_external_email(provider_key, email),
             display_label=display_label,
+            linked_user_id=user.id,
             last_seen_at=utc_now(),
         )
         db.add(identity)
