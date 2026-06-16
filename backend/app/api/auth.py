@@ -202,6 +202,7 @@ def _resolve_google_user(
     provider_key = settings.auth_provider_key
     subject = str(claims["sub"])
     email = str(claims["email"]).strip().lower()
+    
     resolution = resolve_external_identity(db, provider_key, subject)
 
     if resolution.status == "linked_active_user" and resolution.user and resolution.identity:
@@ -209,12 +210,7 @@ def _resolve_google_user(
         db.commit()
         return resolution.user, resolution.identity
 
-    if resolution.status in {
-        "disabled_identity",
-        "deprovisioned_identity",
-        "pending_review",
-        "linked_user_inactive",
-    }:
+    if resolution.status in {"disabled_identity", "deprovisioned_identity"}:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=GOOGLE_ACCOUNT_NOT_ALLOWED_DETAIL
         )
@@ -235,11 +231,12 @@ def _resolve_google_user(
         db.add(user)
         db.flush()
 
-    if user.status != AccountStatus.ACTIVE.value:
+    identity = resolution.identity
+    if not identity:
         identity = ExternalIdentity(
             provider_key=provider_key,
             provider_subject_hash=hash_external_subject(provider_key, subject),
-            status=ExternalIdentityStatus.PENDING_REVIEW.value,
+            status=ExternalIdentityStatus.LINKED.value if user.status == AccountStatus.ACTIVE.value else ExternalIdentityStatus.PENDING_REVIEW.value,
             provider_label=settings.auth_provider_label,
             email_verified=True,
             email_hash=hash_external_email(provider_key, email),
@@ -248,25 +245,18 @@ def _resolve_google_user(
             last_seen_at=utc_now(),
         )
         db.add(identity)
-        db.commit()
+    else:
+        identity.last_seen_at = utc_now()
+        identity.linked_user_id = user.id
+        identity.status = ExternalIdentityStatus.LINKED.value if user.status == AccountStatus.ACTIVE.value else ExternalIdentityStatus.PENDING_REVIEW.value
+
+    db.commit()
+
+    if user.status != AccountStatus.ACTIVE.value:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail=GOOGLE_ACCOUNT_NOT_ALLOWED_DETAIL
         )
 
-    identity = ExternalIdentity(
-        provider_key=provider_key,
-        provider_subject_hash=hash_external_subject(provider_key, subject),
-        linked_user_id=user.id,
-        status=ExternalIdentityStatus.LINKED.value,
-        provider_label=settings.auth_provider_label,
-        email_verified=True,
-        email_hash=hash_external_email(provider_key, email),
-        display_label=display_label or user.full_name[:160],
-        last_seen_at=utc_now(),
-    )
-    db.add(identity)
-    db.commit()
-    db.refresh(identity)
     return user, identity
 
 
