@@ -1,5 +1,6 @@
 import pytest
 from datetime import timedelta
+from urllib.parse import parse_qs, urlparse
 from fastapi import Response
 from fastapi.testclient import TestClient
 from sqlalchemy import delete, select
@@ -12,6 +13,8 @@ from app.db.models import (
     AccountStatus,
     AuditEvent,
     AuthSessionMethod,
+    ExternalIdentity,
+    ExternalIdentityStatus,
     SosAlert,
     SosStatusEvent,
     InAppNotification,
@@ -37,6 +40,7 @@ from app.db.models import (
 )
 from app.db.session import SessionLocal
 from app.main import app, create_app
+from app.services.external_identity import hash_external_subject
 from app.services.privacy import NOTICE_VERSION
 
 FRONTEND_ORIGIN = "http://localhost:3000"
@@ -102,6 +106,7 @@ def _clean_database() -> None:
             StudentAdultLink,
             PrivacyAcknowledgement,
             UserSession,
+            ExternalIdentity,
             User,
         ):
             db.execute(delete(model))
@@ -234,11 +239,7 @@ def test_auth_capabilities_production_pilot_demo_disabled_hides_public_entry(
 def test_auth_capabilities_provider_enabled_returns_label_and_mode_only(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setenv("AUTH_PROVIDER_ENABLED", "true")
-    monkeypatch.setenv("AUTH_PROVIDER_KEY", "pilot_sso")
-    monkeypatch.setenv("AUTH_PROVIDER_LABEL", "Pilot SSO")
-    monkeypatch.setenv("AUTH_PROVIDER_MODE", "pilot")
-    get_settings.cache_clear()
+    _configure_google_login(monkeypatch)
 
     with TestClient(create_app()) as provider_client:
         response = provider_client.get("/api/auth/capabilities")
@@ -246,8 +247,8 @@ def test_auth_capabilities_provider_enabled_returns_label_and_mode_only(
     assert response.status_code == 200
     payload = response.json()
     assert payload["provider_login_enabled"] is True
-    assert payload["provider_label"] == "Pilot SSO"
-    assert payload["provider_mode"] == "pilot"
+    assert payload["provider_label"] == "Google"
+    assert payload["provider_mode"] == "oauth"
     assert "provider_key" not in payload
     _assert_public_safe_auth_capabilities(payload)
     get_settings.cache_clear()

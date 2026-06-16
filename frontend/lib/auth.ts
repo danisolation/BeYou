@@ -41,6 +41,20 @@ export async function getAuthCapabilities(): Promise<AuthCapabilities> {
   return apiFetch<AuthCapabilities>("/api/auth/capabilities");
 }
 
+export function googleLoginStartUrl(nextPath = "/"): string {
+  const safeNext = nextPath.startsWith("/") && !nextPath.startsWith("//") ? nextPath : "/";
+  const path = `/api/auth/google/start?next=${encodeURIComponent(safeNext)}`;
+  if (
+    typeof window !== "undefined" &&
+    !window.location.hostname.includes("localhost") &&
+    !window.location.hostname.includes("127.0.0.1")
+  ) {
+    return path;
+  }
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
+  return `${baseUrl}${path}`;
+}
+
 export async function acknowledgePrivacy(): Promise<void> {
   await apiFetch("/api/privacy/acknowledgements", { method: "POST" });
 }

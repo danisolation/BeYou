@@ -35,6 +35,14 @@ def hash_external_subject(provider_key: str, subject: str) -> str:
     return hashlib.sha256(f"{normalized_provider_key}:{subject}".encode("utf-8")).hexdigest()
 
 
+def hash_external_email(provider_key: str, email: str) -> str:
+    normalized_provider_key = _normalize_provider_key(provider_key)
+    normalized_email = email.strip().lower()
+    return hashlib.sha256(
+        f"{normalized_provider_key}:email:{normalized_email}".encode("utf-8")
+    ).hexdigest()
+
+
 def resolve_external_identity(
     db: OrmSession, provider_key: str, subject: str
 ) -> ExternalIdentityResolution:

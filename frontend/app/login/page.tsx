@@ -1,17 +1,25 @@
 "use client";
 
-import { Eye, EyeOff, Leaf, Heart, Sunrise } from "lucide-react";
+import { Eye, EyeOff, Heart, Leaf, LogIn, Sunrise } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { AuthCapabilities, getAuthCapabilities, login, loginErrorCopy } from "@/lib/auth";
+import {
+  AuthCapabilities,
+  getAuthCapabilities,
+  googleLoginStartUrl,
+  login,
+  loginErrorCopy,
+} from "@/lib/auth";
 import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 
 const DEMO_DISABLED_COPY =
   "Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp.";
 const PROVIDER_DISABLED_COPY = "Đăng nhập bên ngoài chưa được kích hoạt.";
 const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp.";
+const GOOGLE_LOGIN_ERROR_COPY =
+  "Không thể đăng nhập bằng Google. Hãy dùng tài khoản đã được nhà trường cấp quyền hoặc đăng nhập bằng email/mật khẩu.";
 
 const brandingCards = [
   {
@@ -33,6 +41,7 @@ const brandingCards = [
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -42,6 +51,8 @@ export default function LoginPage() {
   const [capabilitiesLoaded, setCapabilitiesLoaded] = useState(false);
   const canSubmit = !isSubmitting;
   const publicDemoEntryEnabled = capabilities?.public_demo_entry_enabled === true;
+  const providerLoginEnabled = capabilities?.provider_login_enabled === true;
+  const providerLabel = capabilities?.provider_label ?? "Google";
 
   useEffect(() => {
     let cancelled = false;
@@ -67,6 +78,13 @@ export default function LoginPage() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    const authError = searchParams.get("error");
+    if (authError?.startsWith("google_")) {
+      setError(GOOGLE_LOGIN_ERROR_COPY);
+    }
+  }, [searchParams]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -184,6 +202,23 @@ export default function LoginPage() {
                   {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
               </form>
+
+              {capabilitiesLoaded && providerLoginEnabled ? (
+                <div className="mt-5">
+                  <div className="flex items-center gap-3" aria-hidden="true">
+                    <div className="h-px flex-1 bg-outline-variant/50" />
+                    <span className="text-xs font-semibold text-on-background/50">hoặc</span>
+                    <div className="h-px flex-1 bg-outline-variant/50" />
+                  </div>
+                  <a
+                    href={googleLoginStartUrl("/")}
+                    className="btn-press mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-outline-variant/50 bg-white px-4 text-sm font-semibold text-on-background no-underline shadow-sm transition-colors hover:border-primary hover:text-primary dark:bg-[#1e2d40]"
+                  >
+                    <LogIn className="h-5 w-5" aria-hidden="true" />
+                    Đăng nhập với {providerLabel}
+                  </a>
+                </div>
+              ) : null}
 
               {/* Demo accounts — loads async below form */}
               <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">

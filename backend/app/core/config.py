@@ -100,6 +100,27 @@ class Settings(BaseSettings):
         default=None,
         validation_alias="AUTH_PROVIDER_LAST_CHECK_STATUS",
     )
+    google_client_id: str = Field(default="", validation_alias="GOOGLE_CLIENT_ID")
+    google_client_secret: str = Field(default="", validation_alias="GOOGLE_CLIENT_SECRET")
+    google_redirect_uri: str = Field(default="", validation_alias="GOOGLE_REDIRECT_URI")
+    google_oauth_authorize_url: str = Field(
+        default="https://accounts.google.com/o/oauth2/v2/auth",
+        validation_alias="GOOGLE_OAUTH_AUTHORIZE_URL",
+    )
+    google_oauth_token_url: str = Field(
+        default="https://oauth2.googleapis.com/token",
+        validation_alias="GOOGLE_OAUTH_TOKEN_URL",
+    )
+    google_tokeninfo_url: str = Field(
+        default="https://oauth2.googleapis.com/tokeninfo",
+        validation_alias="GOOGLE_TOKENINFO_URL",
+    )
+    google_oauth_state_cookie_name: str = Field(
+        default="beyou_google_oauth_state", validation_alias="GOOGLE_OAUTH_STATE_COOKIE_NAME"
+    )
+    google_oauth_timeout_seconds: float = Field(
+        default=10.0, validation_alias="GOOGLE_OAUTH_TIMEOUT_SECONDS"
+    )
 
     @field_validator("session_cookie_name")
     @classmethod
@@ -177,6 +198,17 @@ class Settings(BaseSettings):
         cls._reject_unsafe_provider_metadata(normalized)
         return normalized
 
+    @field_validator("google_redirect_uri")
+    @classmethod
+    def validate_google_redirect_uri(cls, value: str) -> str:
+        if not value:
+            return value
+        if value.endswith("/"):
+            raise ValueError("GOOGLE_REDIRECT_URI must not have a trailing slash")
+        if not value.startswith(("http://", "https://")):
+            raise ValueError("GOOGLE_REDIRECT_URI must be an absolute URL")
+        return value
+
     @staticmethod
     def _validate_origin(value: str, field_name: str) -> str:
         if value.endswith("/"):
@@ -214,6 +246,15 @@ class Settings(BaseSettings):
         origins = [self.frontend_origin]
         origins.extend(origin for origin in self.frontend_origins.split(",") if origin)
         return list(dict.fromkeys(origins))
+
+    @property
+    def google_login_configured(self) -> bool:
+        return bool(
+            self.auth_provider_enabled
+            and self.google_client_id.strip()
+            and self.google_client_secret.strip()
+            and self.google_redirect_uri.strip()
+        )
 
     @property
     def effective_llm_api_key(self) -> str:
