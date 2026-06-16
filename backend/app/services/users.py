@@ -91,7 +91,9 @@ def update_user(
     for field, value in update_data.items():
         setattr(target, field, value)
 
-    _ensure_student_profile_fields(target.role, target.full_name, target.school, target.class_name)
+    # Only enforce student profile completeness when role is explicitly being set to student in this request
+    if "role" in update_data and target.role == UserRole.STUDENT.value:
+        _ensure_student_profile_fields(target.role, target.full_name, target.school, target.class_name)
 
     if "role" in update_data and target.role != previous_role:
         record_audit_event(
