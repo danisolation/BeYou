@@ -14,6 +14,7 @@ from app.core.authorization import dashboard_route_for_role
 from app.core.config import Settings, get_settings
 from app.core.security import (
     check_login_rate_limit,
+    hash_password,
     record_login_failure,
     reset_login_failures,
     verify_password,
@@ -26,7 +27,6 @@ from app.core.sessions import (
     utc_now,
 )
 import uuid
-from app.core.security import get_password_hash
 from app.db.models import AccountStatus, AuthSessionMethod, ExternalIdentity, ExternalIdentityStatus, User, UserRole
 from app.db.session import get_db
 from app.schemas.auth import AuthCapabilitiesResponse, LoginRequest, LoginResponse
@@ -222,7 +222,7 @@ def _resolve_google_user(
         user = User(
             id=uuid.uuid4(),
             email=email,
-            password_hash=get_password_hash(secrets.token_urlsafe(32)),
+            password_hash=hash_password(secrets.token_urlsafe(32)),
             role=UserRole.STUDENT.value,
             status=AccountStatus.DISABLED.value,
             full_name=display_label or email.split("@")[0],
