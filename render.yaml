@@ -56,3 +56,15 @@ services:
         sync: false
       - key: WEB_PUSH_SUBJECT
         sync: false
+      - key: AUTH_PROVIDER_ENABLED
+        value: "true"
+      - key: AUTH_PROVIDER_KEY
+        value: google
+      - key: AUTH_PROVIDER_LABEL
+        value: Google
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
