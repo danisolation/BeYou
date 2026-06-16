@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff, Heart, Leaf, LogIn, Sunrise } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -39,7 +39,7 @@ const brandingCards = [
   },
 ];
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -276,5 +276,14 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="flex h-dvh items-center justify-center text-sm text-on-background/50">Đang tải...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
