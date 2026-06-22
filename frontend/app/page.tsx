@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Leaf, Shield, Brain, Heart, Lock, Eye, MessageCircle, BookHeart, AlertTriangle, ChevronRight } from "lucide-react";
 
 import { ScrollReveal } from "@/components/scroll-reveal";
@@ -90,7 +91,15 @@ export default function HomePage() {
 
           {/* Hero image placeholder */}
           <div className="hidden lg:block">
-            <div className="animate-scale-in delay-200 aspect-square rounded-hero bg-gradient-to-br from-primary/10 via-surface-container to-primary/5 ring-1 ring-outline-variant/20" />
+            <div className="animate-scale-in delay-200 relative aspect-square overflow-hidden rounded-hero ring-1 ring-outline-variant/20 shadow-2xl">
+              <Image 
+                src="/images/hero_image_no_text.jpg" 
+                alt="Peerlight AI Hero Illustration" 
+                fill 
+                className="object-cover"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -4,7 +4,15 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bot, CheckCircle2, ShieldAlert, Users, ArrowRight, RefreshCw, LockKeyhole } from "lucide-react";
+import {
+  Bot,
+  CheckCircle2,
+  ShieldAlert,
+  Users,
+  ArrowRight,
+  RefreshCw,
+  LockKeyhole,
+} from "lucide-react";
 
 import { ErrorState } from "@/components/ui-primitives";
 import { DashboardSkeleton } from "@/components/skeletons";
@@ -26,35 +34,45 @@ export default function TeacherDashboardPage() {
   const hasLoadedNotificationsRef = useRef(false);
   const { error: toastError } = useToast();
 
-  const load = useCallback((silent = false) => {
-    if (!silent) {
-      setIsLoading(true);
-      setLoadFailed(false);
-    }
-    loadTeacherDashboard()
-      .then((data) => {
-        setDashboardData(data);
+  const load = useCallback(
+    (silent = false) => {
+      if (!silent) {
+        setIsLoading(true);
         setLoadFailed(false);
-        setLastUpdated(new Date());
-        if (data.notifications.status === "ready") {
-          const unreadSos = data.notifications.data.filter(
-            (notification) => notification.resource_type === "sos_alert" && notification.read_at === null,
-          );
-          const newUnread = unreadSos.filter((notification) => !knownNotificationIdsRef.current.has(notification.id));
-          if (hasLoadedNotificationsRef.current && newUnread.length > 0) {
-            toastError(`${newUnread.length} SOS mới cần chú ý ngay.`);
+      }
+      loadTeacherDashboard()
+        .then((data) => {
+          setDashboardData(data);
+          setLoadFailed(false);
+          setLastUpdated(new Date());
+          if (data.notifications.status === "ready") {
+            const unreadSos = data.notifications.data.filter(
+              (notification) =>
+                notification.resource_type === "sos_alert" &&
+                notification.read_at === null,
+            );
+            const newUnread = unreadSos.filter(
+              (notification) =>
+                !knownNotificationIdsRef.current.has(notification.id),
+            );
+            if (hasLoadedNotificationsRef.current && newUnread.length > 0) {
+              toastError(`${newUnread.length} SOS mới cần chú ý ngay.`);
+            }
+            knownNotificationIdsRef.current = new Set(
+              data.notifications.data.map((notification) => notification.id),
+            );
+            hasLoadedNotificationsRef.current = true;
           }
-          knownNotificationIdsRef.current = new Set(data.notifications.data.map((notification) => notification.id));
-          hasLoadedNotificationsRef.current = true;
-        }
-      })
-      .catch(() => {
-        if (!silent) setLoadFailed(true);
-      })
-      .finally(() => {
-        if (!silent) setIsLoading(false);
-      });
-  }, [toastError]);
+        })
+        .catch(() => {
+          if (!silent) setLoadFailed(true);
+        })
+        .finally(() => {
+          if (!silent) setIsLoading(false);
+        });
+    },
+    [toastError],
+  );
 
   useEffect(() => {
     load();
@@ -93,28 +111,38 @@ export default function TeacherDashboardPage() {
   const unreadSosNotifications =
     dashboardData.notifications.status === "ready"
       ? dashboardData.notifications.data.filter(
-          (notification) => notification.resource_type === "sos_alert" && notification.read_at === null,
+          (notification) =>
+            notification.resource_type === "sos_alert" &&
+            notification.read_at === null,
         )
       : [];
   const latestUnreadSos = unreadSosNotifications[0];
   const priorityActions = [
     {
       title: sosCount > 0 ? "Ưu tiên xem SOS mới" : "Không có SOS mới",
-      description: sosCount > 0 ? "Bắt đầu từ các tín hiệu cần hỗ trợ gần đây." : "Tiếp tục duy trì quan sát trong phạm vi được phép.",
+      description:
+        sosCount > 0
+          ? "Bắt đầu từ các tín hiệu cần hỗ trợ gần đây."
+          : "Tiếp tục duy trì quan sát trong phạm vi được phép.",
       href: "/teacher/sos-alerts",
       icon: ShieldAlert,
-      tone: sosCount > 0 ? "text-red-600 bg-red-50 border-red-200" : "text-emerald-700 bg-emerald-50 border-emerald-200",
+      tone:
+        sosCount > 0
+          ? "text-red-600 bg-red-50 border-red-200"
+          : "text-emerald-700 bg-emerald-50 border-emerald-200",
     },
     {
       title: "Xem danh sách học sinh",
-      description: "Chỉ hiện học sinh/liên kết đúng quyền và tóm tắt được phép xem.",
+      description:
+        "Chỉ hiện học sinh/liên kết đúng quyền và tóm tắt được phép xem.",
       href: "/teacher/students",
       icon: Users,
       tone: "text-primary bg-primary/10 border-primary/20",
     },
     {
       title: "Hỏi Peerlight AI",
-      description: "Gợi ý cách mở lời hỗ trợ, không thay thế quy trình trường học.",
+      description:
+        "Gợi ý cách mở lời hỗ trợ, không thay thế quy trình trường học.",
       href: "/teacher/chat",
       icon: Bot,
       tone: "text-accent-violet bg-accent-violet/10 border-accent-violet/20",
@@ -144,7 +172,7 @@ export default function TeacherDashboardPage() {
 
           <div className="hidden md:block w-full md:w-[240px] shrink-0">
             <img
-              src="/images/Phương tiện truyền thông (11).jpg"
+              src="/images/hero_image_no_text.jpg"
               alt="Hỗ trợ học sinh"
               className="w-full h-auto max-h-[140px] rounded-2xl object-cover shadow-sm bg-white/40 border border-white/60"
             />
@@ -217,7 +245,10 @@ export default function TeacherDashboardPage() {
       </section>
 
       {latestUnreadSos ? (
-        <section role="alert" className="rounded-[22px] border-2 border-red-300 bg-red-50 p-5 shadow-lg shadow-red-500/10 dark:border-red-900/60 dark:bg-red-950/30">
+        <section
+          role="alert"
+          className="rounded-[22px] border-2 border-red-300 bg-red-50 p-5 shadow-lg shadow-red-500/10 dark:border-red-900/60 dark:bg-red-950/30"
+        >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex gap-3">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-600 text-white shadow-md shadow-red-600/20">
@@ -227,11 +258,23 @@ export default function TeacherDashboardPage() {
                 <p className="text-sm font-extrabold uppercase tracking-wide text-red-700 dark:text-red-300">
                   {unreadSosNotifications.length} SOS mới cần chú ý
                 </p>
-                <h2 className="mt-1 text-lg font-bold text-red-950 dark:text-red-100">Có học sinh vừa gửi tín hiệu hỗ trợ.</h2>
-                <p className="mt-1 text-sm text-red-900/75 dark:text-red-100/75">Cập nhật gần realtime mỗi 12 giây khi trang đang mở. Nội dung nhạy cảm vẫn chỉ hiển thị theo quyền được phép.</p>
+                <h2 className="mt-1 text-lg font-bold text-red-950 dark:text-red-100">
+                  Có học sinh vừa gửi tín hiệu hỗ trợ.
+                </h2>
+                <p className="mt-1 text-sm text-red-900/75 dark:text-red-100/75">
+                  Cập nhật gần realtime mỗi 12 giây khi trang đang mở. Nội dung
+                  nhạy cảm vẫn chỉ hiển thị theo quyền được phép.
+                </p>
               </div>
             </div>
-            <Link href={latestUnreadSos.href?.startsWith("/") ? latestUnreadSos.href : "/teacher/sos-alerts"} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700">
+            <Link
+              href={
+                latestUnreadSos.href?.startsWith("/")
+                  ? latestUnreadSos.href
+                  : "/teacher/sos-alerts"
+              }
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 text-sm font-bold text-white no-underline shadow-md shadow-red-600/20 hover:bg-red-700"
+            >
               Mở SOS ngay <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
@@ -242,22 +285,41 @@ export default function TeacherDashboardPage() {
         <div className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-xs font-bold uppercase tracking-wide text-primary">Việc nên làm tiếp theo</p>
-              <h2 className="mt-1 text-lg font-bold text-on-background">Ưu tiên hỗ trợ an toàn</h2>
-              <p className="mt-1 text-sm text-on-background/60">Tập trung vào SOS và liên kết đang hoạt động, không xem dữ liệu riêng tư ngoài phạm vi.</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-primary">
+                Việc nên làm tiếp theo
+              </p>
+              <h2 className="mt-1 text-lg font-bold text-on-background">
+                Ưu tiên hỗ trợ an toàn
+              </h2>
+              <p className="mt-1 text-sm text-on-background/60">
+                Tập trung vào SOS và liên kết đang hoạt động, không xem dữ liệu
+                riêng tư ngoài phạm vi.
+              </p>
             </div>
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             {priorityActions.map((action) => {
               const Icon = action.icon;
               return (
-                <Link key={action.title} href={action.href} className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]">
-                  <span className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${action.tone}`}>
+                <Link
+                  key={action.title}
+                  href={action.href}
+                  className="group rounded-2xl border border-outline-variant/30 bg-surface p-4 no-underline transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md dark:bg-[#20284b]"
+                >
+                  <span
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border ${action.tone}`}
+                  >
                     <Icon size={18} aria-hidden="true" />
                   </span>
-                  <h3 className="mt-3 text-sm font-bold text-on-background">{action.title}</h3>
-                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">{action.description}</p>
-                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">Mở <ArrowRight size={13} aria-hidden="true" /></span>
+                  <h3 className="mt-3 text-sm font-bold text-on-background">
+                    {action.title}
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-on-background/60">
+                    {action.description}
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-bold text-primary">
+                    Mở <ArrowRight size={13} aria-hidden="true" />
+                  </span>
                 </Link>
               );
             })}
@@ -266,13 +328,38 @@ export default function TeacherDashboardPage() {
 
         <aside className="soft-card rounded-[20px] border border-outline-variant/30 bg-white p-5 dark:bg-[#1a2244]">
           <div className="flex items-center gap-2 text-sm font-bold text-on-background">
-            <LockKeyhole size={17} className="text-primary" aria-hidden="true" />
+            <LockKeyhole
+              size={17}
+              className="text-primary"
+              aria-hidden="true"
+            />
             Ranh giới riêng tư
           </div>
           <ul className="mt-4 space-y-3 text-sm text-on-background/65">
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Chỉ xem tóm tắt khi có SOS/liên kết hợp lệ.</li>
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Không có câu trả lời riêng tư hoặc nội dung chat học sinh.</li>
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 text-emerald-600" aria-hidden="true" />Mọi thao tác hỗ trợ nên bắt đầu bằng lắng nghe.</li>
+            <li className="flex gap-2">
+              <CheckCircle2
+                size={16}
+                className="mt-0.5 text-emerald-600"
+                aria-hidden="true"
+              />
+              Chỉ xem tóm tắt khi có SOS/liên kết hợp lệ.
+            </li>
+            <li className="flex gap-2">
+              <CheckCircle2
+                size={16}
+                className="mt-0.5 text-emerald-600"
+                aria-hidden="true"
+              />
+              Không có câu trả lời riêng tư hoặc nội dung chat học sinh.
+            </li>
+            <li className="flex gap-2">
+              <CheckCircle2
+                size={16}
+                className="mt-0.5 text-emerald-600"
+                aria-hidden="true"
+              />
+              Mọi thao tác hỗ trợ nên bắt đầu bằng lắng nghe.
+            </li>
           </ul>
         </aside>
       </section>
