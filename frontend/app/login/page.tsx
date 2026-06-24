@@ -203,6 +203,13 @@ function LoginContent() {
                 </button>
               </form>
 
+              <p className="mt-5 text-center text-sm text-on-background/60">
+                Chưa có tài khoản?{" "}
+                <Link href="/register" className="font-semibold text-primary no-underline hover:underline">
+                  Đăng ký ngay
+                </Link>
+              </p>
+
               {capabilitiesLoaded && providerLoginEnabled ? (
                 <div className="mt-5">
                   <div className="flex items-center gap-3" aria-hidden="true">
