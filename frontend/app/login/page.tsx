@@ -12,13 +12,8 @@ import {
   login,
   loginErrorCopy,
 } from "@/lib/auth";
-import { demoAccounts, DEMO_PASSWORD } from "@/lib/demo-accounts";
 import { isInAppBrowser } from "@/lib/browser";
 
-const DEMO_DISABLED_COPY =
-  "Tài khoản truy cập nhanh hiện không khả dụng. Hãy đăng nhập bằng tài khoản em được cấp.";
-const PROVIDER_DISABLED_COPY = "Đăng nhập bên ngoài chưa được kích hoạt.";
-const CAPABILITIES_UNAVAILABLE_COPY = "Chưa xác minh được cấu hình. Hãy đăng nhập bằng email và mật khẩu được cấp.";
 const GOOGLE_LOGIN_ERROR_COPY =
   "Không thể đăng nhập bằng Google. Hãy dùng tài khoản đã được nhà trường cấp quyền hoặc đăng nhập bằng email/mật khẩu.";
 
@@ -51,7 +46,6 @@ function LoginContent() {
   const [capabilities, setCapabilities] = useState<AuthCapabilities | null>(null);
   const [capabilitiesLoaded, setCapabilitiesLoaded] = useState(false);
   const canSubmit = !isSubmitting;
-  const publicDemoEntryEnabled = capabilities?.public_demo_entry_enabled === true;
   const providerLoginEnabled = capabilities?.provider_login_enabled === true;
   const providerLabel = capabilities?.provider_label ?? "Google";
 
@@ -233,42 +227,6 @@ function LoginContent() {
                   </a>
                 </div>
               ) : null}
-
-              {/* Demo accounts — loads async below form */}
-              <div className="mt-6 rounded-2xl border border-outline-variant/40 bg-white dark:bg-[#1e2d40] p-4">
-                <p className="text-xs font-semibold text-primary">Đăng nhập thử</p>
-                {!capabilitiesLoaded ? (
-                  <div className="mt-2 flex items-center gap-2">
-                    <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    <p className="text-xs text-on-background/50">Đang kết nối...</p>
-                  </div>
-                ) : publicDemoEntryEnabled ? (
-                  <>
-                    <p className="mt-1 text-xs text-on-background/60">Chọn vai trò để vào nhanh.</p>
-                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                      {demoAccounts.map((account) => (
-                        <button
-                          key={account.email}
-                          type="button"
-                          onClick={() => {
-                            setEmail(account.email);
-                            setPassword(DEMO_PASSWORD);
-                            setError("");
-                          }}
-                          className="btn-press min-h-11 rounded-xl border border-outline-variant/40 bg-white px-3 text-left text-xs font-semibold text-primary transition-transform hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
-                        >
-                          {account.label}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="mt-3 space-y-2 rounded-xl border border-warning/30 bg-amber-50 dark:bg-amber-950/20 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
-                    <p>{capabilities ? DEMO_DISABLED_COPY : CAPABILITIES_UNAVAILABLE_COPY}</p>
-                    {capabilities?.provider_login_enabled === false ? <p>{PROVIDER_DISABLED_COPY}</p> : null}
-                  </div>
-                )}
-              </div>
             </div>
 
             {/* Right: 3 Branding cards */}
