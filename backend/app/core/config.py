@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     runtime_mode: RuntimeMode = Field(default="production_pilot", validation_alias="RUNTIME_MODE")
     allow_demo_seed: bool = Field(default=True, validation_alias="ALLOW_DEMO_SEED")
     allow_demo_login: bool = Field(default=True, validation_alias="ALLOW_DEMO_LOGIN")
+    admin_reset_token: str = Field(default="", validation_alias="ADMIN_RESET_TOKEN")
     chat_provider: str = Field(default="fallback", validation_alias="CHAT_PROVIDER")
     gemini_api_key: str = Field(default="", validation_alias="GEMINI_API_KEY")
     gemini_base_url: str = Field(

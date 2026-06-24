@@ -15,6 +15,7 @@ from app.api import (
     adult_summaries,
     auth,
     chat,
+    internal,
     me,
     parent,
     privacy,
@@ -47,7 +48,7 @@ def create_app() -> FastAPI:
         allow_origins=settings.allowed_frontend_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
+        allow_headers=["Content-Type", "Authorization", "X-Requested-With", "X-Reset-Token"],
     )
 
     @app.get("/health")
@@ -106,6 +107,7 @@ def create_app() -> FastAPI:
     app.include_router(
         admin_privacy_policy.router, prefix="/api/admin/privacy-policy", tags=["admin"]
     )
+    app.include_router(internal.router, prefix="/api/internal", tags=["internal"])
 
     @app.on_event("startup")
     def warm_db_pool() -> None:
