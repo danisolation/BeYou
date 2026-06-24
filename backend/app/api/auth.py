@@ -225,7 +225,7 @@ def _resolve_google_user(
             email=email,
             password_hash=hash_password(secrets.token_urlsafe(32)),
             role=UserRole.STUDENT.value,
-            status=AccountStatus.DISABLED.value,
+            status=AccountStatus.ACTIVE.value,
             full_name=display_label or email.split("@")[0],
             is_demo=False,
         )
