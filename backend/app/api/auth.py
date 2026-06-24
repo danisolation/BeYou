@@ -199,7 +199,8 @@ def _verify_google_id_token(settings: Settings, id_token: str) -> dict[str, Any]
 
 def _resolve_google_user(
     db: OrmSession, settings: Settings, claims: dict[str, Any]
-) -> tuple[User, ExternalIdentity]:
+) -> tuple[User, ExternalIdentity, bool]:
+    """Returns (user, identity, is_new_user)."""
     provider_key = settings.auth_provider_key
     subject = str(claims["sub"])
     email = str(claims["email"]).strip().lower()
@@ -209,7 +210,7 @@ def _resolve_google_user(
     if resolution.status == "linked_active_user" and resolution.user and resolution.identity:
         resolution.identity.last_seen_at = utc_now()
         db.commit()
-        return resolution.user, resolution.identity
+        return resolution.user, resolution.identity, False
 
     if resolution.status in {"disabled_identity", "deprovisioned_identity"}:
         raise HTTPException(
@@ -218,7 +219,8 @@ def _resolve_google_user(
 
     user = db.scalar(select(User).where(User.email == email))
     display_label = str(claims.get("name") or "").strip()[:160] or None
-    
+    is_new_user = user is None
+
     if user is None:
         user = User(
             id=uuid.uuid4(),
@@ -258,7 +260,7 @@ def _resolve_google_user(
             status_code=status.HTTP_403_FORBIDDEN, detail=GOOGLE_ACCOUNT_NOT_ALLOWED_DETAIL
         )
 
-    return user, identity
+    return user, identity, is_new_user
 
 
 def _origin_unsafe_for_production_pilot(origin: str) -> bool:
@@ -336,7 +338,7 @@ def google_callback(
     try:
         id_token = _exchange_google_code(settings, code)
         claims = _verify_google_id_token(settings, id_token)
-        user, identity = _resolve_google_user(db, settings, claims)
+        user, identity, is_new_user = _resolve_google_user(db, settings, claims)
         if user.is_demo and (settings.is_production_pilot or not settings.allow_demo_login):
             return _google_error_redirect(settings, "google_account_not_allowed")
     except (GoogleOAuthError, HTTPException):
@@ -351,11 +353,15 @@ def google_callback(
         auth_provider_key=settings.auth_provider_key,
         external_identity_id=identity.id,
     )
-    destination = _valid_google_next_path(next_path)
-    if user.role == "student" and privacy_acknowledgement_required(db, user):
-        destination = f"/privacy?{urlencode({'next': dashboard_route_for_role(user.role)})}"
-    elif destination == "/":
-        destination = dashboard_route_for_role(user.role)
+    # New Google users must pick their role before accessing dashboard
+    if is_new_user:
+        destination = "/choose-role"
+    else:
+        destination = _valid_google_next_path(next_path)
+        if user.role == "student" and privacy_acknowledgement_required(db, user):
+            destination = f"/privacy?{urlencode({'next': dashboard_route_for_role(user.role)})}"
+        elif destination == "/":
+            destination = dashboard_route_for_role(user.role)
 
     redirect = RedirectResponse(
         _frontend_redirect(settings, destination),

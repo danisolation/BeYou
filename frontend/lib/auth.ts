@@ -75,6 +75,14 @@ export async function acknowledgePrivacy(): Promise<void> {
   await apiFetch("/api/privacy/acknowledgements", { method: "POST" });
 }
 
+export async function updateRole(role: AuthUser["role"]): Promise<AuthUser> {
+  return apiFetch<AuthUser>("/api/auth/me/role", {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+}
+
+
 export function loginErrorCopy(error: unknown): string {
   if (error instanceof ApiError && error.status === 403) {
     return DISABLED_ACCOUNT_COPY;
