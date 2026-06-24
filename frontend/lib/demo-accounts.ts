@@ -10,27 +10,6 @@ export const demoAccounts: Array<{
   summary: string;
 }> = [
   {
-    role: "student",
-    label: "Học sinh",
-    email: "student.demo@beyou.local",
-    route: "/student",
-    summary: "Trải nghiệm check-in, tự kiểm tra, chatbot, kế hoạch hỗ trợ và SOS.",
-  },
-  {
-    role: "teacher",
-    label: "Giáo viên",
-    email: "teacher.demo@beyou.local",
-    route: "/teacher",
-    summary: "Xem học sinh được liên kết, tóm tắt hỗ trợ và xử lý SOS.",
-  },
-  {
-    role: "parent",
-    label: "Phụ huynh",
-    email: "parent.demo@beyou.local",
-    route: "/parent",
-    summary: "Theo dõi tóm tắt hỗ trợ và trạng thái SOS trong phạm vi được phép.",
-  },
-  {
     role: "admin",
     label: "Quản trị",
     email: "admin.demo@beyou.local",
