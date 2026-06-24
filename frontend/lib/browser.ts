@@ -2,7 +2,7 @@ export function isInAppBrowser(): boolean {
   if (typeof window === "undefined" || !window.navigator) {
     return false;
   }
-  const ua = window.navigator.userAgent || window.navigator.vendor || (window as any).opera;
+  const ua = window.navigator.userAgent || window.navigator.vendor || (window as unknown as { opera?: string }).opera || "";
   
   // Zalo
   if (ua.includes("Zalo")) return true;
