@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from typing import TYPE_CHECKING
 
 from fastapi import HTTPException, status
 from sqlalchemy import delete, or_, select
@@ -16,6 +17,7 @@ from app.db.models import (
     UserRole,
 )
 from app.schemas.admin import AdminUserCreateRequest, AdminUserUpdateRequest
+from app.schemas.auth import RegisterRequest
 from app.services.audit import record_audit_event
 
 
@@ -68,6 +70,30 @@ def create_user(db: OrmSession, payload: AdminUserCreateRequest) -> User:
         school=payload.school,
         class_name=payload.class_name,
         is_demo=payload.is_demo,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def register_user(db: OrmSession, payload: RegisterRequest) -> User:
+    _ensure_email_available(db, payload.email)
+    if payload.role == UserRole.STUDENT.value:
+        if not payload.school or not payload.class_name:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Học sinh cần cung cấp tên trường và lớp học.",
+            )
+    user = User(
+        email=payload.email,
+        password_hash=hash_password(payload.password),
+        role=payload.role,
+        status=AccountStatus.ACTIVE.value,
+        full_name=payload.full_name,
+        school=payload.school,
+        class_name=payload.class_name,
+        is_demo=False,
     )
     db.add(user)
     db.commit()

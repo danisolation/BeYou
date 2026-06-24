@@ -22,6 +22,15 @@ export type AuthCapabilities = {
   production_pilot: boolean;
 };
 
+export type RegisterPayload = {
+  email: string;
+  password: string;
+  full_name: string;
+  role: "student" | "teacher" | "parent";
+  school?: string;
+  class_name?: string;
+};
+
 export const INVALID_LOGIN_COPY = "Email hoặc mật khẩu chưa đúng. Hãy kiểm tra lại thông tin đăng nhập.";
 export const DISABLED_ACCOUNT_COPY =
   "Tài khoản này đang bị tạm khóa. Hãy liên hệ quản trị viên hoặc người phụ trách demo.";
@@ -30,6 +39,13 @@ export async function login(email: string, password: string): Promise<AuthUser> 
   return apiFetch<AuthUser>("/api/auth/login", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+  });
+}
+
+export async function register(payload: RegisterPayload): Promise<AuthUser> {
+  return apiFetch<AuthUser>("/api/auth/register", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
 }
 
@@ -64,4 +80,15 @@ export function loginErrorCopy(error: unknown): string {
     return DISABLED_ACCOUNT_COPY;
   }
   return INVALID_LOGIN_COPY;
+}
+
+export function registerErrorCopy(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 409) return "Email này đã được sử dụng. Vui lòng dùng email khác hoặc đăng nhập.";
+    if (error.status === 400) {
+      const detail = (error.detail as { detail?: string })?.detail ?? "";
+      if (detail) return detail;
+    }
+  }
+  return "Đăng ký thất bại. Vui lòng thử lại sau.";
 }
