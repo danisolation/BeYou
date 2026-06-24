@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { register, registerErrorCopy, googleLoginStartUrl, AuthCapabilities, getAuthCapabilities } from "@/lib/auth";
 import { useEffect } from "react";
+import { isInAppBrowser } from "@/lib/browser";
 
 type Role = "student" | "teacher" | "parent";
 
@@ -144,11 +145,23 @@ function RegisterContent() {
                       </div>
                       <a
                         href={googleLoginStartUrl("/")}
+                        onClick={(e) => {
+                          if (isInAppBrowser()) {
+                            e.preventDefault();
+                            setError("Vui lòng mở trang web bằng trình duyệt ngoài (Safari, Chrome) bằng cách chọn 'Mở bằng trình duyệt' ở góc phải màn hình để đăng ký bằng Google.");
+                          }
+                        }}
                         className="btn-press mt-4 flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-outline-variant/50 bg-white px-4 text-sm font-semibold text-on-background no-underline shadow-sm transition-colors hover:border-primary hover:text-primary dark:bg-[#1e2d40]"
                       >
                         <LogIn className="h-5 w-5" aria-hidden="true" />
                         Đăng ký với {providerLabel}
                       </a>
+                    </div>
+                  )}
+
+                  {error && (
+                    <div id="register-role-error" role="alert" className="mt-4 rounded-xl border border-error/30 bg-error-container px-4 py-3 text-xs text-error">
+                      {error}
                     </div>
                   )}
 
