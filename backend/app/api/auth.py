@@ -367,41 +367,6 @@ def google_callback(
     return redirect
 
 
-@router.post("/login", response_model=LoginResponse)
-def login(
-    payload: LoginRequest,
-    request: Request,
-    response: Response,
-    db: OrmSession = Depends(get_db),
-    settings: Settings = Depends(get_settings),
-) -> LoginResponse:
-    require_same_site_mutation(request, settings)
-    client_ip = _client_ip(request)
-    check_login_rate_limit(payload.email, client_ip)
-
-    user = db.scalar(select(User).where(User.email == payload.email))
-    if user is None or not verify_password(payload.password, user.password_hash):
-        record_login_failure(payload.email, client_ip)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=INVALID_LOGIN_DETAIL)
-
-    if user.status != AccountStatus.ACTIVE.value:
-        record_login_failure(payload.email, client_ip)
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=DISABLED_LOGIN_DETAIL)
-
-    if user.is_demo and (settings.is_production_pilot or not settings.allow_demo_login):
-        record_login_failure(payload.email, client_ip)
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail=DEMO_LOGIN_DISABLED_DETAIL
-        )
-
-    if settings.is_production_pilot and (
-        not settings.session_cookie_secure
-        or any(
-            _origin_unsafe_for_production_pilot(origin)
-            for origin in settings.allowed_frontend_origins
-        )
-    ):
-        record_login_failure(payload.email, client_ip)
 
 
 @router.post("/login", response_model=LoginResponse)
