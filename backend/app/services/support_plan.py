@@ -8,12 +8,14 @@ from sqlalchemy.orm import Session as OrmSession
 
 from app.core.authorization import require_permission
 from app.db.models import (
+    AccountStatus,
     LinkStatus,
     StudentAdultLink,
     StudentSupportPlan,
     StudentSupportPlanAdult,
     SupportPlanStatus,
     User,
+    UserRole,
     utc_now,
 )
 from app.schemas.support_plan import (
@@ -49,15 +51,21 @@ def _active_linked_adult_rows(
 
 
 def _available_adults(db: OrmSession, student: User) -> list[SupportPlanLinkedAdult]:
+    adults = db.scalars(
+        select(User)
+        .where(User.role.in_([UserRole.TEACHER.value, UserRole.PARENT.value]))
+        .where(User.status == AccountStatus.ACTIVE.value)
+        .order_by(User.full_name.asc(), User.email.asc())
+    ).all()
     return [
         SupportPlanLinkedAdult(
             id=adult.id,
             full_name=adult.full_name,
             email=adult.email,
-            relationship_type=link.relationship_type,
+            relationship_type=adult.role, # pyright: ignore
             is_demo=adult.is_demo,
         )
-        for link, adult in _active_linked_adult_rows(db, student.id)
+        for adult in adults
     ]
 
 
@@ -118,23 +126,31 @@ def _validate_selected_adults(
     student: User,
     adult_ids: list[uuid.UUID],
     status_value: str,
-) -> list[tuple[StudentAdultLink, User]]:
+) -> list[User]:
     if status_value == SupportPlanStatus.ACTIVE.value and not adult_ids:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Kế hoạch đang bật cần ít nhất một người lớn tin tưởng đã liên kết.",
+            detail="Kế hoạch đang bật cần ít nhất một người lớn tin tưởng.",
         )
 
-    linked_by_adult_id = {
-        adult.id: (link, adult) for link, adult in _active_linked_adult_rows(db, student.id)
-    }
-    missing = [adult_id for adult_id in adult_ids if adult_id not in linked_by_adult_id]
+    if not adult_ids:
+        return []
+
+    adults = db.scalars(
+        select(User)
+        .where(User.id.in_(adult_ids))
+        .where(User.role.in_([UserRole.TEACHER.value, UserRole.PARENT.value]))
+        .where(User.status == AccountStatus.ACTIVE.value)
+    ).all()
+
+    found_ids = {adult.id for adult in adults}
+    missing = [adult_id for adult_id in adult_ids if adult_id not in found_ids]
     if missing:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-            detail="Chỉ có thể chọn người lớn đang được liên kết với em.",
+            detail="Người lớn không hợp lệ hoặc đã bị khóa tài khoản.",
         )
-    return [linked_by_adult_id[adult_id] for adult_id in adult_ids]
+    return list(adults)
 
 
 def _apply_lifecycle(plan: StudentSupportPlan, status_value: str) -> None:
@@ -187,11 +203,11 @@ def upsert_student_support_plan(
         StudentSupportPlanAdult(
             support_plan_id=plan.id,
             adult_id=adult.id,
-            relationship_type_snapshot=link.relationship_type,
+            relationship_type_snapshot=adult.role,
             adult_full_name_snapshot=adult.full_name,
             is_demo=student.is_demo and adult.is_demo,
         )
-        for link, adult in selected_rows
+        for adult in selected_rows
     ]
     db.flush()
 

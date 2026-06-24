@@ -170,7 +170,7 @@ export default function StudentSupportPlanPage() {
         <section className="card-lift rounded-2xl border border-outline-variant/30 bg-white dark:bg-[#1a2244] p-6">
           <h2 className="text-sm font-semibold">Chọn người em tin</h2>
           <p className="mt-3 text-sm">
-            Em có thể chọn từ những người đang được liên kết với tài khoản của mình.
+            Em có thể chọn bất kỳ giáo viên hoặc phụ huynh nào trong hệ thống để làm người em tin tưởng.
           </p>
           {hasLinkedAdults ? (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
