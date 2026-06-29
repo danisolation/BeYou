@@ -225,7 +225,7 @@ def upsert_student_support_plan(
             "status": plan.status,
             "selected_adult_count": len(selected_rows),
             "selected_relationship_types": sorted(
-                {link.relationship_type for link, _ in selected_rows}
+                {adult.role for adult in selected_rows}
             ),
             "has_what_helps": payload.what_helps is not None,
             "has_what_does_not_help": payload.what_does_not_help is not None,
