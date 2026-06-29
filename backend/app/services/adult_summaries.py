@@ -313,7 +313,7 @@ def _adult_student_context(student: User) -> AdultStudentContext:
     )
 
 
-def _has_sos_visible_active_link(
+def _has_active_link(
     db: OrmSession,
     *,
     adult_id: uuid.UUID,
@@ -328,7 +328,6 @@ def _has_sos_visible_active_link(
                 StudentAdultLink.adult_id == adult_id,
                 StudentAdultLink.relationship_type == relationship_type,
                 StudentAdultLink.status == LinkStatus.ACTIVE.value,
-                exists(select(SosAlert.id).where(SosAlert.student_id == student_id)),
             )
             .limit(1)
         )
@@ -525,7 +524,7 @@ def get_adult_support_summary(
     policy = get_or_create_school_privacy_policy(db, is_demo=student.is_demo)
     student_context = _adult_student_context(student)
     student_is_demo = student.is_demo
-    if adult.role != relationship_type or not _has_sos_visible_active_link(
+    if adult.role != relationship_type or not _has_active_link(
         db,
         adult_id=adult.id,
         student_id=student_id,

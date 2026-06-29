@@ -91,7 +91,7 @@ class SosAlertResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     completed_at: datetime | None = None
-    status_events: list[SosStatusEventResponse] = []
+    status_events: list[SosStatusEventResponse] = Field(default_factory=list)
     is_demo: bool
 
 

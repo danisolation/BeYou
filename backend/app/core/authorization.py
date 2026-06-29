@@ -49,6 +49,8 @@ def has_active_student_link(
     student_id: uuid.UUID,
     relationship_type: str | None = None,
 ) -> bool:
+    if relationship_type is None and adult.role not in {UserRole.TEACHER.value, UserRole.PARENT.value}:
+        return False
     expected_relationship = relationship_type or adult.role
     link = db.scalar(
         select(StudentAdultLink).where(
@@ -166,7 +168,6 @@ def require_permission(
         }
         and student_id is not None
         and has_active_student_link(db, actor, student_id)
-        and has_student_sos_signal(db, student_id)
     ):
         return
 

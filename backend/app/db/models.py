@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text, UniqueConstraint, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -132,7 +132,7 @@ class User(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(512), nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(1024), nullable=False)
     role: Mapped[str] = mapped_column(String(32), nullable=False)
     status: Mapped[str] = mapped_column(
         String(32), default=AccountStatus.ACTIVE.value, nullable=False
@@ -256,7 +256,7 @@ class StudentAdultLink(Base):
             "adult_id",
             "relationship_type",
             unique=True,
-            postgresql_where=(status == LinkStatus.ACTIVE.value),
+            postgresql_where=text("status = 'active'"),
         ),
     )
 
@@ -407,7 +407,6 @@ class StudentNotificationPreference(Base):
 
     __table_args__ = (
         UniqueConstraint("student_id", name="uq_student_notification_preferences_student_id"),
-        Index("ix_student_notification_preferences_student_id", "student_id"),
         Index("ix_student_notification_preferences_is_demo", "is_demo"),
         Index("ix_student_notification_preferences_paused_until", "paused_until"),
     )
@@ -472,7 +471,7 @@ class MoodNoteShare(Base):
             "mood_checkin_id",
             "adult_id",
             unique=True,
-            postgresql_where=(revoked_at.is_(None)),
+            postgresql_where=text("revoked_at IS NULL"),
         ),
         Index("ix_mood_note_shares_student_created", "student_id", "created_at"),
         Index("ix_mood_note_shares_adult_created", "adult_id", "created_at"),
@@ -576,7 +575,7 @@ class SelfCheckQuestion(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     test_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("self_check_tests.id"), nullable=False, index=True
+        ForeignKey("self_check_tests.id", ondelete="CASCADE"), nullable=False, index=True
     )
     text: Mapped[str] = mapped_column(Text, nullable=False)
     sort_order: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -593,7 +592,7 @@ class SelfCheckChoice(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("self_check_questions.id"), nullable=False, index=True
+        ForeignKey("self_check_questions.id", ondelete="CASCADE"), nullable=False, index=True
     )
     text: Mapped[str] = mapped_column(Text, nullable=False)
     score_value: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -608,7 +607,7 @@ class SelfCheckThreshold(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     test_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("self_check_tests.id"), nullable=False, index=True
+        ForeignKey("self_check_tests.id", ondelete="CASCADE"), nullable=False, index=True
     )
     state_label: Mapped[str] = mapped_column(String(64), nullable=False)
     min_score: Mapped[int] = mapped_column(Integer, nullable=False)
@@ -716,7 +715,7 @@ class ScenarioChoice(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     scenario_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("scenarios.id"), nullable=False, index=True
+        ForeignKey("scenarios.id", ondelete="CASCADE"), nullable=False, index=True
     )
     text: Mapped[str] = mapped_column(Text, nullable=False)
     signal: Mapped[str] = mapped_column(String(32), nullable=False)
@@ -805,7 +804,7 @@ class SosStatusEvent(Base):
     alert_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("sos_alerts.id"), nullable=False, index=True
     )
-    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    actor_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     actor_role: Mapped[str] = mapped_column(String(32), nullable=False)
     previous_status: Mapped[str | None] = mapped_column(String(32), nullable=True)
     new_status: Mapped[str] = mapped_column(String(32), nullable=False)

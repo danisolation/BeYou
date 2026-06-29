@@ -82,7 +82,7 @@ class SelfCheckResultResponse(BaseModel):
     test_id: uuid.UUID
     test_title: str
     state_label: str
-    supportive_headline: str
+    supportive_headline: str | None = None
     short_comment: str | None = None
     advice_summary: str | None = None
     support_suggestion: str | None = None
